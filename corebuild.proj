@@ -24,6 +24,8 @@
 	</Target>
 
   <Target Name="_Setup" DependsOnTargets="SetVersion">
+    <Message Text="Building AssemblyVersion=$(AssemblyVersion), PackageVersion=$(PackageVersion)" Importance="high" />
+
 		<!-- Update AppVeyor build # to match the actual one being used -->
 		<Exec Command="appveyor UpdateBuild -Version $(PackageVersion)" Condition=" '$(APPVEYOR)' == 'true' "
               ConsoleToMSBuild="true"
