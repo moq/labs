@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<!-- Import NuGet.targets for Restore -->
+	<PropertyGroup>
+		<NuGetRestoreTargets Condition="'$(NuGetRestoreTargets)'==''">$(VsInstallRoot)\Common7\IDE\CommonExtensions\Microsoft\NuGet\NuGet.targets</NuGetRestoreTargets>
+	</PropertyGroup>
+	<Import Condition="Exists('$(NuGetRestoreTargets)')" Project="$(NuGetRestoreTargets)" />
+	<Import Condition="'$(CoreBuildPropsImported)' == ''" Project="corebuild.props" />
+
+	<Import Project="$(RestoreOutputPath)\$(MSBuildProjectFile).nuget.g.targets" Condition="Exists('$(RestoreOutputPath)\$(MSBuildProjectFile).nuget.g.targets')" />
+
+	<!-- Unfortunately, NuGet restore depends on this target for its _GenerateRestoreProjectReferencePaths target -->
+	<Target Name="_SplitProjectReferencesByFileExistence" />
+	
+	<Target Name="GetVsInstallRoot" Returns="$(VsInstallRoot)">
+		<Message Importance="high" Text="$(VsInstallRoot)" />
+	</Target>
+	
+	<ItemGroup>
+		<PackageReference Include="CoreBuild.Updater" Version="*">
+			<PrivateAssets>All</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="MSBuilder.XmlPoke" Version="*">
+			<PrivateAssets>All</PrivateAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<PropertyGroup>
+		<ETag>cdac7d6eaa07b64767e32bcb207a7dbdce1caf07</ETag>
+	</PropertyGroup>
+
+	<!-- If we're being imported from another project, import the update-all version of Update -->
+	<Import Project="update.targets" Condition="'$(MSBuildProjectFullPath)' != '(MSBuildThisFileFullPath)' And '$(IsUpdating)' != 'true'" />	
+</Project>

@@ -1,0 +1,13 @@
+.nuget
+.vs
+build
+bin
+obj
+*.nupkg
+*.lock.json
+*.nuget.props
+*.nuget.targets
+*.suo
+*.user
+*.cache
+*.log

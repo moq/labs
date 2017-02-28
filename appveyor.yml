@@ -1,0 +1,20 @@
+os: Visual Studio 2017 RC
+
+init:
+  - git config --global core.autocrlf input
+
+build_script:
+  - cmd: echo /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" >> msbuild.rsp
+  - cmd: taskkill /f /im MSBuild.exe /fi "memusage gt 40" 2>NUL
+  - cmd: corebuild.cmd /restore
+  - cmd: corebuild.cmd
+  - cmd: taskkill /f /im MSBuild.exe /fi "memusage gt 40" 2>NUL
+
+test: off
+
+nuget:
+  disable_publish_on_pr: false
+  
+artifacts:
+  - path: bin\*.nupkg
+    name: Package

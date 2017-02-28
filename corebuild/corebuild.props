@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<PropertyGroup>
+		<!-- Instruct NuGet to perform a NETCore-like restore -->
+		<TargetFramework>netcore50</TargetFramework>
+		<!-- Instruct NuGet that we use PackageReference, rather than project.json -->
+		<RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+		<!-- Specify a well-known usually ignored directory for the generated targets -->
+		<RestoreOutputPath>$(MSBuildThisFileDirectory).nuget</RestoreOutputPath>
+		<ETag>9f31d2c2a2dcddd79bfc28ddb5217663b761a17c</ETag>
+		<CoreBuildPropsImported>true</CoreBuildPropsImported>
+	</PropertyGroup>
+
+	<!-- NuGet generated targets -->
+	<Import Project="$(RestoreOutputPath)\$(MSBuildProjectFile).nuget.g.props" Condition="Exists('$(RestoreOutputPath)\$(MSBuildProjectFile).nuget.g.props')" />
+</Project>

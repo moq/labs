@@ -1,0 +1,35 @@
+<Project DefaultTargets="Build" InitialTargets="_Setup">
+	<Import Project="corebuild\corebuild.props" />
+
+  <PropertyGroup>
+    <IntermediateOutputPath>$(RestoreOutputPath)\</IntermediateOutputPath>
+  </PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="GitInfo" Version="*" />
+	</ItemGroup>
+
+	<Target Name="Build" />
+
+	<Target Name="Clean" />
+
+	<Target Name="Rebuild" DependsOnTargets="Clean;Build" />
+
+	<Target Name="GitVersion">
+		<PropertyGroup>
+			<GitBaseVersionMajor>0</GitBaseVersionMajor>
+			<GitBaseVersionMinor>1</GitBaseVersionMinor>
+			<GitBaseVersionPatch>0</GitBaseVersionPatch>
+			<GitCommits>0</GitCommits>
+		</PropertyGroup>
+	</Target>
+
+  <Target Name="_Setup" DependsOnTargets="SetVersion">
+		<!-- Update AppVeyor build # to match the actual one being used -->
+		<Exec Command="appveyor UpdateBuild -Version $(PackageVersion)" Condition=" '$(APPVEYOR)' == 'true' "
+              ConsoleToMSBuild="true"
+              ContinueOnError="WarnAndContinue" />
+  </Target>
+
+	<Import Project="src\Version.targets" />
+	<Import Project="corebuild\corebuild.targets" />
+</Project>

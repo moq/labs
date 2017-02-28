@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<Target Name="SetVersion" DependsOnTargets="GitVersion">
+		<PropertyGroup>
+      <!-- CI checkouts may be against a specific commit, not a branch, so add -pr as label -->
+			<GitSemVerDashLabel Condition="'$(GitBranch)' == 'undefined' Or '$(APPVEYOR_PULL_REQUEST_NUMBER)' != ''">$(GitSemVerDashLabel)-pr$(APPVEYOR_PULL_REQUEST_NUMBER)</GitSemVerDashLabel>
+      <!-- If there's no label, but we're not at the tip of the base version, add a -pre because this is not the base build -->
+      <GitSemVerDashLabel Condition="'$(GitSemVerDashLabel)' == '' And '$(GitCommits)' != '0'">-pre</GitSemVerDashLabel>
+
+      <PackageVersion Condition="'$(GitSemVerDashLabel)' == ''">$(GitBaseVersionMajor).$(GitBaseVersionMinor).$(GitBaseVersionPatch)</PackageVersion>
+      <PackageVersion Condition="'$(GitSemVerDashLabel)' != ''">$(GitBaseVersionMajor).$(GitBaseVersionMinor).$(GitBaseVersionPatch)$(GitSemVerDashLabel).$(GitCommits)</PackageVersion>
+    </PropertyGroup>
+	</Target>
+
+	<PropertyGroup>
+		<VersionImported>true</VersionImported>
+	</PropertyGroup>
+</Project>
