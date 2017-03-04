@@ -11,6 +11,7 @@ namespace Moq.Sdk
 	{
 		public MethodInvocation(object target, MethodBase method, params object[] arguments)
 		{
+            // TODO: validate that arguments length and type match the method info?
 			Target = target;
 			MethodBase = method;
 			Arguments = new ArgumentCollection(arguments, method.GetParameters());
