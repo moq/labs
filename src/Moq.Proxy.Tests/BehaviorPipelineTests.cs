@@ -2,7 +2,7 @@
 using System.Reflection;
 using Xunit;
 
-namespace Moq.Sdk.Tests
+namespace Moq.Proxy.Tests
 {
     public class BehaviorPipelineTests
     {

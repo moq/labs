@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Moq.Proxy.Dynamic;
-using Moq.Sdk;
+using Moq.Proxy;
 using Xunit;
 
 namespace Moq.Proxy.Tests

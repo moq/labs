@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Moq.Sdk
+namespace Moq.Proxy
 {
     /// <summary>
     /// Interface implemented by all proxies.

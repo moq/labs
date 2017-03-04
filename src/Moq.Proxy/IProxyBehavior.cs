@@ -1,4 +1,4 @@
-﻿namespace Moq.Sdk
+﻿namespace Moq.Proxy
 {
     /// <summary>
     /// A configured behavior for a proxy.

@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 
-namespace Moq.Sdk
+namespace Moq.Proxy
 {
     /// <summary>
     /// Allows accessing the default <see cref="IProxyFactory"/> to use to 

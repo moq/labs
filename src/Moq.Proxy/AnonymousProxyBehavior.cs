@@ -1,4 +1,4 @@
-﻿namespace Moq.Sdk
+﻿namespace Moq.Proxy
 {
     /// <summary>
     /// A <see cref="IProxyBehavior"/> implementation to use with 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace Moq.Sdk
+namespace Moq.Proxy
 {
     /// <summary>
     /// Interface implemented by proxy factories.

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Moq.Sdk
+namespace Moq.Proxy
 {
     /// <summary>
     /// Encapsulates a list of <see cref="IProxyBehavior"/>s

@@ -1,4 +1,4 @@
-﻿namespace Moq.Sdk
+﻿namespace Moq.Proxy
 {
     /// <summary>
     /// Usability functions for <see cref="IProxy"/>.

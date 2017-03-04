@@ -3,11 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26228.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moq.Sdk", "Moq.Sdk\Moq.Sdk.csproj", "{CA234783-CB59-4296-9617-8A87368B2EF7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moq.Proxy", "Moq.Proxy\Moq.Proxy.csproj", "{CA234783-CB59-4296-9617-8A87368B2EF7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moq.Sdk.Tests", "Moq.Sdk.Tests\Moq.Sdk.Tests.csproj", "{E4091D38-F3DA-4D28-AA1C-5101E8D893D7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moq.Proxy", "Moq.Proxy\Moq.Proxy.csproj", "{AA7DEC0B-FE83-4CFC-83CA-A98F2F159C2B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5BAF1EDA-84F2-410E-9AF3-A20FFFD66979}"
 	ProjectSection(SolutionItems) = preProject
@@ -34,10 +32,6 @@ Global
 		{E4091D38-F3DA-4D28-AA1C-5101E8D893D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E4091D38-F3DA-4D28-AA1C-5101E8D893D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E4091D38-F3DA-4D28-AA1C-5101E8D893D7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AA7DEC0B-FE83-4CFC-83CA-A98F2F159C2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AA7DEC0B-FE83-4CFC-83CA-A98F2F159C2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AA7DEC0B-FE83-4CFC-83CA-A98F2F159C2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AA7DEC0B-FE83-4CFC-83CA-A98F2F159C2B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B9BABCDF-AF01-4D18-AEA2-4D0C680B6325}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B9BABCDF-AF01-4D18-AEA2-4D0C680B6325}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9BABCDF-AF01-4D18-AEA2-4D0C680B6325}.Release|Any CPU.ActiveCfg = Release|Any CPU

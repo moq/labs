@@ -13,7 +13,6 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Moq.Proxy\Moq.Proxy.csproj" />
 		<ProjectReference Include="..\Moq.Proxy.Dynamic\Moq.Proxy.Dynamic.csproj" />
-		<ProjectReference Include="..\Moq.Sdk\Moq.Sdk.csproj" />
 	</ItemGroup>
 
 	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Moq.targets))\Moq.targets" />

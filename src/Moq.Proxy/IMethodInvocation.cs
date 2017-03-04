@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Moq.Sdk
+namespace Moq.Proxy
 {
     /// <summary>
     /// Represents a method invocation.

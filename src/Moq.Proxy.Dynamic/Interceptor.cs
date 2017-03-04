@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Castle.DynamicProxy;
-using Moq.Sdk;
 
 namespace Moq.Proxy.Dynamic
 {

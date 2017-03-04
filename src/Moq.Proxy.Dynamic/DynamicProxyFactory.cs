@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using Castle.DynamicProxy;
 using Castle.DynamicProxy.Generators;
-using Moq.Sdk;
 
 namespace Moq.Proxy.Dynamic
 {
