@@ -1,0 +1,8 @@
+<Project>
+	<PropertyGroup>
+		<MoqPropsImported>true</MoqPropsImported>
+	</PropertyGroup>
+
+	<Import Project="$(MSBuildProjectDirectory)\$(MSBuildProjectName).props"
+			Condition="'$(MSBuildProjectExtension)' != '.props' And Exists('$(MSBuildProjectDirectory)\$(MSBuildProjectName).props')" />
+</Project>
