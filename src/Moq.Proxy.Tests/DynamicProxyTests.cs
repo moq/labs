@@ -15,7 +15,7 @@ namespace Moq.Proxy.Tests
         [Fact]
         public void WhenCreatingProxy_ThenImplementsIProxy()
         {
-            var proxy = new DynamicProxyFactory().CreateProxy(Assembly.GetExecutingAssembly(), typeof(IFoo), new Type[0], new object[0]);
+            var proxy = new DynamicProxyFactory().CreateProxy(typeof(IFoo), new Type[0], new object[0]);
 
             Assert.NotNull(proxy);
             Assert.IsAssignableFrom<IProxy>(proxy);
@@ -24,7 +24,7 @@ namespace Moq.Proxy.Tests
         [Fact]
         public void WhenCreatingProxy_ThenCanAddBehavior()
         {
-            var proxy = (IProxy)new DynamicProxyFactory().CreateProxy(Assembly.GetExecutingAssembly(), typeof(IFoo), new Type[0], new object[0]);
+            var proxy = (IProxy)new DynamicProxyFactory().CreateProxy(typeof(IFoo), new Type[0], new object[0]);
 
             var expected = 5;
 
@@ -40,7 +40,7 @@ namespace Moq.Proxy.Tests
         [Fact]
         public void WhenCreatingProxy_ThenCanAddBehaviorThatThrows()
         {
-            var proxy = (IProxy)new DynamicProxyFactory().CreateProxy(Assembly.GetExecutingAssembly(), typeof(IFoo), new Type[0], new object[0]);
+            var proxy = (IProxy)new DynamicProxyFactory().CreateProxy(typeof(IFoo), new Type[0], new object[0]);
 
             proxy.AddBehavior((m, n) => m.CreateExceptionReturn(new ArgumentException()));
 
