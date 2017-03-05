@@ -9,6 +9,11 @@ namespace Moq.Sdk
     public interface IMock
     {
         /// <summary>
+        /// Set of configured behaviors for the mock.
+        /// </summary>
+        IList<IMockBehavior> Behaviors { get; }
+
+        /// <summary>
         /// Invocations performed on the mock.
         /// </summary>
         IList<IMethodInvocation> Invocations { get; }

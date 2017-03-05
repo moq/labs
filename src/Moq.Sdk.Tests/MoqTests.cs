@@ -38,7 +38,7 @@ namespace Moq.Sdk.Tests
     {
         public static T Of<T>()
         {
-            var proxy = (IProxy)new DynamicProxyFactory().CreateProxy(typeof(T), new[] { typeof(IMock) }, new object[0]);
+            var proxy = (IProxy)new DynamicProxyFactory().CreateProxy(typeof(T), new[] { typeof(IMock), typeof(IMocked) }, new object[0]);
 
             proxy.Behaviors.Add(new MockProxyBehavior());
             proxy.Behaviors.Add(new DefaultValueProxyBehavior());

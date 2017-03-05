@@ -1,7 +1,7 @@
 ﻿namespace Moq.Proxy
 {
     /// <summary>
-    /// A factory for <see cref="IProxyBehavior"/> from lambdas.
+    /// A factory for a <see cref="IProxyBehavior"/> from a lambda.
     /// </summary>
     public static class ProxyBehavior
     {

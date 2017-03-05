@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Castle.DynamicProxy;
 
 namespace Moq.Proxy.Dynamic
@@ -43,7 +42,7 @@ namespace Moq.Proxy.Dynamic
                 throw exception;
 
             invocation.ReturnValue = returns.ReturnValue;
-            for (int i = 0; i < returns.Outputs.Count; i++)
+            for (var i = 0; i < returns.Outputs.Count; i++)
             {
                 var name = returns.Outputs.NameOf(i);
                 var index = input.Arguments.IndexOf(name);

@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Moq.Proxy;
@@ -48,6 +47,20 @@ namespace Moq.Sdk.Tests
                 Assert.Same(method.Invoke(behavior, new object[0]), result.ReturnValue);
 
             Assert.Equal(0, behavior.Invocations.Count);
+        }
+
+        [Fact]
+        public void WhenAddingMockBehavior_ThenCanInterceptSelectively()
+        {
+            var calculator = (ICalculator)new DynamicProxyFactory().CreateProxy(typeof(ICalculator), new[] { typeof(IMock), typeof(IMocked) }, new object[0]);
+            var behavior = new MockProxyBehavior();
+
+            calculator.AddProxyBehavior(behavior);
+            calculator.AddMockBehavior(m => m.MethodBase.Name == "get_Mode", (m, n) => m.CreateValueReturn("Basic"));
+
+            var mode = calculator.Mode;
+
+            Assert.Equal("Basic", mode);
         }
 
         public static IEnumerable<object[]> GetIMockMethods => typeof(IMock)

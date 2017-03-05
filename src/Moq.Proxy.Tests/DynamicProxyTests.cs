@@ -28,7 +28,7 @@ namespace Moq.Proxy.Tests
 
             var expected = 5;
 
-            proxy.AddBehavior((m, n) => m.CreateValueReturn(expected, 2, 3));
+            proxy.AddProxyBehavior((m, n) => m.CreateValueReturn(expected, 2, 3));
 
             var foo = (IFoo)proxy;
 
@@ -42,7 +42,7 @@ namespace Moq.Proxy.Tests
         {
             var proxy = (IProxy)new DynamicProxyFactory().CreateProxy(typeof(IFoo), new Type[0], new object[0]);
 
-            proxy.AddBehavior((m, n) => m.CreateExceptionReturn(new ArgumentException()));
+            proxy.AddProxyBehavior((m, n) => m.CreateExceptionReturn(new ArgumentException()));
 
             var foo = (IFoo)proxy;
 
