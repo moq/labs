@@ -8,7 +8,7 @@ namespace Moq.Sdk
     /// An <see cref="IProxyBehavior"/> that performs argument matching and 
     /// invocation interception based on behavior configured for a mock.
     /// </summary>
-    public class MockBehavior : IProxyBehavior, IMock
+    public class MockProxyBehavior : IProxyBehavior, IMock
     {
         public IList<IMethodInvocation> Invocations { get; } = new List<IMethodInvocation>();
 
@@ -17,6 +17,9 @@ namespace Moq.Sdk
             // TODO: this can be optimized with compiled delegates.
             if (invocation.MethodBase.DeclaringType == typeof(IMock))
                 return invocation.CreateValueReturn(invocation.MethodBase.Invoke(this, invocation.Arguments.ToArray()));
+
+            if (invocation.MethodBase.DeclaringType == typeof(IMocked))
+                return invocation.CreateValueReturn(this);
 
             Invocations.Add(invocation);
 

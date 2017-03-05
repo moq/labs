@@ -4,7 +4,7 @@ namespace Moq.Sdk
 {
     /// <summary>
     /// Throws for all invocations performed, since it means the 
-    /// <see cref="MockBehavior"/> did not find a matching behavior.
+    /// <see cref="MockProxyBehavior"/> did not find a matching behavior.
     /// </summary>
     public class StrictMockBehavior : IProxyBehavior
     {

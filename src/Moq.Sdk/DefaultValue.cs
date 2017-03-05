@@ -9,7 +9,7 @@ namespace Moq.Sdk
 {
     /// <summary>
     /// Utility class that generates default values for certain types.
-    /// See <see cref="DefaultValueBehavior"/>.
+    /// See <see cref="DefaultValueProxyBehavior"/>.
     /// </summary>
     public static class DefaultValue
     {
