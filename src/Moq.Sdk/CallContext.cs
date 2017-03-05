@@ -3,6 +3,10 @@ using System.Threading;
 
 namespace Moq.Sdk
 {
+    /// <summary>
+    /// Provides a way to set contextual data that flows with the call and 
+    /// async context of a test or invocation.
+    /// </summary>
     public static class CallContext<T>
     {
         static ConcurrentDictionary<string, AsyncLocal<T>> state = new ConcurrentDictionary<string, AsyncLocal<T>>();
@@ -24,7 +28,6 @@ namespace Moq.Sdk
         public static T GetData(string name) =>
             state.TryGetValue(name, out AsyncLocal<T> data) ? data.Value : default(T);
     }
-
 
     /// <summary>
     /// Provides a way to set contextual data that flows with the call and 

@@ -18,6 +18,6 @@ namespace Moq.Proxy
         /// is a class, rather than an interface.
         /// </param>
         /// <returns>A proxy that implements <see cref="IProxy"/> in addition to the configured interfaces (if any).</returns>
-		object CreateProxy(Assembly caller, Type baseType, Type[] implementedInterfaces, object[] construtorArguments);
+		object CreateProxy(Type baseType, Type[] implementedInterfaces, object[] construtorArguments);
 	}
 }

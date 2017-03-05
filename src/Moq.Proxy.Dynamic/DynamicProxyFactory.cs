@@ -23,7 +23,7 @@ namespace Moq.Proxy.Dynamic
         }
 
         /// <inheritdoc />
-        public object CreateProxy(Assembly caller, Type baseType, Type[] implementedInterfaces, object[] constructorArguments)
+        public object CreateProxy(Type baseType, Type[] implementedInterfaces, object[] constructorArguments)
         {
             if (baseType.GetTypeInfo().IsInterface)
             {
