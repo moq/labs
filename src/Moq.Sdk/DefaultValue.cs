@@ -21,9 +21,17 @@ namespace Moq.Sdk
         /// <summary>
         /// Calculates the default value for the given type <paramref name="type"/>
         /// </summary>
-        public static object For(Type type) => type.GetTypeInfo().IsValueType ?
-            GetDefaultValueType(type) : 
-            GetDefaultReferenceType(type);
+        public static object For(Type type)
+        {
+            // If type is by ref, we need to get the actual element type of the ref. 
+            // i.e. Object[]& has ElementType = Object[]
+            var actualType = type.IsByRef && type.HasElementType ?
+                type.GetElementType() : type;
+
+            return actualType.GetTypeInfo().IsValueType ?
+                GetDefaultValueType(actualType) :
+                GetDefaultReferenceType(actualType);
+        }
 
         static object GetDefaultReferenceType(Type valueType)
         {

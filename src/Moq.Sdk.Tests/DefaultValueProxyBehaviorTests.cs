@@ -149,6 +149,21 @@ namespace Moq.Sdk.Tests
             Assert.True(result.ReturnValue is IEnumerable<object>);
         }
 
+        [Fact]
+        public void DefaultValueForRef()
+        {
+            var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.VoidWithRef));
+            var parameter = method.GetParameters()[0];
+
+            Assert.True(parameter.ParameterType.IsByRef);
+
+            var value = DefaultValue.For(parameter.ParameterType);
+
+            Assert.NotNull(value);
+            Assert.True(value is object[]);
+            Assert.Empty((object[])value);
+        }
+
         public interface IDefaultValues
         {
             void VoidWithRef(ref object[] refValue);

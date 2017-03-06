@@ -22,10 +22,7 @@ namespace Moq.Sdk
                 // This covers both out & ref
                 if (parameter.ParameterType.IsByRef)
                 {
-                    // If type is by ref, we need to get the actual element type of the ref. 
-                    // i.e. Object[]& has ElementType = Object[]
-                    var parameterType = parameter.ParameterType.GetElementType();
-                    arguments[i] = DefaultValue.For(parameterType);
+                    arguments[i] = DefaultValue.For(parameter.ParameterType);
                 }
             }
 

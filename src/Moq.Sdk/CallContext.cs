@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Threading;
 
 namespace Moq.Sdk
@@ -27,6 +28,16 @@ namespace Moq.Sdk
         /// <returns>The object in the call context associated with the specified name, or a default value for <typeparamref name="T"/> if none is found.</returns>
         public static T GetData(string name) =>
             state.TryGetValue(name, out AsyncLocal<T> data) ? data.Value : default(T);
+
+        /// <summary>
+        /// Retrieves an object with the specified name from the <see cref="CallContext"/>, and 
+        /// sets an initial value if it was not found.
+        /// </summary>
+        /// <typeparam name="T">The type of the data being retrieved. Must match the type used when the <paramref name="name"/> was set via <see cref="SetData{T}(string, T)"/>.</typeparam>
+        /// <param name="name">The name of the item in the call context.</param>
+        /// <returns>The object in the call context associated with the specified name, or the initial value returned from <paramref name="setInitialValue"/>.</returns>
+        public static T GetData(string name, Func<T> setInitialValue) =>
+            state.GetOrAdd(name, _ => new AsyncLocal<T> { Value = setInitialValue() }).Value;
     }
 
     /// <summary>
