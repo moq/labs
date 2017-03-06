@@ -49,6 +49,26 @@ namespace Moq.Proxy.Tests
             Assert.Throws<ArgumentException>(() => foo.Add(2, 3));
         }
 
+        [Fact]
+        public void WhenInvokingProxy_ThenInvocationBehaviorTargetIsProxy()
+        {
+            var proxy = (IProxy)new DynamicProxyFactory().CreateProxy(typeof(IFoo), new Type[0], new object[0]);
+
+            object target = null;
+
+            proxy.AddProxyBehavior((m, n) =>
+            {
+                target = m.Target;
+                return m.CreateValueReturn(5, 2, 3);
+            });
+
+            var foo = (IFoo)proxy;
+            foo.Add(2, 3);
+
+            Assert.Same(proxy, target);
+        }
+
+
         public interface IFoo
         {
             int Add(int x, int y);

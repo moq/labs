@@ -22,7 +22,7 @@ namespace Moq.Proxy.Dynamic
                 return;
             }
 
-            var input = new MethodInvocation(invocation.InvocationTarget, invocation.Method, invocation.Arguments);
+            var input = new MethodInvocation(invocation.Proxy, invocation.Method, invocation.Arguments);
             var returns = pipeline.Invoke(input, (i, next) =>
             {
                 try
