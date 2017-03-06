@@ -9,18 +9,15 @@ namespace Moq.Sdk
     /// or a nullable value type.
     /// </summary>
     /// <typeparam name="T">Type of argument to match.</typeparam>
-    public class AnyArgumentMatcher<T> : IArgumentMatcher
+    public class IsArgumentMatcher<T> : IArgumentMatcher
     {
         static bool IsValueType = typeof(T).GetTypeInfo().IsValueType;
         static bool IsNullable = typeof(T).GetTypeInfo().IsGenericType &&
             typeof(T).GetGenericTypeDefinition() == typeof(Nullable<>);
 
-        /// <summary>
-        /// Gets the singleton instance of this matcher.
-        /// </summary>
-        public static IArgumentMatcher Default { get; } = new AnyArgumentMatcher<T>();
+        Func<T, bool> condition;
 
-        AnyArgumentMatcher() { }
+        public IsArgumentMatcher(Func<T, bool> condition) => this.condition = condition;
 
         /// <summary>
         /// Gets the type of the argument this matcher supports.
@@ -36,25 +33,15 @@ namespace Moq.Sdk
             if (IsValueType && !IsNullable && value == null)
                 return false;
 
-            return value == null ||
-                typeof(T).GetTypeInfo().IsAssignableFrom(value.GetType().GetTypeInfo());
+            return value != null ||
+                typeof(T).GetTypeInfo().IsAssignableFrom(value.GetType().GetTypeInfo()) &&
+                condition((T)value);
         }
 
-        public override bool Equals(object obj) => Equals(this, obj as AnyArgumentMatcher<T>);
+        public override bool Equals(object obj) => Equals(this, obj as IsArgumentMatcher<T>);
 
-        public override int GetHashCode() => typeof(T).GetHashCode();
+        public override int GetHashCode() => condition.GetHashCode();
 
-        static bool Equals(AnyArgumentMatcher<T> obj1, AnyArgumentMatcher<T> obj2)
-        {
-            if (object.Equals(null, obj1) ||
-                object.Equals(null, obj2) ||
-                obj1.GetType() != obj2.GetType())
-                return false;
-
-            // If both are non-null and they have the same type, 
-            // they match essentially any value of the same type, 
-            // so they are equal.
-            return true;
-        }
+        static bool Equals(IsArgumentMatcher<T> obj1, IsArgumentMatcher<T> obj2) => ReferenceEquals(obj1.condition, obj2.condition);
     }
 }
