@@ -56,11 +56,14 @@ namespace Moq.Sdk.Tests
             var behavior = new MockProxyBehavior();
 
             calculator.AddProxyBehavior(behavior);
+            calculator.AddProxyBehavior(new DefaultValueProxyBehavior());
             calculator.AddMockBehavior(m => m.MethodBase.Name == "get_Mode", (m, n) => m.CreateValueReturn("Basic"));
 
             var mode = calculator.Mode;
+            var add = calculator.Add(3, 2);
 
             Assert.Equal("Basic", mode);
+            Assert.Equal(0, add);
         }
 
         public static IEnumerable<object[]> GetIMockMethods => typeof(IMock)

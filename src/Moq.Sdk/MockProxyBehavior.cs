@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 using Moq.Proxy;
-using System;
 
 namespace Moq.Sdk
 {
@@ -24,6 +23,8 @@ namespace Moq.Sdk
 
             if (invocation.MethodBase.DeclaringType == typeof(IMocked))
                 return invocation.CreateValueReturn(this);
+
+            CallContext<IMethodInvocation>.SetData(nameof(IMethodInvocation), invocation);
 
             Invocations.Add(invocation);
 

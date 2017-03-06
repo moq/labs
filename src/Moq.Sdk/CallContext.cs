@@ -10,7 +10,7 @@ namespace Moq.Sdk
     public static class CallContext<T>
     {
         static ConcurrentDictionary<string, AsyncLocal<T>> state = new ConcurrentDictionary<string, AsyncLocal<T>>();
-
+        
         /// <summary>
         /// Stores a given object and associates it with the specified name.
         /// </summary>
