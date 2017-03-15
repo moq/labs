@@ -85,7 +85,7 @@ if ERRORLEVEL 1 (
 )
 
 echo.
-call :PrintColor Green "Build completed successfully, for full log see msbuild.log"
+call :PrintColor Cyan "Build completed successfully, for full log see msbuild.log"
 exit /b 0
 
 :Usage
