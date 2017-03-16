@@ -58,24 +58,31 @@ namespace Moq.Proxy
         public IList<IProxyBehavior> Behaviors { get; }
 
         /// <summary>
-        /// Execute the pipeline with the given input.
+        /// Invoke the pipeline with the given input.
         /// </summary>
         /// <param name="input">Input to the method call.</param>
         /// <param name="target">The ultimate target of the call.</param>
+        /// <param name="throwOnException">Whether to throw the <see cref="IMethodReturn.Exception"/> if it has a value after running 
+        /// the beaviors.</param>
         /// <returns>Return value from the pipeline.</returns>
-        public IMethodReturn Invoke(IMethodInvocation input, InvokeBehavior target)
+        public IMethodReturn Invoke(IMethodInvocation input, InvokeBehavior target, bool throwOnException = false)
         {
             if (Behaviors.Count == 0)
                 return target(input, null);
 
             var index = 0;
-            return Behaviors[0].Invoke(input, () =>
+            var result = Behaviors[0].Invoke(input, () =>
             {
                 ++index;
                 return (index < Behaviors.Count) ?
                     Behaviors[index].Invoke :
                     target;
             });
+
+            if (throwOnException && result.Exception != null)
+                throw result.Exception;
+
+            return result;
         }
     }
 }

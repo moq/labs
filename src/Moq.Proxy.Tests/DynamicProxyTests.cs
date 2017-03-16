@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Moq.Proxy.Dynamic;
 using Moq.Proxy;
 using Xunit;
+using System.Diagnostics;
 
 namespace Moq.Proxy.Tests
 {
@@ -19,6 +20,9 @@ namespace Moq.Proxy.Tests
 
             Assert.NotNull(proxy);
             Assert.IsAssignableFrom<IProxy>(proxy);
+
+            var path = DynamicProxyFactory.Generator.ProxyBuilder.ModuleScope.SaveAssembly(false);
+            Debug.WriteLine(path);
         }
 
         [Fact]

@@ -10,7 +10,7 @@ namespace Moq
             if (factory == null)
                 factory = ProxyFactory.Default;
 
-            var proxy = (IProxy)factory.CreateProxy(typeof(T), new[] { typeof(IMock), typeof(IMocked) }, new object[0]);
+            var proxy = (IProxy)factory.CreateProxy(typeof(T), new[] { typeof(IMocked) }, new object[0]);
 
             proxy.Behaviors.Add(new MockProxyBehavior());
             proxy.Behaviors.Add(new DefaultValueProxyBehavior());

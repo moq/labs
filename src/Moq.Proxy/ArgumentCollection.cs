@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using System;
 
 namespace Moq.Proxy
 {
@@ -10,16 +11,16 @@ namespace Moq.Proxy
         List<ParameterInfo> infos;
         List<object> values;
 
-		public ArgumentCollection(object[] values, ParameterInfo[] infos)
-		{
-			this.infos = infos.ToList();
-			this.values = values.ToList();
-		}
+        public ArgumentCollection(object[] values, ParameterInfo[] infos)
+            : this((IEnumerable<object>)values, (IEnumerable<ParameterInfo>)infos) { }
 
 		public ArgumentCollection(IEnumerable<object> values, IEnumerable<ParameterInfo> infos)
 		{
 			this.infos = infos.ToList();
 			this.values = values.ToList();
+
+            if (this.infos.Count != this.values.Count)
+                throw new ArgumentException("Number of arguments must match number of parameters.");
 		}
 
 		public object this[int index]
@@ -57,6 +58,21 @@ namespace Moq.Proxy
 			return -1;
 		}
 
-		IEnumerator IEnumerable.GetEnumerator() => values.GetEnumerator();
+        public override string ToString() => string
+            .Join(", ", infos
+                .Select((p, i) =>
+                    (p.IsOut ? "out " : (p.ParameterType.IsByRef ? "ref " : "")) +
+                    Stringly.ToTypeName(p.ParameterType) + " " + 
+                    p.Name + 
+                    (p.IsOut ? "" : 
+                        (" = " +
+                            ((p.ParameterType == typeof(string) && values[i] != null) ? "\"" + values[i] + "\"" : 
+                                (values[i] ?? "null"))
+                        )
+                    )
+                )
+            );
+
+        IEnumerator IEnumerable.GetEnumerator() => values.GetEnumerator();
 	}
 }

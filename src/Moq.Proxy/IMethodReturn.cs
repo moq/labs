@@ -24,6 +24,10 @@ namespace Moq.Proxy
         /// </summary>
         IArgumentCollection Outputs { get; }
 
-		object ReturnValue { get; set; }
+        /// <summary>
+        /// The value being returned for a non-void method if no exception 
+        /// was thrown.
+        /// </summary>
+		object ReturnValue { get; }
 	}
 }

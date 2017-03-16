@@ -17,10 +17,6 @@ namespace Moq.Sdk
 
         public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior getNext)
         {
-            // TODO: this can be optimized with compiled delegates.
-            if (invocation.MethodBase.DeclaringType == typeof(IMock))
-                return invocation.CreateValueReturn(invocation.MethodBase.Invoke(this, invocation.Arguments.ToArray()));
-
             if (invocation.MethodBase.DeclaringType == typeof(IMocked))
                 return invocation.CreateValueReturn(this);
 

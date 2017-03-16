@@ -28,6 +28,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq", "Moq\Moq.csproj", "{1
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Tests", "Moq.Tests\Moq.Tests.csproj", "{CDECBF7C-4DDD-47D5-B3EC-B8E099B5D141}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Proxy.Generator", "Moq.Proxy.Generator\Moq.Proxy.Generator.csproj", "{6556D277-5760-429E-AE9D-249A7C17E907}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Proxy.ManualProxies", "Moq.Proxy.ManualProxies\Moq.Proxy.ManualProxies.csproj", "{074242E4-EFDE-4133-9EEF-11D67B6E64FA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -62,6 +66,14 @@ Global
 		{CDECBF7C-4DDD-47D5-B3EC-B8E099B5D141}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CDECBF7C-4DDD-47D5-B3EC-B8E099B5D141}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CDECBF7C-4DDD-47D5-B3EC-B8E099B5D141}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6556D277-5760-429E-AE9D-249A7C17E907}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6556D277-5760-429E-AE9D-249A7C17E907}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6556D277-5760-429E-AE9D-249A7C17E907}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6556D277-5760-429E-AE9D-249A7C17E907}.Release|Any CPU.Build.0 = Release|Any CPU
+		{074242E4-EFDE-4133-9EEF-11D67B6E64FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{074242E4-EFDE-4133-9EEF-11D67B6E64FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{074242E4-EFDE-4133-9EEF-11D67B6E64FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{074242E4-EFDE-4133-9EEF-11D67B6E64FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Moq.props))\Moq.props" />
+
+	<PropertyGroup>
+		<TargetFramework>net461</TargetFramework>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Moq.Proxy\Moq.Proxy.csproj" />
+	</ItemGroup>
+
+	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Moq.targets))\Moq.targets" />
+</Project>

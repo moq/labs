@@ -11,6 +11,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\Moq.Proxy.Generator\Moq.Proxy.Generator.csproj" />
+		<ProjectReference Include="..\Moq.Proxy.ManualProxies\Moq.Proxy.ManualProxies.csproj" />
 		<ProjectReference Include="..\Moq.Proxy\Moq.Proxy.csproj" />
 		<ProjectReference Include="..\Moq.Proxy.Dynamic\Moq.Proxy.Dynamic.csproj" />
 	</ItemGroup>

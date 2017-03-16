@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Castle.DynamicProxy;
@@ -19,8 +20,14 @@ namespace Moq.Proxy.Dynamic
             AttributesToAvoidReplicating.Add<System.Runtime.InteropServices.TypeIdentifierAttribute>();
 
             proxyOptions = new ProxyGenerationOptions { Hook = new ProxyMethodHook() };
+#if DEBUG
+            generator = new ProxyGenerator(new DefaultProxyBuilder(new ModuleScope(true)));
+#else
             generator = new ProxyGenerator();
+#endif
         }
+
+        internal static ProxyGenerator Generator => generator;
 
         /// <inheritdoc />
         public object CreateProxy(Type baseType, Type[] implementedInterfaces, object[] constructorArguments)
