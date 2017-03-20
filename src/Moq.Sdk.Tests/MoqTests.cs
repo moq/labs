@@ -1,12 +1,12 @@
-﻿using Moq.Proxy;
-using Moq.Proxy.Dynamic;
+﻿using System;
+using Moq.Proxy;
 using Xunit;
 
 namespace Moq.Sdk.Tests
 {
     public class MoqTests
     {
-        [Fact]
+        [Fact(Skip = "Waiting on Roslyn generator.")]
         public void RecordsInvocation()
         {
             var calculator = Moq.Of<ICalculator>();
@@ -20,7 +20,7 @@ namespace Moq.Sdk.Tests
             Assert.Equal(1, invocations.Count);
         }
 
-        [Fact]
+        [Fact(Skip = "Waiting on Roslyn generator.")]
         public void AbstractMethodContinues()
         {
             var target = Moq.Of<Foo>();
@@ -38,12 +38,13 @@ namespace Moq.Sdk.Tests
     {
         public static T Of<T>()
         {
-            var proxy = (IProxy)new DynamicProxyFactory().CreateProxy(typeof(T), new[] { typeof(IMocked), typeof(IMocked) }, new object[0]);
+            throw new NotImplementedException();
+            //var proxy = (IProxy)new DynamicProxyFactory().CreateProxy(typeof(T), new[] { typeof(IMocked), typeof(IMocked) }, new object[0]);
 
-            proxy.Behaviors.Add(new MockProxyBehavior());
-            proxy.Behaviors.Add(new DefaultValueProxyBehavior());
+            //proxy.Behaviors.Add(new MockProxyBehavior());
+            //proxy.Behaviors.Add(new DefaultValueProxyBehavior());
 
-            return (T)proxy;
+            //return (T)proxy;
         }
     }
 
