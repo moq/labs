@@ -11,8 +11,8 @@ namespace Moq
         {
             var invocation = CallContext<IMethodInvocation>.GetData(nameof(IMethodInvocation));
 
-            var mock = (IMock)invocation.Target;
-
+            var mock = ((IMocked)invocation.Target).Mock;
+            
             var currentMatchers = CallContext<Stack<IArgumentMatcher>>.GetData(nameof(IArgumentMatcher), () => new Stack<IArgumentMatcher>());
             var finalMatchers = new List<IArgumentMatcher>();
             var parameters = invocation.MethodBase.GetParameters();

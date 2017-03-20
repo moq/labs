@@ -6,6 +6,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\Moq.Proxy.Generator\Moq.Proxy.Generator.csproj" />
 		<ProjectReference Include="..\Moq.Proxy\Moq.Proxy.csproj" />
 	</ItemGroup>
 

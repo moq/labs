@@ -17,7 +17,7 @@ namespace Moq.Sdk.Tests
             behavior.Invoke(new MethodInvocation(new object(), typeof(object).GetMethod(nameof(object.ToString))), 
                 () => (m, n) => m.CreateValueReturn(null));
 
-            var ms = typeof(IMock).GetMethods();
+            var ms = typeof(IMocked).GetMethods();
             Assert.Equal(1, behavior.Invocations.Count);
         }
 
@@ -31,7 +31,7 @@ namespace Moq.Sdk.Tests
                 typeof(IMocked).GetProperty(nameof(IMocked.Mock)).GetGetMethod()), 
                 null);
 
-            Assert.True(result.ReturnValue is IMock);
+            Assert.True(result.ReturnValue is IMocked);
             Assert.Equal(0, behavior.Invocations.Count);
         }
 
@@ -52,7 +52,7 @@ namespace Moq.Sdk.Tests
         [Fact]
         public void WhenAddingMockBehavior_ThenCanInterceptSelectively()
         {
-            var calculator = (ICalculator)new DynamicProxyFactory().CreateProxy(typeof(ICalculator), new[] { typeof(IMock), typeof(IMocked) }, new object[0]);
+            var calculator = (ICalculator)new DynamicProxyFactory().CreateProxy(typeof(ICalculator), new[] { typeof(IMocked) }, new object[0]);
             var behavior = new MockProxyBehavior();
 
             calculator.AddProxyBehavior(behavior);
@@ -66,7 +66,7 @@ namespace Moq.Sdk.Tests
             Assert.Equal(0, add);
         }
 
-        public static IEnumerable<object[]> GetIMockMethods => typeof(IMock)
+        public static IEnumerable<object[]> GetIMockMethods => typeof(IMocked)
             .GetMethods()
             .Select(method => new object[] { method })
             .ToArray();

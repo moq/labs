@@ -13,13 +13,19 @@ namespace Moq.Proxy
 
         public virtual event EventHandler TurnedOn;
 
+        public virtual bool IsOn { get; private set; }
+
         public virtual CalculatorMode Mode { get; set; }
 
         public virtual int Add(int x, int y) => x + y;
 
         public virtual int Add(int x, int y, int z) => x + y + z;
 
-        public virtual void TurnOn() => TurnedOn?.Invoke(this, EventArgs.Empty);
+        public virtual void TurnOn()
+        {
+            TurnedOn?.Invoke(this, EventArgs.Empty);
+            IsOn = true;
+        }
 
         public virtual int? this[string name]
         {

@@ -11,18 +11,18 @@ namespace Moq.Sdk
         /// <summary>
         /// Adds a behavior to a mock.
         /// </summary>
-		public static void AddMockBehavior(this IMock mock, Func<IMethodInvocation, bool> appliesTo, InvokeBehavior behavior)
+		public static void AddMockBehavior(this IMocked mock, Func<IMethodInvocation, bool> appliesTo, InvokeBehavior behavior)
         {
-            mock.Behaviors.Add(MockBehavior.Create(appliesTo, behavior));
+            mock.Mock.Behaviors.Add(MockBehavior.Create(appliesTo, behavior));
         }
 
         /// <summary>
         /// Inserts a behavior into the mock behavior pipeline at the specified 
         /// index.
         /// </summary>
-		public static void InsertMockBehavior(this IMock mock, int index, Func<IMethodInvocation, bool> appliesTo, InvokeBehavior behavior)
+		public static void InsertMockBehavior(this IMocked mock, int index, Func<IMethodInvocation, bool> appliesTo, InvokeBehavior behavior)
         {
-            mock.Behaviors.Insert(index, MockBehavior.Create(appliesTo, behavior));
+            mock.Mock.Behaviors.Insert(index, MockBehavior.Create(appliesTo, behavior));
         }
 
         /// <summary>
@@ -30,8 +30,8 @@ namespace Moq.Sdk
         /// </summary>
 		public static void AddMockBehavior(this object mock, Func<IMethodInvocation, bool> appliesTo, InvokeBehavior behavior)
         {
-            if (mock is IMock target)
-                target.Behaviors.Add(MockBehavior.Create(appliesTo, behavior));
+            if (mock is IMocked mocked)
+                mocked.Mock.Behaviors.Add(MockBehavior.Create(appliesTo, behavior));
             else
                 throw new ArgumentException(nameof(mock));
         }
@@ -42,9 +42,9 @@ namespace Moq.Sdk
         /// </summary>
         public static void InsertMockBehavior(this object mock, int index, Func<IMethodInvocation, bool> appliesTo, InvokeBehavior behavior)
         {
-            if (mock is IMock target)
+            if (mock is IMocked mocked)
             {
-                target.Behaviors.Insert(index, MockBehavior.Create(appliesTo, behavior));
+                mocked.Mock.Behaviors.Insert(index, MockBehavior.Create(appliesTo, behavior));
             }
             else
                 throw new ArgumentException(nameof(mock));
@@ -55,8 +55,8 @@ namespace Moq.Sdk
         /// </summary>
 		public static void AddMockBehavior(this object mock, IMockBehavior behavior)
         {
-            if (mock is IMock target)
-                target.Behaviors.Add(behavior);
+            if (mock is IMocked target)
+                target.Mock.Behaviors.Add(behavior);
             else
                 throw new ArgumentException(nameof(mock));
         }
@@ -67,9 +67,9 @@ namespace Moq.Sdk
         /// </summary>
         public static void InsertMockBehavior(this object mock, int index, IMockBehavior behavior)
         {
-            if (mock is IMock target)
+            if (mock is IMocked target)
             {
-                target.Behaviors.Insert(index, behavior);
+                target.Mock.Behaviors.Insert(index, behavior);
             }
             else
                 throw new ArgumentException(nameof(mock));

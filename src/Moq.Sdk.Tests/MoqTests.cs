@@ -13,7 +13,7 @@ namespace Moq.Sdk.Tests
 
             calculator.Mode = "Basic";
 
-            var mock = (IMock)calculator;
+            var mock = ((IMocked)calculator).Mock;
 
             var invocations = mock.Invocations;
 
@@ -38,7 +38,7 @@ namespace Moq.Sdk.Tests
     {
         public static T Of<T>()
         {
-            var proxy = (IProxy)new DynamicProxyFactory().CreateProxy(typeof(T), new[] { typeof(IMock), typeof(IMocked) }, new object[0]);
+            var proxy = (IProxy)new DynamicProxyFactory().CreateProxy(typeof(T), new[] { typeof(IMocked), typeof(IMocked) }, new object[0]);
 
             proxy.Behaviors.Add(new MockProxyBehavior());
             proxy.Behaviors.Add(new DefaultValueProxyBehavior());

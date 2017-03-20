@@ -14,7 +14,7 @@ namespace Moq.Sdk.Tests
 
             mock.AddMockBehavior(m => true, (m, n) => null);
 
-            Assert.Equal(1, mock.Behaviors.Count);
+            Assert.Equal(1, mock.Mock.Behaviors.Count);
         }
 
         [Fact]
@@ -24,7 +24,7 @@ namespace Moq.Sdk.Tests
 
             mock.AddMockBehavior(new TestMockBehavior());
 
-            Assert.Equal(1, mock.Behaviors.Count);
+            Assert.Equal(1, mock.Mock.Behaviors.Count);
         }
 
         [Fact]
@@ -34,7 +34,7 @@ namespace Moq.Sdk.Tests
 
             mock.AddMockBehavior(m => true, (m, n) => null);
 
-            Assert.Equal(1, ((IMock)mock).Behaviors.Count);
+            Assert.Equal(1, ((IMocked)mock).Mock.Behaviors.Count);
         }
 
         [Fact]
@@ -44,7 +44,7 @@ namespace Moq.Sdk.Tests
 
             mock.AddMockBehavior(new TestMockBehavior());
 
-            Assert.Equal(1, ((IMock)mock).Behaviors.Count);
+            Assert.Equal(1, ((IMocked)mock).Mock.Behaviors.Count);
         }
 
         [Fact]
@@ -55,8 +55,8 @@ namespace Moq.Sdk.Tests
             mock.AddMockBehavior(m => true, (m, n) => null);
             mock.InsertMockBehavior(0, m => true, (m, n) => throw new NotImplementedException());
 
-            Assert.Equal(2, mock.Behaviors.Count);
-            Assert.Throws<NotImplementedException>(() => mock.Behaviors[0].Invoke(null, null));
+            Assert.Equal(2, mock.Mock.Behaviors.Count);
+            Assert.Throws<NotImplementedException>(() => mock.Mock.Behaviors[0].Invoke(null, null));
         }
 
         [Fact]
@@ -68,8 +68,8 @@ namespace Moq.Sdk.Tests
             mock.AddMockBehavior(m => true, (m, n) => null);
             mock.InsertMockBehavior(0, behavior);
 
-            Assert.Equal(2, mock.Behaviors.Count);
-            Assert.Same(behavior, mock.Behaviors[0]);
+            Assert.Equal(2, mock.Mock.Behaviors.Count);
+            Assert.Same(behavior, mock.Mock.Behaviors[0]);
         }
 
         [Fact]
@@ -80,8 +80,8 @@ namespace Moq.Sdk.Tests
             mock.AddMockBehavior(m => true, (m, n) => null);
             mock.InsertMockBehavior(0, m => true, (m, n) => throw new NotImplementedException());
 
-            Assert.Equal(2, ((IMock)mock).Behaviors.Count);
-            Assert.Throws<NotImplementedException>(() => ((IMock)mock).Behaviors[0].Invoke(null, null));
+            Assert.Equal(2, ((IMocked)mock).Mock.Behaviors.Count);
+            Assert.Throws<NotImplementedException>(() => ((IMocked)mock).Mock.Behaviors[0].Invoke(null, null));
         }
 
         [Fact]
@@ -93,8 +93,8 @@ namespace Moq.Sdk.Tests
             mock.AddMockBehavior(m => true, (m, n) => null);
             mock.InsertMockBehavior(0, behavior);
 
-            Assert.Equal(2, ((IMock)mock).Behaviors.Count);
-            Assert.Same(behavior, ((IMock)mock).Behaviors[0]);
+            Assert.Equal(2, ((IMocked)mock).Mock.Behaviors.Count);
+            Assert.Same(behavior, ((IMocked)mock).Mock.Behaviors[0]);
         }
 
         [Fact]
@@ -120,11 +120,16 @@ namespace Moq.Sdk.Tests
             public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior getNext) => null;
         }
 
-        class TestMock : IMock
+        class Mock : IMock
         {
             public IList<IMockBehavior> Behaviors { get; } = new List<IMockBehavior>();
 
             public IList<IMethodInvocation> Invocations { get; } = new List<IMethodInvocation>();
+        }
+
+        class TestMock : IMocked
+        {
+            public IMock Mock { get; } = new Mock();
         }
     }
 }

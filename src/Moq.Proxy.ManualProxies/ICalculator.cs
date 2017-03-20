@@ -6,6 +6,8 @@ namespace Moq.Proxy
     {
         event EventHandler TurnedOn;
 
+        bool IsOn { get; }
+
         CalculatorMode Mode { get; set; }
 
         int Add(int x, int y);

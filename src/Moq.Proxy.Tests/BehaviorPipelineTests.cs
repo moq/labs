@@ -94,7 +94,7 @@ namespace Moq.Proxy.Tests
 
             Func<object, object> a = NonVoidMethodWithArg;
 
-            var result = pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo()),
+            var result = pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo(), expected),
                 new InvokeBehavior((m, n) => throw new NotImplementedException()));
 
             Assert.Equal(expected, result.ReturnValue);
@@ -111,7 +111,7 @@ namespace Moq.Proxy.Tests
 
             NonVoidMethodWithArgRefDelegate a = NonVoidMethodWithArgRef;
 
-            var result = pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo()),
+            var result = pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo(), expected, output),
                 new InvokeBehavior((m, n) => throw new NotImplementedException()));
 
             Assert.Equal(expected, result.ReturnValue);
@@ -129,7 +129,7 @@ namespace Moq.Proxy.Tests
 
             NonVoidMethodWithArgOutDelegate a = NonVoidMethodWithArgOut;
 
-            var result = pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo()),
+            var result = pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo(), expected, output),
                 new InvokeBehavior((m, n) => throw new NotImplementedException()));
 
             Assert.Equal(expected, result.ReturnValue);
@@ -148,7 +148,7 @@ namespace Moq.Proxy.Tests
 
             NonVoidMethodWithArgRefOutDelegate a = NonVoidMethodWithArgRefOut;
 
-            var result = pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo()),
+            var result = pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo(), expected, byref, output),
                 new InvokeBehavior((m, n) => throw new NotImplementedException()));
 
             Assert.Equal(expected, result.ReturnValue);

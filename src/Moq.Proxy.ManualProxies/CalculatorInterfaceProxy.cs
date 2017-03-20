@@ -1,22 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Moq.Proxy
 {
-    public class CalculatorInterfaceProxy : ICalculator, IDisposable //, IProxy
+    public class CalculatorInterfaceProxy : ICalculator, IDisposable, IProxy
     {
         BehaviorPipeline pipeline = new BehaviorPipeline();
 
-        public IList<IProxyBehavior> Behaviors => pipeline.Behaviors;
+        IList<IProxyBehavior> IProxy.Behaviors => pipeline.Behaviors;
 
         public event EventHandler TurnedOn
         {
             add => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
             remove => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
+        }
+
+        public bool IsOn
+        {
+            get => pipeline.Execute<bool>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
         }
 
         public CalculatorMode Mode
@@ -27,9 +29,9 @@ namespace Moq.Proxy
 
         public int? this[string name]
         {
-            get => pipeline.Execute<int?>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
-            set => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value));
-        }
+            get => pipeline.Execute<int?>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), name));
+            set => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), name, value));
+        }   
 
         public int Add(int x, int y) => pipeline.Execute<int>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), x, y));
 

@@ -78,7 +78,7 @@ namespace Moq.Proxy.Tests
 
             var actual = invocation.ToString();
 
-            Assert.Equal("void DoWithString(string value = null)", actual);
+            Assert.Equal("void DoWithNullString(string value = null)", actual);
         }
 
         public bool DoReturn() => true;

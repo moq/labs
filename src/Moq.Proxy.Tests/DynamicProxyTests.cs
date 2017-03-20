@@ -21,8 +21,8 @@ namespace Moq.Proxy.Tests
             Assert.NotNull(proxy);
             Assert.IsAssignableFrom<IProxy>(proxy);
 
-            var path = DynamicProxyFactory.Generator.ProxyBuilder.ModuleScope.SaveAssembly(false);
-            Debug.WriteLine(path);
+            //var path = DynamicProxyFactory.Generator.ProxyBuilder.ModuleScope.SaveAssembly(false);
+            //Debug.WriteLine(path);
         }
 
         [Fact]
