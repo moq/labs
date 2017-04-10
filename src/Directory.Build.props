@@ -1,0 +1,7 @@
+<Project>
+  <PropertyGroup Condition="Exists('$(MSBuildProjectDirectory)\$(MSBuildProjectName).props')">
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildProjectDirectory)\$(MSBuildProjectName).props</MSBuildAllProjects>
+  </PropertyGroup>
+  <Import Project="$(MSBuildProjectDirectory)\$(MSBuildProjectName).props"
+			Condition="'$(MSBuildProjectExtension)' != '.props' And Exists('$(MSBuildProjectDirectory)\$(MSBuildProjectName).props')" />
+</Project>

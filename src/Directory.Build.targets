@@ -1,0 +1,22 @@
+<Project>
+  <PropertyGroup Condition="Exists('$(MSBuildProjectDirectory)\$(MSBuildProjectName).targets')">
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildProjectDirectory)\$(MSBuildProjectName).targets</MSBuildAllProjects>
+  </PropertyGroup>
+
+  <ItemGroup Condition="$(MSBuildProjectName.Contains('Test'))">
+    <PackageReference Include="xunit" Version="2.2.0" />
+    <PackageReference Include="xunit.runner.console" Version="2.3.0-beta1-build3642" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
+  </ItemGroup>
+
+  <Target Name="Test" Condition="$(MSBuildProjectName.Contains('Test'))">
+    <PropertyGroup>
+      <XunitOptions>$(XunitOptions) -html $(OutputPath)test.html -xml $(OutputPath)test.xml -parallel all -noshadow</XunitOptions>
+    </PropertyGroup>
+
+    <Exec Command="$(XunitConsolePath) $(TargetPath) $(XunitOptions)" />
+  </Target>
+
+  <Import Project="$(MSBuildProjectDirectory)\$(MSBuildProjectName).targets"
+			Condition="'$(MSBuildProjectExtension)' != '.targets' And Exists('$(MSBuildProjectDirectory)\$(MSBuildProjectName).targets')" />
+</Project>

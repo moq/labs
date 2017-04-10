@@ -1,6 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Moq.props))\Moq.props" />
-
 	<PropertyGroup>
 		<TargetFramework>net462</TargetFramework>
 	</PropertyGroup>
@@ -8,8 +6,7 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="2.0.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" Version="2.0.0" />
-    <PackageReference Include="xunit" Version="2.2.0" />
-		<PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Threading" Version="15.0.240" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -18,5 +15,4 @@
 		<ProjectReference Include="..\Moq.Proxy\Moq.Proxy.csproj" />
 	</ItemGroup>
 
-	<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Moq.targets))\Moq.targets" />
 </Project>

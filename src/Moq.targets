@@ -1,8 +1,0 @@
-<Project>
-	<PropertyGroup>
-		<MoqTargetsImported>true</MoqTargetsImported>
-	</PropertyGroup>
-
-	<Import Project="$(MSBuildProjectDirectory)\$(MSBuildProjectName).targets"
-			Condition="'$(MSBuildProjectExtension)' != '.targets' And Exists('$(MSBuildProjectDirectory)\$(MSBuildProjectName).targets')" />
-</Project>
