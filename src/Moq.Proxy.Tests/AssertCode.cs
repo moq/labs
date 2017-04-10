@@ -2,11 +2,13 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Xunit;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using static Moq.Proxy.Tests.TestHelpers;
 
 namespace Moq.Proxy.Tests
 {
@@ -57,6 +59,36 @@ namespace Moq.Proxy.Tests
                 error.AppendLine(proxyCode.NormalizeWhitespace().ToFullString());
 
                 Assert.False(true, error.ToString());
+            }
+        }
+
+        public static async Task NoErrorsAsync(Document document)
+        {
+            var compilation = await document.Project.GetCompilationAsync(TimeoutToken(2));
+            var syntax = await document.GetSyntaxRootAsync(TimeoutToken(1));
+
+            if (compilation.GetDiagnostics().Any(d => d.Severity == DiagnosticSeverity.Error))
+            {
+                try
+                {
+                    // Attempt to normalize whitespace and get the errors again, so the code is more legible
+                    syntax = syntax.NormalizeWhitespace();
+                    document = document.WithSyntaxRoot(syntax);
+                    compilation = await document.Project.GetCompilationAsync(TimeoutToken(2));
+                }
+                catch (OperationCanceledException) { }
+
+                var indexOffset = document.Project.Language == LanguageNames.VisualBasic ? 1 : 0;
+
+                Assert.False(true,
+                    Environment.NewLine +
+                    string.Join(Environment.NewLine, compilation.GetDiagnostics().Where(d => d.Severity == DiagnosticSeverity.Error).Select(d
+                        => $"'{syntax.GetText().GetSubText(d.Location.SourceSpan).ToString()}' : {d.ToString()}")) +
+                    Environment.NewLine +
+                    string.Join(Environment.NewLine,
+                        syntax.ToString()
+                        .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
+                        .Select((line, index) => $"{(index + indexOffset).ToString().PadLeft(3, ' ')}| {line}")));
             }
         }
     }
