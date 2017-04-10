@@ -26,6 +26,9 @@ namespace Moq.Proxy.VisualBasic
             var syntax = await document.GetSyntaxRootAsync(cancellationToken);
             syntax = Visit(syntax);
 
+            // Apply fixups
+            syntax = new VisualBasicParameterFixup().Visit(syntax);
+
             return document.WithSyntaxRoot(syntax);
         }
 
