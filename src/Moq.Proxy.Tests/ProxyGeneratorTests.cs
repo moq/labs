@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.VisualBasic;
 using Xunit;
 using Xunit.Abstractions;
+using static Moq.Proxy.Tests.TestHelpers;
 
 namespace Moq.Proxy.Tests
 {
@@ -23,30 +19,25 @@ namespace Moq.Proxy.Tests
         [InlineData(LanguageNames.CSharp)]
         [InlineData(LanguageNames.VisualBasic)]
         [Theory]
+        public Task CanGenerateIConfigurationSectionHandler(string language)
+            => CanGenerateProxy(language, typeof(System.Configuration.IConfigurationSectionHandler));
+
+        [InlineData(LanguageNames.CSharp)]
+        [InlineData(LanguageNames.VisualBasic)]
+        [Theory]
         public async Task CanGenerateProxy(string language)
         {
-            var workspace = new AdhocWorkspace(ProxyGenerator.DefaultHost);
-            var project = workspace.AddProject("code", language)
-                .WithCompilationOptions(language == LanguageNames.CSharp ?
-                    (CompilationOptions)new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary) :
-                    (CompilationOptions)new VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
-                .WithMetadataReferences(Assembly.GetExecutingAssembly().GetReferencedAssemblies()
-                    .Select(name => Assembly.Load(name))
-                    .Concat(new[] { typeof(IProxy).Assembly })
-                    .Concat(typeof(IProxy).Assembly.GetReferencedAssemblies().Select(x => Assembly.Load(x)))
-                    .Where(asm => File.Exists(asm.ManifestModule.FullyQualifiedName))
-                    .Select(asm => MetadataReference.CreateFromFile(asm.ManifestModule.FullyQualifiedName)))
-                .AddMetadataReference(MetadataReference.CreateFromFile(Assembly.GetExecutingAssembly().ManifestModule.FullyQualifiedName));
+            var (workspace, project) = CreateWorkspaceAndProject(language);
 
-            var compilation = await project.GetCompilationAsync();
+            var compilation = await project.GetCompilationAsync(TimeoutToken(5));
 
             Assert.False(compilation.GetDiagnostics().Any(d => d.Severity == DiagnosticSeverity.Error),
                 string.Join(Environment.NewLine, compilation.GetDiagnostics().Select(d => d.GetMessage())));
 
-            var document = await new ProxyGenerator().GenerateProxyAsync(workspace, project,
+            var document = await new ProxyGenerator().GenerateProxyAsync(workspace, project, TimeoutToken(5),
                 new[]
                 {
-                    compilation.GetTypeByMetadataName(typeof(IDisposable).FullName),
+                    compilation.GetTypeByMetadataName(typeof(ISourceAssemblySymbol).FullName),
                     compilation.GetTypeByMetadataName(typeof(INotifyPropertyChanging).FullName),
                     compilation.GetTypeByMetadataName(typeof(ICalculator).FullName),
                     compilation.GetTypeByMetadataName(typeof(INotifyPropertyChanged).FullName),
@@ -55,16 +46,31 @@ namespace Moq.Proxy.Tests
 
             var syntax = await document.GetSyntaxRootAsync();
 
-            output.WriteLine(syntax.NormalizeWhitespace().ToString());
-
             document = project.AddDocument("proxy." + (language == LanguageNames.CSharp ? "cs" : "vb"), syntax);
 
-            // Try to compile again.
-            compilation = await document.Project.GetCompilationAsync();
+            await AssertCode.NoErrorsAsync(document);
+        }
+
+        async Task CanGenerateProxy(string language, Type type)
+        {
+            var (workspace, project) = CreateWorkspaceAndProject(language);
+
+            var compilation = await project.GetCompilationAsync(TimeoutToken(5));
 
             Assert.False(compilation.GetDiagnostics().Any(d => d.Severity == DiagnosticSeverity.Error),
                 string.Join(Environment.NewLine, compilation.GetDiagnostics().Select(d => d.GetMessage())));
-        }
 
+            var document = await new ProxyGenerator().GenerateProxyAsync(workspace, project, TimeoutToken(5),
+                new[]
+                {
+                    compilation.GetTypeByMetadataName(type.FullName),
+                });
+
+            var syntax = await document.GetSyntaxRootAsync();
+
+            document = project.AddDocument("proxy." + (language == LanguageNames.CSharp ? "cs" : "vb"), syntax);
+
+            await AssertCode.NoErrorsAsync(document);
+        }
     }
 }
