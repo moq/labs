@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Composition.Convention;
 using System.Composition.Hosting;
 using System.Linq;
 using System.Reflection;
@@ -26,32 +27,34 @@ namespace Moq.Proxy
                 Assembly.Load("Microsoft.CodeAnalysis"),
                 Assembly.Load("Microsoft.CodeAnalysis.CSharp"),
                 Assembly.Load("Microsoft.CodeAnalysis.VisualBasic"),
+
+                /*
+                // These two groups are already part of MefHostServices.DefaultAssemblies
+                Assembly.Load("Microsoft.CodeAnalysis.Workspaces"),
+                Assembly.Load("Microsoft.CodeAnalysis.CSharp.Workspaces"),
+                Assembly.Load("Microsoft.CodeAnalysis.VisualBasic.Workspaces"),
+
                 Assembly.Load("Microsoft.CodeAnalysis.Features"),
                 Assembly.Load("Microsoft.CodeAnalysis.CSharp.Features"),
                 Assembly.Load("Microsoft.CodeAnalysis.VisualBasic.Features"),
+                */
             })
             .ToImmutableArray();
 
-        // Built from the above assemblies.
-        static readonly CompositionHost generatorComposition = new ContainerConfiguration()
-                .WithAssemblies(generatorDefaultAssemblies)
-                .CreateContainer();
-
         static ImmutableArray<Assembly> DefaultAssemblies => generatorDefaultAssemblies;
 
-        public static CompositionHost DefaultComposition => generatorComposition;
+        public static HostServices CreateHost() => MefHostServices.Create(DefaultAssemblies);
 
-        public static HostServices DefaultHost => MefHostServices.Create(DefaultAssemblies);
-        
-        public async Task<Document> GenerateProxyAsync(Workspace workspace, Project project, params INamedTypeSymbol[] types)
+        public async Task<Document> GenerateProxyAsync(Workspace workspace, Project project, 
+            CancellationToken cancellationToken, params INamedTypeSymbol[] types)
         {
             // TODO: the project *must* have a reference to the Moq.Proxy assembly. How do we verify that?
 
             // Sort interfaces so regardless of order, we reuse the proxies
             if (types.FirstOrDefault()?.TypeKind == TypeKind.Interface)
-                Array.Sort<INamedTypeSymbol>(types, Comparer<INamedTypeSymbol>.Create((x, y) => x.Name.CompareTo(y.Name)));
+                Array.Sort(types, Comparer<INamedTypeSymbol>.Create((x, y) => x.Name.CompareTo(y.Name)));
             else if (types.Length > 1)
-                Array.Sort<INamedTypeSymbol>(types, 1, types.Length - 1, Comparer<INamedTypeSymbol>.Create((x, y) => x.Name.CompareTo(y.Name)));
+                Array.Sort(types, 1, types.Length - 1, Comparer<INamedTypeSymbol>.Create((x, y) => x.Name.CompareTo(y.Name)));
 
             var generator = SyntaxGenerator.GetGenerator(project);
             var name = "ProxyOf" + string.Join("", types.Select(x => x.Name));
@@ -79,45 +82,49 @@ namespace Moq.Proxy
                             .Concat(new[] { generator.IdentifierName(nameof(IProxy)) })) 
                 }));
 
-            var languageServices = DefaultComposition.GetExport<LanguageServiceRetriever>();
+            var languageServices = workspace.Services.GetService<LanguageServiceRetriever>();
 
             var implementInterfaceService = languageServices.GetLanguageServices(project.Language,
                 "Microsoft.CodeAnalysis.ImplementInterface.IImplementInterfaceService").FirstOrDefault();
+
+            if (implementInterfaceService == null)
+                // TODO: improve
+                throw new NotSupportedException(project.Language);
 
             var getCodeActionsMethod = implementInterfaceService.GetType().GetMethod("GetCodeActions", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             GetCodeActions getCodeActions = (d, s, n, t) => ((IEnumerable<CodeAction>)getCodeActionsMethod.Invoke(
                               implementInterfaceService,
                               new object[] { d, s, n, t }));
 
-            var document = project.AddDocument(name, syntax.NormalizeWhitespace().ToFullString());
-            document = await ImplementInterfaces(workspace, document, generator, getCodeActions);
+            var document = project.AddDocument(name, syntax);
+            document = await ImplementInterfaces(workspace, document, generator, getCodeActions, cancellationToken);
 
             var rewriters = languageServices.GetLanguageServices<IDocumentRewriter>(project.Language).ToArray();
             foreach (var rewriter in rewriters)
             {
-                document = await rewriter.VisitAsync(document, CancellationToken.None);
+                document = await rewriter.VisitAsync(document, cancellationToken);
             }
 
-            return await Simplifier.ReduceAsync(document);
+            return document;
         }
 
         // Microsoft.CodeAnalysis.ImplementInterface.IImplementInterfaceService.GetCodeActions
         delegate IEnumerable<CodeAction> GetCodeActions(Document document, SemanticModel model, SyntaxNode node, CancellationToken cancellationToken);
 
-        async Task<Document> ImplementInterfaces(Workspace workspace, Document document, SyntaxGenerator generator, GetCodeActions getCodeActions)
+        async Task<Document> ImplementInterfaces(Workspace workspace, Document document, SyntaxGenerator generator, GetCodeActions getCodeActions, CancellationToken cancellationToken)
         {
             var project = document.Project;
 
-            var compilation = await project.GetCompilationAsync();
-            var tree = await document.GetSyntaxTreeAsync();
-            var semantic = await document.GetSemanticModelAsync();
+            var compilation = await project.GetCompilationAsync(cancellationToken);
+            var tree = await document.GetSyntaxTreeAsync(cancellationToken);
+            var semantic = await document.GetSemanticModelAsync(cancellationToken);
             var syntax = tree.GetRoot().DescendantNodes().First(node => generator.GetDeclarationKind(node) == DeclarationKind.Class);
             var baseTypes = generator.GetBaseAndInterfaceTypes(syntax);
 
             var actions = baseTypes.Select(baseType => new
             {
                 BaseType = baseType,
-                CodeActions = getCodeActions(document, semantic, baseType, CancellationToken.None)
+                CodeActions = getCodeActions(document, semantic, baseType, cancellationToken)
 #if DEBUG
                 .ToArray()
 #endif
@@ -142,17 +149,32 @@ namespace Moq.Proxy
                 action = current.CodeActions.Last();
             else
                 action = current.CodeActions.First();
-
+            
             // Otherwise, apply and recurse.
-            var operations = await action.GetOperationsAsync(CancellationToken.None);
+            var operations = await action.GetOperationsAsync(cancellationToken);
             var operation = operations.OfType<ApplyChangesOperation>().FirstOrDefault();
             if (operation != null)
             {
-                operation.Apply(workspace, CancellationToken.None);
-                return await ImplementInterfaces(workspace, operation.ChangedSolution.GetDocument(document.Id), generator, getCodeActions);
+                operation.Apply(workspace, cancellationToken);
+                return await ImplementInterfaces(workspace, operation.ChangedSolution.GetDocument(document.Id), generator, getCodeActions, cancellationToken);
             }
 
             return document;
+        }
+
+        class AttributeFilterProvider : AttributedModelProvider
+        {
+            public override IEnumerable<Attribute> GetCustomAttributes(Type reflectedType, MemberInfo member)
+            {
+                var customAttributes = member.GetCustomAttributes().Where(x => !(x is ExtensionOrderAttribute)).ToArray();
+                return customAttributes;
+            }
+
+            public override IEnumerable<Attribute> GetCustomAttributes(Type reflectedType, ParameterInfo member)
+            {
+                var customAttributes = member.GetCustomAttributes().Where(x => !(x is ExtensionOrderAttribute)).ToArray();
+                return customAttributes;
+            }
         }
     }
 }

@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Composition;
 using System.Linq;
 using Microsoft.CodeAnalysis.Host;
+using Microsoft.CodeAnalysis.Host.Mef;
 
 namespace Moq.Proxy
 {
-    [Export, Shared]
-    class LanguageServiceRetriever
+    [ExportWorkspaceService(typeof(LanguageServiceRetriever))]
+    class LanguageServiceRetriever : IWorkspaceService
     {
         IEnumerable<Lazy<ILanguageService, LanguageServiceMetadata>> services;
 
