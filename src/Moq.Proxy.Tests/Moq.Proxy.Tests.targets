@@ -7,6 +7,12 @@
     <ReferencePathsFile>$(IntermediateOutputPath)ReferencePaths.g.cs</ReferencePathsFile>
   </PropertyGroup>
 
+  <ItemDefinitionGroup>
+    <ReferencePath>
+      <FrameworkFile/>
+    </ReferencePath>
+  </ItemDefinitionGroup>
+  
   <Target Name="GenerateReferencePaths" DependsOnTargets="ResolveAssemblyReferences" 
           Inputs="@(ReferencePath);$(MSBuildAllProjects)" Outputs="$(ReferencePathsFile)">
 

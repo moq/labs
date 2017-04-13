@@ -15,13 +15,13 @@ namespace Moq.Proxy.VisualBasic
     [ExportLanguageService(typeof(IDocumentRewriter), LanguageNames.VisualBasic)]
     class VisualBasicProxyRewriter : VisualBasicSyntaxRewriter, IDocumentRewriter
     {
-        SyntaxRewriter rewriter;
+        ProxySyntaxRewriter rewriter;
         SyntaxGenerator generator;
 
         public async Task<Document> VisitAsync(Document document, CancellationToken cancellationToken)
         {
             generator = SyntaxGenerator.GetGenerator(document);
-            rewriter = await SyntaxRewriter.CreateAsync(document);
+            rewriter = await ProxySyntaxRewriter.CreateAsync(document);
 
             var syntax = await document.GetSyntaxRootAsync(cancellationToken);
             syntax = Visit(syntax);
@@ -118,33 +118,6 @@ namespace Moq.Proxy.VisualBasic
             }
 
             return base.VisitPropertyBlock(node);
-        }
-
-        public override SyntaxNode VisitEventStatement(EventStatementSyntax node)
-        {
-            //var parameters = new[] {  Parameter(ModifiedIdentifier("value")).WithAsClause(generator.GetType(node)) };
-            //node = node.WithAccessorList(
-            //    AccessorList(
-            //        List(new AccessorDeclarationSyntax[]
-            //        {
-            //            AccessorDeclaration(SyntaxKind.AddAccessorDeclaration)
-            //                .WithExpressionBody(
-            //                    ArrowExpressionClause(ExecutePipeline(node.Type, parameters)))
-            //                .WithSemicolon(),
-            //            AccessorDeclaration(SyntaxKind.RemoveAccessorDeclaration)
-            //                .WithExpressionBody(
-            //                    ArrowExpressionClause(ExecutePipeline(node.Type, parameters)))
-            //                .WithSemicolon()
-            //        })));
-
-            //return base.VisitEventDeclaration(node);
-
-            return base.VisitEventStatement(node);
-        }
-
-        public override SyntaxNode VisitEventBlock(EventBlockSyntax node)
-        {
-            return base.VisitEventBlock(node);
         }
     }
 }

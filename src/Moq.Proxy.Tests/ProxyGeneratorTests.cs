@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Xunit;
@@ -19,8 +18,8 @@ namespace Moq.Proxy.Tests
         [InlineData(LanguageNames.CSharp)]
         [InlineData(LanguageNames.VisualBasic)]
         [Theory]
-        public Task CanGenerateIConfigurationSectionHandler(string language)
-            => CanGenerateProxy(language, typeof(System.Configuration.IConfigurationSectionHandler));
+        public Task IDbCommandInterceptor(string language)
+            => CanGenerateProxy(language, typeof(System.Data.Entity.Infrastructure.Interception.IDbCommandInterceptor));
 
         [InlineData(LanguageNames.CSharp)]
         [InlineData(LanguageNames.VisualBasic)]

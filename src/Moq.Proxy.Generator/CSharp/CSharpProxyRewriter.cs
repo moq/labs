@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -17,12 +15,12 @@ namespace Moq.Proxy.CSharp
     class CSharpProxyRewriter : CSharpSyntaxRewriter, IDocumentRewriter
     {
         SyntaxGenerator generator;
-        SyntaxRewriter rewriter;
+        ProxySyntaxRewriter rewriter;
 
         public async Task<Document> VisitAsync(Document document, CancellationToken cancellationToken)
         {
             generator = SyntaxGenerator.GetGenerator(document);
-            rewriter = await SyntaxRewriter.CreateAsync(document);
+            rewriter = await ProxySyntaxRewriter.CreateAsync(document);
 
             var syntax = await document.GetSyntaxRootAsync(cancellationToken);
             syntax = Visit(syntax);

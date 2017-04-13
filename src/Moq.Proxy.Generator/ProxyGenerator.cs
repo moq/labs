@@ -41,9 +41,10 @@ namespace Moq.Proxy
             })
             .ToImmutableArray();
 
-        static ImmutableArray<Assembly> DefaultAssemblies => generatorDefaultAssemblies;
-
-        public static HostServices CreateHost() => MefHostServices.Create(DefaultAssemblies);
+        public static HostServices CreateHost() => MefHostServices.Create(new ContainerConfiguration()
+                .WithAssemblies(generatorDefaultAssemblies.Distinct())
+                .WithDefaultConventions(new AttributeFilterProvider())
+                .CreateContainer());
 
         public async Task<Document> GenerateProxyAsync(Workspace workspace, Project project, 
             CancellationToken cancellationToken, params INamedTypeSymbol[] types)
@@ -97,7 +98,7 @@ namespace Moq.Proxy
                               new object[] { d, s, n, t }));
 
             var document = project.AddDocument(name, syntax);
-            document = await ImplementInterfaces(workspace, document, generator, getCodeActions, cancellationToken);
+            document = await ImplementInterfaces(workspace, document, new HashSet<string>(), generator, getCodeActions, cancellationToken);
 
             var rewriters = languageServices.GetLanguageServices<IDocumentRewriter>(project.Language).ToArray();
             foreach (var rewriter in rewriters)
@@ -111,7 +112,7 @@ namespace Moq.Proxy
         // Microsoft.CodeAnalysis.ImplementInterface.IImplementInterfaceService.GetCodeActions
         delegate IEnumerable<CodeAction> GetCodeActions(Document document, SemanticModel model, SyntaxNode node, CancellationToken cancellationToken);
 
-        async Task<Document> ImplementInterfaces(Workspace workspace, Document document, SyntaxGenerator generator, GetCodeActions getCodeActions, CancellationToken cancellationToken)
+        async Task<Document> ImplementInterfaces(Workspace workspace, Document document, HashSet<string> skipTypes, SyntaxGenerator generator, GetCodeActions getCodeActions, CancellationToken cancellationToken)
         {
             var project = document.Project;
 
@@ -119,7 +120,12 @@ namespace Moq.Proxy
             var tree = await document.GetSyntaxTreeAsync(cancellationToken);
             var semantic = await document.GetSemanticModelAsync(cancellationToken);
             var syntax = tree.GetRoot().DescendantNodes().First(node => generator.GetDeclarationKind(node) == DeclarationKind.Class);
-            var baseTypes = generator.GetBaseAndInterfaceTypes(syntax);
+            var baseTypes = generator.GetBaseAndInterfaceTypes(syntax)
+                .Where(x => !skipTypes.Contains(x.ToString()))
+                .ToArray();
+
+            if (baseTypes.Length == 0)
+                return document;
 
             var actions = baseTypes.Select(baseType => new
             {
@@ -141,6 +147,8 @@ namespace Moq.Proxy
 
             var action = default(CodeAction);
             var current = actions.First();
+            skipTypes.Add(current.BaseType.ToString());
+
             // The last base type is IProxy, we implement that explicitly always.
             // NOTE: VB doesn't have this concept, it always adds Implements [member]. 
             // So there is always a single CodeAction for it. The VisualBasicProxyRewriter takes 
@@ -149,31 +157,33 @@ namespace Moq.Proxy
                 action = current.CodeActions.Last();
             else
                 action = current.CodeActions.First();
-            
-            // Otherwise, apply and recurse.
-            var operations = await action.GetOperationsAsync(cancellationToken);
-            var operation = operations.OfType<ApplyChangesOperation>().FirstOrDefault();
-            if (operation != null)
-            {
-                operation.Apply(workspace, cancellationToken);
-                return await ImplementInterfaces(workspace, operation.ChangedSolution.GetDocument(document.Id), generator, getCodeActions, cancellationToken);
-            }
 
-            return document;
+            // Otherwise, apply and recurse.
+            try
+            {
+                var operations = await action.GetOperationsAsync(cancellationToken);
+                var operation = operations.OfType<ApplyChangesOperation>().FirstOrDefault();
+                if (operation != null)
+                {
+                    operation.Apply(workspace, cancellationToken);
+                    return await ImplementInterfaces(workspace, operation.ChangedSolution.GetDocument(document.Id), skipTypes, generator, getCodeActions, cancellationToken);
+                }
+
+                return document;
+            }
+            catch (OperationCanceledException)
+            {
+                throw new NotSupportedException($"Failed to apply code action '{action.Title}' for '{current.BaseType.ToString()}'. Document: \r\n{syntax.NormalizeWhitespace().ToString()}");
+            }
         }
 
         class AttributeFilterProvider : AttributedModelProvider
         {
-            public override IEnumerable<Attribute> GetCustomAttributes(Type reflectedType, MemberInfo member)
-            {
-                var customAttributes = member.GetCustomAttributes().Where(x => !(x is ExtensionOrderAttribute)).ToArray();
-                return customAttributes;
-            }
+            public override IEnumerable<Attribute> GetCustomAttributes(Type reflectedType, MemberInfo member) =>
+                member.GetCustomAttributes().Where(x => !(x is ExtensionOrderAttribute));
 
-            public override IEnumerable<Attribute> GetCustomAttributes(Type reflectedType, ParameterInfo member)
-            {
-                var customAttributes = member.GetCustomAttributes().Where(x => !(x is ExtensionOrderAttribute)).ToArray();
-                return customAttributes;
+            public override IEnumerable<Attribute> GetCustomAttributes(Type reflectedType, ParameterInfo member) =>
+                member.GetCustomAttributes().Where(x => !(x is ExtensionOrderAttribute));
             }
         }
     }
