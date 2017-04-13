@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -8,8 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Host;
-using Microsoft.CodeAnalysis.Simplification;
 using Microsoft.CodeAnalysis.VisualBasic;
 using Microsoft.VisualStudio.Threading;
 using Xunit;

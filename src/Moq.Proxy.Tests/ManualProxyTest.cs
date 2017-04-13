@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq.Expressions;
-using System.Reflection;
-using Xunit;
+﻿using Xunit;
 using Xunit.Abstractions;
 
 namespace Moq.Proxy.Tests
 {
-	public class ManualProxyTest
+    public class ManualProxyTest
     {
         ITestOutputHelper output; 
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 /// <summary>
 /// Utilities for rendering .NET types as C# type names, with support for generics, 

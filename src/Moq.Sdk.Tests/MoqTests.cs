@@ -1,5 +1,4 @@
 ﻿using System;
-using Moq.Proxy;
 using Xunit;
 
 namespace Moq.Sdk.Tests

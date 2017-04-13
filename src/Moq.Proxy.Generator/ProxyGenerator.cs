@@ -13,7 +13,6 @@ using Microsoft.CodeAnalysis.Editing;
 using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.CodeAnalysis.Host;
 using Microsoft.CodeAnalysis.Host.Mef;
-using Microsoft.CodeAnalysis.Simplification;
 
 namespace Moq.Proxy
 {
@@ -184,7 +183,6 @@ namespace Moq.Proxy
 
             public override IEnumerable<Attribute> GetCustomAttributes(Type reflectedType, ParameterInfo member) =>
                 member.GetCustomAttributes().Where(x => !(x is ExtensionOrderAttribute));
-            }
         }
     }
 }

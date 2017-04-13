@@ -15,11 +15,10 @@ namespace Moq.Proxy.Tests
 
         public ProxyGeneratorTests(ITestOutputHelper output) => this.output = output;
 
-        [InlineData(LanguageNames.CSharp)]
         [InlineData(LanguageNames.VisualBasic)]
         [Theory]
-        public Task IDbCommandInterceptor(string language)
-            => CanGenerateProxy(language, typeof(System.Data.Entity.Infrastructure.Interception.IDbCommandInterceptor));
+        public Task INotifyPropertyChanged(string language)
+            => CanGenerateProxy(language, typeof(INotifyPropertyChanged));
 
         [InlineData(LanguageNames.CSharp)]
         [InlineData(LanguageNames.VisualBasic)]
@@ -36,10 +35,9 @@ namespace Moq.Proxy.Tests
             var document = await new ProxyGenerator().GenerateProxyAsync(workspace, project, TimeoutToken(5),
                 new[]
                 {
-                    compilation.GetTypeByMetadataName(typeof(ISourceAssemblySymbol).FullName),
                     compilation.GetTypeByMetadataName(typeof(INotifyPropertyChanging).FullName),
-                    compilation.GetTypeByMetadataName(typeof(ICalculator).FullName),
                     compilation.GetTypeByMetadataName(typeof(INotifyPropertyChanged).FullName),
+                    compilation.GetTypeByMetadataName(typeof(ICalculator).FullName),
                     compilation.GetTypeByMetadataName(typeof(IFormattable).FullName),
                 });
 

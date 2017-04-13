@@ -6,7 +6,6 @@ using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 using Microsoft.CodeAnalysis.Host.Mef;
 using Microsoft.CodeAnalysis.Editing;
 using System.Linq;
-using System.Collections.Generic;
 using static Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory;
 using System;
 
