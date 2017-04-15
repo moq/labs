@@ -16,35 +16,25 @@ using Microsoft.CodeAnalysis.Host.Mef;
 
 namespace Moq.Proxy
 {
+    /// <summary>
+    /// Generates proxy classes for the given input symbols.
+    /// </summary>
     public class ProxyGenerator
     {
         // Used for MEF composition.
-        static readonly ImmutableArray<Assembly> generatorDefaultAssemblies = MefHostServices.DefaultAssemblies
-            .Concat(new[]
-            {
-                Assembly.GetExecutingAssembly(),
-                Assembly.Load("Microsoft.CodeAnalysis"),
-                Assembly.Load("Microsoft.CodeAnalysis.CSharp"),
-                Assembly.Load("Microsoft.CodeAnalysis.VisualBasic"),
-
-                /*
-                // These two groups are already part of MefHostServices.DefaultAssemblies
-                Assembly.Load("Microsoft.CodeAnalysis.Workspaces"),
-                Assembly.Load("Microsoft.CodeAnalysis.CSharp.Workspaces"),
-                Assembly.Load("Microsoft.CodeAnalysis.VisualBasic.Workspaces"),
-
-                Assembly.Load("Microsoft.CodeAnalysis.Features"),
-                Assembly.Load("Microsoft.CodeAnalysis.CSharp.Features"),
-                Assembly.Load("Microsoft.CodeAnalysis.VisualBasic.Features"),
-                */
-            })
-            .ToImmutableArray();
-
         public static HostServices CreateHost() => MefHostServices.Create(new ContainerConfiguration()
-                .WithAssemblies(generatorDefaultAssemblies.Distinct())
+                .WithAssemblies(MefHostServices.DefaultAssemblies.Add(Assembly.GetExecutingAssembly()))
                 .WithDefaultConventions(new AttributeFilterProvider())
                 .CreateContainer());
 
+        /// <summary>
+        /// Generates a proxy that implements the given interfaces.
+        /// </summary>
+        /// <param name="workspace">Workspace in use for the code generation.</param>
+        /// <param name="project">Code generation project.</param>
+        /// <param name="cancellationToken">Cancellation token to abort the code generation process.</param>
+        /// <param name="types">Base type (optional) and base interfaces the proxy should implement.</param>
+        /// <returns>A <see cref="Document"/> containing the proxy code.</returns>
         public async Task<Document> GenerateProxyAsync(Workspace workspace, Project project, 
             CancellationToken cancellationToken, params INamedTypeSymbol[] types)
         {
@@ -83,7 +73,6 @@ namespace Moq.Proxy
                 }));
 
             var languageServices = workspace.Services.GetService<LanguageServiceRetriever>();
-
             var implementInterfaceService = languageServices.GetLanguageServices(project.Language,
                 "Microsoft.CodeAnalysis.ImplementInterface.IImplementInterfaceService").FirstOrDefault();
 

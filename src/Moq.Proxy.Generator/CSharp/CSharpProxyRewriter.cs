@@ -17,7 +17,7 @@ namespace Moq.Proxy.CSharp
         SyntaxGenerator generator;
         ProxySyntaxRewriter rewriter;
 
-        public async Task<Document> VisitAsync(Document document, CancellationToken cancellationToken)
+        public async Task<Document> VisitAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
         {
             generator = SyntaxGenerator.GetGenerator(document);
             rewriter = await ProxySyntaxRewriter.CreateAsync(document);

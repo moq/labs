@@ -7,6 +7,6 @@ namespace Moq.Proxy
 {
     public interface IDocumentRewriter : ILanguageService
     {
-        Task<Document> VisitAsync(Document document, CancellationToken cancellationToken);
+        Task<Document> VisitAsync(Document document, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

@@ -17,7 +17,7 @@ namespace Moq.Proxy.VisualBasic
         ProxySyntaxRewriter rewriter;
         SyntaxGenerator generator;
 
-        public async Task<Document> VisitAsync(Document document, CancellationToken cancellationToken)
+        public async Task<Document> VisitAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
         {
             generator = SyntaxGenerator.GetGenerator(document);
             rewriter = await ProxySyntaxRewriter.CreateAsync(document);

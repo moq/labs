@@ -5,6 +5,7 @@ namespace Moq
 {
     public static class Mock
     {
+        [ProxyGenerator]
         public static T Of<T>(IProxyFactory factory  = null)
         {
             if (factory == null)
