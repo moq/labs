@@ -13,42 +13,9 @@ using Microsoft.CodeAnalysis.Host.Mef;
 namespace Moq.Proxy.CSharp
 {
     [ExportLanguageService(typeof(IProxyDiscoverer), LanguageNames.CSharp)]
-    class CSharpProxyDiscoverer : CSharpSyntaxWalker, IProxyDiscoverer
+    class CSharpProxyDiscoverer : IProxyDiscoverer
     {
-        List<ImmutableArray<ITypeSymbol>> mocks = new List<ImmutableArray<ITypeSymbol>>();
-        Document document;
-        ITypeSymbol proxyGeneratorSymbol;
-        CancellationToken cancellationToken;
-
-        SemanticModel semantic;
-
-        public async Task<IReadOnlyList<ImmutableArray<ITypeSymbol>>> DiscoverProxiesAsync(Document document, ITypeSymbol proxyGeneratorSymbol, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            this.document = document;
-            this.proxyGeneratorSymbol = proxyGeneratorSymbol;
-            this.cancellationToken = cancellationToken;
-
-            semantic = await document.GetSemanticModelAsync(cancellationToken);
-
-            var syntax = await document.GetSyntaxRootAsync(cancellationToken);
-            cancellationToken.ThrowIfCancellationRequested();
-
-            Visit(syntax);
-
-            return mocks.AsReadOnly();
-        }
-
-        public override void VisitMemberAccessExpression(MemberAccessExpressionSyntax node)
-        {
-            var symbol = semantic.GetSymbolInfo(node, cancellationToken);
-            if (symbol.Symbol?.Kind == SymbolKind.Method)
-            {
-                var method = (IMethodSymbol)symbol.Symbol;
-                if (method.GetAttributes().Any(x => x.AttributeClass == proxyGeneratorSymbol))
-                    mocks.Add(method.TypeArguments);
-            }
-
-            base.VisitMemberAccessExpression(node);
-        }
+        public Task<ImmutableHashSet<ImmutableArray<ITypeSymbol>>> DiscoverProxiesAsync(Document document, ITypeSymbol proxyGeneratorSymbol, CancellationToken cancellationToken = default(CancellationToken))
+            => document.DiscoverProxiesAsync<MemberAccessExpressionSyntax>(proxyGeneratorSymbol, cancellationToken);
     }
 }

@@ -26,9 +26,8 @@ namespace Moq.Proxy
                 var discovered = await discoverer.DiscoverProxiesAsync(document, proxyGeneratorSymbol, cancellationToken);
                 proxies.AddRange(discovered);
             }
-
+            
             return proxies.ToImmutableHashSet(StructuralComparer<ImmutableArray<ITypeSymbol>>.Default);
         }
-
     }
 }

@@ -14,13 +14,6 @@ namespace Moq.Proxy
                 generator.GetAccessor(property, DeclarationKind.GetAccessor) != null,
                 generator.GetAccessor(property, DeclarationKind.SetAccessor) != null
                 );
-
-            //var canRead = (node.ExpressionBody != null || node.AccessorList?.Accessors.Any(x => x.IsKind(SyntaxKind.GetAccessorDeclaration)) == true);
-            //var canWrite = node.AccessorList?.Accessors.Any(x => x.IsKind(SyntaxKind.SetAccessorDeclaration)) == true;
-            //if (node.ExpressionBody != null)
-            //    node = node.RemoveNode(node.ExpressionBody, SyntaxRemoveOptions.KeepNoTrivia);
-            //if (node.AccessorList?.Accessors.Any() == true)
-            //    node = node.RemoveNodes(node.AccessorList.Accessors, SyntaxRemoveOptions.KeepNoTrivia);
         }
 
         public static SyntaxNode ImplementMethod(this SyntaxGenerator generator, SyntaxNode method, SyntaxNode returnType)
