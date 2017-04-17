@@ -7,7 +7,11 @@
     <LanguageServiceName Condition="'$(Language)' == 'VB'">Visual Basic</LanguageServiceName>
   </PropertyGroup>
 
-  <Target Name="GenerateProxies" BeforeTargets="Compile" DependsOnTargets="ResolveReferences">
+  <ItemGroup>
+    <AdditionalProxyInterface Include="Moq.Sdk.IMocked" />
+  </ItemGroup>
+  
+  <Target Name="GenerateProxies" BeforeTargets="CoreCompile" DependsOnTargets="ResolveReferences">
     <PropertyGroup>
       <ProxiesOutputPath Condition="'$(ProxiesOutputPath)' == ''">$(IntermediateOutputPath)Proxies</ProxiesOutputPath>
     </PropertyGroup>
@@ -18,6 +22,7 @@
                      OutputPath="$(ProxiesOutputPath)" 
                      References="@(ReferencePath)"
                      Sources="@(Compile)"
+                     AdditionalInterfaces="@(AdditionalProxyInterface)"
                      ToolPath="$(PGenPath)">
       <Output TaskParameter="Proxies" ItemName="Compile" />
     </GenerateProxies>
