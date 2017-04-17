@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,16 +21,18 @@ namespace Moq.Proxy
             var extension = "";
             var languageName = "";
             var outputPath = "";
-            var sources = new List<string>();
             var references = new List<string>();
+            var sources = new List<string>();
+            var additional = new List<string>();
 
             var options = new OptionSet
             {
                 { "e|extension=", "optional file extension of the generated proxy documents, such as '.cs' or '.vb'. Inferred from language if not specified.", e => extension = e },
                 { "l|language=", "a Roslyn-supported language name, such as 'C#' or 'Visual Basic'", l => languageName = l },
                 { "o|output=", "the output directory to write the proxy files to", o => outputPath = o },
-                { "r|reference=", "an assembly reference required for compiling the sources", r => references.Add(r) },
-                { "s|source=", "a source file in the language specified which should be processed for proxy generation", s => sources.Add(s) },
+                { "r|reference=", "an assembly reference required for compiling the sources", r => references.Add(r.Trim()) },
+                { "s|source=", "a source file in the language specified which should be processed for proxy generation", s => sources.Add(s.Trim()) },
+                { "a|additional=", "optional additional interfaces to implement in all generated proxies", a => additional.Add(a.Trim()) },
                 { "h|help", "show this message and exit", h => shouldShowHelp = h != null },
             };
 
@@ -39,6 +42,15 @@ namespace Moq.Proxy
             try
             {
                 extra = options.Parse(args);
+
+                // Parse extra response file if specified
+                var responseFile = extra.FirstOrDefault(x => x[0] == '@');
+                if (responseFile != null)
+                {
+                    extra = options.Parse(File.ReadAllLines(responseFile.Substring(1)));
+                }
+
+                System.Diagnostics.Debugger.Launch();
 
                 if (shouldShowHelp ||
                     string.IsNullOrEmpty(outputPath) ||
@@ -60,7 +72,7 @@ namespace Moq.Proxy
                     Directory.CreateDirectory(outputPath);
 
                 var generator = new ProxyGenerator();
-                var proxies = await generator.GenerateProxiesAsync(languageName, references.ToImmutableArray(), sources.ToImmutableArray(), CancellationToken.None);
+                var proxies = await generator.GenerateProxiesAsync(languageName, references.ToImmutableArray(), sources.ToImmutableArray(), additional.ToImmutableArray(), CancellationToken.None);
 
                 foreach (var proxy in proxies)
                 {
