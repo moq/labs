@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <!-- TODO: the .NETCore app is pgen.dll... -->
+    <PGenPath Condition="'$(PGenPath)' == '' And Exists('$(MSBuildThisFileDirectory)pgen.exe')">$(MSBuildThisFileDirectory)</PGenPath>
+    <!-- Default when running from the nuget package -->
+    <PGenPath Condition="'$(PGenPath)' == ''">$(MSBuildThisFileDirectory)..\tools\</PGenPath>
+  </PropertyGroup>
+</Project>

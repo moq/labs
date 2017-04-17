@@ -12,6 +12,7 @@ namespace Moq.Proxy
         public async Task<IImmutableSet<ImmutableArray<ITypeSymbol>>> DiscoverProxiesAsync(Project project, CancellationToken cancellationToken = default(CancellationToken))
         {
             var discoverer = project.LanguageServices.GetRequiredService<IProxyDiscoverer>();
+            
             var compilation = await project.GetCompilationAsync(cancellationToken);
             var proxyGeneratorSymbol = compilation.GetTypeByMetadataName(typeof(ProxyGeneratorAttribute).FullName);
 

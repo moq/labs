@@ -54,10 +54,12 @@ namespace Moq.Proxy.CSharp
                 node = (MethodDeclarationSyntax)generator.ImplementMethod(node, node.ReturnType.IsVoid() ? null : node.ReturnType, outParams, refOutParams);
             }
             else
-                node = node.RemoveNodes(new SyntaxNode[] { node.Body }, SyntaxRemoveOptions.KeepNoTrivia)
+            {
+                node = node.RemoveNodes(new SyntaxNode[] { node.Body }, SyntaxRemoveOptions.KeepLeadingTrivia | SyntaxRemoveOptions.KeepTrailingTrivia)
                     .WithExpressionBody(
                         ArrowExpressionClause(ExecutePipeline(node.ReturnType, node.ParameterList.Parameters)))
                     .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+            }
 
             return base.VisitMethodDeclaration(node);
         }
@@ -111,6 +113,8 @@ namespace Moq.Proxy.CSharp
 
         public override SyntaxNode VisitIndexerDeclaration(IndexerDeclarationSyntax node)
         {
+            var trivia = node.GetTrailingTrivia();
+
             // NOTE: Most of this code could be shared with VisitPropertyDeclaration but the mutating With* 
             // and props like ExpressionBody aren't available in the shared base BasePropertyDeclarationSyntax type :(
             var canRead = (node.ExpressionBody != null || node.AccessorList?.Accessors.Any(x => x.IsKind(SyntaxKind.GetAccessorDeclaration)) == true);
@@ -142,7 +146,7 @@ namespace Moq.Proxy.CSharp
                 }
             }
 
-            return base.VisitIndexerDeclaration(node);
+            return base.VisitIndexerDeclaration(node.WithTrailingTrivia(trivia));
         }
 
         public override SyntaxNode VisitEventDeclaration(EventDeclarationSyntax node)

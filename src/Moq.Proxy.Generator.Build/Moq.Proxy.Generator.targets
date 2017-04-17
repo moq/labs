@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <UsingTask TaskName="GenerateProxies" AssemblyFile="Moq.Proxy.Generator.Build.dll" />
+
+  <PropertyGroup Condition="'$(LanguageServiceName)' == ''">
+    <LanguageServiceName Condition="'$(Language)' == 'C#'">C#</LanguageServiceName>
+    <LanguageServiceName Condition="'$(Language)' == 'VB'">Visual Basic</LanguageServiceName>
+  </PropertyGroup>
+
+  <Target Name="GenerateProxies" BeforeTargets="Compile" DependsOnTargets="ResolveReferences">
+    <PropertyGroup>
+      <ProxiesOutputPath Condition="'$(ProxiesOutputPath)' == ''">$(IntermediateOutputPath)Proxies</ProxiesOutputPath>
+    </PropertyGroup>
+
+    <GenerateProxies YieldDuringToolExecution="$(YieldDuringToolExecution)"
+                     FileExtension="$(DefaultLanguageSourceExtension)"
+                     LanguageName="$(LanguageServiceName)"
+                     OutputPath="$(ProxiesOutputPath)" 
+                     References="@(ReferencePath)"
+                     Sources="@(Compile)"
+                     ToolPath="$(PGenPath)">
+      <Output TaskParameter="Proxies" ItemName="Compile" />
+    </GenerateProxies>
+  </Target>
+
+</Project>

@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "Moq.Proxy.Generator": {
+      "commandName": "Executable",
+      "executablePath": "$(VsInstallRoot)\\..\\RTW\\MSBuild\\15.0\\Bin\\MSBuild.exe",
+      "commandLineArgs": "..\\Samples\\Sample.CSharp\\Sample.CSharp.csproj /t:GenerateProxies"
+    }
+  }
+}

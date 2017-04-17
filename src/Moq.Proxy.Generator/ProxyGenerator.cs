@@ -3,16 +3,19 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Composition.Convention;
 using System.Composition.Hosting;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Editing;
 using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.CodeAnalysis.Host;
 using Microsoft.CodeAnalysis.Host.Mef;
+using Microsoft.CodeAnalysis.VisualBasic;
 
 namespace Moq.Proxy
 {
@@ -28,6 +31,80 @@ namespace Moq.Proxy
                 .CreateContainer());
 
         /// <summary>
+        /// Generates proxies by discovering proxy factory method invocations in the given 
+        /// source documents.
+        /// </summary>
+        /// <param name="languageName">The language name to generate code for, such as 'C#' or 'Visual Basic'. See <see cref="LanguageNames"/>.</param>
+        /// <param name="references">The metadata references to use when analyzing the <paramref name="sources"/>.</param>
+        /// <param name="sources">The source documents to analyze to discover proxy usage.</param>
+        /// <param name="cancellationToken">Cancellation token to cancel the generation process.</param>
+        /// <returns>An immutable array of the generated proxies as <see cref="Document"/> instances.</returns>
+        public Task<ImmutableArray<Document>> GenerateProxiesAsync(
+            string languageName,
+            ImmutableArray<string> references,
+            ImmutableArray<string> sources,
+            CancellationToken cancellationToken) => GenerateProxiesAsync(new AdhocWorkspace(CreateHost()), languageName, references, sources, cancellationToken);
+
+        /// <summary>
+        /// Generates proxies by discovering proxy factory method invocations in the given 
+        /// source documents.
+        /// </summary>
+        /// <param name="workspace">Creating a workspace is typically a bit heavy because of the MEF discovery, 
+        /// so this argument allows reusing a previously created one across multiple calls.</param>
+        /// <param name="languageName">The language name to generate code for, such as 'C#' or 'Visual Basic'. See <see cref="LanguageNames"/>.</param>
+        /// <param name="references">The metadata references to use when analyzing the <paramref name="sources"/>.</param>
+        /// <param name="sources">The source documents to analyze to discover proxy usage.</param>
+        /// <param name="cancellationToken">Cancellation token to cancel the generation process.</param>
+        /// <returns>An immutable array of the generated proxies as <see cref="Document"/> instances.</returns>
+        public async Task<ImmutableArray<Document>> GenerateProxiesAsync(
+            AdhocWorkspace workspace,
+            string languageName,
+            ImmutableArray<string> references, 
+            ImmutableArray<string> sources,
+            CancellationToken cancellationToken)
+        {
+            var project = workspace.AddProject("pgen", languageName)
+                // TODO: would be nice to get these options directly from the project somehow, 
+                // or set them by default to DynamicallyLinkedLibrary without requiring this?
+                .WithCompilationOptions(languageName == LanguageNames.CSharp ?
+                    (CompilationOptions)new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary) :
+                    (CompilationOptions)new VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
+                .WithMetadataReferences(references
+                    .Select(x => MetadataReference.CreateFromFile(x)));
+
+            foreach (var source in sources)
+            {
+                project = project.AddDocument(
+                    Path.GetFileName(source), 
+                    File.ReadAllText(source)
+                ).Project;
+            }
+
+            var discoverer = new ProxyDiscoverer();
+            var proxies = await discoverer.DiscoverProxiesAsync(project, cancellationToken);
+
+            var documents = new List<Document>(proxies.Count);
+            foreach (var proxy in proxies)
+            {
+                documents.Add(await GenerateProxyAsync(workspace, project, cancellationToken, proxy));
+            }
+
+            return documents.ToImmutableArray();
+        }
+
+        /// <summary>
+        /// Generates a proxy that implements the given interfaces.
+        /// </summary>
+        /// <param name="workspace">Workspace in use for the code generation.</param>
+        /// <param name="project">Code generation project.</param>
+        /// <param name="cancellationToken">Cancellation token to abort the code generation process.</param>
+        /// <param name="types">Base type (optional) and base interfaces the proxy should implement.</param>
+        /// <returns>A <see cref="Document"/> containing the proxy code.</returns>
+        public Task<Document> GenerateProxyAsync(Workspace workspace, Project project,
+            CancellationToken cancellationToken, params ITypeSymbol[] types)
+            => GenerateProxyAsync(workspace, project, cancellationToken, types.ToImmutableArray());
+
+        /// <summary>
         /// Generates a proxy that implements the given interfaces.
         /// </summary>
         /// <param name="workspace">Workspace in use for the code generation.</param>
@@ -36,15 +113,17 @@ namespace Moq.Proxy
         /// <param name="types">Base type (optional) and base interfaces the proxy should implement.</param>
         /// <returns>A <see cref="Document"/> containing the proxy code.</returns>
         public async Task<Document> GenerateProxyAsync(Workspace workspace, Project project, 
-            CancellationToken cancellationToken, params INamedTypeSymbol[] types)
+            CancellationToken cancellationToken, ImmutableArray<ITypeSymbol> types)
         {
             // TODO: the project *must* have a reference to the Moq.Proxy assembly. How do we verify that?
+            
+            // TODO: Sort interfaces so regardless of order, we reuse the proxies?
+            //if (types.FirstOrDefault()?.TypeKind == TypeKind.Interface)
+            //    Array.Sort(types, Comparer<INamedTypeSymbol>.Create((x, y) => x.Name.CompareTo(y.Name)));
+            //else if (types.Length > 1)
+            //    Array.Sort(types, 1, types.Length - 1, Comparer<INamedTypeSymbol>.Create((x, y) => x.Name.CompareTo(y.Name)));
 
-            // Sort interfaces so regardless of order, we reuse the proxies
-            if (types.FirstOrDefault()?.TypeKind == TypeKind.Interface)
-                Array.Sort(types, Comparer<INamedTypeSymbol>.Create((x, y) => x.Name.CompareTo(y.Name)));
-            else if (types.Length > 1)
-                Array.Sort(types, 1, types.Length - 1, Comparer<INamedTypeSymbol>.Create((x, y) => x.Name.CompareTo(y.Name)));
+            cancellationToken.ThrowIfCancellationRequested();
 
             var generator = SyntaxGenerator.GetGenerator(project);
             var name = "ProxyOf" + string.Join("", types.Select(x => x.Name));

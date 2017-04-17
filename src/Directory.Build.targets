@@ -18,5 +18,5 @@
   </Target>
 
   <Import Project="$(MSBuildProjectDirectory)\$(MSBuildProjectName).targets"
-			Condition="'$(MSBuildProjectExtension)' != '.targets' And Exists('$(MSBuildProjectDirectory)\$(MSBuildProjectName).targets')" />
+          Condition="'$(AutoImport)' != 'false' And '$(MSBuildProjectExtension)' != '.targets' And Exists('$(MSBuildProjectDirectory)\$(MSBuildProjectName).targets')" />
 </Project>

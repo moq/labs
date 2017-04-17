@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\Moq.Proxy.Generator.Console\bin\$(Configuration)\net461\Moq.Proxy.Generator.props" />
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.4</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Moq">
+      <HintPath>..\..\Moq\bin\$(Configuration)\netstandard1.4\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="Moq.Proxy">
+      <HintPath>..\..\Moq\bin\$(Configuration)\netstandard1.4\Moq.Proxy.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <Import Project="..\..\Moq.Proxy.Generator.Console\bin\$(Configuration)\net461\Moq.Proxy.Generator.targets" />
+</Project>

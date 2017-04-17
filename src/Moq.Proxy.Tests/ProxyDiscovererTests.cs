@@ -6,12 +6,14 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Build.Framework;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Xunit;
 using Xunit.Abstractions;
 using static Moq.Proxy.Tests.TestHelpers;
+using MSBuild = Microsoft.Build.Utilities;
 
 namespace Moq.Proxy.Tests
 {
@@ -40,6 +42,31 @@ namespace Moq.Proxy.Tests
             var proxies = await discoverer.DiscoverProxiesAsync(project);
 
             Assert.Equal(1, proxies.Count);
+        }
+
+        [InlineData(LanguageNames.CSharp)]
+        [InlineData(LanguageNames.VisualBasic)]
+        [Theory]
+        public void CanGenerateProxies(string languageName)
+        {
+            var (workspace, project) = CreateWorkspaceAndProject(languageName);
+
+            var task = new GenerateProxies
+            {
+                BuildEngine = new MockBuildEngine(output, true),
+                FileExtension = languageName == LanguageNames.CSharp ? ".cs" : ".vb",
+                LanguageName = languageName,
+                OutputPath = new DirectoryInfo(".").FullName,
+                References = ReferencePaths.Paths.Select(x => new MSBuild.TaskItem(x)).ToArray(),
+                Sources = new[] {
+                    languageName == LanguageNames.CSharp ?
+                    new MSBuild.TaskItem(new FileInfo(@"..\..\..\ProxyDiscovererTests.Compile.cs").FullName) :
+                    new MSBuild.TaskItem(new FileInfo(@"..\..\..\ProxyDiscovererTests.Compile.vb").FullName)
+                }
+            };
+
+            Assert.True(task.Execute());
+            Assert.Equal(1, task.Proxies.Count());
         }
     }
 }
