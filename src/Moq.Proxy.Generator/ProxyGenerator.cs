@@ -43,7 +43,8 @@ namespace Moq.Proxy
             string languageName,
             ImmutableArray<string> references,
             ImmutableArray<string> sources,
-            CancellationToken cancellationToken) => GenerateProxiesAsync(new AdhocWorkspace(CreateHost()), languageName, references, sources, cancellationToken);
+            ImmutableArray<string> additionalInterfaces,
+            CancellationToken cancellationToken) => GenerateProxiesAsync(new AdhocWorkspace(CreateHost()), languageName, references, sources, additionalInterfaces, cancellationToken);
 
         /// <summary>
         /// Generates proxies by discovering proxy factory method invocations in the given 
@@ -61,6 +62,7 @@ namespace Moq.Proxy
             string languageName,
             ImmutableArray<string> references, 
             ImmutableArray<string> sources,
+            ImmutableArray<string> additionalInterfaces,
             CancellationToken cancellationToken)
         {
             var project = workspace.AddProject("pgen", languageName)
@@ -80,13 +82,24 @@ namespace Moq.Proxy
                 ).Project;
             }
 
+            var compilation = await project.GetCompilationAsync();
+            var additionalSymbols = new List<ITypeSymbol>();
+            foreach (var additionalInterface in additionalInterfaces)
+            {
+                var additionalSymbol = compilation.GetTypeByMetadataName(additionalInterface) ?? 
+                    // TODO: improve reporting
+                    throw new ArgumentException(additionalInterface);
+
+                additionalSymbols.Add(additionalSymbol);
+            }
+
             var discoverer = new ProxyDiscoverer();
             var proxies = await discoverer.DiscoverProxiesAsync(project, cancellationToken);
 
             var documents = new List<Document>(proxies.Count);
             foreach (var proxy in proxies)
             {
-                documents.Add(await GenerateProxyAsync(workspace, project, cancellationToken, proxy));
+                documents.Add(await GenerateProxyAsync(workspace, project, cancellationToken, proxy.AddRange(additionalSymbols)));
             }
 
             return documents.ToImmutableArray();
@@ -129,7 +142,7 @@ namespace Moq.Proxy
             var name = "ProxyOf" + string.Join("", types.Select(x => x.Name));
 
             var syntax = generator.CompilationUnit(types
-                .Where(x => x.ContainingNamespace != null)
+                .Where(x => x.ContainingNamespace != null && x.ContainingNamespace.CanBeReferencedByName)
                 .Select(x => x.ContainingNamespace.ToDisplayString())
                 .Concat(new[]
                 {
