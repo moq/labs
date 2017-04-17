@@ -1,6 +1,6 @@
 .nuget
 .vs
-build
+out
 bin
 obj
 *.nupkg

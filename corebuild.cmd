@@ -14,8 +14,10 @@ if "%1" == "" goto :DoneParsing
 if /I "%1" == "/?" call :Usage && exit /b 1
 if /I "%1" == "/debug" set BuildConfiguration=Debug&&shift&& goto :ParseArguments
 if /I "%1" == "/release" set BuildConfiguration=Release&&shift&& goto :ParseArguments
+if /I "%1" == "/build" set MSBuildTarget=/t:Build&&shift&& goto :ParseArguments
 if /I "%1" == "/rebuild" set MSBuildTarget=/t:Rebuild&&shift&& goto :ParseArguments
 if /I "%1" == "/restore" set MSBuildTarget=/t:Restore&&shift&& goto :ParseArguments
+if /I "%1" == "/test" set MSBuildTarget=/t:Test&&shift&& goto :ParseArguments
 if /I "%1" == "/update" set MSBuildTarget=/t:Update&&shift&& goto :ParseArguments
 if /I "%1" == "/no-node-reuse" set NodeReuse=false&&shift&& goto :ParseArguments
 if /I "%1" == "/no-multi-proc" set MultiProcessor=&&shift&& goto :ParseArguments

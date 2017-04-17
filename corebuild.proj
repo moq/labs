@@ -1,50 +1,63 @@
 <Project DefaultTargets="Build" InitialTargets="_Setup">
-	<Import Project="corebuild\corebuild.props" />
-  
-	<PropertyGroup>
-		<Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
-		<Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
-		<IntermediateOutputPath>$(RestoreOutputPath)\</IntermediateOutputPath>
-	</PropertyGroup>
-	<ItemGroup>
-		<PackageReference Include="GitInfo" Version="*" />
-	</ItemGroup>
-	<ItemGroup>
-		<Solution Include="src\Moq.Sdk.sln">
-			<AdditionalProperties>Configuration=$(Configuration);Platform=$(Platform)</AdditionalProperties>
-		</Solution>
-	</ItemGroup>
+  <Import Project="corebuild\corebuild.props" />
 
-	<Target Name="Build">
-		<MSBuild Projects="@(Solution)" Targets="Build" RemoveProperties="Configuration;Platform" />
-	</Target>
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
+    <IntermediateOutputPath>$(RestoreOutputPath)\</IntermediateOutputPath>
+    <Out Condition="'$(Out)' == ''">out</Out>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="GitInfo" Version="*" />
+    <PackageReference Include="xunit.runner.console" Version="2.3.0-beta1-build3642" />
+  </ItemGroup>
+  <ItemGroup>
+    <Solution Include="src\Moq.Sdk.sln">
+      <AdditionalProperties>Configuration=$(Configuration);Platform=$(Platform)</AdditionalProperties>
+    </Solution>
+  </ItemGroup>
 
-	<Target Name="Clean" />
+  <Target Name="Build">
+    <MSBuild Projects="@(Solution)" Targets="Build" RemoveProperties="Configuration;Platform" />
+  </Target>
 
-	<Target Name="Rebuild" DependsOnTargets="Clean;Build" />
+  <Target Name="Test">
+    <ItemGroup>
+      <TestAssembly Include="src\*\bin\$(Configuration)\*\*Tests.dll" />
+    </ItemGroup>
+    
+    <Exec Command='"$(XunitConsolePath)" "%(TestAssembly.FullPath)" $(XunitOptions) -html "$(Out)\%(TestAssembly.Filename).html" -xml "$(Out)\%(TestAssembly.Filename).xml"'
+          Condition="'@(TestAssembly)' != ''"/>
+  </Target>
 
-	<Target Name="_Restore" AfterTargets="Restore">
-		<MSBuild Projects="@(Solution)" Targets="Restore" RemoveProperties="Configuration;Platform" />
-	</Target>
-	
-	<Target Name="GitVersion">
-		<PropertyGroup>
-			<GitBaseVersionMajor>0</GitBaseVersionMajor>
-			<GitBaseVersionMinor>1</GitBaseVersionMinor>
-			<GitBaseVersionPatch>0</GitBaseVersionPatch>
-			<GitCommits>0</GitCommits>
-		</PropertyGroup>
-	</Target>
+  <Target Name="Clean" />
 
-	<Target Name="_Setup" DependsOnTargets="SetVersion">
-		<Message Text="Building AssemblyVersion=$(AssemblyVersion), PackageVersion=$(PackageVersion)" Importance="high" />
+  <Target Name="Rebuild" DependsOnTargets="Clean;Build" />
 
-		<!-- Update AppVeyor build # to match the actual one being used -->
-		<Exec Command="appveyor UpdateBuild -Version $(PackageVersion)" 
-			  Condition=" '$(APPVEYOR)' == 'true' And '$(target)' != 'Restore' "
-              ContinueOnError="true" />
-	</Target>
+  <Target Name="_Restore" AfterTargets="Restore">
+    <MSBuild Projects="@(Solution)" Targets="Restore" RemoveProperties="Configuration;Platform" />
+  </Target>
 
-	<Import Project="src\Version.targets" />
-	<Import Project="corebuild\corebuild.targets" />
+  <Target Name="GitVersion">
+    <PropertyGroup>
+      <GitBaseVersionMajor>0</GitBaseVersionMajor>
+      <GitBaseVersionMinor>1</GitBaseVersionMinor>
+      <GitBaseVersionPatch>0</GitBaseVersionPatch>
+      <GitCommits>0</GitCommits>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="_Setup" DependsOnTargets="SetVersion">
+    <Message Text="Building AssemblyVersion=$(AssemblyVersion), PackageVersion=$(PackageVersion)" Importance="high" />
+
+    <!-- Update AppVeyor build # to match the actual one being used -->
+    <Exec Command="appveyor UpdateBuild -Version $(PackageVersion)"
+          Condition=" '$(APPVEYOR)' == 'true' And '$(target)' != 'Restore' "
+          ContinueOnError="true" />
+
+    <MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
+  </Target>
+
+  <Import Project="src\Version.targets" />
+  <Import Project="corebuild\corebuild.targets" />
 </Project>
