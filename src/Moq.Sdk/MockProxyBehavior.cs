@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 using Moq.Proxy;
+using System.Reflection;
 
 namespace Moq.Sdk
 {
@@ -19,7 +20,9 @@ namespace Moq.Sdk
 
         public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior getNext)
         {
-            if (invocation.MethodBase.DeclaringType == typeof(IMocked))
+            // TODO: cache?
+            var mapping = invocation.Target.GetType().GetTypeInfo().GetRuntimeInterfaceMap(typeof(IMocked));
+            if (mapping.TargetMethods.Any(x => x == invocation.MethodBase))
                 return invocation.CreateValueReturn(this);
 
             CallContext<IMethodInvocation>.SetData(nameof(IMethodInvocation), invocation);

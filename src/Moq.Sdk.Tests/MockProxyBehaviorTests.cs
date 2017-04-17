@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Moq.Proxy;
@@ -13,10 +14,9 @@ namespace Moq.Sdk.Tests
         {
             var behavior = new MockProxyBehavior();
 
-            behavior.Invoke(new MethodInvocation(new object(), typeof(object).GetMethod(nameof(object.ToString))), 
+            behavior.Invoke(new MethodInvocation(new Mocked(), typeof(object).GetMethod(nameof(object.ToString))), 
                 () => (m, n) => m.CreateValueReturn(null));
 
-            var ms = typeof(IMocked).GetMethods();
             Assert.Equal(1, behavior.Invocations.Count);
         }
 
@@ -26,25 +26,11 @@ namespace Moq.Sdk.Tests
             var behavior = new MockProxyBehavior();
 
             var result = behavior.Invoke(new MethodInvocation(
-                new object(), 
-                typeof(IMocked).GetProperty(nameof(IMocked.Mock)).GetGetMethod()), 
+                new Mocked(), 
+                typeof(Mocked).GetProperty(nameof(IMocked.Mock)).GetGetMethod()), 
                 null);
 
             Assert.True(result.ReturnValue is IMocked);
-            Assert.Equal(0, behavior.Invocations.Count);
-        }
-
-        [Theory]
-        [MemberData("GetIMockMethods")]
-        public void ForwardsIMockInvocations(MethodInfo method)
-        {
-            var behavior = new MockProxyBehavior();
-
-            var result = behavior.Invoke(new MethodInvocation(new object(), method), null);
-
-            if (method.ReturnType != typeof(void))
-                Assert.Same(method.Invoke(behavior, new object[0]), result.ReturnValue);
-
             Assert.Equal(0, behavior.Invocations.Count);
         }
 
@@ -67,15 +53,9 @@ namespace Moq.Sdk.Tests
             */
         }
 
-        public static IEnumerable<object[]> GetIMockMethods => typeof(IMocked)
-            .GetMethods()
-            .Select(method => new object[] { method })
-            .ToArray();
+        public class Mocked : IMocked
+        {
+            public IMock Mock => throw new NotImplementedException();
+        }
     }
-
-    //[Fact]
-    //public void WhenGettingProperty_ThenCanReturnFixedValue()
-    //{
-    //    var behavior = new MockBehavior();
-    //}
 }
