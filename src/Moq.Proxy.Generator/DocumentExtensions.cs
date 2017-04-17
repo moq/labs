@@ -28,7 +28,10 @@ namespace Moq.Proxy
                 if (symbol.Symbol?.Kind == SymbolKind.Method)
                 {
                     var method = (IMethodSymbol)symbol.Symbol;
-                    if (method.GetAttributes().Any(x => x.AttributeClass == proxyGeneratorSymbol))
+                    if (method.GetAttributes().Any(x => x.AttributeClass == proxyGeneratorSymbol) &&
+                        // Skip generic method definitions since they are typically usability overloads 
+                        // like Mock.Of<T>(...)
+                        !method.TypeArguments.Any(x => x.Kind == SymbolKind.TypeParameter))
                         proxies.Add(method.TypeArguments);
                 }
             }
