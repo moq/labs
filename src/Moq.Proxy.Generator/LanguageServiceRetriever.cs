@@ -14,7 +14,7 @@ namespace Moq.Proxy
 
         [ImportingConstructor]
         public LanguageServiceRetriever([ImportMany] IEnumerable<Lazy<ILanguageService, LanguageServiceMetadata>> services)
-            => this.services = services;
+            => this.services = services ?? throw new ArgumentNullException(nameof(services));
 
         public IEnumerable<ILanguageService> GetLanguageServices(string language, string serviceType)
             => services
