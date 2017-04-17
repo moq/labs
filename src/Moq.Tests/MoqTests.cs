@@ -5,11 +5,11 @@ namespace Moq.Tests
 {
     public class MoqTests
     {
-        [Fact(Skip = "Waiting on Roslyn generator.")]
+        [Fact]
         public void CanSetupPropertyViaReturns()
         {
             var calculator = Mock.Of<ICalculator>();
-
+            
             calculator.Mode.Returns("Basic");
 
             var mode = calculator.Mode;
@@ -17,7 +17,7 @@ namespace Moq.Tests
             Assert.Equal("Basic", mode);
         }
 
-        [Fact(Skip = "Waiting on Roslyn generator.")]
+        [Fact]
         public void CanSetupMethodWithArgumentsViaReturns()
         {
             var calculator = Mock.Of<ICalculator>();
@@ -29,7 +29,7 @@ namespace Moq.Tests
             Assert.Equal(5, result);
         }
 
-        [Fact(Skip = "Waiting on Roslyn generator.")]
+        [Fact]
         public void CanSetupMethodWithDifferentArgumentsViaReturns()
         {
             var calculator = Mock.Of<ICalculator>();

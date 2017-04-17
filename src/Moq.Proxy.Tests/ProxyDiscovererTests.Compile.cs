@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 
 namespace Moq.ProxyDiscovererTests
 {
@@ -6,8 +7,8 @@ namespace Moq.ProxyDiscovererTests
     {
         public void WhenMockingFormatterThenCanInvokeIt()
         {
-            var mock1 = Mock.Of<ICustomFormatter>();
-            var mock2 = Mock.Of<ICustomFormatter>();
+            var mock1 = Mock.Of<ICustomFormatter>(Assembly.GetExecutingAssembly());
+            var mock2 = Mock.Of<ICustomFormatter>(Assembly.GetExecutingAssembly());
 
             var result1 = mock1.Format("Hello {0}", "World", null);
             var result2 = mock2.Format("Hello {0}", "World", null);

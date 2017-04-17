@@ -1,6 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Moq.Proxy.Generator.Console\bin\$(Configuration)\net461\Moq.Proxy.Generator.props" />
+
   <PropertyGroup>
-    <TargetFramework>net462</TargetFramework>
+    <TargetFramework>net461</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,4 +15,6 @@
     <ProjectReference Include="..\Moq.Sdk\Moq.Sdk.csproj" />
     <ProjectReference Include="..\Moq\Moq.csproj" />
   </ItemGroup>
+
+  <Import Project="..\Moq.Proxy.Generator.Console\bin\$(Configuration)\net461\Moq.Proxy.Generator.targets" />
 </Project>

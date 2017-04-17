@@ -1,0 +1,7 @@
+﻿{
+  "appDomain": "ifAvailable",
+  "parallelizeAssembly": false,
+  "parallelizeTestCollections": false,
+  "methodDisplay": "classAndMethod",
+  "shadowCopy": false
+}

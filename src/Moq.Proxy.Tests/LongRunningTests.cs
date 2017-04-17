@@ -46,10 +46,19 @@ namespace Moq.Proxy.Tests
         [Theory]
         public async Task CanGenerateAllProxies(string language, Type type, int index)
         {
-            //output.WriteLine($"{language}: {type.FullName}");
-
             var project = context.GetProject(language);
-            var compilation = await context.GetCompilationAsync(language, new CancellationTokenSource(AsyncTimeoutMilliseconds).Token).ConfigureAwait(false);
+            var compilation = await context.GetCompilationAsync(language, new CancellationTokenSource(AsyncTimeoutMilliseconds).Token);
+
+            if (compilation.GetDiagnostics().Any(d => d.Severity == DiagnosticSeverity.Error))
+            {
+                Assert.False(true,
+                    Environment.NewLine +
+                    string.Join(Environment.NewLine, compilation
+                        .GetDiagnostics()
+                        .Where(d => d.Severity == DiagnosticSeverity.Error)
+                        .Select(d => d.ToString())));
+            }
+
             var symbol = compilation.GetTypeByMetadataName(type.FullName);
 
             if (symbol != null)
@@ -60,7 +69,7 @@ namespace Moq.Proxy.Tests
                     new CancellationTokenSource(AsyncTimeoutMilliseconds).Token,
                     symbol);
 
-                var syntax = await document.GetSyntaxRootAsync(new CancellationTokenSource(AsyncTimeoutMilliseconds).Token).ConfigureAwait(false);
+                var syntax = await document.GetSyntaxRootAsync(new CancellationTokenSource(AsyncTimeoutMilliseconds).Token);
                 document = project.AddDocument("proxy." + (language == LanguageNames.CSharp ? "cs" : "vb"), syntax);
 
                 await AssertCode.NoErrorsAsync(document);
@@ -80,6 +89,9 @@ namespace Moq.Proxy.Tests
                     && x.FullName != typeof(IProxy).FullName
                 )
             )
+#if QUICK
+            .Take(1)
+#endif
             .SelectMany((x, i) => new object[][]
                 {
                     new object[] { LanguageNames.CSharp, x, i },

@@ -21,7 +21,13 @@ namespace Moq.Proxy.Tests
             => CanGenerateProxy(language, typeof(INotifyPropertyChanged));
 
         [InlineData(LanguageNames.CSharp)]
-        //[InlineData(LanguageNames.VisualBasic)]
+        [InlineData(LanguageNames.VisualBasic)]
+        [Theory]
+        public Task WhenTypeHasGlobalNamespaceThenItWorks(string language)
+            => CanGenerateProxy(language, typeof(IGlobal));
+
+        [InlineData(LanguageNames.CSharp)]
+        [InlineData(LanguageNames.VisualBasic)]
         [Theory]
         public async Task CanGenerateProxy(string language)
         {
@@ -71,4 +77,9 @@ namespace Moq.Proxy.Tests
             await AssertCode.NoErrorsAsync(document);
         }
     }
+}
+
+public interface IGlobal
+{
+    void Do();
 }

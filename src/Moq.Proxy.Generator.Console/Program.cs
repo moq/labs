@@ -50,8 +50,6 @@ namespace Moq.Proxy
                     extra = options.Parse(File.ReadAllLines(responseFile.Substring(1)));
                 }
 
-                System.Diagnostics.Debugger.Launch();
-
                 if (shouldShowHelp ||
                     string.IsNullOrEmpty(outputPath) ||
                     string.IsNullOrEmpty(languageName) ||

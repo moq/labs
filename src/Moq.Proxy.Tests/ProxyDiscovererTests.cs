@@ -54,8 +54,8 @@ namespace Moq.Proxy.Tests
             var task = new GenerateProxies
             {
                 BuildEngine = new MockBuildEngine(output, true),
-                FileExtension = languageName == LanguageNames.CSharp ? ".cs" : ".vb",
                 LanguageName = languageName,
+                ToolPath = new DirectoryInfo(".").FullName,
                 OutputPath = new DirectoryInfo(".").FullName,
                 References = ReferencePaths.Paths.Select(x => new MSBuild.TaskItem(x)).ToArray(),
                 Sources = new[] {

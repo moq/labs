@@ -37,7 +37,7 @@ namespace Moq.Proxy.Tests
             Assert.True(proxy.TryAdd(ref x, ref y, out z));
             Assert.Equal(3, z);
 
-            output.WriteLine(recorder.ToString());
+            // output.WriteLine(recorder.ToString());
         }
     }
 }
