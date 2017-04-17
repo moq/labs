@@ -20,12 +20,14 @@ namespace Moq.Proxy
             if (proxyGeneratorSymbol == null)
                 throw new InvalidOperationException();
 
-            var proxies = new List<ImmutableArray<ITypeSymbol>>();
-
+            var proxies = new HashSet<ImmutableArray<ITypeSymbol>>(StructuralComparer<ImmutableArray<ITypeSymbol>>.Default);
             foreach (var document in project.Documents)
             {
                 var discovered = await discoverer.DiscoverProxiesAsync(document, proxyGeneratorSymbol, cancellationToken);
-                proxies.AddRange(discovered);
+                foreach (var proxy in discovered)
+                {
+                    proxies.Add(proxy);
+                }
             }
             
             return proxies.ToImmutableHashSet(StructuralComparer<ImmutableArray<ITypeSymbol>>.Default);
