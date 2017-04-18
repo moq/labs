@@ -11,21 +11,39 @@
     <AdditionalProxyInterface Include="Moq.Sdk.IMocked" />
   </ItemGroup>
   
-  <Target Name="GenerateProxies" BeforeTargets="CoreCompile" DependsOnTargets="ResolveReferences">
+  <Target Name="GenerateProxies" BeforeTargets="CoreCompile" DependsOnTargets="_ProxiesOutputPath;_CleanProxies;_GenerateProxies;_IncludeProxies"/>
+
+  <Target Name="_ProxiesOutputPath">
     <PropertyGroup>
       <ProxiesOutputPath Condition="'$(ProxiesOutputPath)' == ''">$(IntermediateOutputPath)Proxies</ProxiesOutputPath>
     </PropertyGroup>
+  </Target>
 
+  <Target Name="_CleanProxies" 
+          DependsOnTargets="_ProxiesOutputPath"
+          Inputs="$(MSBuildAllProjects);
+                  @(Compile);
+                  @(ReferencePath);"
+          Outputs="@(IntermediateAssembly)">
+
+    <Exec Command='rmdir "$(ProxiesOutputPath)" /S /Q' ContinueOnError='true' />
+  </Target>
+
+  <Target Name="_GenerateProxies" Condition="!Exists('$(ProxiesOutputPath)')" DependsOnTargets="_CleanProxies;ResolveReferences">
     <GenerateProxies YieldDuringToolExecution="$(YieldDuringToolExecution)"
                      FileExtension="$(DefaultLanguageSourceExtension)"
                      LanguageName="$(LanguageServiceName)"
-                     OutputPath="$(ProxiesOutputPath)" 
+                     OutputPath="$(ProxiesOutputPath)"
                      References="@(ReferencePath)"
                      Sources="@(Compile)"
                      AdditionalInterfaces="@(AdditionalProxyInterface)"
-                     ToolPath="$(PGenPath)">
-      <Output TaskParameter="Proxies" ItemName="Compile" />
-    </GenerateProxies>
+                     ToolPath="$(PGenPath)" />
+  </Target>
+
+  <Target Name="_IncludeProxies">
+    <ItemGroup>
+      <Compile Include="$(ProxiesOutputPath)\*$(DefaultLanguageSourceExtension)" />
+    </ItemGroup>
   </Target>
 
 </Project>
