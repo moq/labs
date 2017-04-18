@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+    <GeneratorProps>..\..\src\Proxy\Proxy.Generator.Console\bin\$(Configuration)\$(TargetFramework)\Moq.Proxy.Generator.props</GeneratorProps>
+    <GeneratorTargets>..\..\src\Proxy\Proxy.Generator.Console\bin\$(Configuration)\$(TargetFramework)\Moq.Proxy.Generator.targets</GeneratorTargets>
+  </PropertyGroup>
+
+  <Import Project="$(GeneratorProps)" Condition="Exists('$(GeneratorProps)')" />
+
+  <ItemGroup>
+    <PackageReference Include="xunit" Version="2.2.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Moq\Moq.csproj" />
+    <ProjectReference Include="..\..\src\Proxy\Proxy.Generator\Moq.Proxy.Generator.csproj" />
+    <ProjectReference Include="..\..\src\Proxy\Proxy\Moq.Proxy.csproj" />
+    <ProjectReference Include="..\..\src\Sdk\Moq.Sdk.csproj" />
+  </ItemGroup>
+
+  <Target Name="EnsureGenerator" BeforeTargets="Build" Condition="!Exists('$(GeneratorTargets)')">
+    <Error Text="Proxy generator hasn't been build. Please run codebuild.cmd once before building this project.'" />
+  </Target>
+
+  <Import Project="..\Moq.Testing\Moq.Testing.projitems" Label="Shared" />
+
+  <Import Project="$(GeneratorTargets)" Condition="Exists('$(GeneratorTargets)')" />
+</Project>

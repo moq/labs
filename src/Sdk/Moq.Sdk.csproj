@@ -4,6 +4,5 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Proxy\Proxy\Moq.Proxy.csproj" />
-    <ProjectReference Include="..\Sdk\Moq.Sdk.csproj" />
   </ItemGroup>
 </Project>

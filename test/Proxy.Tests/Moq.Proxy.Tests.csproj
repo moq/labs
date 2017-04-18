@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net461</TargetFramework>
+  </PropertyGroup>
+
+	<ItemGroup>
+    <ProjectReference Include="..\..\src\Proxy\Proxy\Moq.Proxy.csproj" />
+    <ProjectReference Include="..\..\src\Proxy\Proxy.Generator\Moq.Proxy.Generator.csproj" />
+    <ProjectReference Include="..\..\src\Proxy\Proxy.Generator.Build\Moq.Proxy.Generator.Build.csproj" />
+    <ProjectReference Include="..\..\src\Proxy\Proxy.Generator.Console\Moq.Proxy.Generator.Console.csproj" />
+    <ProjectReference Include="..\ManualProxies\ManualProxies.csproj" />
+  </ItemGroup>
+
+	<Import Project="..\Moq.Testing\Moq.Testing.projitems" Label="Shared" />
+
+</Project>

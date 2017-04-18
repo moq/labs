@@ -1,0 +1,57 @@
+<Project>
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <ReferencePathsFile>$(IntermediateOutputPath)ReferencePaths.g.cs</ReferencePathsFile>
+    <CoreCompileDependsOn>
+      $(CoreCompileDependsOn);
+      GenerateReferencePaths;
+    </CoreCompileDependsOn>
+  </PropertyGroup>
+
+  <ItemDefinitionGroup>
+    <ReferencePath>
+      <FrameworkFile/>
+    </ReferencePath>
+  </ItemDefinitionGroup>
+
+  <Target Name="GenerateReferencePaths"
+          DependsOnTargets="ResolveAssemblyReferences"
+          Inputs="@(ReferencePath);$(TargetPath);$(MSBuildAllProjects)"
+          Outputs="$(ReferencePathsFile)">
+
+    <WriteLinesToFile File="$(ReferencePathsFile)" Overwrite="true"
+						  Lines='static class ReferencePaths
+{
+  public static string[] Paths = new[]
+  { '/>
+
+    <WriteLinesToFile File="$(ReferencePathsFile)" Overwrite="false"
+						  Lines='
+    @"%(ReferencePath.FullPath)",'/>
+
+    <WriteLinesToFile File="$(ReferencePathsFile)" Overwrite="false"
+						  Lines='
+    @"$(TargetPath)",'/>
+
+    <WriteLinesToFile File="$(ReferencePathsFile)" Overwrite="false"
+						  Lines='
+  }%3B
+}'/>
+
+    <ItemGroup>
+      <FileWrites Include="$(ReferencePathsFile)" />
+      <Compile Include="$(ReferencePathsFile)" />
+    </ItemGroup>
+
+  </Target>
+
+  <Target Name="Test">
+    <PropertyGroup>
+      <XunitOptions>$(XunitOptions) -html $(OutputPath)test.html -xml $(OutputPath)test.xml -parallel all -noshadow</XunitOptions>
+    </PropertyGroup>
+
+    <Exec Command="$(XunitConsolePath) $(TargetPath) $(XunitOptions)" />
+  </Target>
+
+  <Import Project="..\Directory.Build.targets" />
+</Project>

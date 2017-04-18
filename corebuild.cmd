@@ -18,6 +18,7 @@ if /I "%1" == "/build" set MSBuildTarget=/t:Build&&shift&& goto :ParseArguments
 if /I "%1" == "/rebuild" set MSBuildTarget=/t:Rebuild&&shift&& goto :ParseArguments
 if /I "%1" == "/restore" set MSBuildTarget=/t:Restore&&shift&& goto :ParseArguments
 if /I "%1" == "/test" set MSBuildTarget=/t:Test&&shift&& goto :ParseArguments
+if /I "%1" == "/acceptance" set MSBuildTarget=/t:Acceptance&&shift&& goto :ParseArguments
 if /I "%1" == "/update" set MSBuildTarget=/t:Update&&shift&& goto :ParseArguments
 if /I "%1" == "/no-node-reuse" set NodeReuse=false&&shift&& goto :ParseArguments
 if /I "%1" == "/no-multi-proc" set MultiProcessor=&&shift&& goto :ParseArguments
@@ -91,11 +92,14 @@ call :PrintColor Cyan "Build completed successfully, for full log see msbuild.lo
 exit /b 0
 
 :Usage
-echo Usage: %BatchFile% [/rebuild^|/restore^|/update^] [/debug^|/release] [/no-node-reuse] [/no-multi-proc]
+echo Usage: %BatchFile% [/rebuild^|/restore^|/update^] [/debug^|/release] [/no-node-reuse] [/no-multi-proc] [OPTIONS]
 echo.
 echo   Build targets:
+echo     /build                   Perform a normal build
 echo     /rebuild                 Perform a clean, then build
 echo     /restore                 Only restore NuGet packages
+echo     /test                    Runs the unit tests
+echo     /acceptance              Runs the (long-running) acceptance tests
 echo     /update                  Updates corebuild dependencies
 echo.
 echo   Build options:
@@ -104,6 +108,9 @@ echo     /release                 Perform release build (/p:Configuration=Releas
 echo     /no-node-reuse           Prevents MSBuild from reusing existing MSBuild instances,
 echo                              useful for avoiding unexpected behavior on build machines ('/nr:false' switch)
 echo     /no-multi-proc           No multi-proc build, useful for diagnosing build logs (no '/m' switch)
+echo     /noautoresponse          Do not process the msbuild.rsp response file options
+echo
+echo     [OPTIONS]                Arbitrary MSBuild switches can also be passed in.
 goto :eof
 
 :BuildFailed

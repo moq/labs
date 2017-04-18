@@ -1,0 +1,12 @@
+<Project>
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <_ProjectTargets>$(MSBuildProjectDirectory)\$(MSBuildProjectName).targets</_ProjectTargets>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="Exists('$(_ProjectTargets)')">
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(_ProjectTargets)</MSBuildAllProjects>
+  </PropertyGroup>
+
+  <Import Project="$(_ProjectTargets)" Condition="'$(MSBuildProjectExtension)' != '.props' And Exists('$(_ProjectTargets)')" />
+</Project>

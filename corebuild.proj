@@ -4,28 +4,48 @@
   <PropertyGroup>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
+    <AdditionalProperties>Configuration=$(Configuration);Platform=$(Platform)</AdditionalProperties>
     <IntermediateOutputPath>$(RestoreOutputPath)\</IntermediateOutputPath>
     <Out Condition="'$(Out)' == ''">out</Out>
   </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="GitInfo" Version="*" />
     <PackageReference Include="xunit.runner.console" Version="2.3.0-beta1-build3642" />
   </ItemGroup>
-  <ItemGroup>
-    <Solution Include="src\Moq.Sdk.sln">
-      <AdditionalProperties>Configuration=$(Configuration);Platform=$(Platform)</AdditionalProperties>
+
+  <ItemDefinitionGroup>
+    <Solution>
+      <AdditionalProperties>$(AdditionalProperties)</AdditionalProperties>
     </Solution>
+  </ItemDefinitionGroup>
+
+  <ItemGroup>
+    <Solution Include="src\Moq.Proxy.sln" />
+    <Solution Include="src\Moq.Sdk.sln" />
+    <Solution Include="src\Moq.sln" />
   </ItemGroup>
 
   <Target Name="Build">
+    <Message Text="Building AssemblyVersion=$(AssemblyVersion), PackageVersion=$(PackageVersion)" Importance="high" />
     <MSBuild Projects="@(Solution)" Targets="Build" RemoveProperties="Configuration;Platform" />
   </Target>
 
   <Target Name="Test">
     <ItemGroup>
-      <TestAssembly Include="src\*\bin\$(Configuration)\*\*Tests.dll" />
+      <_TestAssembly Include="test\**\bin\**\*Tests.dll" />
+      <TestAssembly Include="@(_TestAssembly)" Condition="$([System.String]::new('%(Filename)').EndsWith('AcceptanceTests')) == 'false'" />
     </ItemGroup>
     
+    <Exec Command='"$(XunitConsolePath)" "%(TestAssembly.FullPath)" $(XunitOptions) -html "$(Out)\%(TestAssembly.Filename).html" -xml "$(Out)\%(TestAssembly.Filename).xml"'
+          Condition="'@(TestAssembly)' != ''"/>
+  </Target>
+
+  <Target Name="Acceptance">
+    <ItemGroup>
+      <TestAssembly Include="test\**\bin\**\*AcceptanceTests.dll" />
+    </ItemGroup>
+
     <Exec Command='"$(XunitConsolePath)" "%(TestAssembly.FullPath)" $(XunitOptions) -html "$(Out)\%(TestAssembly.Filename).html" -xml "$(Out)\%(TestAssembly.Filename).xml"'
           Condition="'@(TestAssembly)' != ''"/>
   </Target>
@@ -48,8 +68,6 @@
   </Target>
 
   <Target Name="_Setup" DependsOnTargets="SetVersion">
-    <Message Text="Building AssemblyVersion=$(AssemblyVersion), PackageVersion=$(PackageVersion)" Importance="high" />
-
     <!-- Update AppVeyor build # to match the actual one being used -->
     <Exec Command="appveyor UpdateBuild -Version $(PackageVersion)"
           Condition=" '$(APPVEYOR)' == 'true' And '$(target)' != 'Restore' "

@@ -1,0 +1,69 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Proxy", "Proxy\Proxy\Moq.Proxy.csproj", "{CA234783-CB59-4296-9617-8A87368B2EF7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Proxy.Generator", "Proxy\Proxy.Generator\Moq.Proxy.Generator.csproj", "{6556D277-5760-429E-AE9D-249A7C17E907}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Proxy.Generator.Console", "Proxy\Proxy.Generator.Console\Moq.Proxy.Generator.Console.csproj", "{7643E268-F49C-403E-939B-308F65AB1248}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Proxy.Generator.Build", "Proxy\Proxy.Generator.Build\Moq.Proxy.Generator.Build.csproj", "{3645E5FF-5934-4D74-9202-50236275FFC5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Proxy.Tests", "..\test\Proxy.Tests\Moq.Proxy.Tests.csproj", "{F789B942-7D89-4E37-97F6-38823B6F0711}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CE93609A-9760-4444-B713-0CCB8CCC5CA6}"
+	ProjectSection(SolutionItems) = preProject
+		..\test\Directory.Build.props = ..\test\Directory.Build.props
+		..\test\Directory.Build.targets = ..\test\Directory.Build.targets
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ManualProxies", "..\test\ManualProxies\ManualProxies.csproj", "{69A892A4-4F16-46C1-9700-AA3A260A66EC}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Moq.Testing", "..\test\Moq.Testing\Moq.Testing.shproj", "{1BD7DFDE-2FC8-4899-9903-6CA5724CC185}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Proxy.AcceptanceTests", "..\test\Proxy.AcceptanceTests\Moq.Proxy.AcceptanceTests.csproj", "{B29A2094-6793-4EBF-B52D-2A9DA55B2928}"
+EndProject
+Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\test\Moq.Testing\Moq.Testing.projitems*{1bd7dfde-2fc8-4899-9903-6ca5724cc185}*SharedItemsImports = 13
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CA234783-CB59-4296-9617-8A87368B2EF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA234783-CB59-4296-9617-8A87368B2EF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA234783-CB59-4296-9617-8A87368B2EF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA234783-CB59-4296-9617-8A87368B2EF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6556D277-5760-429E-AE9D-249A7C17E907}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6556D277-5760-429E-AE9D-249A7C17E907}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6556D277-5760-429E-AE9D-249A7C17E907}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6556D277-5760-429E-AE9D-249A7C17E907}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7643E268-F49C-403E-939B-308F65AB1248}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7643E268-F49C-403E-939B-308F65AB1248}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7643E268-F49C-403E-939B-308F65AB1248}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7643E268-F49C-403E-939B-308F65AB1248}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3645E5FF-5934-4D74-9202-50236275FFC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3645E5FF-5934-4D74-9202-50236275FFC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3645E5FF-5934-4D74-9202-50236275FFC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3645E5FF-5934-4D74-9202-50236275FFC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F789B942-7D89-4E37-97F6-38823B6F0711}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F789B942-7D89-4E37-97F6-38823B6F0711}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F789B942-7D89-4E37-97F6-38823B6F0711}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F789B942-7D89-4E37-97F6-38823B6F0711}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69A892A4-4F16-46C1-9700-AA3A260A66EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69A892A4-4F16-46C1-9700-AA3A260A66EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69A892A4-4F16-46C1-9700-AA3A260A66EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69A892A4-4F16-46C1-9700-AA3A260A66EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B29A2094-6793-4EBF-B52D-2A9DA55B2928}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B29A2094-6793-4EBF-B52D-2A9DA55B2928}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B29A2094-6793-4EBF-B52D-2A9DA55B2928}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B29A2094-6793-4EBF-B52D-2A9DA55B2928}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

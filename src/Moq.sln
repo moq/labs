@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq", "Moq\Moq.csproj", "{65F3AB28-9A74-405E-83B2-420D5AD5A459}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Proxy", "Proxy\Proxy\Moq.Proxy.csproj", "{C6932108-488E-4138-B411-6C1F63A0024D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Sdk", "Sdk\Moq.Sdk.csproj", "{A1FA1859-8EA0-44E8-8EAD-9F11C3E9AC28}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Tests", "..\test\Moq.Tests\Moq.Tests.csproj", "{9A09225F-E0BC-4890-BED4-D9F6F5DAC146}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Proxy.Generator", "Proxy\Proxy.Generator\Moq.Proxy.Generator.csproj", "{6F083467-DDA3-41B4-9E17-20C9ED52D336}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Moq.Testing", "..\test\Moq.Testing\Moq.Testing.shproj", "{1BD7DFDE-2FC8-4899-9903-6CA5724CC185}"
+EndProject
+Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\test\Moq.Testing\Moq.Testing.projitems*{1bd7dfde-2fc8-4899-9903-6ca5724cc185}*SharedItemsImports = 13
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{65F3AB28-9A74-405E-83B2-420D5AD5A459}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65F3AB28-9A74-405E-83B2-420D5AD5A459}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65F3AB28-9A74-405E-83B2-420D5AD5A459}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65F3AB28-9A74-405E-83B2-420D5AD5A459}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6932108-488E-4138-B411-6C1F63A0024D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6932108-488E-4138-B411-6C1F63A0024D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6932108-488E-4138-B411-6C1F63A0024D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6932108-488E-4138-B411-6C1F63A0024D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1FA1859-8EA0-44E8-8EAD-9F11C3E9AC28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1FA1859-8EA0-44E8-8EAD-9F11C3E9AC28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1FA1859-8EA0-44E8-8EAD-9F11C3E9AC28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1FA1859-8EA0-44E8-8EAD-9F11C3E9AC28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A09225F-E0BC-4890-BED4-D9F6F5DAC146}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A09225F-E0BC-4890-BED4-D9F6F5DAC146}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A09225F-E0BC-4890-BED4-D9F6F5DAC146}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A09225F-E0BC-4890-BED4-D9F6F5DAC146}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F083467-DDA3-41B4-9E17-20C9ED52D336}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F083467-DDA3-41B4-9E17-20C9ED52D336}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F083467-DDA3-41B4-9E17-20C9ED52D336}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F083467-DDA3-41B4-9E17-20C9ED52D336}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
