@@ -1,18 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\Moq.Proxy.Generator.Console\bin\$(Configuration)\net461\Moq.Proxy.Generator.props" />
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.4</TargetFramework>
+    <TargetFramework>net45</TargetFramework>
+    <GeneratorProps>..\..\..\src\Proxy\Proxy.Generator.Console\bin\$(Configuration)\net461\Moq.Proxy.Generator.props</GeneratorProps>
+    <GeneratorTargets>..\..\..\src\Proxy\Proxy.Generator.Console\bin\$(Configuration)\net461\Moq.Proxy.Generator.targets</GeneratorTargets>
   </PropertyGroup>
+
+  <Import Project="$(GeneratorProps)" Condition="Exists('$(GeneratorProps)')" />
 
   <ItemGroup>
     <Reference Include="Moq">
-      <HintPath>..\..\Moq\bin\$(Configuration)\netstandard1.4\Moq.dll</HintPath>
+      <HintPath>..\..\..\src\Moq\bin\$(Configuration)\netstandard1.4\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="Moq.Sdk">
+      <HintPath>..\..\..\src\Moq\bin\$(Configuration)\netstandard1.4\Moq.Sdk.dll</HintPath>
     </Reference>
     <Reference Include="Moq.Proxy">
-      <HintPath>..\..\Moq\bin\$(Configuration)\netstandard1.4\Moq.Proxy.dll</HintPath>
+      <HintPath>..\..\..\src\Moq\bin\$(Configuration)\netstandard1.4\Moq.Proxy.dll</HintPath>
     </Reference>
   </ItemGroup>
 
-  <Import Project="..\..\Moq.Proxy.Generator.Console\bin\$(Configuration)\net461\Moq.Proxy.Generator.targets" />
+  <Target Name="EnsureGenerator" BeforeTargets="Build" Condition="!Exists('$(GeneratorTargets)')">
+    <Error Text="Proxy generator hasn't been build. Please run codebuild.cmd once before building this project.'" />
+  </Target>
+
+  <Import Project="$(GeneratorTargets)" Condition="Exists('$(GeneratorTargets)')" />
+
 </Project>

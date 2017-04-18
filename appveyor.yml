@@ -16,5 +16,3 @@ nuget:
 artifacts:
   - path: out\*.nupkg
     name: Package
-  - path: out\*.html
-    name: Test

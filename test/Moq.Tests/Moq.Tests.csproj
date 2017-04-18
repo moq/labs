@@ -9,11 +9,6 @@
   <Import Project="$(GeneratorProps)" Condition="Exists('$(GeneratorProps)')" />
 
   <ItemGroup>
-    <PackageReference Include="xunit" Version="2.2.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\src\Moq\Moq.csproj" />
     <ProjectReference Include="..\..\src\Proxy\Proxy.Generator\Moq.Proxy.Generator.csproj" />
     <ProjectReference Include="..\..\src\Proxy\Proxy\Moq.Proxy.csproj" />
@@ -27,4 +22,5 @@
   <Import Project="..\Moq.Testing\Moq.Testing.projitems" Label="Shared" />
 
   <Import Project="$(GeneratorTargets)" Condition="Exists('$(GeneratorTargets)')" />
+
 </Project>
