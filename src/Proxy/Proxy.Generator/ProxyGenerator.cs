@@ -16,6 +16,7 @@ using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.CodeAnalysis.Host;
 using Microsoft.CodeAnalysis.Host.Mef;
 using Microsoft.CodeAnalysis.VisualBasic;
+using Moq.Proxy.Properties;
 
 namespace Moq.Proxy
 {
@@ -129,7 +130,7 @@ namespace Moq.Proxy
             CancellationToken cancellationToken, ImmutableArray<ITypeSymbol> types)
         {
             // TODO: the project *must* have a reference to the Moq.Proxy assembly. How do we verify that?
-            
+
             // TODO: Sort interfaces so regardless of order, we reuse the proxies?
             //if (types.FirstOrDefault()?.TypeKind == TypeKind.Interface)
             //    Array.Sort(types, Comparer<INamedTypeSymbol>.Create((x, y) => x.Name.CompareTo(y.Name)));
@@ -137,6 +138,8 @@ namespace Moq.Proxy
             //    Array.Sort(types, 1, types.Length - 1, Comparer<INamedTypeSymbol>.Create((x, y) => x.Name.CompareTo(y.Name)));
 
             cancellationToken.ThrowIfCancellationRequested();
+
+            var (baseType, interfaceTypes) = ValidateTypes(types);
 
             var generator = SyntaxGenerator.GetGenerator(project);
             var name = "ProxyOf" + string.Join("", types.Select(x => x.Name));
@@ -157,28 +160,22 @@ namespace Moq.Proxy
                 {
                     generator.ClassDeclaration(name,
                         accessibility: Accessibility.Public,
-                        interfaceTypes: types.Select(x => generator.IdentifierName(x.Name))
+                        baseType: baseType == null ? null : generator.IdentifierName(baseType.Name),
+                        interfaceTypes: interfaceTypes.Select(x => generator.IdentifierName(x.Name))
                             // NOTE: we *always* append IProxy at the end, which is what we use 
                             // in ImplementInterfaces to determine that it must *always* be implemented 
                             // explicitly.
-                            .Concat(new[] { generator.IdentifierName(nameof(IProxy)) })) 
+                            .Concat(new[] { generator.IdentifierName(nameof(IProxy)) }))
                 }));
 
             var languageServices = workspace.Services.GetService<LanguageServiceRetriever>();
-            var implementInterfaceService = languageServices.GetLanguageServices(project.Language,
-                "Microsoft.CodeAnalysis.ImplementInterface.IImplementInterfaceService").FirstOrDefault();
 
-            if (implementInterfaceService == null)
-                // TODO: improve
-                throw new NotSupportedException(project.Language);
-
-            var getCodeActionsMethod = implementInterfaceService.GetType().GetMethod("GetCodeActions", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-            GetCodeActions getCodeActions = (d, s, n, t) => ((IEnumerable<CodeAction>)getCodeActionsMethod.Invoke(
-                              implementInterfaceService,
-                              new object[] { d, s, n, t }));
+            var implementInterface = new ImplementInterfaceService(languageServices, project.Language);
+            var implementAbstract = new ImplementAbstractClassService(languageServices, project.Language);
 
             var document = project.AddDocument(name, syntax);
-            document = await ImplementInterfaces(workspace, document, new HashSet<string>(), generator, getCodeActions, cancellationToken);
+            document = await ImplementInterfaces(workspace, document, new HashSet<string>(), generator, implementInterface, cancellationToken);
+            document = await implementAbstract.ImplementAbstractClass(document, cancellationToken);
 
             var rewriters = languageServices.GetLanguageServices<IDocumentRewriter>(project.Language).ToArray();
             foreach (var rewriter in rewriters)
@@ -189,10 +186,29 @@ namespace Moq.Proxy
             return document;
         }
 
-        // Microsoft.CodeAnalysis.ImplementInterface.IImplementInterfaceService.GetCodeActions
-        delegate IEnumerable<CodeAction> GetCodeActions(Document document, SemanticModel model, SyntaxNode node, CancellationToken cancellationToken);
+        (ITypeSymbol baseType, ImmutableArray<ITypeSymbol> interfaceTypes) ValidateTypes(ImmutableArray<ITypeSymbol> types)
+        {
+            var baseType = default(ITypeSymbol);
+            var interfaceTypes = default(ImmutableArray<ITypeSymbol>);
+            if (types[0].TypeKind == TypeKind.Class)
+            {
+                baseType = types[0];
+                interfaceTypes = types.Skip(1).ToImmutableArray();
+            }
+            else
+            {
+                interfaceTypes = types;
+            }
 
-        async Task<Document> ImplementInterfaces(Workspace workspace, Document document, HashSet<string> skipTypes, SyntaxGenerator generator, GetCodeActions getCodeActions, CancellationToken cancellationToken)
+            if (interfaceTypes.Any(x => x.TypeKind == TypeKind.Class))
+                throw new ArgumentException(Strings.WrongProxyBaseType(string.Join(",", types.Select(x => x.Name))));
+            if (interfaceTypes.Any(x => x.TypeKind != TypeKind.Interface))
+                throw new ArgumentException(Strings.InvalidProxyTypes(string.Join(",", types.Select(x => x.Name))));
+
+            return (baseType, interfaceTypes);
+        }
+
+        async Task<Document> ImplementInterfaces(Workspace workspace, Document document, HashSet<string> skipTypes, SyntaxGenerator generator, ImplementInterfaceService implementInterface, CancellationToken cancellationToken)
         {
             var project = document.Project;
 
@@ -210,7 +226,7 @@ namespace Moq.Proxy
             var actions = baseTypes.Select(baseType => new
             {
                 BaseType = baseType,
-                CodeActions = getCodeActions(document, semantic, baseType, cancellationToken)
+                CodeActions = implementInterface.GetCodeActions(document, semantic, baseType, cancellationToken)
 #if DEBUG
                 .ToArray()
 #endif
@@ -246,7 +262,7 @@ namespace Moq.Proxy
                 if (operation != null)
                 {
                     operation.Apply(workspace, cancellationToken);
-                    return await ImplementInterfaces(workspace, operation.ChangedSolution.GetDocument(document.Id), skipTypes, generator, getCodeActions, cancellationToken);
+                    return await ImplementInterfaces(workspace, operation.ChangedSolution.GetDocument(document.Id), skipTypes, generator, implementInterface, cancellationToken);
                 }
 
                 return document;

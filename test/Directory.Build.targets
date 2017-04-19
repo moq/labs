@@ -2,7 +2,7 @@
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <ReferencePathsFile>$(IntermediateOutputPath)ReferencePaths.g.cs</ReferencePathsFile>
-    <CoreCompileDependsOn>
+    <CoreCompileDependsOn Condition="'$(Language)' == 'C#'">
       $(CoreCompileDependsOn);
       GenerateReferencePaths;
     </CoreCompileDependsOn>

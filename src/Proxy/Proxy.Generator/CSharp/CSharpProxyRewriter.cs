@@ -55,7 +55,7 @@ namespace Moq.Proxy.CSharp
             }
             else
             {
-                node = node.RemoveNodes(new SyntaxNode[] { node.Body }, SyntaxRemoveOptions.KeepLeadingTrivia | SyntaxRemoveOptions.KeepTrailingTrivia)
+                node = node.RemoveNodes(new SyntaxNode[] { node.Body }, SyntaxRemoveOptions.KeepNoTrivia)
                     .WithExpressionBody(
                         ArrowExpressionClause(ExecutePipeline(node.ReturnType, node.ParameterList.Parameters)))
                     .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));

@@ -43,6 +43,8 @@ namespace Moq.Proxy
             if (File.Exists(singleLine))
                 proxies.Add(new TaskItem(singleLine));
 
+            //BuildEngine.LogCustomEvent()
+
             base.LogEventsFromTextOutput(singleLine, messageImportance);
         }
 

@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.Host.Mef;
 namespace Moq.Proxy
 {
     [ExportWorkspaceService(typeof(LanguageServiceRetriever))]
-    class LanguageServiceRetriever : IWorkspaceService
+    partial class LanguageServiceRetriever : IWorkspaceService
     {
         IEnumerable<Lazy<ILanguageService, LanguageServiceMetadata>> services;
 
@@ -21,26 +21,16 @@ namespace Moq.Proxy
                 .Where(x => x.Metadata.Language == language && x.Metadata.ServiceType.StartsWith(serviceType))
                 .Select(x => x.Value);
 
+        public ILanguageService GetLanguageService(string language, string serviceType)
+            => GetLanguageServices(language, serviceType).FirstOrDefault();
+
         public IEnumerable<TService> GetLanguageServices<TService>(string language)
             => services
                 .Where(x => x.Metadata.Language == language && x.Metadata.ServiceType.StartsWith(typeof(TService).FullName))
                 .Select(x => x.Value)
                 .OfType<TService>();
 
-        public class LanguageServiceMetadata
-        {
-            public string Language { get; }
-
-            public string ServiceType { get; }
-
-            public IDictionary<string, object> Data { get; }
-
-            public LanguageServiceMetadata(IDictionary<string, object> data)
-            {
-                Language = (string)(data.TryGetValue(nameof(Language), out var language) ? language : default(string));
-                ServiceType = (string)(data.TryGetValue(nameof(ServiceType), out var service) ? service : default(string));
-                Data = data;
-            }
-        }
+        public TService GetLanguageService<TService>(string language)
+            => GetLanguageServices<TService>(language).FirstOrDefault();
     }
 }

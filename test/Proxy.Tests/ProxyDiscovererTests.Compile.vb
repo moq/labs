@@ -1,4 +1,5 @@
-﻿Imports Moq
+﻿Imports System
+Imports Moq
 
 Public Class Tests
     Public Sub WhenMockingFormatterThenCanInvokeIt()

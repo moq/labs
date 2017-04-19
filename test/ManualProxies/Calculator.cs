@@ -3,6 +3,13 @@ using System.Collections.Generic;
 
 namespace Moq.Proxy
 {
+    public abstract class CalculatorBase
+    {
+        public abstract bool IsOn { get; }
+
+        public abstract void TurnOn();
+    }
+
     public class Calculator : ICalculator, IDisposable
     {
         Dictionary<string, int> memory = new Dictionary<string, int>();
