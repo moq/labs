@@ -26,6 +26,8 @@ namespace Moq.Proxy
             var sources = new List<string>();
             var additional = new List<string>();
 
+            System.Diagnostics.Debugger.Launch();
+
             var options = new OptionSet
             {
                 { "e|extension=", "optional file extension of the generated proxy documents, such as '.cs' or '.vb'. Inferred from language if not specified.", e => extension = e },
@@ -56,6 +58,7 @@ namespace Moq.Proxy
 
                     Console.WriteLine("Options:");
                     options.WriteOptionDescriptions(Console.Out);
+                    return -1;
                 }
 
                 if (string.IsNullOrEmpty(extension))
