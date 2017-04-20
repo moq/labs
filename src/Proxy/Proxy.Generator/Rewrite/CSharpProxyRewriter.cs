@@ -81,8 +81,8 @@ namespace Moq.Proxy.Rewrite
 
                 if (node.ExpressionBody != null)
                     node = node.RemoveNode(node.ExpressionBody, SyntaxRemoveOptions.KeepNoTrivia);
-                if (node.AccessorList?.Accessors.Any() == true)
-                    node = node.RemoveNodes(node.AccessorList.Accessors, SyntaxRemoveOptions.KeepNoTrivia);
+
+                node = node.WithAccessorList(null);
 
                 if (canRead && !canWrite)
                 {
