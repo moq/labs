@@ -8,6 +8,7 @@ using System.Linq;
 using static Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory;
 using System;
 using Microsoft.CodeAnalysis.Host.Mef;
+using System.Collections.Generic;
 
 namespace Moq.Proxy.Rewrite
 {
@@ -26,7 +27,7 @@ namespace Moq.Proxy.Rewrite
             syntax = Visit(syntax);
 
             // Apply fixups
-            syntax = new VisualBasicParameterFixup().Visit(syntax);
+            syntax = new VisualBasicParameterFixup(generator).Visit(syntax);
 
             return document.WithSyntaxRoot(syntax);
         }
@@ -125,16 +126,37 @@ namespace Moq.Proxy.Rewrite
         /// </summary>
         class VisualBasicParameterFixup : VisualBasicSyntaxRewriter
         {
+            Dictionary<string, string> renamedParameters = new Dictionary<string, string>();
+            SyntaxGenerator generator;
+
+            public VisualBasicParameterFixup(SyntaxGenerator generator) => this.generator = generator;
+
+            public override SyntaxNode VisitParameterList(ParameterListSyntax node)
+            {
+                renamedParameters = new Dictionary<string, string>();
+                return base.VisitParameterList(node);
+            }
+
             public override SyntaxNode VisitParameter(ParameterSyntax node)
             {
                 var method = node.FirstAncestorOrSelf<MethodBlockSyntax>();
                 var syntax = method?.BlockStatement as MethodStatementSyntax;
                 if (syntax?.Identifier.GetIdentifierText().Equals(node.Identifier.Identifier.GetIdentifierText(), StringComparison.OrdinalIgnoreCase) == true)
                 {
-                    node = node.WithIdentifier(node.Identifier.WithIdentifier(SyntaxFactory.Identifier("_" + node.Identifier.Identifier.Text)));
+                    renamedParameters[node.Identifier.Identifier.Text] = "_" + node.Identifier.Identifier.Text;
+                    node = node.WithIdentifier(node.Identifier.WithIdentifier(Identifier("_" + node.Identifier.Identifier.Text)));
                 }
 
                 return base.VisitParameter(node);
+            }
+
+            public override SyntaxNode VisitSimpleArgument(SimpleArgumentSyntax node)
+            {
+                var name = node.ToString();
+                if (renamedParameters.ContainsKey(name))
+                    return base.VisitSimpleArgument(SimpleArgument(IdentifierName(renamedParameters[name])));
+
+                return base.VisitSimpleArgument(node);
             }
         }
     }
