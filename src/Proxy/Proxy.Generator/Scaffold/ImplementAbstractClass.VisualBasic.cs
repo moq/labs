@@ -6,9 +6,9 @@ namespace Moq.Proxy.Scaffold
 {
     [ExportLanguageService(typeof(IDocumentVisitor), LanguageNames.VisualBasic, GeneratorLayer.Scaffold)]
     [Shared]
-    class VisualBasicImplementInterfaceScaffold : ImplementInterfaceScaffold
+    class VisualBasicImplementAbstractClass : ImplementAbstractClass
     {
-        public VisualBasicImplementInterfaceScaffold()
+        public VisualBasicImplementAbstractClass()
             : base(LanguageNames.VisualBasic)
         {
         }

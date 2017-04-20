@@ -12,15 +12,15 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 namespace Moq.Proxy.Rewrite
 {
     [ExportLanguageService(typeof(IDocumentVisitor), LanguageNames.CSharp, GeneratorLayer.Rewrite)]
-    class CSharpProxyRewriter : CSharpSyntaxRewriter, IDocumentVisitor
+    class CSharpProxy : CSharpSyntaxRewriter, IDocumentVisitor
     {
         SyntaxGenerator generator;
-        ProxySyntaxRewriter rewriter;
+        ProxySyntax proxy;
 
         public async Task<Document> VisitAsync(ILanguageServices services, Document document, CancellationToken cancellationToken = default(CancellationToken))
         {
             generator = SyntaxGenerator.GetGenerator(document);
-            rewriter = await ProxySyntaxRewriter.CreateAsync(document);
+            proxy = await ProxySyntax.CreateAsync(document);
 
             var syntax = await document.GetSyntaxRootAsync(cancellationToken);
             syntax = Visit(syntax);
@@ -30,7 +30,7 @@ namespace Moq.Proxy.Rewrite
 
         public override SyntaxNode VisitClassDeclaration(ClassDeclarationSyntax node)
         {
-            node = (ClassDeclarationSyntax)rewriter.VisitClass(node);
+            node = (ClassDeclarationSyntax)proxy.VisitClass(node);
 
             // Turn event fields into event declarations.
             var events = node.ChildNodes().OfType<EventFieldDeclarationSyntax>().ToArray();

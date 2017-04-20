@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.Editing;
 
 namespace Moq.Proxy.Scaffold
 {
-    abstract class VirtualMembersScaffold : IDocumentVisitor
+    abstract class OverrideVirtualMembers : IDocumentVisitor
     {
         public async Task<Document> VisitAsync(ILanguageServices services, Document document, CancellationToken cancellationToken = default(CancellationToken))
         {

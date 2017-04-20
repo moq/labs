@@ -10,7 +10,7 @@ using Moq.Proxy.Properties;
 
 namespace Moq.Proxy.Scaffold
 {
-    abstract class AbstractClassScaffold : IDocumentVisitor
+    abstract class ImplementAbstractClass : IDocumentVisitor
     {
         string language;
 
@@ -18,7 +18,7 @@ namespace Moq.Proxy.Scaffold
         CanImplementAbstractClassAsync canImplement;
         ImplementAbstractClassAsync implement;
 
-        protected AbstractClassScaffold(string language) => this.language = language;
+        protected ImplementAbstractClass(string language) => this.language = language;
 
         public async Task<Document> VisitAsync(ILanguageServices services, Document document, CancellationToken cancellationToken = default(CancellationToken))
         {

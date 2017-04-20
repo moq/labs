@@ -11,7 +11,7 @@ namespace Moq.Proxy.Scaffold
 {
     [ExportLanguageService(typeof(IDocumentVisitor), LanguageNames.VisualBasic, GeneratorLayer.Scaffold)]
     [Shared]
-    class VisualBasicVirtualMembersScaffold : VirtualMembersScaffold
+    class VisualBasicOverrideVirtualMembers : OverrideVirtualMembers
     {
         // VB can't override virtual events :\
         protected override SyntaxNode AddEvent(SyntaxGenerator generator, SyntaxNode syntax, IEventSymbol symbol, SyntaxNode @event) 

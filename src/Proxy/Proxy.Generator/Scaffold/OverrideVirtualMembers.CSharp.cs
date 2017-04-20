@@ -11,7 +11,7 @@ namespace Moq.Proxy.Scaffold
 {
     [ExportLanguageService(typeof(IDocumentVisitor), LanguageNames.CSharp, GeneratorLayer.Scaffold)]
     [Shared]
-    class CSharpVirtualMembersScaffold : VirtualMembersScaffold
+    class CSharpOverrideVirtualMembers : OverrideVirtualMembers
     {
         protected override SyntaxNode AddEvent(SyntaxGenerator generator, SyntaxNode syntax, IEventSymbol symbol, SyntaxNode @event)
             => base.AddEvent(generator, syntax, symbol, 

@@ -5,23 +5,23 @@ using Microsoft.CodeAnalysis.Editing;
 
 namespace Moq.Proxy.Rewrite
 {
-    class ProxySyntaxRewriter
+    class ProxySyntax
     {
         SyntaxGenerator generator;
         INamedTypeSymbol proxyType;
         IPropertySymbol behaviorsProp;
 
-        public static async Task<ProxySyntaxRewriter> CreateAsync(Document document)
+        public static async Task<ProxySyntax> CreateAsync(Document document)
         {
             var compilation = await document.Project.GetCompilationAsync();
 
             var proxyType = compilation.GetTypeByMetadataName(typeof(IProxy).FullName);
             var behaviorsProp = proxyType.GetMembers().OfType<IPropertySymbol>().First(prop => prop.Name == nameof(IProxy.Behaviors));
 
-            return new ProxySyntaxRewriter(document, proxyType, behaviorsProp);
+            return new ProxySyntax(document, proxyType, behaviorsProp);
         }
 
-        private ProxySyntaxRewriter(Document document, INamedTypeSymbol proxyType, IPropertySymbol behaviorsProp)
+        private ProxySyntax(Document document, INamedTypeSymbol proxyType, IPropertySymbol behaviorsProp)
         {
             generator = SyntaxGenerator.GetGenerator(document);
             this.proxyType = proxyType;

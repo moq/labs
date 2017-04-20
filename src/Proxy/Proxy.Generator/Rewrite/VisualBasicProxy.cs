@@ -1,40 +1,36 @@
-﻿using System.Threading;
+﻿using System;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Editing;
+using Microsoft.CodeAnalysis.Host.Mef;
 using Microsoft.CodeAnalysis.VisualBasic;
 using Microsoft.CodeAnalysis.VisualBasic.Syntax;
-using Microsoft.CodeAnalysis.Editing;
-using System.Linq;
 using static Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory;
-using System;
-using Microsoft.CodeAnalysis.Host.Mef;
-using System.Collections.Generic;
 
 namespace Moq.Proxy.Rewrite
 {
     [ExportLanguageService(typeof(IDocumentVisitor), LanguageNames.VisualBasic, GeneratorLayer.Rewrite)]
-    class VisualBasicProxyRewriter : VisualBasicSyntaxRewriter, IDocumentVisitor
+    class VisualBasicProxy : VisualBasicSyntaxRewriter, IDocumentVisitor
     {
-        ProxySyntaxRewriter rewriter;
         SyntaxGenerator generator;
+        ProxySyntax proxy;
 
         public async Task<Document> VisitAsync(ILanguageServices services, Document document, CancellationToken cancellationToken = default(CancellationToken))
         {
             generator = SyntaxGenerator.GetGenerator(document);
-            rewriter = await ProxySyntaxRewriter.CreateAsync(document);
+            proxy = await ProxySyntax.CreateAsync(document);
 
             var syntax = await document.GetSyntaxRootAsync(cancellationToken);
             syntax = Visit(syntax);
-
-            // Apply fixups
-            syntax = new VisualBasicParameterFixup(generator).Visit(syntax);
 
             return document.WithSyntaxRoot(syntax);
         }
 
         public override SyntaxNode VisitClassBlock(ClassBlockSyntax node)
         {
-            node = (ClassBlockSyntax)rewriter.VisitClass(node);
+            node = (ClassBlockSyntax)proxy.VisitClass(node);
 
             // Turn event fields into event declarations.
             var events = node.ChildNodes().OfType<EventStatementSyntax>().ToArray();
@@ -90,7 +86,7 @@ namespace Moq.Proxy.Rewrite
             var implements = node.PropertyStatement?.ImplementsClause?.InterfaceMembers.FirstOrDefault();
             if (implements != null && implements.ToString() == $"{nameof(IProxy)}.{nameof(IProxy.Behaviors)}")
             {
-                node = (PropertyBlockSyntax)rewriter.VisitBehaviorsProperty(
+                node = (PropertyBlockSyntax)proxy.VisitBehaviorsProperty(
                     // Make the property private (== explicit interface implementation in C#)
                     node.WithPropertyStatement(
                         node.PropertyStatement.WithModifiers(SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.ReadOnlyKeyword)))));
@@ -118,46 +114,6 @@ namespace Moq.Proxy.Rewrite
             }
 
             return base.VisitPropertyBlock(node);
-        }
-
-        /// <summary>
-        /// Fixup for: 
-        /// https://developercommunity.visualstudio.com/content/problem/40204/running-implement-interface-code-action-results-in.html
-        /// </summary>
-        class VisualBasicParameterFixup : VisualBasicSyntaxRewriter
-        {
-            Dictionary<string, string> renamedParameters = new Dictionary<string, string>();
-            SyntaxGenerator generator;
-
-            public VisualBasicParameterFixup(SyntaxGenerator generator) => this.generator = generator;
-
-            public override SyntaxNode VisitParameterList(ParameterListSyntax node)
-            {
-                renamedParameters = new Dictionary<string, string>();
-                return base.VisitParameterList(node);
-            }
-
-            public override SyntaxNode VisitParameter(ParameterSyntax node)
-            {
-                var method = node.FirstAncestorOrSelf<MethodBlockSyntax>();
-                var syntax = method?.BlockStatement as MethodStatementSyntax;
-                if (syntax?.Identifier.GetIdentifierText().Equals(node.Identifier.Identifier.GetIdentifierText(), StringComparison.OrdinalIgnoreCase) == true)
-                {
-                    renamedParameters[node.Identifier.Identifier.Text] = "_" + node.Identifier.Identifier.Text;
-                    node = node.WithIdentifier(node.Identifier.WithIdentifier(Identifier("_" + node.Identifier.Identifier.Text)));
-                }
-
-                return base.VisitParameter(node);
-            }
-
-            public override SyntaxNode VisitSimpleArgument(SimpleArgumentSyntax node)
-            {
-                var name = node.ToString();
-                if (renamedParameters.ContainsKey(name))
-                    return base.VisitSimpleArgument(SimpleArgument(IdentifierName(renamedParameters[name])));
-
-                return base.VisitSimpleArgument(node);
-            }
         }
     }
 }

@@ -11,12 +11,12 @@ using Moq.Proxy.Properties;
 
 namespace Moq.Proxy.Scaffold
 {
-    abstract class ImplementInterfaceScaffold : IDocumentVisitor
+    abstract class ImplementInterface : IDocumentVisitor
     {
         string language;
         GetCodeActions getCodeActions;
 
-        protected ImplementInterfaceScaffold(string language) => this.language = language;
+        protected ImplementInterface(string language) => this.language = language;
 
         public async Task<Document> VisitAsync(ILanguageServices services, Document document, CancellationToken cancellationToken = default(CancellationToken))
         {

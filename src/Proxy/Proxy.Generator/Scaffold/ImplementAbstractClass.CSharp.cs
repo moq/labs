@@ -6,9 +6,9 @@ namespace Moq.Proxy.Scaffold
 {
     [ExportLanguageService(typeof(IDocumentVisitor), LanguageNames.CSharp, GeneratorLayer.Scaffold)]
     [Shared]
-    class CSharpAbstractClassScaffold : AbstractClassScaffold
+    class CSharpImplementAbstractClass : ImplementAbstractClass
     {
-        public CSharpAbstractClassScaffold()
+        public CSharpImplementAbstractClass()
             : base(LanguageNames.CSharp)
         {
         }
