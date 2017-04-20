@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Composition;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -7,31 +6,10 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Editing;
 using Microsoft.CodeAnalysis.Host;
-using Microsoft.CodeAnalysis.Host.Mef;
 using Moq.Proxy.Properties;
 
 namespace Moq.Proxy.Scaffold
 {
-    [ExportLanguageService(typeof(IDocumentVisitor), LanguageNames.CSharp, GeneratorLayer.Scaffold)]
-    [Shared]
-    class CSharpAbstractClassScaffold : AbstractClassScaffold
-    {
-        public CSharpAbstractClassScaffold()
-            : base(LanguageNames.CSharp)
-        {
-        }
-    }
-
-    [ExportLanguageService(typeof(IDocumentVisitor), LanguageNames.VisualBasic, GeneratorLayer.Scaffold)]
-    [Shared]
-    class VisualBasicAbstractClassScaffold : AbstractClassScaffold
-    {
-        public VisualBasicAbstractClassScaffold()
-            : base(LanguageNames.VisualBasic)
-        {
-        }
-    }
-
     abstract class AbstractClassScaffold : IDocumentVisitor
     {
         string language;

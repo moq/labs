@@ -1,8 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Simplification;
 using Xunit;
 using Xunit.Abstractions;
 using static TestHelpers;
@@ -34,14 +36,20 @@ namespace Moq.Proxy.Tests
         [InlineData(LanguageNames.CSharp)]
         [InlineData(LanguageNames.VisualBasic)]
         [Theory]
-        public Task WhenTypeIsAbstractTheItWorks(string language)
+        public Task WhenTypeIsInterface(string language)
+            => CanGenerateProxy(language, typeof(ICalculator));
+
+        [InlineData(LanguageNames.CSharp)]
+        [InlineData(LanguageNames.VisualBasic)]
+        [Theory]
+        public Task WhenTypeIsAbstract(string language)
             => CanGenerateProxy(language, typeof(CalculatorBase));
 
         [InlineData(LanguageNames.CSharp)]
         [InlineData(LanguageNames.VisualBasic)]
         [Theory]
         public Task WhenTypeHasVirtualMembers(string language)
-            => CanGenerateProxy(language, typeof(Calculator), trace: true);
+            => CanGenerateProxy(language, typeof(Calculator));
 
         [InlineData(LanguageNames.CSharp)]
         [InlineData(LanguageNames.VisualBasic)]
@@ -61,12 +69,11 @@ namespace Moq.Proxy.Tests
                     compilation.GetTypeByMetadataName(typeof(INotifyPropertyChanging).FullName),
                     compilation.GetTypeByMetadataName(typeof(INotifyPropertyChanged).FullName),
                     compilation.GetTypeByMetadataName(typeof(ICalculator).FullName),
-                    compilation.GetTypeByMetadataName(typeof(IFormattable).FullName),
                 });
 
             var syntax = await document.GetSyntaxRootAsync();
 
-            document = project.AddDocument("proxy." + (language == LanguageNames.CSharp ? "cs" : "vb"), syntax);
+            document = project.AddDocument("proxy." + (language == LanguageNames.CSharp ? "cs" : "vb"), syntax, filePath: Path.GetTempFileName());
 
             await AssertCode.NoErrorsAsync(document);
         }
@@ -132,12 +139,16 @@ namespace Moq.Proxy.Tests
 
             var syntax = await document.GetSyntaxRootAsync();
 
-            document = project.AddDocument("proxy." + (language == LanguageNames.CSharp ? "cs" : "vb"), syntax);
+            document = project.AddDocument("proxy." + (language == LanguageNames.CSharp ? "cs" : "vb"), syntax, filePath: Path.GetTempFileName());
 
             await AssertCode.NoErrorsAsync(document);
 
             if (trace)
-                output.WriteLine(syntax.NormalizeWhitespace().ToFullString());
+            {
+                document = await Simplifier.ReduceAsync(document);
+                var root = await document.GetSyntaxRootAsync();
+                output.WriteLine(root.NormalizeWhitespace().ToFullString());
+            }
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Simplification;
 using Xunit;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static TestHelpers;
@@ -63,24 +64,30 @@ public static class AssertCode
     public static async Task NoErrorsAsync(Document document)
     {
         var compilation = await document.Project.GetCompilationAsync(TimeoutToken(2));
-        var syntax = await document.GetSyntaxRootAsync(TimeoutToken(1));
-
-        if (compilation.GetDiagnostics().Any(d => d.Severity == DiagnosticSeverity.Error))
+        if (compilation.GetDiagnostics().Any(d => d.Severity == DiagnosticSeverity.Error || d.Severity == DiagnosticSeverity.Warning))
         {
+            SyntaxNode syntax;
             try
             {
                 // Attempt to normalize whitespace and get the errors again, so the code is more legible
+                syntax = await document.GetSyntaxRootAsync(TimeoutToken(1));
                 syntax = syntax.NormalizeWhitespace();
                 document = document.WithSyntaxRoot(syntax);
                 compilation = await document.Project.GetCompilationAsync(TimeoutToken(2));
             }
-            catch (OperationCanceledException) { }
+            catch (OperationCanceledException)
+            {
+                syntax = await document.GetSyntaxRootAsync(TimeoutToken(1));
+            }
+
+            if (!string.IsNullOrEmpty(document.FilePath))
+                File.WriteAllText(document.FilePath, (await document.GetTextAsync()).ToString());
 
             var indexOffset = document.Project.Language == LanguageNames.VisualBasic ? 1 : 0;
 
             Assert.False(true,
                 Environment.NewLine +
-                string.Join(Environment.NewLine, compilation.GetDiagnostics().Where(d => d.Severity == DiagnosticSeverity.Error).Select(d
+                string.Join(Environment.NewLine, compilation.GetDiagnostics().Where(d => d.Severity == DiagnosticSeverity.Error || d.Severity == DiagnosticSeverity.Warning).Select(d
                     => $"'{syntax.GetText().GetSubText(d.Location.SourceSpan).ToString()}' : {d.ToString()}")) +
                 Environment.NewLine +
                 string.Join(Environment.NewLine,

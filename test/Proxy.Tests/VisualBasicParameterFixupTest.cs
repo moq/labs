@@ -1,5 +1,6 @@
 ﻿using System;
 using System.CodeDom.Compiler;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -27,7 +28,7 @@ namespace Moq.Proxy.Tests
                 });
 
             var syntax = await document.GetSyntaxRootAsync();
-            document = project.AddDocument("proxy.vb", syntax);
+            document = project.AddDocument("proxy.vb", syntax, filePath: Path.GetTempFileName());
 
             await AssertCode.NoErrorsAsync(document);
         }

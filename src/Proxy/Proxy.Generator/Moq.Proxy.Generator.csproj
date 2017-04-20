@@ -30,6 +30,24 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Update="Scaffold\ImplementInterfaceScaffold.CSharp.cs">
+      <DependentUpon>ImplementInterfaceScaffold.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Scaffold\ImplementInterfaceScaffold.VisualBasic.cs">
+      <DependentUpon>ImplementInterfaceScaffold.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Scaffold\AbstractClassScaffold.CSharp.cs">
+      <DependentUpon>AbstractClassScaffold.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Scaffold\AbstractClassScaffold.VisualBasic.cs">
+      <DependentUpon>AbstractClassScaffold.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Scaffold\VirtualMembersScaffold.CSharp.cs">
+      <DependentUpon>VirtualMembersScaffold.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Scaffold\VirtualMembersScaffold.VisualBasic.cs">
+      <DependentUpon>VirtualMembersScaffold.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>

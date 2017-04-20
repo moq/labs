@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Simplification;
 using Mono.Options;
 
 namespace Moq.Proxy
@@ -75,7 +76,8 @@ namespace Moq.Proxy
                 foreach (var proxy in proxies)
                 {
                     var proxyFile = Path.Combine(outputPath, proxy.Name + extension);
-                    var syntax = await proxy.GetSyntaxRootAsync();
+                    var document = await Simplifier.ReduceAsync(proxy);
+                    var syntax = await document.GetSyntaxRootAsync();
                     var output = syntax.NormalizeWhitespace().ToFullString();
                     if (!File.Exists(proxyFile) || !File.ReadAllText(proxyFile).Equals(output, StringComparison.Ordinal))
                     {
