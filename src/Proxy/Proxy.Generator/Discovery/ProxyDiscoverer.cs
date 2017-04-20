@@ -5,9 +5,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 
-namespace Moq.Proxy
+namespace Moq.Proxy.Discovery
 {
-    public class ProxyDiscoverer
+    class ProxyDiscoverer
     {
         public async Task<IImmutableSet<ImmutableArray<ITypeSymbol>>> DiscoverProxiesAsync(Project project, CancellationToken cancellationToken = default(CancellationToken))
         {

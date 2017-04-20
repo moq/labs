@@ -4,7 +4,7 @@ using System.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Editing;
 
-namespace Moq.Proxy
+namespace Moq.Proxy.Rewrite
 {
     static class SyntaxGeneratorExtensions
     {

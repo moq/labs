@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Editing;
 
-namespace Moq.Proxy
+namespace Moq.Proxy.Rewrite
 {
     class ProxySyntaxRewriter
     {

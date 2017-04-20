@@ -9,15 +9,15 @@ using Microsoft.CodeAnalysis.Editing;
 using Microsoft.CodeAnalysis.Host.Mef;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Moq.Proxy.CSharp
+namespace Moq.Proxy.Rewrite
 {
-    [ExportLanguageService(typeof(IDocumentRewriter), LanguageNames.CSharp)]
-    class CSharpProxyRewriter : CSharpSyntaxRewriter, IDocumentRewriter
+    [ExportLanguageService(typeof(IDocumentVisitor), LanguageNames.CSharp, GeneratorLayer.Rewrite)]
+    class CSharpProxyRewriter : CSharpSyntaxRewriter, IDocumentVisitor
     {
         SyntaxGenerator generator;
         ProxySyntaxRewriter rewriter;
 
-        public async Task<Document> VisitAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Document> VisitAsync(ILanguageServices services, Document document, CancellationToken cancellationToken = default(CancellationToken))
         {
             generator = SyntaxGenerator.GetGenerator(document);
             rewriter = await ProxySyntaxRewriter.CreateAsync(document);

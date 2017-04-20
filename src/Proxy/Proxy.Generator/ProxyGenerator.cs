@@ -9,13 +9,13 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Editing;
 using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.CodeAnalysis.Host;
 using Microsoft.CodeAnalysis.Host.Mef;
 using Microsoft.CodeAnalysis.VisualBasic;
+using Moq.Proxy.Discovery;
 using Moq.Proxy.Properties;
 
 namespace Moq.Proxy
@@ -23,7 +23,7 @@ namespace Moq.Proxy
     /// <summary>
     /// Generates proxy classes for the given input symbols.
     /// </summary>
-    public class ProxyGenerator
+    class ProxyGenerator
     {
         // Used for MEF composition.
         public static HostServices CreateHost() => MefHostServices.Create(new ContainerConfiguration()
@@ -168,19 +168,19 @@ namespace Moq.Proxy
                             .Concat(new[] { generator.IdentifierName(nameof(IProxy)) }))
                 }));
 
-            var languageServices = workspace.Services.GetService<LanguageServiceRetriever>();
-
-            var implementInterface = new ImplementInterfaceService(languageServices, project.Language);
-            var implementAbstract = new ImplementAbstractClassService(languageServices, project.Language);
-
+            var services = workspace.Services.GetService<ILanguageServices>();
             var document = project.AddDocument(name, syntax);
-            document = await ImplementInterfaces(workspace, document, new HashSet<string>(), generator, implementInterface, cancellationToken);
-            document = await implementAbstract.ImplementAbstractClass(document, cancellationToken);
 
-            var rewriters = languageServices.GetLanguageServices<IDocumentRewriter>(project.Language).ToArray();
+            var scaffolds = services.GetLanguageServices<IDocumentVisitor>(project.Language, GeneratorLayer.Scaffold).ToArray();
+            foreach (var scaffold in scaffolds)
+            {
+                document = await scaffold.VisitAsync(services, document, cancellationToken);
+            }
+
+            var rewriters = services.GetLanguageServices<IDocumentVisitor>(project.Language, GeneratorLayer.Rewrite).ToArray();
             foreach (var rewriter in rewriters)
             {
-                document = await rewriter.VisitAsync(document, cancellationToken);
+                document = await rewriter.VisitAsync(services, document, cancellationToken);
             }
 
             return document;
@@ -206,71 +206,6 @@ namespace Moq.Proxy
                 throw new ArgumentException(Strings.InvalidProxyTypes(string.Join(",", types.Select(x => x.Name))));
 
             return (baseType, interfaceTypes);
-        }
-
-        async Task<Document> ImplementInterfaces(Workspace workspace, Document document, HashSet<string> skipTypes, SyntaxGenerator generator, ImplementInterfaceService implementInterface, CancellationToken cancellationToken)
-        {
-            var project = document.Project;
-
-            var compilation = await project.GetCompilationAsync(cancellationToken);
-            var tree = await document.GetSyntaxTreeAsync(cancellationToken);
-            var semantic = await document.GetSemanticModelAsync(cancellationToken);
-            var syntax = tree.GetRoot().DescendantNodes().First(node => generator.GetDeclarationKind(node) == DeclarationKind.Class);
-            var baseTypes = generator.GetBaseAndInterfaceTypes(syntax)
-                .Where(x => !skipTypes.Contains(x.ToString()))
-                .ToArray();
-
-            if (baseTypes.Length == 0)
-                return document;
-
-            var actions = baseTypes.Select(baseType => new
-            {
-                BaseType = baseType,
-                CodeActions = implementInterface.GetCodeActions(document, semantic, baseType, cancellationToken)
-#if DEBUG
-                .ToArray()
-#endif
-            })
-            .Where(x => x.CodeActions.Any())
-#if DEBUG
-            .ToArray()
-#endif
-            ;
-
-            // We're done.
-            if (!actions.Any())
-                return document;
-
-            var action = default(CodeAction);
-            var current = actions.First();
-            skipTypes.Add(current.BaseType.ToString());
-
-            // The last base type is IProxy, we implement that explicitly always.
-            // NOTE: VB doesn't have this concept, it always adds Implements [member]. 
-            // So there is always a single CodeAction for it. The VisualBasicProxyRewriter takes 
-            // care of making the property private, which is how you make it "explicit" in VB.
-            if (current.BaseType == baseTypes.Last())
-                action = current.CodeActions.Last();
-            else
-                action = current.CodeActions.First();
-
-            // Otherwise, apply and recurse.
-            try
-            {
-                var operations = await action.GetOperationsAsync(cancellationToken);
-                var operation = operations.OfType<ApplyChangesOperation>().FirstOrDefault();
-                if (operation != null)
-                {
-                    operation.Apply(workspace, cancellationToken);
-                    return await ImplementInterfaces(workspace, operation.ChangedSolution.GetDocument(document.Id), skipTypes, generator, implementInterface, cancellationToken);
-                }
-
-                return document;
-            }
-            catch (OperationCanceledException)
-            {
-                throw new NotSupportedException($"Failed to apply code action '{action.Title}' for '{current.BaseType.ToString()}'. Document: \r\n{syntax.NormalizeWhitespace().ToString()}");
-            }
         }
 
         class AttributeFilterProvider : AttributedModelProvider

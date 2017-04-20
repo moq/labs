@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Host.Mef;
 
-namespace Moq.Proxy.CSharp
+namespace Moq.Proxy.Discovery
 {
     [ExportLanguageService(typeof(IProxyDiscoverer), LanguageNames.CSharp)]
     class CSharpProxyDiscoverer : IProxyDiscoverer

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using Moq.Proxy.Discovery;
 using Xunit;
 using Xunit.Abstractions;
 using static TestHelpers;

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-namespace Moq.Proxy
+namespace Moq.Proxy.Discovery
 {
-    static class DocumentExtensions
+    static class DocumentDiscoveryExtensions
     {
         public static async Task<ImmutableHashSet<ImmutableArray<ITypeSymbol>>> DiscoverProxiesAsync<TSyntax>(this Document document, ITypeSymbol proxyGeneratorSymbol, CancellationToken cancellationToken = default(CancellationToken))
             where TSyntax : SyntaxNode

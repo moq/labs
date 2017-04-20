@@ -3,21 +3,21 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.VisualBasic;
 using Microsoft.CodeAnalysis.VisualBasic.Syntax;
-using Microsoft.CodeAnalysis.Host.Mef;
 using Microsoft.CodeAnalysis.Editing;
 using System.Linq;
 using static Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory;
 using System;
+using Microsoft.CodeAnalysis.Host.Mef;
 
-namespace Moq.Proxy.VisualBasic
+namespace Moq.Proxy.Rewrite
 {
-    [ExportLanguageService(typeof(IDocumentRewriter), LanguageNames.VisualBasic)]
-    class VisualBasicProxyRewriter : VisualBasicSyntaxRewriter, IDocumentRewriter
+    [ExportLanguageService(typeof(IDocumentVisitor), LanguageNames.VisualBasic, GeneratorLayer.Rewrite)]
+    class VisualBasicProxyRewriter : VisualBasicSyntaxRewriter, IDocumentVisitor
     {
         ProxySyntaxRewriter rewriter;
         SyntaxGenerator generator;
 
-        public async Task<Document> VisitAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Document> VisitAsync(ILanguageServices services, Document document, CancellationToken cancellationToken = default(CancellationToken))
         {
             generator = SyntaxGenerator.GetGenerator(document);
             rewriter = await ProxySyntaxRewriter.CreateAsync(document);
@@ -117,6 +117,25 @@ namespace Moq.Proxy.VisualBasic
             }
 
             return base.VisitPropertyBlock(node);
+        }
+
+        /// <summary>
+        /// Fixup for: 
+        /// https://developercommunity.visualstudio.com/content/problem/40204/running-implement-interface-code-action-results-in.html
+        /// </summary>
+        class VisualBasicParameterFixup : VisualBasicSyntaxRewriter
+        {
+            public override SyntaxNode VisitParameter(ParameterSyntax node)
+            {
+                var method = node.FirstAncestorOrSelf<MethodBlockSyntax>();
+                var syntax = method?.BlockStatement as MethodStatementSyntax;
+                if (syntax?.Identifier.GetIdentifierText().Equals(node.Identifier.Identifier.GetIdentifierText(), StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    node = node.WithIdentifier(node.Identifier.WithIdentifier(SyntaxFactory.Identifier("_" + node.Identifier.Identifier.Text)));
+                }
+
+                return base.VisitParameter(node);
+            }
         }
     }
 }

@@ -40,6 +40,12 @@ namespace Moq.Proxy.Tests
         [InlineData(LanguageNames.CSharp)]
         [InlineData(LanguageNames.VisualBasic)]
         [Theory]
+        public Task WhenTypeHasVirtualMembers(string language)
+            => CanGenerateProxy(language, typeof(Calculator), trace: true);
+
+        [InlineData(LanguageNames.CSharp)]
+        [InlineData(LanguageNames.VisualBasic)]
+        [Theory]
         public async Task CanGenerateProxyWithMultipleInterfaces(string language)
         {
             var (workspace, project) = CreateWorkspaceAndProject(language);

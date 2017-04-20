@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Moq.Proxy.CSharp
+namespace Moq.Proxy.Rewrite
 {
     internal static class CSharpSyntaxExtensions
     {
