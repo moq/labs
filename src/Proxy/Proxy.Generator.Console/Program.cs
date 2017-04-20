@@ -34,6 +34,7 @@ namespace Moq.Proxy
                 { "r|reference=", "an assembly reference required for compiling the sources", r => references.Add(r.Trim()) },
                 { "s|source=", "a source file in the language specified which should be processed for proxy generation", s => sources.Add(s.Trim()) },
                 { "a|additional=", "optional additional interfaces to implement in all generated proxies", a => additional.Add(a.Trim()) },
+                new ResponseFileSource(),
                 { "h|help", "show this message and exit", h => shouldShowHelp = h != null },
             };
 
@@ -43,13 +44,6 @@ namespace Moq.Proxy
             try
             {
                 extra = options.Parse(args);
-
-                // Parse extra response file if specified
-                var responseFile = extra.FirstOrDefault(x => x[0] == '@');
-                if (responseFile != null)
-                {
-                    extra = options.Parse(File.ReadAllLines(responseFile.Substring(1)));
-                }
 
                 if (shouldShowHelp ||
                     string.IsNullOrEmpty(outputPath) ||

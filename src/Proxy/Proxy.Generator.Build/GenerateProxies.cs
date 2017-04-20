@@ -93,13 +93,13 @@ namespace Moq.Proxy
             foreach (var reference in References)
             {
                 builder.AppendLine("-r")
-                    .AppendLine(reference.GetMetadata("FullPath"));
+                    .AppendLine("\"" + reference.GetMetadata("FullPath") + "\"");
             }
 
             foreach (var source in Sources)
             {
                 builder.AppendLine("-s")
-                    .AppendLine(source.GetMetadata("FullPath"));
+                    .AppendLine("\"" + source.GetMetadata("FullPath") + "\"");
             }
 
             return builder.ToString();
