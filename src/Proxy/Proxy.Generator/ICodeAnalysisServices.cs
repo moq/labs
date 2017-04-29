@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Host;
 using Microsoft.CodeAnalysis.Host.Mef;
 
@@ -11,9 +12,9 @@ namespace Moq.Proxy
         IEnumerable<TService> GetLanguageServices<TService>(string language, string layer = ServiceLayer.Default)
             where TService : ILanguageService;
 
-        IEnumerable<IWorkspaceService> GetWorkspaceService(string serviceType, string layer = ServiceLayer.Default);
+        IWorkspaceService GetWorkspaceService(string serviceType, string layer = ServiceLayer.Default);
 
-        IEnumerable<TService> GetWorkspaceService<TService>(string layer = ServiceLayer.Default)
-            where TService : IWorkspaceService;
+        TService GetWorkspaceService<TService>(string layer = ServiceLayer.Default)
+            where TService : class, IWorkspaceService;
     }
 }

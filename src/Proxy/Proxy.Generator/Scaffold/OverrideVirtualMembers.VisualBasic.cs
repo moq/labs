@@ -18,9 +18,11 @@ namespace Moq.Proxy.Scaffold
             : base(services) { }
 
         // VB can't override virtual events :\
+        // See https://github.com/dotnet/vblang/issues/63
         protected override SyntaxNode AddEvent(SyntaxGenerator generator, SyntaxNode syntax, IEventSymbol symbol, SyntaxNode @event) 
             => syntax.WithLeadingTrivia(syntax.GetLeadingTrivia().Add(
-                CommentTrivia($"' NOTE: overriding virtual events is not supported by VB.NET. Skipping {generator.GetName(@event)}. See https://github.com/dotnet/vblang/issues/63")));
+                CommentTrivia($@"' NOTE: overriding virtual events is not supported by VB.NET. Skipping {generator.GetName(@event)}. See https://github.com/dotnet/vblang/issues/63
+")));
 
         protected override SyntaxNode AddProperty(SyntaxGenerator generator, SyntaxNode syntax, IPropertySymbol symbol, SyntaxNode property)
         {

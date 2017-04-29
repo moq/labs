@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Editing;
 using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.CodeAnalysis.Host;
+using Microsoft.CodeAnalysis.Text;
 using Microsoft.CodeAnalysis.VisualBasic;
 using Moq.Proxy.Discovery;
 using Moq.Proxy.Properties;
@@ -61,21 +62,29 @@ namespace Moq.Proxy
             ImmutableArray<string> additionalInterfaces,
             CancellationToken cancellationToken)
         {
-            var project = workspace.AddProject("pgen", languageName)
-                // TODO: would be nice to get these options directly from the project somehow, 
-                // or set them by default to DynamicallyLinkedLibrary without requiring this?
-                .WithCompilationOptions(languageName == LanguageNames.CSharp ?
+            var options = languageName == LanguageNames.CSharp ?
                     (CompilationOptions)new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary) :
-                    (CompilationOptions)new VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
-                .WithMetadataReferences(references
-                    .Select(x => MetadataReference.CreateFromFile(x)));
+                    (CompilationOptions)new VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary);
+
+            var project = workspace.AddProject(ProjectInfo.Create(
+                ProjectId.CreateNewId(),
+                VersionStamp.Create(),
+                "pgen",
+                "pgen.dll",
+                languageName,
+                compilationOptions: options,
+                metadataReferences: references
+                    .Select(path => MetadataReference.CreateFromFile(path))));
 
             foreach (var source in sources)
             {
-                project = project.AddDocument(
+                var document = workspace.AddDocument(DocumentInfo.Create(
+                    DocumentId.CreateNewId(project.Id),
                     Path.GetFileName(source),
-                    File.ReadAllText(source)
-                ).Project;
+                    filePath: Path.GetTempFileName(),
+                    loader: TextLoader.From(TextAndVersion.Create(SourceText.From(File.ReadAllText(source)), VersionStamp.Create()))));
+
+                project = document.Project;
             }
 
             var compilation = await project.GetCompilationAsync();
@@ -109,7 +118,7 @@ namespace Moq.Proxy
         /// <param name="cancellationToken">Cancellation token to abort the code generation process.</param>
         /// <param name="types">Base type (optional) and base interfaces the proxy should implement.</param>
         /// <returns>A <see cref="Document"/> containing the proxy code.</returns>
-        public Task<Document> GenerateProxyAsync(Workspace workspace, Project project,
+        public Task<Document> GenerateProxyAsync(AdhocWorkspace workspace, Project project,
             CancellationToken cancellationToken, params ITypeSymbol[] types)
             => GenerateProxyAsync(workspace, project, cancellationToken, types.ToImmutableArray());
 
@@ -121,7 +130,7 @@ namespace Moq.Proxy
         /// <param name="cancellationToken">Cancellation token to abort the code generation process.</param>
         /// <param name="types">Base type (optional) and base interfaces the proxy should implement.</param>
         /// <returns>A <see cref="Document"/> containing the proxy code.</returns>
-        public async Task<Document> GenerateProxyAsync(Workspace workspace, Project project,
+        public async Task<Document> GenerateProxyAsync(AdhocWorkspace workspace, Project project,
             CancellationToken cancellationToken, ImmutableArray<ITypeSymbol> types)
         {
             // TODO: the project *must* have a reference to the Moq.Proxy assembly. How do we verify that?
@@ -162,9 +171,13 @@ namespace Moq.Proxy
                             // explicitly.
                             .Concat(new[] { generator.IdentifierName(nameof(IProxy)) }))
                 }));
-
+                
             var services = workspace.Services.GetService<ICodeAnalysisServices>();
-            var document = project.AddDocument(name, syntax);
+            var document = workspace.AddDocument(DocumentInfo.Create(
+                DocumentId.CreateNewId(project.Id),
+                name,
+                filePath: Path.GetTempFileName(),
+                loader: TextLoader.From(TextAndVersion.Create(SourceText.From(syntax.NormalizeWhitespace().ToFullString()), VersionStamp.Create()))));
 
             var scaffolds = services.GetLanguageServices<IDocumentVisitor>(project.Language, GeneratorLayer.Scaffold).ToArray();
             foreach (var scaffold in scaffolds)

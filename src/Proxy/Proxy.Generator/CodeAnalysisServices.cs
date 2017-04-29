@@ -42,20 +42,22 @@ namespace Moq.Proxy
                 .Select(x => x.Value)
                 .OfType<TService>();
 
-        public IEnumerable<IWorkspaceService> GetWorkspaceService(string serviceType, string layer = ServiceLayer.Default)
+        public IWorkspaceService GetWorkspaceService(string serviceType, string layer = ServiceLayer.Default)
             => workspaceServices
                 .Where(x =>
                     x.Metadata.Layer == layer &&
                     x.Metadata.ServiceType.StartsWith(serviceType))
-                .Select(x => x.Value);
+                .Select(x => x.Value)
+                .FirstOrDefault() ?? throw new ArgumentException($"Missing requested workspace service {serviceType} from layer {layer}.");
 
-        public IEnumerable<TService> GetWorkspaceService<TService>(string layer = ServiceLayer.Default)
-            where TService : IWorkspaceService
+        public TService GetWorkspaceService<TService>(string layer = ServiceLayer.Default)
+            where TService : class, IWorkspaceService
             => workspaceServices
                 .Where(x =>
                     x.Metadata.Layer == layer &&
                     x.Metadata.ServiceType.StartsWith(typeof(TService).FullName))
                 .Select(x => x.Value)
-                .OfType<TService>();
+                .OfType<TService>()
+                .FirstOrDefault() ?? throw new ArgumentException($"Missing requested workspace service {typeof(TService).FullName} from layer {layer}.");
     }
 }
