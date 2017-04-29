@@ -7,6 +7,6 @@ namespace Moq.Proxy
 {
     interface IDocumentVisitor : ILanguageService
     {
-        Task<Document> VisitAsync(ILanguageServices services, Document document, CancellationToken cancellationToken = default(CancellationToken));
+        Task<Document> VisitAsync(Document document, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Composition;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -18,10 +19,14 @@ namespace Moq.Proxy.Rewrite
     [ExportLanguageService(typeof(IDocumentVisitor), LanguageNames.VisualBasic, GeneratorLayer.Rewrite)]
     class VisualBasicParameterFixup : VisualBasicSyntaxRewriter, IDocumentVisitor
     {
+        ICodeAnalysisServices services;
         Dictionary<string, string> renamedParameters = new Dictionary<string, string>();
         SyntaxGenerator generator;
 
-        public async Task<Document> VisitAsync(ILanguageServices services, Document document, CancellationToken cancellationToken = default(CancellationToken))
+        [ImportingConstructor]
+        public VisualBasicParameterFixup(ICodeAnalysisServices services) => this.services = services;
+
+        public async Task<Document> VisitAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
         {
             generator = SyntaxGenerator.GetGenerator(document);
 

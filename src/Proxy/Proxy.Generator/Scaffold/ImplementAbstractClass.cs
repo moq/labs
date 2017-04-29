@@ -12,15 +12,21 @@ namespace Moq.Proxy.Scaffold
 {
     abstract class ImplementAbstractClass : IDocumentVisitor
     {
+        ICodeAnalysisServices services;
         string language;
 
         ILanguageService languageService;
         CanImplementAbstractClassAsync canImplement;
         ImplementAbstractClassAsync implement;
 
-        protected ImplementAbstractClass(string language) => this.language = language;
 
-        public async Task<Document> VisitAsync(ILanguageServices services, Document document, CancellationToken cancellationToken = default(CancellationToken))
+        protected ImplementAbstractClass(ICodeAnalysisServices services, string language)
+        {
+            this.services = services;
+            this.language = language;
+        }
+
+        public async Task<Document> VisitAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
         {
             // The export is cached/shared, so we can safely cache the MEF language service too.
             if (languageService == null)
@@ -43,7 +49,7 @@ namespace Moq.Proxy.Scaffold
             return document;
         }
 
-        void Initialize(ILanguageServices services)
+        void Initialize(ICodeAnalysisServices services)
         {
             languageService = services
                 .GetLanguageService(language, "Microsoft.CodeAnalysis.ImplementAbstractClass.IImplementAbstractClassService")

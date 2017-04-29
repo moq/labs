@@ -8,8 +8,9 @@ namespace Moq.Proxy.Scaffold
     [Shared]
     class CSharpImplementAbstractClass : ImplementAbstractClass
     {
-        public CSharpImplementAbstractClass()
-            : base(LanguageNames.CSharp)
+        [ImportingConstructor]
+        public CSharpImplementAbstractClass(ICodeAnalysisServices services)
+            : base(services, LanguageNames.CSharp)
         {
         }
     }

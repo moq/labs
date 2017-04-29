@@ -13,6 +13,10 @@ namespace Moq.Proxy.Scaffold
     [Shared]
     class VisualBasicOverrideVirtualMembers : OverrideVirtualMembers
     {
+        [ImportingConstructor]
+        public VisualBasicOverrideVirtualMembers(ICodeAnalysisServices services)
+            : base(services) { }
+
         // VB can't override virtual events :\
         protected override SyntaxNode AddEvent(SyntaxGenerator generator, SyntaxNode syntax, IEventSymbol symbol, SyntaxNode @event) 
             => syntax.WithLeadingTrivia(syntax.GetLeadingTrivia().Add(

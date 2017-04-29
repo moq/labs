@@ -8,8 +8,9 @@ namespace Moq.Proxy.Scaffold
     [Shared]
     class CSharpImplementInterface : ImplementInterface
     {
-        public CSharpImplementInterface()
-            : base(LanguageNames.CSharp)
+        [ImportingConstructor]
+        public CSharpImplementInterface(ICodeAnalysisServices services)
+            : base(services, LanguageNames.CSharp)
         {
         }
     }

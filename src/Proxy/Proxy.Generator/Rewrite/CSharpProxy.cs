@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Composition;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,10 +15,14 @@ namespace Moq.Proxy.Rewrite
     [ExportLanguageService(typeof(IDocumentVisitor), LanguageNames.CSharp, GeneratorLayer.Rewrite)]
     class CSharpProxy : CSharpSyntaxRewriter, IDocumentVisitor
     {
+        ICodeAnalysisServices services;
         SyntaxGenerator generator;
         ProxySyntax proxy;
 
-        public async Task<Document> VisitAsync(ILanguageServices services, Document document, CancellationToken cancellationToken = default(CancellationToken))
+        [ImportingConstructor]
+        public CSharpProxy(ICodeAnalysisServices services) => this.services = services;
+
+        public async Task<Document> VisitAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
         {
             generator = SyntaxGenerator.GetGenerator(document);
             proxy = await ProxySyntax.CreateAsync(document);

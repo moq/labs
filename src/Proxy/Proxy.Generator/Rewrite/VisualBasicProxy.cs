@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Composition;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,8 +17,12 @@ namespace Moq.Proxy.Rewrite
     {
         SyntaxGenerator generator;
         ProxySyntax proxy;
+        ICodeAnalysisServices services;
 
-        public async Task<Document> VisitAsync(ILanguageServices services, Document document, CancellationToken cancellationToken = default(CancellationToken))
+        [ImportingConstructor]
+        public VisualBasicProxy(ICodeAnalysisServices services) => this.services = services;
+
+        public async Task<Document> VisitAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
         {
             generator = SyntaxGenerator.GetGenerator(document);
             proxy = await ProxySyntax.CreateAsync(document);

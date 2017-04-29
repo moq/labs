@@ -8,8 +8,9 @@ namespace Moq.Proxy.Scaffold
     [Shared]
     class VisualBasicImplementAbstractClass : ImplementAbstractClass
     {
-        public VisualBasicImplementAbstractClass()
-            : base(LanguageNames.VisualBasic)
+        [ImportingConstructor]
+        public VisualBasicImplementAbstractClass(ICodeAnalysisServices services)
+            : base(services, LanguageNames.VisualBasic)
         {
         }
     }

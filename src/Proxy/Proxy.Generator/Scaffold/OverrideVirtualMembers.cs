@@ -9,7 +9,12 @@ namespace Moq.Proxy.Scaffold
 {
     abstract class OverrideVirtualMembers : IDocumentVisitor
     {
-        public async Task<Document> VisitAsync(ILanguageServices services, Document document, CancellationToken cancellationToken = default(CancellationToken))
+        ICodeAnalysisServices services;
+
+        protected OverrideVirtualMembers(ICodeAnalysisServices services) 
+            => this.services = services;
+
+        public async Task<Document> VisitAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
         {
             var project = document.Project;
             var generator = SyntaxGenerator.GetGenerator(project);

@@ -15,10 +15,15 @@ namespace Moq.Proxy.Scaffold
     {
         string language;
         GetCodeActions getCodeActions;
+        ICodeAnalysisServices services;
 
-        protected ImplementInterface(string language) => this.language = language;
+        protected ImplementInterface(ICodeAnalysisServices services, string language)
+        {
+            this.services = services;
+            this.language = language;
+        }
 
-        public async Task<Document> VisitAsync(ILanguageServices services, Document document, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Document> VisitAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
         {
             // The export is cached/shared, so we can safely cache the MEF language service too.
             if (getCodeActions == null)
@@ -59,7 +64,7 @@ namespace Moq.Proxy.Scaffold
             // We're done.
             if (!actions.Any())
                 return document;
-
+            
             var action = default(CodeAction);
             var current = actions.First();
             skipTypes.Add(current.BaseType.ToString());
@@ -92,7 +97,7 @@ namespace Moq.Proxy.Scaffold
             }
         }
 
-        void Initialize(ILanguageServices services)
+        void Initialize(ICodeAnalysisServices services)
         {
             var service = services
                 .GetLanguageService(language, "Microsoft.CodeAnalysis.ImplementInterface.IImplementInterfaceService")

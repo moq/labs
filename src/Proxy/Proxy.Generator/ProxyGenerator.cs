@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Composition.Convention;
-using System.Composition.Hosting;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -13,7 +11,6 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Editing;
 using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.CodeAnalysis.Host;
-using Microsoft.CodeAnalysis.Host.Mef;
 using Microsoft.CodeAnalysis.VisualBasic;
 using Moq.Proxy.Discovery;
 using Moq.Proxy.Properties;
@@ -26,10 +23,8 @@ namespace Moq.Proxy
     class ProxyGenerator
     {
         // Used for MEF composition.
-        public static HostServices CreateHost() => MefHostServices.Create(new ContainerConfiguration()
-                .WithAssemblies(MefHostServices.DefaultAssemblies.Add(Assembly.GetExecutingAssembly()))
-                .WithDefaultConventions(new AttributeFilterProvider())
-                .CreateContainer());
+        // TODO: allow extending the codegen process to inject stuff into generated proxies via Roslyn.
+        public static HostServices CreateHost() => Roslynator.CreateHost(Assembly.GetExecutingAssembly());
 
         /// <summary>
         /// Generates proxies by discovering proxy factory method invocations in the given 
@@ -61,7 +56,7 @@ namespace Moq.Proxy
         public async Task<ImmutableArray<Document>> GenerateProxiesAsync(
             AdhocWorkspace workspace,
             string languageName,
-            ImmutableArray<string> references, 
+            ImmutableArray<string> references,
             ImmutableArray<string> sources,
             ImmutableArray<string> additionalInterfaces,
             CancellationToken cancellationToken)
@@ -78,7 +73,7 @@ namespace Moq.Proxy
             foreach (var source in sources)
             {
                 project = project.AddDocument(
-                    Path.GetFileName(source), 
+                    Path.GetFileName(source),
                     File.ReadAllText(source)
                 ).Project;
             }
@@ -87,7 +82,7 @@ namespace Moq.Proxy
             var additionalSymbols = new List<ITypeSymbol>();
             foreach (var additionalInterface in additionalInterfaces)
             {
-                var additionalSymbol = compilation.GetTypeByMetadataName(additionalInterface) ?? 
+                var additionalSymbol = compilation.GetTypeByMetadataName(additionalInterface) ??
                     // TODO: improve reporting
                     throw new ArgumentException(additionalInterface);
 
@@ -126,7 +121,7 @@ namespace Moq.Proxy
         /// <param name="cancellationToken">Cancellation token to abort the code generation process.</param>
         /// <param name="types">Base type (optional) and base interfaces the proxy should implement.</param>
         /// <returns>A <see cref="Document"/> containing the proxy code.</returns>
-        public async Task<Document> GenerateProxyAsync(Workspace workspace, Project project, 
+        public async Task<Document> GenerateProxyAsync(Workspace workspace, Project project,
             CancellationToken cancellationToken, ImmutableArray<ITypeSymbol> types)
         {
             // TODO: the project *must* have a reference to the Moq.Proxy assembly. How do we verify that?
@@ -168,19 +163,19 @@ namespace Moq.Proxy
                             .Concat(new[] { generator.IdentifierName(nameof(IProxy)) }))
                 }));
 
-            var services = workspace.Services.GetService<ILanguageServices>();
+            var services = workspace.Services.GetService<ICodeAnalysisServices>();
             var document = project.AddDocument(name, syntax);
 
             var scaffolds = services.GetLanguageServices<IDocumentVisitor>(project.Language, GeneratorLayer.Scaffold).ToArray();
             foreach (var scaffold in scaffolds)
             {
-                document = await scaffold.VisitAsync(services, document, cancellationToken);
+                document = await scaffold.VisitAsync(document, cancellationToken);
             }
 
             var rewriters = services.GetLanguageServices<IDocumentVisitor>(project.Language, GeneratorLayer.Rewrite).ToArray();
             foreach (var rewriter in rewriters)
             {
-                document = await rewriter.VisitAsync(services, document, cancellationToken);
+                document = await rewriter.VisitAsync(document, cancellationToken);
             }
 
             return document;
@@ -207,14 +202,5 @@ namespace Moq.Proxy
 
             return (baseType, interfaceTypes);
         }
-
-        class AttributeFilterProvider : AttributedModelProvider
-        {
-            public override IEnumerable<Attribute> GetCustomAttributes(Type reflectedType, MemberInfo member) =>
-                member.GetCustomAttributes().Where(x => !(x is ExtensionOrderAttribute));
-
-            public override IEnumerable<Attribute> GetCustomAttributes(Type reflectedType, ParameterInfo member) =>
-                member.GetCustomAttributes().Where(x => !(x is ExtensionOrderAttribute));
-        }
-    }
+   }
 }

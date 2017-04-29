@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,8 +24,6 @@ namespace Moq.Proxy
             var references = new List<string>();
             var sources = new List<string>();
             var additional = new List<string>();
-
-            System.Diagnostics.Debugger.Launch();
 
             var options = new OptionSet
             {
