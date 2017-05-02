@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using ManualProxies;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Simplification;
 using Xunit;
@@ -17,15 +18,17 @@ namespace Moq.Proxy.Tests
 
         public ProxyGeneratorTests(ITestOutputHelper output) => this.output = output;
 
-        [InlineData(LanguageNames.VisualBasic)]
-        [Theory]
-        public Task INotifyPropertyChanged(string language)
-            => CanGenerateProxy(language, typeof(INotifyPropertyChanged));
+        [Fact]
+        public Task INotifyPropertyChanged()
+            => CanGenerateProxy(LanguageNames.VisualBasic, typeof(INotifyPropertyChanged));
 
-        [InlineData(LanguageNames.VisualBasic)]
-        [Theory]
-        public Task ICustomFormatter(string language)
-            => CanGenerateProxy(language, typeof(ICustomFormatter));
+        [Fact]
+        public Task ITypeGetter()
+            => CanGenerateProxy(LanguageNames.VisualBasic, typeof(ITypeGetter));
+
+        [Fact]
+        public Task ICustomFormatter()
+            => CanGenerateProxy(LanguageNames.VisualBasic, typeof(ICustomFormatter));
         
         [InlineData(LanguageNames.CSharp)]
         [InlineData(LanguageNames.VisualBasic)]
@@ -73,7 +76,8 @@ namespace Moq.Proxy.Tests
 
             var syntax = await document.GetSyntaxRootAsync();
 
-            document = project.AddDocument("proxy." + (language == LanguageNames.CSharp ? "cs" : "vb"), syntax, filePath: Path.GetTempFileName());
+            document = project.AddDocument("proxy." + (language == LanguageNames.CSharp ? "cs" : "vb"), syntax, 
+                filePath: Path.GetTempFileName());
 
             await AssertCode.NoErrorsAsync(document);
         }

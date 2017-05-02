@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,6 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Simplification;
 using Xunit;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static TestHelpers;
@@ -64,7 +64,11 @@ public static class AssertCode
     public static async Task NoErrorsAsync(Document document)
     {
         var compilation = await document.Project.GetCompilationAsync(TimeoutToken(2));
-        if (compilation.GetDiagnostics().Any(d => d.Severity == DiagnosticSeverity.Error || d.Severity == DiagnosticSeverity.Warning))
+        var noWarn = new HashSet<string>
+        {
+            "CS1701", // fusion reference mismatch, binding redirect required.
+        };
+        if (compilation.GetDiagnostics().Where(d => !noWarn.Contains(d.Id)).Any(d => d.Severity == DiagnosticSeverity.Error || d.Severity == DiagnosticSeverity.Warning))
         {
             SyntaxNode syntax;
             try
@@ -75,7 +79,7 @@ public static class AssertCode
                 document = document.WithSyntaxRoot(syntax);
                 compilation = await document.Project.GetCompilationAsync(TimeoutToken(2));
             }
-            catch (OperationCanceledException)
+            catch 
             {
                 syntax = await document.GetSyntaxRootAsync(TimeoutToken(1));
             }

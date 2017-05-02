@@ -42,11 +42,9 @@ namespace Moq.Proxy.Tests
         [Theory]
         public void CanGenerateProxies(string languageName)
         {
-            var (workspace, project) = CreateWorkspaceAndProject(languageName);
-
             var task = new GenerateProxies
             {
-                BuildEngine = new MockBuildEngine(output, false),
+                BuildEngine = new MockBuildEngine(output),
                 LanguageName = languageName,
                 ToolPath = new DirectoryInfo(".").FullName,
                 OutputPath = new DirectoryInfo(".").FullName,

@@ -2,6 +2,10 @@
 	<PropertyGroup>
 		<TargetFramework>net461</TargetFramework>
   </PropertyGroup>
+	<ItemGroup>
+	  <Compile Include="..\..\src\Sdk\DefaultValue.cs" Link="Moq.Sdk\DefaultValue.cs" />
+	  <Compile Include="..\..\src\Sdk\DefaultValueProxyBehavior.cs" Link="Moq.Sdk\DefaultValueProxyBehavior.cs" />
+	</ItemGroup>
 
 	<ItemGroup>
     <ProjectReference Include="..\..\src\Proxy\Proxy\Moq.Proxy.csproj" />
@@ -10,6 +14,10 @@
     <ProjectReference Include="..\..\src\Proxy\Proxy.Generator.Console\Moq.Proxy.Generator.Console.csproj" />
     <ProjectReference Include="..\ManualProxies\ManualProxies.csproj" />
   </ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Moq.Sdk\" />
+	</ItemGroup>
 
 	<Import Project="..\Moq.Testing\Moq.Testing.projitems" Label="Shared" />
 

@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web.Http.Tracing;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Text;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -23,6 +26,10 @@ namespace Moq.Proxy
             this.context = context;
             this.output = output;
         }
+
+        [Fact]
+        public Task CanGenerateSpecific() 
+            => CanGenerateAllProxies(LanguageNames.CSharp, typeof(ITraceWriter), 0);
 
         [Trait("LongRunning", "true")]
         [MemberData(nameof(GetTypesToMock))]
@@ -53,7 +60,7 @@ namespace Moq.Proxy
                     symbol);
 
                 var syntax = await document.GetSyntaxRootAsync(new CancellationTokenSource(AsyncTimeoutMilliseconds).Token);
-                document = project.AddDocument("proxy." + (language == LanguageNames.CSharp ? "cs" : "vb"), syntax);
+                document = project.AddDocument("proxy." + (language == LanguageNames.CSharp ? "cs" : "vb"), syntax, filePath: Path.GetTempFileName());
 
                 await AssertCode.NoErrorsAsync(document);
             }
@@ -74,12 +81,15 @@ namespace Moq.Proxy
 #if QUICK
             .Take(1)
 #endif
+            //.Where(x => 
+            //    x.FullName == "System.Web.Http.Controllers.IActionHttpMethodProvider" 
+            //    || x.FullName == "System.Net.Http.Formatting.IContentNegotiator"
+            //)
             .SelectMany((x, i) => new object[][]
-                {
-                    new object[] { LanguageNames.CSharp, x, i },
-                    new object[] { LanguageNames.VisualBasic, x, i },
-                })
-                ;
+            {
+                new object[] { LanguageNames.CSharp, x, i },
+                new object[] { LanguageNames.VisualBasic, x, i },
+            });
 
         static Type[] TryGetExportedTypes(Assembly assembly)
         {
@@ -91,6 +101,21 @@ namespace Moq.Proxy
             {
                 return new Type[0];
             }
+        }
+
+        static AcceptanceTests()
+        {
+            AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += (sender, args) =>
+            {
+                var name = new AssemblyName(args.Name);
+                var file = name.Name + ".dll";
+                var path = ReferencePaths.Paths.FirstOrDefault(x => x.EndsWith(file));
+                if (path != null)
+                    return Assembly.ReflectionOnlyLoadFrom(path);
+
+                Assert.False(true, $"Failed to resolve {args.Name}.");
+                return null;
+            };
         }
     }
 }

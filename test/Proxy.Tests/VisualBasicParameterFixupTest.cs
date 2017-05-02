@@ -11,6 +11,7 @@ namespace Moq.Proxy.Tests
 {
     class VisualBasicParameterFixupTest
     {
+
         [Fact]
         public async Task WhenParameterNameMatchesMethodNameParameterIsRenamed()
         {

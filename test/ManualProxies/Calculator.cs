@@ -5,6 +5,8 @@ namespace Moq.Proxy
 {
     public abstract class CalculatorBase
     {
+        public virtual event EventHandler TurnedOn;
+
         public abstract bool IsOn { get; }
 
         public abstract void TurnOn();

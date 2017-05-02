@@ -19,21 +19,6 @@ namespace Moq.Proxy
         AsyncLazy<Compilation> csbuild;
         AsyncLazy<Compilation> vbbuild;
 
-        static AcceptanceTestsContext()
-        {
-            AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += (sender, args) =>
-            {
-                var name = new AssemblyName(args.Name);
-                var file = name.Name + ".dll";
-                var path = ReferencePaths.Paths.FirstOrDefault(x => x.EndsWith(file));
-                if (path != null)
-                    return Assembly.ReflectionOnlyLoadFrom(path);
-
-                Assert.False(true, $"Failed to resolve {args.Name}.");
-                return null;
-            };
-        }
-
         public AcceptanceTestsContext()
         {
             workspace = new AdhocWorkspace(ProxyGenerator.CreateHost());
@@ -41,20 +26,30 @@ namespace Moq.Proxy
             var references = ReferencePaths.Paths
                 .Select(path => MetadataReference.CreateFromFile(path));
 
-            csproj = workspace.AddProject("cscode", LanguageNames.CSharp)
-                .WithCompilationOptions(new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
-                .WithMetadataReferences(references);
+            csproj = workspace.AddProject(ProjectInfo.Create(
+                ProjectId.CreateNewId(),
+                VersionStamp.Create(),
+                "cscode",
+                "cscode.dll",
+                LanguageNames.CSharp,
+                compilationOptions: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
+                metadataReferences: references));
 
             csbuild = new AsyncLazy<Compilation>(() => csproj.GetCompilationAsync(new CancellationTokenSource(AcceptanceTests.AsyncTimeoutMilliseconds).Token));
 
-            vbproj = workspace.AddProject("vbcode", LanguageNames.VisualBasic)
-                .WithCompilationOptions(new VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
-                .WithMetadataReferences(references);
+            vbproj = workspace.AddProject(ProjectInfo.Create(
+                ProjectId.CreateNewId(),
+                VersionStamp.Create(),
+                "vbcode",
+                "vbcode.dll",
+                LanguageNames.VisualBasic,
+                compilationOptions: new VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
+                metadataReferences: references));
 
             vbbuild = new AsyncLazy<Compilation>(() => vbproj.GetCompilationAsync(new CancellationTokenSource(AcceptanceTests.AsyncTimeoutMilliseconds).Token));
         }
 
-        public Workspace Workspace
+        public AdhocWorkspace Workspace
             => workspace;
 
         public Project GetProject(string language)

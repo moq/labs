@@ -16,7 +16,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)TestOutputLogger.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)App.config" />
     <None Include="$(MSBuildThisFileDirectory)xunit.runner.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
