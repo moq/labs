@@ -67,16 +67,17 @@ namespace Moq.Proxy
                     Directory.CreateDirectory(outputPath);
 
                 var generator = new ProxyGenerator();
-                var proxies = await generator.GenerateProxiesAsync(languageName, 
-                    references.ToImmutableArray(), 
-                    sources.ToImmutableArray(), 
-                    additionalInterfaces.ToImmutableArray(), 
+                var proxies = await generator.GenerateProxiesAsync(languageName,
+                    references.ToImmutableArray(),
+                    sources.ToImmutableArray(),
+                    additionalInterfaces.ToImmutableArray(),
                     additionalProxies.ToImmutableArray(),
                     CancellationToken.None);
 
                 foreach (var proxy in proxies)
                 {
                     var proxyFile = Path.Combine(outputPath, proxy.Name + extension);
+                    // NOTE: should we provide a -pretty to skip this step?
                     var document = await Simplifier.ReduceAsync(proxy);
                     var syntax = await document.GetSyntaxRootAsync();
                     var output = syntax.NormalizeWhitespace().ToFullString();

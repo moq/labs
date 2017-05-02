@@ -12,10 +12,11 @@ namespace Moq.Proxy.Scaffold
     {
         [ImportingConstructor]
         public VisualBasicCodeFixes(ICodeAnalysisServices services)
-            : base(services, 
-                  CodeFixNames.VisualBasic.ImplementAbstractClass, 
-                  CodeFixNames.VisualBasic.ImplementInterface, 
+            : base(services,
+                  CodeFixNames.VisualBasic.ImplementAbstractClass,
+                  CodeFixNames.VisualBasic.ImplementInterface,
                   CodeFixNames.VisualBasic.AddOverloads)
+        // NOTE: should we also add CodeFixNames.All.RemoveUnnecessaryImports?
         {
         }
     }

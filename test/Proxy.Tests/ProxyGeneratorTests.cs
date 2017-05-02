@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using ManualProxies;
 using Microsoft.CodeAnalysis;
@@ -18,6 +19,20 @@ namespace Moq.Proxy.Tests
 
         public ProxyGeneratorTests(ITestOutputHelper output) => this.output = output;
 
+        [InlineData(LanguageNames.CSharp)]
+        [InlineData(LanguageNames.VisualBasic)]
+        [Theory]
+        public async Task GeneratedInterfaceHasCompilerGeneratedAttribute(string languageName)
+        {
+            var compilation = await CanGenerateProxy(languageName, typeof(INotifyPropertyChanged));
+            var assembly = compilation.Emit();
+            var proxyType = assembly.GetExportedTypes().FirstOrDefault();
+
+            Assert.NotNull(proxyType);
+            Assert.True(proxyType.GetCustomAttributes(typeof(CompilerGeneratedAttribute), false).Any(),
+                "Generated proxy did not have the 'CompilerGeneratedAttribute' attribute applied.");
+        }
+
         [Fact]
         public Task INotifyPropertyChanged()
             => CanGenerateProxy(LanguageNames.VisualBasic, typeof(INotifyPropertyChanged));
@@ -29,7 +44,7 @@ namespace Moq.Proxy.Tests
         [Fact]
         public Task ICustomFormatter()
             => CanGenerateProxy(LanguageNames.VisualBasic, typeof(ICustomFormatter));
-        
+
         [InlineData(LanguageNames.CSharp)]
         [InlineData(LanguageNames.VisualBasic)]
         [Theory]
@@ -76,7 +91,7 @@ namespace Moq.Proxy.Tests
 
             var syntax = await document.GetSyntaxRootAsync();
 
-            document = project.AddDocument("proxy." + (language == LanguageNames.CSharp ? "cs" : "vb"), syntax, 
+            document = project.AddDocument("proxy." + (language == LanguageNames.CSharp ? "cs" : "vb"), syntax,
                 filePath: Path.GetTempFileName());
 
             await AssertCode.NoErrorsAsync(document);
@@ -126,10 +141,9 @@ namespace Moq.Proxy.Tests
                 .GenerateProxyAsync(workspace, project, TimeoutToken(5), types));
         }
 
-        async Task CanGenerateProxy(string language, Type type, bool trace = false)
+        async Task<Compilation> CanGenerateProxy(string language, Type type, bool trace = false)
         {
-            var (workspace, project) = CreateWorkspaceAndProject(language);
-
+            var (workspace, project) = CreateWorkspaceAndProject(language, type.FullName);
             var compilation = await project.GetCompilationAsync(TimeoutToken(5));
 
             Assert.False(compilation.GetDiagnostics().Any(d => d.Severity == DiagnosticSeverity.Error),
@@ -153,6 +167,8 @@ namespace Moq.Proxy.Tests
                 var root = await document.GetSyntaxRootAsync();
                 output.WriteLine(root.NormalizeWhitespace().ToFullString());
             }
+
+            return await document.Project.GetCompilationAsync();
         }
     }
 }

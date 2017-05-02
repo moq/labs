@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -184,25 +185,27 @@ namespace Moq.Proxy
                 .Select(x => x.ContainingNamespace.ToDisplayString())
                 .Concat(new[]
                 {
-                    typeof(EventArgs).Namespace,
                     typeof(IList<>).Namespace,
                     typeof(MethodBase).Namespace,
                     typeof(IProxy).Namespace,
+                    typeof(CompilerGeneratedAttribute).Namespace,
                 })
                 .Distinct()
                 .Select(x => generator.NamespaceImportDeclaration(x))
                 .Concat(new[]
                 {
-                    generator.ClassDeclaration(name,
-                        accessibility: Accessibility.Public,
-                        baseType: baseType == null ? null : generator.IdentifierName(baseType.Name),
-                        interfaceTypes: interfaceTypes.Select(x => generator.IdentifierName(x.Name))
-                            // NOTE: we *always* append IProxy at the end, which is what we use 
-                            // in ImplementInterfaces to determine that it must *always* be implemented 
-                            // explicitly.
-                            .Concat(new[] { generator.IdentifierName(nameof(IProxy)) }))
+                    generator.AddAttributes(
+                        generator.ClassDeclaration(name,
+                            accessibility: Accessibility.Public,
+                            baseType: baseType == null ? null : generator.IdentifierName(baseType.Name),
+                            interfaceTypes: interfaceTypes.Select(x => generator.IdentifierName(x.Name))
+                                // NOTE: we *always* append IProxy at the end, which is what we use 
+                                // in ImplementInterfaces to determine that it must *always* be implemented 
+                                // explicitly.
+                                .Concat(new[] { generator.IdentifierName(nameof(IProxy)) })),
+                        generator.Attribute(nameof(CompilerGeneratedAttribute)))
                 }));
-                
+
             var services = workspace.Services.GetService<ICodeAnalysisServices>();
             var document = workspace.AddDocument(DocumentInfo.Create(
                 DocumentId.CreateNewId(project.Id),
@@ -248,5 +251,5 @@ namespace Moq.Proxy
 
             return (baseType, interfaceTypes);
         }
-   }
+    }
 }

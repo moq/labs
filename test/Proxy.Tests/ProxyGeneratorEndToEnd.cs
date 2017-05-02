@@ -199,16 +199,16 @@ namespace Moq.Proxy.Tests
                 });
 
             var filePath = Path.GetTempFileName();
-            document = await Simplifier.ReduceAsync(document);
             project = document.Project;
             var root = await document.GetSyntaxRootAsync();
             var code = root.NormalizeWhitespace().ToFullString();
             File.WriteAllText(filePath, code);
 
+#if DEBUG
+            output.WriteLine(filePath);
+#endif
+
             var assemblyName = typeof(T).FullName;
-            var assemblyFile = assemblyName + (language == LanguageNames.CSharp ? ".CS.dll" : ".VB.dll");
-            if (File.Exists(assemblyFile))
-                File.Delete(assemblyFile);
 
             // Just in case, start from a brand-new workspace and project.
             workspace = new AdhocWorkspace();
@@ -219,27 +219,14 @@ namespace Moq.Proxy.Tests
 
             project = document.Project;
             compilation = await project.GetCompilationAsync(TimeoutToken(5));
-            using (var stream = new MemoryStream())
-            {
-                var result = compilation.Emit(stream);
-                if (!result.Success)
-                {
-                    Assert.False(true,
-                        "Proxy assembly generation failed:\r\n" +
-                        Environment.NewLine +
-                        string.Join(Environment.NewLine, result.Diagnostics.Select(d => d.ToString())));
-                }
+            var assembly = compilation.Emit();
+            var proxyType = assembly.GetExportedTypes().FirstOrDefault();
 
-                stream.Seek(0, SeekOrigin.Begin);
-                var assembly = Assembly.Load(stream.ToArray());
-                var proxyType = assembly.GetExportedTypes().FirstOrDefault();
+            Assert.NotNull(proxyType);
 
-                Assert.NotNull(proxyType);
+            var proxy = Activator.CreateInstance(proxyType);
 
-                var proxy = Activator.CreateInstance(proxyType);
-
-                return (T)proxy;
-            }
+            return (T)proxy;
         }
     }
 }

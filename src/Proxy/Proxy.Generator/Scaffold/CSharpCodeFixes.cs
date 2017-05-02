@@ -11,10 +11,11 @@ namespace Moq.Proxy.Scaffold
     class CSharpCodeFixes : CodeFixDocumentVisitor
     {
         [ImportingConstructor]
-        public CSharpCodeFixes(ICodeAnalysisServices services) 
-            : base(services, 
-                  CodeFixNames.CSharp.ImplementAbstractClass, 
+        public CSharpCodeFixes(ICodeAnalysisServices services)
+            : base(services,
+                  CodeFixNames.CSharp.ImplementAbstractClass,
                   CodeFixNames.CSharp.ImplementInterface)
+        // NOTE: should we also add CodeFixNames.All.RemoveUnnecessaryImports?
         {
         }
     }
