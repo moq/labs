@@ -22,7 +22,7 @@ namespace Moq.Proxy
     /// <summary>
     /// Generates proxy classes for the given input symbols.
     /// </summary>
-    class ProxyGenerator
+    public class ProxyGenerator
     {
         // Used for MEF composition.
         // TODO: allow extending the codegen process to inject stuff into generated proxies via Roslyn.
