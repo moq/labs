@@ -23,7 +23,8 @@ namespace Moq.Proxy
             var outputPath = "";
             var references = new List<string>();
             var sources = new List<string>();
-            var additional = new List<string>();
+            var additionalInterfaces = new List<string>();
+            var additionalProxies = new List<string>();
 
             var options = new OptionSet
             {
@@ -32,7 +33,8 @@ namespace Moq.Proxy
                 { "o|output=", "the output directory to write the proxy files to", o => outputPath = o },
                 { "r|reference=", "an assembly reference required for compiling the sources", r => references.Add(r.Trim()) },
                 { "s|source=", "a source file in the language specified which should be processed for proxy generation", s => sources.Add(s.Trim()) },
-                { "a|additional=", "optional additional interfaces to implement in all generated proxies", a => additional.Add(a.Trim()) },
+                { "i|interface=", "optional additional interface to implement in all generated proxies", i => additionalInterfaces.Add(i.Trim()) },
+                { "p|proxy=", "optional additional proxy type to generate a proxy for", p => additionalProxies.Add(p.Trim()) },
                 new ResponseFileSource(),
                 { "h|help", "show this message and exit", h => shouldShowHelp = h != null },
             };
@@ -65,7 +67,12 @@ namespace Moq.Proxy
                     Directory.CreateDirectory(outputPath);
 
                 var generator = new ProxyGenerator();
-                var proxies = await generator.GenerateProxiesAsync(languageName, references.ToImmutableArray(), sources.ToImmutableArray(), additional.ToImmutableArray(), CancellationToken.None);
+                var proxies = await generator.GenerateProxiesAsync(languageName, 
+                    references.ToImmutableArray(), 
+                    sources.ToImmutableArray(), 
+                    additionalInterfaces.ToImmutableArray(), 
+                    additionalProxies.ToImmutableArray(),
+                    CancellationToken.None);
 
                 foreach (var proxy in proxies)
                 {

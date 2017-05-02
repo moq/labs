@@ -34,6 +34,8 @@ namespace Moq.Proxy
         /// <param name="languageName">The language name to generate code for, such as 'C#' or 'Visual Basic'. See <see cref="LanguageNames"/>.</param>
         /// <param name="references">The metadata references to use when analyzing the <paramref name="sources"/>.</param>
         /// <param name="sources">The source documents to analyze to discover proxy usage.</param>
+        /// <param name="additionalInterfaces">Additional interfaces (by full type name) that should be implemented by generated proxies.</param>
+        /// <param name="additionalProxies">Additional types (by full type name) that should be proxied.</param>
         /// <param name="cancellationToken">Cancellation token to cancel the generation process.</param>
         /// <returns>An immutable array of the generated proxies as <see cref="Document"/> instances.</returns>
         public Task<ImmutableArray<Document>> GenerateProxiesAsync(
@@ -41,7 +43,8 @@ namespace Moq.Proxy
             ImmutableArray<string> references,
             ImmutableArray<string> sources,
             ImmutableArray<string> additionalInterfaces,
-            CancellationToken cancellationToken) => GenerateProxiesAsync(new AdhocWorkspace(CreateHost()), languageName, references, sources, additionalInterfaces, cancellationToken);
+            ImmutableArray<string> additionalProxies,
+            CancellationToken cancellationToken) => GenerateProxiesAsync(new AdhocWorkspace(CreateHost()), languageName, references, sources, additionalInterfaces, additionalProxies, cancellationToken);
 
         /// <summary>
         /// Generates proxies by discovering proxy factory method invocations in the given 
@@ -52,6 +55,8 @@ namespace Moq.Proxy
         /// <param name="languageName">The language name to generate code for, such as 'C#' or 'Visual Basic'. See <see cref="LanguageNames"/>.</param>
         /// <param name="references">The metadata references to use when analyzing the <paramref name="sources"/>.</param>
         /// <param name="sources">The source documents to analyze to discover proxy usage.</param>
+        /// <param name="additionalInterfaces">Additional interfaces (by full type name) that should be implemented by generated proxies.</param>
+        /// <param name="additionalProxies">Additional types (by full type name) that should be proxied.</param>
         /// <param name="cancellationToken">Cancellation token to cancel the generation process.</param>
         /// <returns>An immutable array of the generated proxies as <see cref="Document"/> instances.</returns>
         public async Task<ImmutableArray<Document>> GenerateProxiesAsync(
@@ -60,6 +65,7 @@ namespace Moq.Proxy
             ImmutableArray<string> references,
             ImmutableArray<string> sources,
             ImmutableArray<string> additionalInterfaces,
+            ImmutableArray<string> additionalProxies,
             CancellationToken cancellationToken)
         {
             var options = languageName == LanguageNames.CSharp ?
@@ -88,23 +94,48 @@ namespace Moq.Proxy
             }
 
             var compilation = await project.GetCompilationAsync();
-            var additionalSymbols = new List<ITypeSymbol>();
+            var additionalInterfaceSymbols = new List<ITypeSymbol>();
             foreach (var additionalInterface in additionalInterfaces)
             {
                 var additionalSymbol = compilation.GetTypeByMetadataName(additionalInterface) ??
                     // TODO: improve reporting
                     throw new ArgumentException(additionalInterface);
 
-                additionalSymbols.Add(additionalSymbol);
+                additionalInterfaceSymbols.Add(additionalSymbol);
+            }
+
+            var additionalProxySymbols = new List<ITypeSymbol>();
+            foreach (var additionalProxy in additionalProxies)
+            {
+                var additionalSymbol = compilation.GetTypeByMetadataName(additionalProxy) ??
+                    // TODO: improve reporting
+                    throw new ArgumentException(additionalProxy);
+
+                additionalProxySymbols.Add(additionalSymbol);
             }
 
             var discoverer = new ProxyDiscoverer();
             var proxies = await discoverer.DiscoverProxiesAsync(project, cancellationToken);
+            if (additionalProxySymbols.Count != 0)
+            {
+                var set = new HashSet<ImmutableArray<ITypeSymbol>>(proxies, StructuralComparer<ImmutableArray<ITypeSymbol>>.Default);
+                foreach (var additionalProxySymbol in additionalProxySymbols)
+                {
+                    // Adding to the set an existing item will no-op.
+                    set.Add(ImmutableArray.Create(additionalProxySymbol));
+                }
+
+                // No need to ass the comparer since we've already ensured uniqueness above.
+                proxies = set.ToImmutableHashSet();
+            }
 
             var documents = new List<Document>(proxies.Count);
             foreach (var proxy in proxies)
             {
-                documents.Add(await GenerateProxyAsync(workspace, project, cancellationToken, proxy.AddRange(additionalSymbols)));
+                // NOTE: we add the additional interfaces at this point, so that they affect both the 
+                // originally discovered proxies, as well as the additional proxy types explicitly 
+                // requested.
+                documents.Add(await GenerateProxyAsync(workspace, project, cancellationToken, proxy.AddRange(additionalInterfaceSymbols)));
             }
 
             return documents.ToImmutableArray();
@@ -176,7 +207,9 @@ namespace Moq.Proxy
             var document = workspace.AddDocument(DocumentInfo.Create(
                 DocumentId.CreateNewId(project.Id),
                 name,
+#if DEBUG
                 filePath: Path.GetTempFileName(),
+#endif
                 loader: TextLoader.From(TextAndVersion.Create(SourceText.From(syntax.NormalizeWhitespace().ToFullString()), VersionStamp.Create()))));
 
             var scaffolds = services.GetLanguageServices<IDocumentVisitor>(project.Language, GeneratorLayer.Scaffold).ToArray();

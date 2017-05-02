@@ -9,6 +9,12 @@ namespace Moq.Proxy.Discovery
 {
     class ProxyDiscoverer
     {
+        /// <summary>
+        /// This method returns a set of arrays since each proxy is actually made of the symbols its type 
+        /// inherits/implements. It's a set because that array of symbols the proxy inherits/implements is 
+        /// unique (we don't generate duplicates). A <see cref="StructuralComparer.Default"/> is used to 
+        /// ensure structural equality of the arrays.
+        /// </summary>
         public async Task<IImmutableSet<ImmutableArray<ITypeSymbol>>> DiscoverProxiesAsync(Project project, CancellationToken cancellationToken = default(CancellationToken))
         {
             var discoverer = project.LanguageServices.GetRequiredService<IProxyDiscoverer>();

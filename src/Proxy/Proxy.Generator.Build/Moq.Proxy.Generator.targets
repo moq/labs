@@ -9,6 +9,8 @@
 
   <ItemGroup>
     <AdditionalProxyInterface Include="Moq.Sdk.IMocked" />
+    <!-- Example of how to generate an additional proxy without automatic discovery -->
+    <!--<AdditionalProxyForType	Include="IFoo" />-->
   </ItemGroup>
   
   <Target Name="GenerateProxies" BeforeTargets="CoreCompile" DependsOnTargets="_ProxiesOutputPath;_CleanProxies;_GenerateProxies;_IncludeProxies"/>
@@ -25,8 +27,7 @@
                   @(Compile);
                   @(ReferencePath);"
           Outputs="@(IntermediateAssembly)">
-
-    <Exec Command='rmdir "$(ProxiesOutputPath)" /S /Q' ContinueOnError='true' />
+    <RemoveDir Directories="$(ProxiesOutputPath)" />
   </Target>
 
   <Target Name="_GenerateProxies" Condition="!Exists('$(ProxiesOutputPath)')" DependsOnTargets="_CleanProxies;ResolveReferences">
