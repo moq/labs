@@ -7,13 +7,13 @@ using Xunit;
 
 namespace Moq.Sdk.Tests
 {
-    public class DefaultValueProxyBehaviorTests
+    public class DefaultValueBehaviorTests
     {
         [Fact]
         public void SetsRefValue()
         {
             var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.VoidWithRef));
-            var behavior = new DefaultValueProxyBehavior();
+            var behavior = new DefaultValueBehavior();
 
             var result = behavior.Invoke(new MethodInvocation(new object(), method, new object[1]), () => null);
 
@@ -21,12 +21,12 @@ namespace Moq.Sdk.Tests
             Assert.NotNull(result.Outputs[0]);
             Assert.True(result.Outputs[0] is object[]);
         }
-        
+
         [Fact]
         public void SetsRefEnumValue()
         {
             var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.VoidWithRefEnum));
-            var behavior = new DefaultValueProxyBehavior();
+            var behavior = new DefaultValueBehavior();
 
             var result = behavior.Invoke(new MethodInvocation(new object(), method, new object[1]), () => null);
 
@@ -39,7 +39,7 @@ namespace Moq.Sdk.Tests
         public void SetsOutValue()
         {
             var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.VoidWithOut));
-            var behavior = new DefaultValueProxyBehavior();
+            var behavior = new DefaultValueBehavior();
 
             var result = behavior.Invoke(new MethodInvocation(new object(), method, new object[1]), () => null);
 
@@ -52,7 +52,7 @@ namespace Moq.Sdk.Tests
         public void SetsReturnEnum()
         {
             var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.ReturnEnum));
-            var behavior = new DefaultValueProxyBehavior();
+            var behavior = new DefaultValueBehavior();
 
             var result = behavior.Invoke(new MethodInvocation(new object(), method, new object[0]), () => null);
 
@@ -63,7 +63,7 @@ namespace Moq.Sdk.Tests
         public void SetsReturnNullableEnum()
         {
             var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.ReturnNullableEnum));
-            var behavior = new DefaultValueProxyBehavior();
+            var behavior = new DefaultValueBehavior();
 
             var result = behavior.Invoke(new MethodInvocation(new object(), method, new object[0]), () => null);
 
@@ -75,7 +75,7 @@ namespace Moq.Sdk.Tests
         public void SetsReturnArray()
         {
             var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.ReturnArray));
-            var behavior = new DefaultValueProxyBehavior();
+            var behavior = new DefaultValueBehavior();
 
             var result = behavior.Invoke(new MethodInvocation(new object(), method, new object[0]), () => null);
 
@@ -88,7 +88,7 @@ namespace Moq.Sdk.Tests
         public void SetsReturnTask()
         {
             var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.ReturnTask));
-            var behavior = new DefaultValueProxyBehavior();
+            var behavior = new DefaultValueBehavior();
 
             var result = behavior.Invoke(new MethodInvocation(new object(), method, new object[0]), () => null);
 
@@ -101,7 +101,7 @@ namespace Moq.Sdk.Tests
         public void SetsReturnGenericTask()
         {
             var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.ReturnGenericTask));
-            var behavior = new DefaultValueProxyBehavior();
+            var behavior = new DefaultValueBehavior();
 
             var result = behavior.Invoke(new MethodInvocation(new object(), method, new object[0]), () => null);
 
@@ -114,7 +114,7 @@ namespace Moq.Sdk.Tests
         public void SetsReturnGenericTaskEnum()
         {
             var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.ReturnGenericTaskEnum));
-            var behavior = new DefaultValueProxyBehavior();
+            var behavior = new DefaultValueBehavior();
 
             var result = behavior.Invoke(new MethodInvocation(new object(), method, new object[0]), () => null);
 
@@ -128,7 +128,7 @@ namespace Moq.Sdk.Tests
         public void SetsReturnEnumerable()
         {
             var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.ReturnEnumerable));
-            var behavior = new DefaultValueProxyBehavior();
+            var behavior = new DefaultValueBehavior();
 
             var result = behavior.Invoke(new MethodInvocation(new object(), method, new object[0]), () => null);
 
@@ -140,7 +140,7 @@ namespace Moq.Sdk.Tests
         public void SetsReturnGenericEnumerable()
         {
             var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.ReturnGenericEnumerable));
-            var behavior = new DefaultValueProxyBehavior();
+            var behavior = new DefaultValueBehavior();
 
             var result = behavior.Invoke(new MethodInvocation(new object(), method, new object[0]), () => null);
 

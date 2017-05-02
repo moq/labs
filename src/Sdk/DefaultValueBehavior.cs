@@ -9,7 +9,7 @@ namespace Moq.Sdk
     /// invocation, both for the method return type as well as any out/ref 
     /// parameters.
     /// </summary>
-    public class DefaultValueProxyBehavior : IProxyBehavior
+    public class DefaultValueBehavior : IProxyBehavior
     {
         /// <inheritdoc />
         public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior getNext)

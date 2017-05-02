@@ -19,7 +19,7 @@ namespace Moq.Proxy.Tests
 
         public ProxyGeneratorTests(ITestOutputHelper output) => this.output = output;
 
-        [InlineData(LanguageNames.CSharp)]
+        //[InlineData(LanguageNames.CSharp)]
         [InlineData(LanguageNames.VisualBasic)]
         [Theory]
         public async Task GeneratedInterfaceHasCompilerGeneratedAttribute(string languageName)

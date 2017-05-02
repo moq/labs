@@ -4,7 +4,7 @@
   </PropertyGroup>
 	<ItemGroup>
 	  <Compile Include="..\..\src\Sdk\DefaultValue.cs" Link="Moq.Sdk\DefaultValue.cs" />
-	  <Compile Include="..\..\src\Sdk\DefaultValueProxyBehavior.cs" Link="Moq.Sdk\DefaultValueProxyBehavior.cs" />
+	  <Compile Include="..\..\src\Sdk\DefaultValueBehavior.cs" Link="Moq.Sdk\DefaultValueBehavior.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

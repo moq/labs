@@ -12,6 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)AssertCode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MockBuildEngine.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RecordingBehavior.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DynamicProxy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TestHelpers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TestOutputLogger.cs" />
   </ItemGroup>

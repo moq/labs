@@ -24,7 +24,7 @@ namespace Moq.Proxy
         /// </summary>
         public object CreateProxy(Assembly proxiesAssembly, Type baseType, IEnumerable<Type> implementedInterfaces, object[] construtorArguments)
         {
-            var name = "ProxyOf" + baseType.Name + string.Join("", implementedInterfaces.Select(x => x.Name));
+            var name = baseType.Name + string.Join("", implementedInterfaces.Select(x => x.Name)) + "Proxy";
             var type = proxiesAssembly.GetType(name, true, false);
 
             return Activator.CreateInstance(type, construtorArguments);

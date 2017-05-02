@@ -29,7 +29,7 @@ namespace Moq.Proxy.Tests
             var intercepted = false;
 
             target.AddProxyBehavior((method, next) => { intercepted = true; return next()(method, next); });
-            target.AddProxyBehavior(new DefaultValueProxyBehavior());
+            target.AddProxyBehavior(new DefaultValueBehavior());
 
             target.Add(1, 1);
             Assert.True(intercepted);
@@ -93,7 +93,7 @@ namespace Moq.Proxy.Tests
             var intercepted = false;
 
             target.AddProxyBehavior((method, next) => { intercepted = true; return next()(method, next); });
-            target.AddProxyBehavior(new DefaultValueProxyBehavior());
+            target.AddProxyBehavior(new DefaultValueBehavior());
 
             intercepted = false;
             Assert.False(target.IsOn);
@@ -129,7 +129,7 @@ namespace Moq.Proxy.Tests
             var intercepted = false;
 
             target.AddProxyBehavior((method, next) => { intercepted = true; return next()(method, next); });
-            target.AddProxyBehavior(new DefaultValueProxyBehavior());
+            target.AddProxyBehavior(new DefaultValueBehavior());
 
             target.Add(1, 1);
             Assert.True(intercepted, "Failed to intercept regular method");

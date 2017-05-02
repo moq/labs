@@ -16,7 +16,6 @@ namespace Moq.Proxy.Rewrite
     class VisualBasicProxy : VisualBasicSyntaxRewriter, IDocumentVisitor
     {
         SyntaxGenerator generator;
-        ProxySyntax proxy;
         ICodeAnalysisServices services;
 
         [ImportingConstructor]
@@ -25,7 +24,6 @@ namespace Moq.Proxy.Rewrite
         public async Task<Document> VisitAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
         {
             generator = SyntaxGenerator.GetGenerator(document);
-            proxy = await ProxySyntax.CreateAsync(document);
 
             var syntax = await document.GetSyntaxRootAsync(cancellationToken);
             syntax = Visit(syntax);
@@ -35,8 +33,6 @@ namespace Moq.Proxy.Rewrite
 
         public override SyntaxNode VisitClassBlock(ClassBlockSyntax node)
         {
-            node = (ClassBlockSyntax)proxy.VisitClass(node);
-
             // Turn event fields into event declarations.
             var events = node.ChildNodes().OfType<EventStatementSyntax>().ToArray();
             node = node.RemoveNodes(events, SyntaxRemoveOptions.KeepNoTrivia);
@@ -44,7 +40,7 @@ namespace Moq.Proxy.Rewrite
             foreach (var e in events)
             {
                 var valueParam = ParameterList().AddParameters(Parameter(ModifiedIdentifier("value")).WithAsClause(e.AsClause));
-                var statements = List<StatementSyntax>(new[] 
+                var statements = List<StatementSyntax>(new[]
                 {
                     ExpressionStatement((ExpressionSyntax)generator.ExecutePipeline(null, valueParam.Parameters))
                 });
@@ -70,7 +66,33 @@ namespace Moq.Proxy.Rewrite
                 });
             }
 
-            return base.VisitClassBlock(node);
+            node = (ClassBlockSyntax)base.VisitClassBlock(node);
+
+            // Add the IProxy implementation last so it's not visited.
+            node = node.AddImplements(ImplementsStatement(IdentifierName(nameof(IProxy))));
+
+            var field = generator.FieldDeclaration(
+                    "pipeline",
+                    generator.IdentifierName(nameof(BehaviorPipeline)),
+                    initializer: generator.ObjectCreationExpression(generator.IdentifierName(nameof(BehaviorPipeline))));
+
+            var property = (PropertyBlockSyntax)generator.PropertyDeclaration(
+                    nameof(IProxy.Behaviors),
+                    GenericName("IList", TypeArgumentList(IdentifierName(nameof(IProxyBehavior)))),
+                    modifiers: DeclarationModifiers.ReadOnly,
+                    getAccessorStatements: new[]
+                    {
+                        generator.ReturnStatement(
+                            generator.MemberAccessExpression(
+                                IdentifierName("pipeline"),
+                                nameof(BehaviorPipeline.Behaviors)))
+                    });
+
+            property = property.WithPropertyStatement(
+                property.PropertyStatement.WithImplementsClause(
+                    ImplementsClause(QualifiedName(IdentifierName(nameof(IProxy)), IdentifierName(nameof(IProxy.Behaviors))))));
+
+            return generator.InsertMembers(node, 0, field, property);
         }
 
         public override SyntaxNode VisitMethodBlock(MethodBlockSyntax node)
@@ -89,33 +111,23 @@ namespace Moq.Proxy.Rewrite
         public override SyntaxNode VisitPropertyBlock(PropertyBlockSyntax node)
         {
             var implements = node.PropertyStatement?.ImplementsClause?.InterfaceMembers.FirstOrDefault();
-            if (implements != null && implements.ToString() == $"{nameof(IProxy)}.{nameof(IProxy.Behaviors)}")
+            (var canRead, var canWrite) = generator.InspectProperty(node);
+            var type = (TypeSyntax)generator.GetType(node);
+            if (canRead)
             {
-                node = (PropertyBlockSyntax)proxy.VisitBehaviorsProperty(
-                    // Make the property private (== explicit interface implementation in C#)
-                    node.WithPropertyStatement(
-                        node.PropertyStatement.WithModifiers(SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.ReadOnlyKeyword)))));
+                node = (PropertyBlockSyntax)generator.WithGetAccessorStatements(node, new[]
+                {
+                    generator.ReturnStatement(generator.ExecutePipeline(type, generator.GetParameters(node)))
+                });
             }
-            else
+            if (canWrite)
             {
-                (var canRead, var canWrite) = generator.InspectProperty(node);
-                var type = (TypeSyntax)generator.GetType(node);
-                if (canRead)
+                node = (PropertyBlockSyntax)generator.WithSetAccessorStatements(node, new[]
                 {
-                    node = (PropertyBlockSyntax)generator.WithGetAccessorStatements(node, new[]
-                    {
-                        generator.ReturnStatement(generator.ExecutePipeline(type, generator.GetParameters(node)))
-                    });
-                }
-                if (canWrite)
-                {
-                    node = (PropertyBlockSyntax)generator.WithSetAccessorStatements(node, new[]
-                    {
-                        generator.ExecutePipeline(null, generator
-                            .GetParameters(node)
-                            .Concat(new [] { Parameter(ModifiedIdentifier("value")).WithAsClause(SimpleAsClause(type)) }))
-                    });
-                }
+                    generator.ExecutePipeline(null, generator
+                        .GetParameters(node)
+                        .Concat(new [] { Parameter(ModifiedIdentifier("value")).WithAsClause(SimpleAsClause(type)) }))
+                });
             }
 
             return base.VisitPropertyBlock(node);

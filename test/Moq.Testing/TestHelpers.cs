@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Emit;
 using Microsoft.CodeAnalysis.VisualBasic;
 using Moq.Proxy;
 using Xunit;
@@ -49,16 +50,21 @@ static class TestHelpers
         using (var stream = new MemoryStream())
         {
             var result = compilation.Emit(stream);
-            if (!result.Success)
-            {
-                Assert.False(true,
-                    "Emit failed:\r\n" +
-                    Environment.NewLine +
-                    string.Join(Environment.NewLine, result.Diagnostics.Select(d => d.ToString())));
-            }
+            result.AssertSuccess();
 
             stream.Seek(0, SeekOrigin.Begin);
             return Assembly.Load(stream.ToArray());
+        }
+    }
+
+    public static void AssertSuccess(this EmitResult result)
+    {
+        if (!result.Success)
+        {
+            Assert.False(true,
+                "Emit failed:\r\n" +
+                Environment.NewLine +
+                string.Join(Environment.NewLine, result.Diagnostics.Select(d => d.ToString())));
         }
     }
 }

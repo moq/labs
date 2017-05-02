@@ -17,7 +17,6 @@ namespace Moq.Proxy.Rewrite
     {
         ICodeAnalysisServices services;
         SyntaxGenerator generator;
-        ProxySyntax proxy;
 
         [ImportingConstructor]
         public CSharpProxy(ICodeAnalysisServices services) => this.services = services;
@@ -25,7 +24,6 @@ namespace Moq.Proxy.Rewrite
         public async Task<Document> VisitAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
         {
             generator = SyntaxGenerator.GetGenerator(document);
-            proxy = await ProxySyntax.CreateAsync(document);
 
             var syntax = await document.GetSyntaxRootAsync(cancellationToken);
             syntax = Visit(syntax);
@@ -35,8 +33,6 @@ namespace Moq.Proxy.Rewrite
 
         public override SyntaxNode VisitClassDeclaration(ClassDeclarationSyntax node)
         {
-            node = (ClassDeclarationSyntax)proxy.VisitClass(node);
-
             // Turn event fields into event declarations.
             var events = node.ChildNodes().OfType<EventFieldDeclarationSyntax>().ToArray();
             node = node.RemoveNodes(events, SyntaxRemoveOptions.KeepNoTrivia);
@@ -46,7 +42,28 @@ namespace Moq.Proxy.Rewrite
                     .WithModifiers(x.Modifiers))
                 .ToArray());
 
-            return base.VisitClassDeclaration(node);
+            node = (ClassDeclarationSyntax)base.VisitClassDeclaration(node);
+
+            // Add the IProxy implementation last so it's not visited.
+            node = node.AddBaseListTypes(SimpleBaseType(IdentifierName(nameof(IProxy))));
+            node = (ClassDeclarationSyntax)generator.InsertMembers(node, 0,
+                generator.FieldDeclaration(
+                    "pipeline",
+                    generator.IdentifierName(nameof(BehaviorPipeline)),
+                    initializer: generator.ObjectCreationExpression(generator.IdentifierName(nameof(BehaviorPipeline)))));
+
+            node = node.AddMembers(PropertyDeclaration(
+                GenericName(Identifier("IList"), TypeArgumentList(SingletonSeparatedList<TypeSyntax>(IdentifierName(nameof(IProxyBehavior))))),
+                Identifier(nameof(IProxy.Behaviors)))
+                .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(IdentifierName(nameof(IProxy))))
+                .WithExpressionBody(ArrowExpressionClause(
+                    MemberAccessExpression(
+                        SyntaxKind.SimpleMemberAccessExpression,
+                        IdentifierName("pipeline"),
+                        IdentifierName("Behaviors"))))
+                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)));
+
+            return node;
         }
 
         public override SyntaxNode VisitMethodDeclaration(MethodDeclarationSyntax node)
@@ -71,51 +88,35 @@ namespace Moq.Proxy.Rewrite
 
         public override SyntaxNode VisitPropertyDeclaration(PropertyDeclarationSyntax node)
         {
-            if (node.ExplicitInterfaceSpecifier?.Name?.ToString() == nameof(IProxy) || 
-                // \o/ Maybe we should go semantic checking here, determining if it's the actualy implementation of IProxy.Behaviors, 
-                // but it sounds way more convoluted for what we'd gain, I guess?
-                (node.Identifier.ToString() == nameof(IProxy.Behaviors) && node.Type.ToString().Contains(nameof(IProxyBehavior))))
+            (var canRead, var canWrite) = generator.InspectProperty(node);
+            canRead = canRead || node.ExpressionBody != null;
+
+            if (node.ExpressionBody != null)
+                node = node.RemoveNode(node.ExpressionBody, SyntaxRemoveOptions.KeepNoTrivia);
+
+            node = node.WithAccessorList(null);
+
+            if (canRead && !canWrite)
             {
                 node = node
-                    .WithExpressionBody(ArrowExpressionClause(
-                        MemberAccessExpression(
-                            SyntaxKind.SimpleMemberAccessExpression,
-                            IdentifierName("pipeline"),
-                            IdentifierName("Behaviors"))))
+                    .WithExpressionBody(ArrowExpressionClause(ExecutePipeline(node.Type, Enumerable.Empty<ParameterSyntax>())))
                     .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
             }
             else
             {
-                (var canRead, var canWrite) = generator.InspectProperty(node);
-                canRead = canRead || node.ExpressionBody != null;
-
-                if (node.ExpressionBody != null)
-                    node = node.RemoveNode(node.ExpressionBody, SyntaxRemoveOptions.KeepNoTrivia);
-
-                node = node.WithAccessorList(null);
-
-                if (canRead && !canWrite)
+                if (canRead)
                 {
-                    node = node
+                    node = node.AddAccessorListAccessors(AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
                         .WithExpressionBody(ArrowExpressionClause(ExecutePipeline(node.Type, Enumerable.Empty<ParameterSyntax>())))
-                        .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+                        .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)));
                 }
-                else
+                if (canWrite)
                 {
-                    if (canRead)
-                    {
-                        node = node.AddAccessorListAccessors(AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
-                            .WithExpressionBody(ArrowExpressionClause(ExecutePipeline(node.Type, Enumerable.Empty<ParameterSyntax>())))
-                            .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)));
-                    }
-                    if (canWrite)
-                    {
-                        node = node.AddAccessorListAccessors(AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
-                            .WithExpressionBody(ArrowExpressionClause(
-                                // NOTE: we always append the implicit "value" parameter for setters.
-                                ExecutePipeline(null, new[] { Parameter(Identifier("value")).WithType(node.Type) })))
-                            .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)));
-                    }
+                    node = node.AddAccessorListAccessors(AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+                        .WithExpressionBody(ArrowExpressionClause(
+                            // NOTE: we always append the implicit "value" parameter for setters.
+                            ExecutePipeline(null, new[] { Parameter(Identifier("value")).WithType(node.Type) })))
+                        .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)));
                 }
             }
 

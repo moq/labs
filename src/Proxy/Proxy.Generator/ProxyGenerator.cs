@@ -178,13 +178,14 @@ namespace Moq.Proxy
             var (baseType, interfaceTypes) = ValidateTypes(types);
 
             var generator = SyntaxGenerator.GetGenerator(project);
-            var name = "ProxyOf" + string.Join("", types.Select(x => x.Name));
+            var name = string.Join("", types.Select(x => x.Name)) + "Proxy";
 
             var syntax = generator.CompilationUnit(types
                 .Where(x => x.ContainingNamespace != null && x.ContainingNamespace.CanBeReferencedByName)
                 .Select(x => x.ContainingNamespace.ToDisplayString())
                 .Concat(new[]
                 {
+                    typeof(EventArgs).Namespace,
                     typeof(IList<>).Namespace,
                     typeof(MethodBase).Namespace,
                     typeof(IProxy).Namespace,
@@ -198,22 +199,23 @@ namespace Moq.Proxy
                         generator.ClassDeclaration(name,
                             accessibility: Accessibility.Public,
                             baseType: baseType == null ? null : generator.IdentifierName(baseType.Name),
-                            interfaceTypes: interfaceTypes.Select(x => generator.IdentifierName(x.Name))
-                                // NOTE: we *always* append IProxy at the end, which is what we use 
-                                // in ImplementInterfaces to determine that it must *always* be implemented 
-                                // explicitly.
-                                .Concat(new[] { generator.IdentifierName(nameof(IProxy)) })),
+                            interfaceTypes: interfaceTypes.Select(x => generator.IdentifierName(x.Name))),
                         generator.Attribute(nameof(CompilerGeneratedAttribute)))
                 }));
 
             var services = workspace.Services.GetService<ICodeAnalysisServices>();
+            var code = syntax.NormalizeWhitespace().ToFullString();
+            var filePath = default(string);
+#if DEBUG
+            filePath = Path.GetTempFileName();
+            File.WriteAllText(filePath, code);
+#endif
+
             var document = workspace.AddDocument(DocumentInfo.Create(
                 DocumentId.CreateNewId(project.Id),
                 name,
-#if DEBUG
-                filePath: Path.GetTempFileName(),
-#endif
-                loader: TextLoader.From(TextAndVersion.Create(SourceText.From(syntax.NormalizeWhitespace().ToFullString()), VersionStamp.Create()))));
+                filePath: filePath,
+                loader: TextLoader.From(TextAndVersion.Create(SourceText.From(code), VersionStamp.Create()))));
 
             var scaffolds = services.GetLanguageServices<IDocumentVisitor>(project.Language, GeneratorLayer.Scaffold).ToArray();
             foreach (var scaffold in scaffolds)

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -8,7 +8,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http.Tracing;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Text;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -16,8 +15,6 @@ namespace Moq.Proxy
 {
     public class AcceptanceTests : IClassFixture<AcceptanceTestsContext>
     {
-        public const int AsyncTimeoutMilliseconds = 5000;
-
         ITestOutputHelper output;
         AcceptanceTestsContext context;
 
@@ -27,9 +24,13 @@ namespace Moq.Proxy
             this.output = output;
         }
 
-        [Fact]
-        public Task CanGenerateSpecific() 
-            => CanGenerateAllProxies(LanguageNames.CSharp, typeof(ITraceWriter), 0);
+        public static int AsyncTimeoutMilliseconds => Debugger.IsAttached ? int.MaxValue : 5000;
+
+        [InlineData(LanguageNames.CSharp)]
+        [InlineData(LanguageNames.VisualBasic)]
+        [Theory]
+        public Task CanGenerateSpecific(string languageName)
+            => CanGenerateAllProxies(languageName, typeof(ITraceWriter), 0);
 
         [Trait("LongRunning", "true")]
         [MemberData(nameof(GetTypesToMock))]
@@ -49,12 +50,13 @@ namespace Moq.Proxy
                         .Select(d => d.ToString())));
             }
 
+            var typeName = type.FullName;
             var symbol = compilation.GetTypeByMetadataName(type.FullName);
 
             if (symbol != null)
             {
                 var document = await new ProxyGenerator().GenerateProxyAsync(
-                    context.Workspace, 
+                    context.Workspace,
                     project,
                     new CancellationTokenSource(AsyncTimeoutMilliseconds).Token,
                     symbol);
@@ -75,6 +77,7 @@ namespace Moq.Proxy
                     // Hard-coded exclusions we know don't work
                     && !x.GetCustomAttributesData().Any(d => d.AttributeType == typeof(ObsoleteAttribute)) // Obsolete types could generate build errors
                     && x.Name[0] != '_'  // These are sort of internal...
+                    && x.FullName != typeof(ITraceWriter).FullName // This one fails when running all, but not individually. Seems a fusion/binding error.
                     && x.FullName != typeof(IProxy).FullName
                 )
             )
@@ -97,7 +100,7 @@ namespace Moq.Proxy
             {
                 return assembly.GetExportedTypes();
             }
-            catch 
+            catch
             {
                 return new Type[0];
             }

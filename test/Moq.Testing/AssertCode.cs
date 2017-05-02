@@ -79,7 +79,7 @@ public static class AssertCode
                 document = document.WithSyntaxRoot(syntax);
                 compilation = await document.Project.GetCompilationAsync(TimeoutToken(2));
             }
-            catch 
+            catch
             {
                 syntax = await document.GetSyntaxRootAsync(TimeoutToken(1));
             }
