@@ -32,6 +32,11 @@ namespace Moq.Proxy
         public string OutputPath { get; set; }
 
         /// <summary>
+        /// Optional working directory to run the tool from.
+        /// </summary>
+        public string WorkingDirectory { get; set; }
+
+        /// <summary>
         /// Assembly references for the code generation.
         /// </summary>
         public ITaskItem[] References { get; set; }
@@ -61,6 +66,8 @@ namespace Moq.Proxy
         // NOTE: this allows the Mono or .NETCore targets to override 'pgen.exe' by setting ToolExe differently 
         // (i.e. 'mono pgen.exe' or 'dotnet pgen.dll').
         protected override string GenerateFullPathToTool() => Path.Combine(ToolPath, ToolExe ?? ToolName);
+
+        protected override string GetWorkingDirectory() => WorkingDirectory ?? ToolPath;
 
         protected override void LogEventsFromTextOutput(string singleLine, MessageImportance messageImportance)
         {

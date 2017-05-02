@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.3
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq", "Moq\Moq.csproj", "{65F3AB28-9A74-405E-83B2-420D5AD5A459}"
 EndProject
@@ -10,10 +10,19 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Sdk", "Sdk\Moq.Sdk.csproj", "{A1FA1859-8EA0-44E8-8EAD-9F11C3E9AC28}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Tests", "..\test\Moq.Tests\Moq.Tests.csproj", "{9A09225F-E0BC-4890-BED4-D9F6F5DAC146}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EC2158DD-0494-41E3-A6DC-6D0FDE58CABD} = {EC2158DD-0494-41E3-A6DC-6D0FDE58CABD}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Proxy.Generator", "Proxy\Proxy.Generator\Moq.Proxy.Generator.csproj", "{6F083467-DDA3-41B4-9E17-20C9ED52D336}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Moq.Testing", "..\test\Moq.Testing\Moq.Testing.shproj", "{1BD7DFDE-2FC8-4899-9903-6CA5724CC185}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Proxy.Generator.Build", "Proxy\Proxy.Generator.Build\Moq.Proxy.Generator.Build.csproj", "{B298A04C-F1BB-470E-A225-04C2759DBAA7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Proxy", "Proxy", "{D25B30F7-AC40-4433-95D9-D950922FC033}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Proxy.Generator.Console", "Proxy\Proxy.Generator.Console\Moq.Proxy.Generator.Console.csproj", "{EC2158DD-0494-41E3-A6DC-6D0FDE58CABD}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -44,8 +53,22 @@ Global
 		{6F083467-DDA3-41B4-9E17-20C9ED52D336}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6F083467-DDA3-41B4-9E17-20C9ED52D336}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6F083467-DDA3-41B4-9E17-20C9ED52D336}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B298A04C-F1BB-470E-A225-04C2759DBAA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B298A04C-F1BB-470E-A225-04C2759DBAA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B298A04C-F1BB-470E-A225-04C2759DBAA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B298A04C-F1BB-470E-A225-04C2759DBAA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC2158DD-0494-41E3-A6DC-6D0FDE58CABD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC2158DD-0494-41E3-A6DC-6D0FDE58CABD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC2158DD-0494-41E3-A6DC-6D0FDE58CABD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC2158DD-0494-41E3-A6DC-6D0FDE58CABD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C6932108-488E-4138-B411-6C1F63A0024D} = {D25B30F7-AC40-4433-95D9-D950922FC033}
+		{6F083467-DDA3-41B4-9E17-20C9ED52D336} = {D25B30F7-AC40-4433-95D9-D950922FC033}
+		{B298A04C-F1BB-470E-A225-04C2759DBAA7} = {D25B30F7-AC40-4433-95D9-D950922FC033}
+		{EC2158DD-0494-41E3-A6DC-6D0FDE58CABD} = {D25B30F7-AC40-4433-95D9-D950922FC033}
 	EndGlobalSection
 EndGlobal

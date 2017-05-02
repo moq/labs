@@ -16,7 +16,7 @@ namespace Moq
             var proxy = (IProxy)ProxyFactory.Default.CreateProxy(proxiesAssembly, typeof(T), additionalInterfaces.Concat(new[] { typeof(IMocked) }), new object[0]);
 
             proxy.Behaviors.Add(new MockProxyBehavior());
-            proxy.Behaviors.Add(new DefaultValueProxyBehavior());
+            proxy.Behaviors.Add(new DefaultValueBehavior());
 
             return (T)proxy;
         }
