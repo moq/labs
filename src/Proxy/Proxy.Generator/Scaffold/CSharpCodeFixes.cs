@@ -12,7 +12,9 @@ namespace Moq.Proxy.Scaffold
     {
         [ImportingConstructor]
         public CSharpCodeFixes(ICodeAnalysisServices services) 
-            : base(services, CodeFixNames.CSharp.ImplementAbstractClass, CodeFixNames.CSharp.ImplementInterface)
+            : base(services, 
+                  CodeFixNames.CSharp.ImplementAbstractClass, 
+                  CodeFixNames.CSharp.ImplementInterface)
         {
         }
     }

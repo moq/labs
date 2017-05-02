@@ -71,13 +71,18 @@ namespace Moq.Proxy.Rewrite
 
         public override SyntaxNode VisitPropertyDeclaration(PropertyDeclarationSyntax node)
         {
-            if (node.ExplicitInterfaceSpecifier?.Name?.ToString() == nameof(IProxy))
+            if (node.ExplicitInterfaceSpecifier?.Name?.ToString() == nameof(IProxy) || 
+                // \o/ Maybe we should go semantic checking here, determining if it's the actualy implementation of IProxy.Behaviors, 
+                // but it sounds way more convoluted for what we'd gain, I guess?
+                (node.Identifier.ToString() == nameof(IProxy.Behaviors) && node.Type.ToString().Contains(nameof(IProxyBehavior))))
             {
-                node = node.WithExpressionBody(ArrowExpressionClause(
-                    MemberAccessExpression(
-                        SyntaxKind.SimpleMemberAccessExpression,
-                        IdentifierName("pipeline"),
-                        IdentifierName("Behaviors"))));
+                node = node
+                    .WithExpressionBody(ArrowExpressionClause(
+                        MemberAccessExpression(
+                            SyntaxKind.SimpleMemberAccessExpression,
+                            IdentifierName("pipeline"),
+                            IdentifierName("Behaviors"))))
+                    .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
             }
             else
             {
@@ -91,8 +96,9 @@ namespace Moq.Proxy.Rewrite
 
                 if (canRead && !canWrite)
                 {
-                    node = node.WithExpressionBody(
-                        ArrowExpressionClause(ExecutePipeline(node.Type, Enumerable.Empty<ParameterSyntax>())));
+                    node = node
+                        .WithExpressionBody(ArrowExpressionClause(ExecutePipeline(node.Type, Enumerable.Empty<ParameterSyntax>())))
+                        .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
                 }
                 else
                 {

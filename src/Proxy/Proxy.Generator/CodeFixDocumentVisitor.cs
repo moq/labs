@@ -23,17 +23,31 @@ namespace Moq.Proxy
 
             foreach (var codeFixName in codeFixNames)
             {
-                ICodeFix codeFix;
                 // If we request and process ALL codefixes at once, we'll get one for each 
                 // diagnostics, which is one per non-implemented member of the interface/abstract 
                 // base class, so we'd be applying unnecessary fixes after the first one.
                 // So we re-retrieve them after each Apply, which will leave only the remaining 
                 // ones.
-                while ((codeFix = (await codeFixService.GetCodeFixes(document, codeFixName, cancellationToken)).FirstOrDefault()) != null)
+                var codeFixes = await codeFixService.GetCodeFixes(document, codeFixName, cancellationToken);
+                while (codeFixes.Length != 0)
                 {
+                    // We first try to apply all codefixes that don't involve our IProxy interface.
+                    var codeFix = codeFixes.FirstOrDefault(x
+                        => !x.Diagnostics.Any(d
+                            => d.GetMessage().Contains(nameof(IProxy))));
+
+                    if (codeFix == null)
+                    {
+                        // We have at least one codeFix for IProxy, pick last instance, which would be 
+                        // the explicit implementation one.
+                        codeFix = codeFixes.Last();
+                    }
+
                     await codeFix.ApplyAsync(workspace, cancellationToken);
                     // Retrieve the updated document for the next pass.
                     document = workspace.CurrentSolution.GetDocument(document.Id);
+                    // Retrieve the codefixes for the updated doc again.
+                    codeFixes = await codeFixService.GetCodeFixes(document, codeFixName, cancellationToken);
                 }
             }
 
