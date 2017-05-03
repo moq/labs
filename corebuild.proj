@@ -1,9 +1,10 @@
-<Project DefaultTargets="Build" InitialTargets="_Setup">
+<Project DefaultTargets="Build" InitialTargets="_Setup" TreatAsLocalProperty="Configuration">
 	<Import Project="corebuild\corebuild.props" />
 
 	<PropertyGroup>
 		<Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
 		<IntermediateOutputPath>$(RestoreOutputPath)\</IntermediateOutputPath>
+    <AdditionalProperties>Configuration=$(Configuration)</AdditionalProperties>
 		<Out Condition="'$(Out)' == ''">out</Out>
 	</PropertyGroup>
 
@@ -11,6 +12,12 @@
 		<PackageReference Include="GitInfo" Version="*" />
 		<PackageReference Include="xunit.runner.console" Version="2.3.0-beta1-build3642" />
 	</ItemGroup>
+
+  <ItemDefinitionGroup>
+    <Solution>
+      <AdditionalProperties>$(AdditionalProperties)</AdditionalProperties>
+    </Solution>
+  </ItemDefinitionGroup>
 
 	<ItemGroup>
 		<Solution Include="src\Moq.Proxy.sln" />
