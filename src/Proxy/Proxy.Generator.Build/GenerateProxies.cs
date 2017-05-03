@@ -75,7 +75,7 @@ namespace Moq.Proxy
             if (File.Exists(singleLine))
                 proxies.Add(new TaskItem(singleLine));
 
-            base.LogEventsFromTextOutput(singleLine, messageImportance);
+            base.Log.LogMessageFromText(singleLine, messageImportance);
         }
 
         protected override void LogToolCommand(string message)
