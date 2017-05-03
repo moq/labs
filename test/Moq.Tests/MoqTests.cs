@@ -9,11 +9,11 @@ namespace Moq.Tests
         public void CanSetupPropertyViaReturns()
         {
             var calculator = Mock.Of<ICalculator>();
-            
+
             calculator.Mode.Returns("Basic");
 
             var mode = calculator.Mode;
-
+            new ICalculatorProxy();
             Assert.Equal("Basic", mode);
         }
 

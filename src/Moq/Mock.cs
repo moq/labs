@@ -13,7 +13,7 @@ namespace Moq
         [ProxyGenerator]
         public static T Of<T>(Assembly proxiesAssembly, params Type[] additionalInterfaces)
         {
-            var proxy = (IProxy)ProxyFactory.Default.CreateProxy(proxiesAssembly, typeof(T), additionalInterfaces.Concat(new[] { typeof(IMocked) }), new object[0]);
+            var proxy = (IProxy)ProxyFactory.Default.CreateProxy(proxiesAssembly, typeof(T), additionalInterfaces, new object[0]);
 
             proxy.Behaviors.Add(new MockProxyBehavior());
             proxy.Behaviors.Add(new DefaultValueBehavior());

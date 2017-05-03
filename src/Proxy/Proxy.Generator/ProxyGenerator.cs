@@ -131,12 +131,13 @@ namespace Moq.Proxy
             }
 
             var documents = new List<Document>(proxies.Count);
+            var additional = additionalInterfaceSymbols.ToImmutableArray();
             foreach (var proxy in proxies)
             {
                 // NOTE: we add the additional interfaces at this point, so that they affect both the 
                 // originally discovered proxies, as well as the additional proxy types explicitly 
                 // requested.
-                documents.Add(await GenerateProxyAsync(workspace, project, cancellationToken, proxy.AddRange(additionalInterfaceSymbols)));
+                documents.Add(await GenerateProxyAsync(workspace, project, cancellationToken, proxy, additional));
             }
 
             return documents.ToImmutableArray();
@@ -163,8 +164,11 @@ namespace Moq.Proxy
         /// <param name="types">Base type (optional) and base interfaces the proxy should implement.</param>
         /// <returns>A <see cref="Document"/> containing the proxy code.</returns>
         public async Task<Document> GenerateProxyAsync(AdhocWorkspace workspace, Project project,
-            CancellationToken cancellationToken, ImmutableArray<ITypeSymbol> types)
+            CancellationToken cancellationToken, ImmutableArray<ITypeSymbol> types, ImmutableArray<ITypeSymbol> additionalInterfaces = default(ImmutableArray<ITypeSymbol>))
         {
+            if (additionalInterfaces.IsDefault)
+                additionalInterfaces = ImmutableArray<ITypeSymbol>.Empty;
+
             // TODO: the project *must* have a reference to the Moq.Proxy assembly. How do we verify that?
 
             // TODO: Sort interfaces so regardless of order, we reuse the proxies?
@@ -175,10 +179,14 @@ namespace Moq.Proxy
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            var (baseType, interfaceTypes) = ValidateTypes(types);
-
-            var generator = SyntaxGenerator.GetGenerator(project);
             var name = string.Join("", types.Select(x => x.Name)) + "Proxy";
+
+            // NOTE: we append the additional interfaces *after* determining the proxy name, 
+            // to avoid including them there.
+            types = types.Concat(additionalInterfaces).ToImmutableArray();
+
+            var (baseType, interfaceTypes) = ValidateTypes(types);
+            var generator = SyntaxGenerator.GetGenerator(project);
 
             var syntax = generator.CompilationUnit(types
                 .Where(x => x.ContainingNamespace != null && x.ContainingNamespace.CanBeReferencedByName)

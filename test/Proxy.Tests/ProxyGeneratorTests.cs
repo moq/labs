@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Immutable;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -19,7 +20,22 @@ namespace Moq.Proxy.Tests
 
         public ProxyGeneratorTests(ITestOutputHelper output) => this.output = output;
 
-        //[InlineData(LanguageNames.CSharp)]
+        [InlineData(LanguageNames.CSharp)]
+        [InlineData(LanguageNames.VisualBasic)]
+        [Theory]
+        public async Task GeneratedProxyDoesNotContainAdditionalInterfaceInName(string languageName)
+        {
+            var compilation = await CanGenerateProxy(languageName, typeof(INotifyPropertyChanged), typeof(IDisposable));
+            var assembly = compilation.Emit();
+            var proxyType = assembly.GetExportedTypes().FirstOrDefault();
+
+            Assert.NotNull(proxyType);
+            Assert.True(typeof(IDisposable).IsAssignableFrom(proxyType));
+            Assert.False(proxyType.FullName.Contains(nameof(IDisposable)),
+                $"Generated proxy should not contain the additional type {nameof(IDisposable)} in its name.");
+        }
+
+        [InlineData(LanguageNames.CSharp)]
         [InlineData(LanguageNames.VisualBasic)]
         [Theory]
         public async Task GeneratedInterfaceHasCompilerGeneratedAttribute(string languageName)
@@ -141,7 +157,7 @@ namespace Moq.Proxy.Tests
                 .GenerateProxyAsync(workspace, project, TimeoutToken(5), types));
         }
 
-        async Task<Compilation> CanGenerateProxy(string language, Type type, bool trace = false)
+        async Task<Compilation> CanGenerateProxy(string language, Type type, Type additionalInterface = null, bool trace = false)
         {
             var (workspace, project) = CreateWorkspaceAndProject(language, type.FullName);
             var compilation = await project.GetCompilationAsync(TimeoutToken(5));
@@ -149,11 +165,13 @@ namespace Moq.Proxy.Tests
             Assert.False(compilation.GetDiagnostics().Any(d => d.Severity == DiagnosticSeverity.Error),
                 string.Join(Environment.NewLine, compilation.GetDiagnostics().Select(d => d.GetMessage())));
 
+            var additional = additionalInterface == null ?
+                ImmutableArray<ITypeSymbol>.Empty :
+                new ITypeSymbol[] { compilation.GetTypeByMetadataName(additionalInterface.FullName) }.ToImmutableArray();
+
             var document = await new ProxyGenerator().GenerateProxyAsync(workspace, project, TimeoutToken(5),
-                new[]
-                {
-                    compilation.GetTypeByMetadataName(type.FullName),
-                });
+                new ITypeSymbol[] { compilation.GetTypeByMetadataName(type.FullName) }.ToImmutableArray(),
+                additional);
 
             var syntax = await document.GetSyntaxRootAsync();
 
