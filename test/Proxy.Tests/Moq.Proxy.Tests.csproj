@@ -15,10 +15,5 @@
     <ProjectReference Include="..\ManualProxies\ManualProxies.csproj" />
   </ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Moq.Sdk\" />
-	</ItemGroup>
-
 	<Import Project="..\Moq.Testing\Moq.Testing.projitems" Label="Shared" />
-
 </Project>

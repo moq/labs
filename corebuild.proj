@@ -51,6 +51,7 @@
 
 	<Target Name="_Restore" AfterTargets="Restore">
 		<MSBuild Projects="@(Solution)" Targets="Restore" />
+		<MSBuild Projects="test\Moq.Tests\Moq.Tests.csproj" Targets="Restore"  />
 	</Target>
 
 	<Target Name="GitVersion">
