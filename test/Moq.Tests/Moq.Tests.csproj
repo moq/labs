@@ -1,12 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>net461</TargetFramework>
-		<GeneratorProps>..\..\src\Proxy\Proxy.Generator.Build\bin\$(Configuration)\$(TargetFramework)\Moq.Proxy.Generator.props</GeneratorProps>
-		<GeneratorTargets>..\..\src\Proxy\Proxy.Generator.Build\bin\$(Configuration)\$(TargetFramework)\Moq.Proxy.Generator.targets</GeneratorTargets>
+		<GeneratorProps>..\..\src\Proxy\Proxy.Generator.Build\bin\$(Configuration)\net461\Moq.Proxy.Generator.props</GeneratorProps>
+		<GeneratorTargets>..\..\src\Proxy\Proxy.Generator.Build\bin\$(Configuration)\net461\Moq.Proxy.Generator.targets</GeneratorTargets>
+		<SdkProps>..\..\src\Sdk\bin\$(Configuration)\netstandard1.4\build\Moq.Sdk.props</SdkProps>
 		<AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
-		<PGenPath>..\..\src\Proxy\Proxy.Generator.Console\bin\$(Configuration)\$(TargetFramework)</PGenPath>
+		<PGenPath>..\..\src\Proxy\Proxy.Generator.Console\bin\$(Configuration)\net461</PGenPath>
 	</PropertyGroup>
 	<Import Project="$(GeneratorProps)" Condition="Exists('$(GeneratorProps)')" />
+	<Import Project="$(SdkProps)" Condition="Exists('$(SdkProps)')" />
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\Proxy\Proxy.Generator\Moq.Proxy.Generator.csproj" />

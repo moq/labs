@@ -8,8 +8,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<AdditionalProxyInterface Include="Moq.Sdk.IMocked" />
-		<!-- Example of how to generate an additional proxy without automatic discovery -->
+		<!-- Example of how to emit an additional interface on all generated proxies: -->
+		<!--<AdditionalProxyInterface Include="Moq.Sdk.IMocked" />-->
+		<!-- Example of how to generate an additional proxy without automatic discovery: -->
 		<!--<AdditionalProxyForType	Include="IFoo" />-->
 	</ItemGroup>
 
@@ -17,7 +18,7 @@
 
 	<Target Name="_ProxiesOutputPath">
 		<PropertyGroup>
-			<ProxiesOutputPath Condition="'$(ProxiesOutputPath)' == ''">$(IntermediateOutputPath)Proxies</ProxiesOutputPath>
+			<ProxiesOutputPath Condition="'$(ProxiesOutputPath)' == ''">$(MSBuildProjectDirectory)\$(IntermediateOutputPath)Proxies</ProxiesOutputPath>
 		</PropertyGroup>
 	</Target>
 

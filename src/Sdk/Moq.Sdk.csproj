@@ -1,8 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>netstandard1.4</TargetFramework>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Proxy\Proxy\Moq.Proxy.csproj" />
-  </ItemGroup>
+	<PropertyGroup>
+		<TargetFramework>netstandard1.4</TargetFramework>
+	</PropertyGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Proxy\Proxy\Moq.Proxy.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Update="build\Moq.Sdk.props">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
 </Project>
