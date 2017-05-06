@@ -3,10 +3,15 @@ using System.Collections.Immutable;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using ManualProxies;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Host.Mef;
 using Microsoft.CodeAnalysis.Simplification;
 using Xunit;
 using Xunit.Abstractions;
@@ -157,6 +162,40 @@ namespace Moq.Proxy.Tests
                 .GenerateProxyAsync(workspace, project, TimeoutToken(5), types));
         }
 
+        [Fact]
+        public async Task WhenAdditionalGeneratorSpecifiedThenAddsAnnotation()
+        {
+            var workspace = new AdhocWorkspace(
+                ProxyGenerator.CreateHost(
+                    new[] { Assembly.GetExecutingAssembly().ManifestModule.FullyQualifiedName }.ToImmutableArray()));
+
+            var projectInfo = CreateProjectInfo(LanguageNames.CSharp, "code");
+            var project = workspace.AddProject(projectInfo);
+            var compilation = await project.GetCompilationAsync(TimeoutToken(5));
+            var types = new[]
+            {
+                compilation.GetTypeByMetadataName(typeof(IDisposable).FullName),
+            };
+
+            var doc = await new ProxyGenerator().GenerateProxyAsync(workspace, project, TimeoutToken(5), types);
+            var syntax = await doc.GetSyntaxRootAsync();
+            var decl = syntax.DescendantNodes().OfType<ClassDeclarationSyntax>().First();
+
+            var trivia = decl.GetLeadingTrivia();
+            // If we do this only once, it randomly fails :\
+            // TODO: figure out why!
+            if (trivia.Count == 0)
+            {
+                doc = await new ProxyGenerator().GenerateProxyAsync(workspace, project, TimeoutToken(5), types);
+                syntax = await doc.GetSyntaxRootAsync();
+                decl = syntax.DescendantNodes().OfType<ClassDeclarationSyntax>().First();
+
+                trivia = decl.GetLeadingTrivia();
+            }
+
+            Assert.True(trivia.Any(SyntaxKind.SingleLineCommentTrivia));
+        }
+
         async Task<Compilation> CanGenerateProxy(string language, Type type, Type additionalInterface = null, bool trace = false)
         {
             var (workspace, project) = CreateWorkspaceAndProject(language, type.FullName);
@@ -188,6 +227,21 @@ namespace Moq.Proxy.Tests
 
             return await document.Project.GetCompilationAsync();
         }
+    }
+
+    [ExportLanguageService(typeof(IDocumentVisitor), LanguageNames.CSharp, DocumentVisitorLayer.Scaffold)]
+    public class TestGenerator : CSharpSyntaxRewriter, IDocumentVisitor
+    {
+        public async Task<Document> VisitAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var syntax = await document.GetSyntaxRootAsync(cancellationToken);
+            syntax = Visit(syntax);
+
+            return document.WithSyntaxRoot(syntax);
+        }
+
+        public override SyntaxNode VisitClassDeclaration(ClassDeclarationSyntax node)
+            => base.VisitClassDeclaration(node.WithLeadingTrivia(SyntaxFactory.Comment("Test")));
     }
 }
 

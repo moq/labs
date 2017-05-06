@@ -9,7 +9,7 @@ using static Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory;
 
 namespace Moq.Proxy.Scaffold
 {
-    [ExportLanguageService(typeof(IDocumentVisitor), LanguageNames.VisualBasic, GeneratorLayer.Scaffold)]
+    [ExportLanguageService(typeof(IDocumentVisitor), LanguageNames.VisualBasic, DocumentVisitorLayer.Scaffold)]
     [Shared]
     class VisualBasicOverrideVirtualMembers : OverrideVirtualMembers
     {

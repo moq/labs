@@ -25,6 +25,7 @@ namespace Moq.Proxy
             var sources = new List<string>();
             var additionalInterfaces = new List<string>();
             var additionalProxies = new List<string>();
+            var additionalGenerators = new List<string>();
 
             var options = new OptionSet
             {
@@ -35,6 +36,7 @@ namespace Moq.Proxy
                 { "s|source=", "a source file in the language specified which should be processed for proxy generation", s => sources.Add(s.Trim()) },
                 { "i|interface=", "optional additional interface to implement in all generated proxies", i => additionalInterfaces.Add(i.Trim()) },
                 { "p|proxy=", "optional additional proxy type to generate a proxy for", p => additionalProxies.Add(p.Trim()) },
+                { "g|generator=", "optional additional generator assembly to participate in proxy generation composition", g => additionalGenerators.Add(g.Trim()) },
                 new ResponseFileSource(),
                 { "h|help", "show this message and exit", h => shouldShowHelp = h != null },
             };
@@ -72,6 +74,7 @@ namespace Moq.Proxy
                     sources.ToImmutableArray(),
                     additionalInterfaces.ToImmutableArray(),
                     additionalProxies.ToImmutableArray(),
+                    additionalGenerators.ToImmutableArray(),
                     CancellationToken.None);
 
                 foreach (var proxy in proxies)

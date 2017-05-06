@@ -58,6 +58,11 @@ namespace Moq.Proxy
         /// </summary>
         public ITaskItem[] AdditionalProxies { get; set; }
 
+        /// <summary>
+        /// Additional generator assemblies that participate in the code generation composition.
+        /// </summary>
+        public ITaskItem[] AdditionalGenerators { get; set; }
+
         [Output]
         public ITaskItem[] Proxies => proxies.ToArray();
 
@@ -127,6 +132,15 @@ namespace Moq.Proxy
                 {
                     builder.AppendLine("-p")
                         .AppendLine(additionalProxy.ItemSpec);
+                }
+            }
+
+            if (AdditionalGenerators != null)
+            {
+                foreach (var additionalGenerator in AdditionalGenerators)
+                {
+                    builder.AppendLine("-g")
+                        .AppendLine(additionalGenerator.ItemSpec);
                 }
             }
 

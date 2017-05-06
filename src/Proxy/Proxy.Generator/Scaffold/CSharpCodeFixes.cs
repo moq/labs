@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis.Host.Mef;
 
 namespace Moq.Proxy.Scaffold
 {
-    [ExportLanguageService(typeof(IDocumentVisitor), LanguageNames.CSharp, GeneratorLayer.Scaffold)]
+    [ExportLanguageService(typeof(IDocumentVisitor), LanguageNames.CSharp, DocumentVisitorLayer.Scaffold)]
     [Shared]
 
     class CSharpCodeFixes : CodeFixDocumentVisitor

@@ -12,7 +12,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Moq.Proxy.Rewrite
 {
-    [ExportLanguageService(typeof(IDocumentVisitor), LanguageNames.CSharp, GeneratorLayer.Rewrite)]
+    [ExportLanguageService(typeof(IDocumentVisitor), LanguageNames.CSharp, DocumentVisitorLayer.Rewrite)]
     class CSharpProxy : CSharpSyntaxRewriter, IDocumentVisitor
     {
         ICodeAnalysisServices services;

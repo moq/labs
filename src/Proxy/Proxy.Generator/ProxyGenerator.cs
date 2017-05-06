@@ -25,8 +25,12 @@ namespace Moq.Proxy
     public class ProxyGenerator
     {
         // Used for MEF composition.
-        // TODO: allow extending the codegen process to inject stuff into generated proxies via Roslyn.
         public static HostServices CreateHost() => Roslynator.CreateHost(Assembly.GetExecutingAssembly());
+
+        // Used for MEF composition.
+        public static HostServices CreateHost(ImmutableArray<string> additionalGenerators) => Roslynator.CreateHost(
+            // TODO: error handling
+            additionalGenerators.Select(x => Assembly.LoadFrom(x)).Concat(new[] { Assembly.GetExecutingAssembly() }).ToArray());
 
         /// <summary>
         /// Generates proxies by discovering proxy factory method invocations in the given 
@@ -37,6 +41,7 @@ namespace Moq.Proxy
         /// <param name="sources">The source documents to analyze to discover proxy usage.</param>
         /// <param name="additionalInterfaces">Additional interfaces (by full type name) that should be implemented by generated proxies.</param>
         /// <param name="additionalProxies">Additional types (by full type name) that should be proxied.</param>
+        /// <param name="additionalGenerators">Additional assemblies that participate in the code generation composition.</param>
         /// <param name="cancellationToken">Cancellation token to cancel the generation process.</param>
         /// <returns>An immutable array of the generated proxies as <see cref="Document"/> instances.</returns>
         public Task<ImmutableArray<Document>> GenerateProxiesAsync(
@@ -45,7 +50,8 @@ namespace Moq.Proxy
             ImmutableArray<string> sources,
             ImmutableArray<string> additionalInterfaces,
             ImmutableArray<string> additionalProxies,
-            CancellationToken cancellationToken) => GenerateProxiesAsync(new AdhocWorkspace(CreateHost()), languageName, references, sources, additionalInterfaces, additionalProxies, cancellationToken);
+            ImmutableArray<string> additionalGenerators,
+            CancellationToken cancellationToken) => GenerateProxiesAsync(new AdhocWorkspace(CreateHost(additionalGenerators)), languageName, references, sources, additionalInterfaces, additionalProxies, cancellationToken);
 
         /// <summary>
         /// Generates proxies by discovering proxy factory method invocations in the given 
@@ -225,13 +231,13 @@ namespace Moq.Proxy
                 filePath: filePath,
                 loader: TextLoader.From(TextAndVersion.Create(SourceText.From(code), VersionStamp.Create()))));
 
-            var scaffolds = services.GetLanguageServices<IDocumentVisitor>(project.Language, GeneratorLayer.Scaffold).ToArray();
+            var scaffolds = services.GetLanguageServices<IDocumentVisitor>(project.Language, DocumentVisitorLayer.Scaffold).ToArray();
             foreach (var scaffold in scaffolds)
             {
                 document = await scaffold.VisitAsync(document, cancellationToken);
             }
 
-            var rewriters = services.GetLanguageServices<IDocumentVisitor>(project.Language, GeneratorLayer.Rewrite).ToArray();
+            var rewriters = services.GetLanguageServices<IDocumentVisitor>(project.Language, DocumentVisitorLayer.Rewrite).ToArray();
             foreach (var rewriter in rewriters)
             {
                 document = await rewriter.VisitAsync(document, cancellationToken);

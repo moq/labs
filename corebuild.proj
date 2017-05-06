@@ -33,7 +33,8 @@
 	<Target Name="Test">
 		<ItemGroup>
 			<_TestAssembly Include="test\**\bin\**\*Tests.dll" />
-			<TestAssembly Include="@(_TestAssembly)" Condition="$([System.String]::new('%(Filename)').EndsWith('AcceptanceTests')) == 'false'" />
+			<TestAssembly Include="@(_TestAssembly)"
+									  Condition="$([System.String]::new('%(Filename)').EndsWith('AcceptanceTests')) == 'false' And '%(Filename)' != 'Roslyn.Services.Editor.UnitTests'" />
 		</ItemGroup>
 
 		<Exec Command='"$(XunitConsolePath)" "%(TestAssembly.FullPath)" $(XunitOptions) -html "$(Out)\%(TestAssembly.Filename).html" -xml "$(Out)\%(TestAssembly.Filename).xml"'
