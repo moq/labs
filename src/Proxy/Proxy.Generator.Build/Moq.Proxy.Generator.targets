@@ -12,6 +12,8 @@
 		<!--<AdditionalProxyInterface Include="Moq.Sdk.IMocked" />-->
 		<!-- Example of how to generate an additional proxy without automatic discovery: -->
 		<!--<AdditionalProxyForType	Include="IFoo" />-->
+		<!-- Example of how to add a provide a custom proxy generator: -->
+		<!--<AdditionalProxyGenerator Include="Moq.Sdk.dll" />-->
 	</ItemGroup>
 
 	<Target Name="GenerateProxies" BeforeTargets="CoreCompile" DependsOnTargets="_ProxiesOutputPath;_CleanProxies;_GenerateProxies;_IncludeProxies"/>
@@ -39,6 +41,8 @@
 						 References="@(ReferencePath)"
 						 Sources="@(Compile)"
 						 AdditionalInterfaces="@(AdditionalProxyInterface)"
+						 AdditionalProxies="@(AdditionalProxyForType)"
+						 AdditionalGenerators="@(AdditionalProxyGenerator)"
 						 ToolPath="$(PGenPath)" />
 	</Target>
 
