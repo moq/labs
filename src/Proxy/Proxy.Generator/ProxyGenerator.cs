@@ -212,6 +212,7 @@ namespace Moq.Proxy
                     generator.AddAttributes(
                         generator.ClassDeclaration(name,
                             accessibility: Accessibility.Public,
+                            modifiers: DeclarationModifiers.Partial,
                             baseType: baseType == null ? null : generator.IdentifierName(baseType.Name),
                             interfaceTypes: interfaceTypes.Select(x => generator.IdentifierName(x.Name))),
                         generator.Attribute(nameof(CompilerGeneratedAttribute)))
