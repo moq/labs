@@ -15,6 +15,7 @@ if /I "%1" == "/?" call :Usage && exit /b 1
 if /I "%1" == "/debug" set BuildConfiguration=Debug&&shift&& goto :ParseArguments
 if /I "%1" == "/release" set BuildConfiguration=Release&&shift&& goto :ParseArguments
 if /I "%1" == "/build" set MSBuildTarget=/t:Build&&shift&& goto :ParseArguments
+if /I "%1" == "/clean" set MSBuildTarget=/t:Clean&&shift&& goto :ParseArguments
 if /I "%1" == "/rebuild" set MSBuildTarget=/t:Rebuild&&shift&& goto :ParseArguments
 if /I "%1" == "/restore" set MSBuildTarget=/t:Restore&&shift&& goto :ParseArguments
 if /I "%1" == "/test" set MSBuildTarget=/t:Test&&shift&& goto :ParseArguments
@@ -99,6 +100,7 @@ echo Usage: %BatchFile% [/rebuild^|/restore^|/update^] [/debug^|/release] [/no-n
 echo.
 echo   Build targets:
 echo     /build                   Perform a normal build
+echo     /clean                   Perform a clean
 echo     /rebuild                 Perform a clean, then build
 echo     /restore                 Only restore NuGet packages
 echo     /test                    Runs the unit tests

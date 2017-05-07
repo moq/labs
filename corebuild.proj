@@ -51,8 +51,8 @@
 	</Target>
 
 	<Target Name="Clean">
-		<Exec Command='for /d /r . %%d in (bin,obj) do @if exist "%%d" rd /s/q "%%d"'
-		      Condition="'$(OS)' == 'Windows_NT" />
+		<Exec Command='for /d /r . %%d in (bin,obj,.vs) do @if exist "%%d" rd /s/q "%%d"'
+		      Condition="'$(OS)' == 'Windows_NT'" />
 	</Target>
 
 	<Target Name="Rebuild" DependsOnTargets="Clean;Build" />
