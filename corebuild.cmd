@@ -8,12 +8,14 @@ set MultiProcessor=/m
 set BuildConfiguration=
 set MSBuildTarget=
 set MSBuildAdditionalArguments=
+set All=
 
 :ParseArguments
 if "%1" == "" goto :DoneParsing
 if /I "%1" == "/?" call :Usage && exit /b 1
 if /I "%1" == "/debug" set BuildConfiguration=Debug&&shift&& goto :ParseArguments
 if /I "%1" == "/release" set BuildConfiguration=Release&&shift&& goto :ParseArguments
+if /I "%1" == "/all" set All=true&&shift&& goto :ParseArguments
 if /I "%1" == "/build" set MSBuildTarget=/t:Build&&shift&& goto :ParseArguments
 if /I "%1" == "/clean" set MSBuildTarget=/t:Clean&&shift&& goto :ParseArguments
 if /I "%1" == "/rebuild" set MSBuildTarget=/t:Rebuild&&shift&& goto :ParseArguments
@@ -77,11 +79,28 @@ if "%VisualStudioVersion%" == "" (
   call "%DeveloperCommandPrompt%" || goto :BuildFailed
 )
 
+if "%MSBuildTarget%" == "" set All=true
+if "%All%" == "true" set MSBuildTarget=/t:Rebuild
 if not "%MSBuildTarget%" == "" set MSBuildTargetName=%MSBuildTarget:~3%
 
 taskkill /f /im MSBuild.exe /fi "memusage gt 40" >NUL
-@echo on
-msbuild "%Root%corebuild.proj" /nologo /nr:%NodeReuse% %MultiProcessor% %MSBuildTarget% /p:target=%MSBuildTargetName% /p:Configuration=%BuildConfiguration% %MSBuildAdditionalArguments%
+
+if "%MSBuildTargetName%" == "Rebuild"  (
+  call :PrintColor Cyan "Cleaning..."
+  msbuild "%Root%corebuild.proj" /nologo /nr:%NodeReuse% %MultiProcessor% /t:Clean /p:target=Clean /p:Configuration=%BuildConfiguration% %MSBuildAdditionalArguments%
+  call :PrintColor Cyan "Restoring..."
+  msbuild "%Root%corebuild.proj" /nologo /nr:%NodeReuse% %MultiProcessor% /t:Restore /p:target=Restore /p:Configuration=%BuildConfiguration% %MSBuildAdditionalArguments%
+  call :PrintColor Cyan "Building..."
+  msbuild "%Root%corebuild.proj" /nologo /nr:%NodeReuse% %MultiProcessor% /t:Build /p:target=Build /p:Configuration=%BuildConfiguration% %MSBuildAdditionalArguments%
+  if "%All%" == "true" (
+    call :PrintColor Cyan "Testing..."
+    msbuild "%Root%corebuild.proj" /nologo /nr:%NodeReuse% %MultiProcessor% /t:Test /p:target=Test /p:Configuration=%BuildConfiguration% %MSBuildAdditionalArguments%  
+  )
+) else (
+  @echo on
+  msbuild "%Root%corebuild.proj" /nologo /nr:%NodeReuse% %MultiProcessor% %MSBuildTarget% /p:target=%MSBuildTargetName% /p:Configuration=%BuildConfiguration% %MSBuildAdditionalArguments%
+)
+
 @echo off
 taskkill /f /im MSBuild.exe /fi "memusage gt 40" >NUL
 
@@ -99,10 +118,11 @@ exit /b 0
 echo Usage: %BatchFile% [/rebuild^|/restore^|/update^] [/debug^|/release] [/no-node-reuse] [/no-multi-proc] [OPTIONS]
 echo.
 echo   Build targets:
-echo     /build                   Perform a normal build
-echo     /clean                   Perform a clean
-echo     /rebuild                 Perform a clean, then build
-echo     /restore                 Only restore NuGet packages
+echo     /all                     Runs clean, restore, build and test
+echo     /build                   Runs build
+echo     /clean                   Cleans bin,obj,.vs folders.
+echo     /rebuild                 Runs clean, restore, then build
+echo     /restore                 Restore NuGet packages
 echo     /test                    Runs the unit tests
 echo     /acceptance              Runs the (long-running) acceptance tests
 echo     /update                  Updates corebuild dependencies
