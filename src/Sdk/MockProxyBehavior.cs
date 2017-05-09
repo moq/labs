@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Moq.Proxy;
 using System.Reflection;
-using System;
 
 namespace Moq.Sdk
 {

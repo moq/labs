@@ -38,7 +38,7 @@ namespace Moq.Sdk
                         {
                             switch (raiser)
                             {
-                                case EmptyEventRaiser e:
+                                case EmptyEventRaiser _:
                                     handler.DynamicInvoke(invocation.Target, EventArgs.Empty);
                                     break;
                                 case EventArgsEventRaiser a:

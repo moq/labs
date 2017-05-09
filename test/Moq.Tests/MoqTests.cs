@@ -16,11 +16,11 @@ namespace Moq.Tests
             calculator.InsertProxyBehavior(0, new EventBehavior());
 
             var raised = false;
-
+            
             EventHandler handler = (sender, args) => raised = true;
             calculator.PoweringUp += handler;
 
-            calculator.PoweringUp += Raise();
+            calculator.PoweringUp += Raise.Event();
 
             Assert.True(raised);
 
@@ -78,7 +78,9 @@ namespace Moq.Tests
 
             calculator.Add(2, 2).Returns(4);
             calculator.Add(2, 3).Returns(5);
+
             calculator.Add(10, Any<int>()).Returns(10);
+
             calculator.Add(Any<int>(i => i > 20), Any<int>()).Returns(20);
 
             Assert.Equal(5, calculator.Add(2, 3));
