@@ -30,6 +30,25 @@ namespace Moq.Sdk
         /// <summary>
         /// Adds a behavior to a mock.
         /// </summary>
+		public static IMock AddMockBehavior(this IMock mock, Func<IMethodInvocation, bool> appliesTo, InvokeBehavior behavior)
+        {
+            mock.Behaviors.Add(MockBehavior.Create(appliesTo, behavior));
+            return mock;
+        }
+
+        /// <summary>
+        /// Inserts a behavior into the mock behasvior pipeline at the specified 
+        /// index.
+        /// </summary>
+        public static IMock InsertMockBehavior(this IMock mock, int index, Func<IMethodInvocation, bool> appliesTo, InvokeBehavior behavior)
+        {
+            mock.Behaviors.Insert(index, MockBehavior.Create(appliesTo, behavior));
+            return mock;
+        }
+
+        /// <summary>
+        /// Adds a behavior to a mock.
+        /// </summary>
 		public static TMock AddMockBehavior<TMock>(this TMock mock, Func<IMethodInvocation, bool> appliesTo, InvokeBehavior behavior)
         {
             // We can't just add a constraint to the method signature, because this is 
