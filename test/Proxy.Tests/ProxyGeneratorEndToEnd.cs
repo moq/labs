@@ -28,8 +28,8 @@ namespace Moq.Proxy.Tests
             var target = await GenerateProxy<ICalculator>(language);
             var intercepted = false;
 
-            target.AddProxyBehavior((method, next) => { intercepted = true; return next()(method, next); });
-            target.AddProxyBehavior(new DefaultValueBehavior());
+            target.AddBehavior((method, next) => { intercepted = true; return next()(method, next); });
+            target.AddBehavior(new DefaultValueBehavior());
 
             target.Add(1, 1);
             Assert.True(intercepted);
@@ -92,8 +92,8 @@ namespace Moq.Proxy.Tests
             var target = await GenerateProxy<CalculatorBase>(language);
             var intercepted = false;
 
-            target.AddProxyBehavior((method, next) => { intercepted = true; return next()(method, next); });
-            target.AddProxyBehavior(new DefaultValueBehavior());
+            target.AddBehavior((method, next) => { intercepted = true; return next()(method, next); });
+            target.AddBehavior(new DefaultValueBehavior());
 
             intercepted = false;
             Assert.False(target.IsOn);
@@ -128,8 +128,8 @@ namespace Moq.Proxy.Tests
             var target = await GenerateProxy<Calculator>(language);
             var intercepted = false;
 
-            target.AddProxyBehavior((method, next) => { intercepted = true; return next()(method, next); });
-            target.AddProxyBehavior(new DefaultValueBehavior());
+            target.AddBehavior((method, next) => { intercepted = true; return next()(method, next); });
+            target.AddBehavior(new DefaultValueBehavior());
 
             target.Add(1, 1);
             Assert.True(intercepted, "Failed to intercept regular method");

@@ -13,7 +13,7 @@ namespace Moq.Tests
         public void CanRaiseEvents()
         {
             var calculator = Mock.Of<ICalculator>();
-            calculator.InsertProxyBehavior(0, new EventBehavior());
+            calculator.InsertBehavior(0, new EventBehavior());
 
             var raised = false;
             

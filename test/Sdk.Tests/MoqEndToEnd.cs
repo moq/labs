@@ -37,13 +37,13 @@ namespace Moq.Sdk.Tests
     {
         public abstract void Do();
     }
-
+    chota
     public static class Moq
     {
         public static T Of<T>(string languageName = LanguageNames.CSharp, bool save = false)
             => DynamicProxy.Of<T>(languageName, typeof(IMocked), save)
                 .Result
-                .AddProxyBehavior(new MockProxyBehavior())
-                .AddProxyBehavior(new DefaultValueBehavior());
+                .AddBehavior(new MockProxyBehavior())
+                .AddBehavior(new DefaultValueBehavior());
     }
 }

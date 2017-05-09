@@ -14,7 +14,7 @@ namespace Moq.Proxy.Tests
         {
             var proxy = new CalculatorClassProxy();
             var recorder = new RecordingBehavior();
-            proxy.AddProxyBehavior(recorder);
+            proxy.AddBehavior(recorder);
             
             var isOn = false;
             proxy.TurnedOn += (_, __) => isOn = true;

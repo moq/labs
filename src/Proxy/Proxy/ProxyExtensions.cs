@@ -10,7 +10,7 @@ namespace Moq.Proxy
         /// <summary>
         /// Adds a behavior to a proxy.
         /// </summary>
-		public static IProxy AddProxyBehavior(this IProxy proxy, InvokeBehavior behavior)
+		public static IProxy AddBehavior(this IProxy proxy, InvokeBehavior behavior)
         {
             proxy.Behaviors.Add(ProxyBehavior.Create(behavior));
             return proxy;
@@ -19,7 +19,7 @@ namespace Moq.Proxy
         /// <summary>
         /// Adds a behavior to a proxy.
         /// </summary>
-		public static IProxy AddProxyBehavior(this IProxy proxy, IProxyBehavior behavior)
+		public static IProxy AddBehavior(this IProxy proxy, IProxyBehavior behavior)
         {
             proxy.Behaviors.Add(behavior);
             return proxy;
@@ -28,7 +28,7 @@ namespace Moq.Proxy
         /// <summary>
         /// Adds a behavior to a proxy.
         /// </summary>
-		public static TProxy AddProxyBehavior<TProxy>(this TProxy proxy, InvokeBehavior behavior)
+		public static TProxy AddBehavior<TProxy>(this TProxy proxy, InvokeBehavior behavior)
         {
             // We can't just add a constraint to the method signature, because 
             // proxies are typically geneated and don't expose the IProxy interface directly.
@@ -43,7 +43,7 @@ namespace Moq.Proxy
         /// <summary>
         /// Adds a behavior to a proxy.
         /// </summary>
-		public static TProxy AddProxyBehavior<TProxy>(this TProxy proxy, IProxyBehavior behavior)
+		public static TProxy AddBehavior<TProxy>(this TProxy proxy, IProxyBehavior behavior)
         {
             if (proxy is IProxy target)
                 target.Behaviors.Add(behavior);
@@ -57,7 +57,7 @@ namespace Moq.Proxy
         /// Inserts a behavior into the proxy behavior pipeline at the specified 
         /// index.
         /// </summary>
-		public static IProxy InsertProxyBehavior(this IProxy proxy, int index, InvokeBehavior behavior)
+		public static IProxy InsertBehavior(this IProxy proxy, int index, InvokeBehavior behavior)
         {
             proxy.Behaviors.Insert(index, ProxyBehavior.Create(behavior));
             return proxy;
@@ -67,7 +67,7 @@ namespace Moq.Proxy
         /// Inserts a behavior into the proxy behavior pipeline at the specified 
         /// index.
         /// </summary>
-        public static IProxy InsertProxyBehavior(this IProxy proxy, int index, IProxyBehavior behavior)
+        public static IProxy InsertBehavior(this IProxy proxy, int index, IProxyBehavior behavior)
         {
             proxy.Behaviors.Insert(index, behavior);
             return proxy;
@@ -77,7 +77,7 @@ namespace Moq.Proxy
         /// Inserts a behavior into the proxy behasvior pipeline at the specified 
         /// index.
         /// </summary>
-        public static TProxy InsertProxyBehavior<TProxy>(this TProxy proxy, int index, InvokeBehavior behavior)
+        public static TProxy InsertBehavior<TProxy>(this TProxy proxy, int index, InvokeBehavior behavior)
         {
             if (proxy is IProxy target)
                 target.Behaviors.Insert(index, ProxyBehavior.Create(behavior));
@@ -91,7 +91,7 @@ namespace Moq.Proxy
         /// Inserts a behavior into the proxy behasvior pipeline at the specified 
         /// index.
         /// </summary>
-        public static TProxy InsertProxyBehavior<TProxy>(this TProxy proxy, int index, IProxyBehavior behavior)
+        public static TProxy InsertBehavior<TProxy>(this TProxy proxy, int index, IProxyBehavior behavior)
         {
             if (proxy is IProxy target)
                 target.Behaviors.Insert(index, behavior);

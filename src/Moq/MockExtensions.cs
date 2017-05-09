@@ -35,7 +35,7 @@ namespace Moq
             }
 
             mock.Invocations.Remove(invocation);
-            mock.AddMockBehavior(new ArgumentMatcherFilter(invocation, finalMatchers).AppliesTo, (mi, next) => mi.CreateValueReturn(value, mi.Arguments));
+            mock.AddBehavior(new ArgumentMatcherFilter(invocation, finalMatchers).AppliesTo, (mi, next) => mi.CreateValueReturn(value, mi.Arguments));
         }
     }
 }
