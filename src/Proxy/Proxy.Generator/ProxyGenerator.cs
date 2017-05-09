@@ -25,12 +25,15 @@ namespace Moq.Proxy
     public class ProxyGenerator
     {
         // Used for MEF composition.
-        public static HostServices CreateHost() => Roslynator.CreateHost(Assembly.GetExecutingAssembly());
+        public static HostServices CreateHost(params Assembly[] additionalGenerators) 
+            => Roslynator.CreateHost(additionalGenerators == null ? 
+                new[] { Assembly.GetExecutingAssembly() } :
+                additionalGenerators.Concat(new[] { Assembly.GetExecutingAssembly() }).ToArray());
 
         // Used for MEF composition.
-        public static HostServices CreateHost(ImmutableArray<string> additionalGenerators) => Roslynator.CreateHost(
+        public static HostServices CreateHost(ImmutableArray<string> additionalGenerators)
             // TODO: error handling
-            additionalGenerators.Select(x => Assembly.LoadFrom(x)).Concat(new[] { Assembly.GetExecutingAssembly() }).ToArray());
+            => CreateHost(additionalGenerators.Select(x => Assembly.LoadFrom(x)).ToArray());
 
         /// <summary>
         /// Generates proxies by discovering proxy factory method invocations in the given 
@@ -242,6 +245,12 @@ namespace Moq.Proxy
             foreach (var rewriter in rewriters)
             {
                 document = await rewriter.VisitAsync(document, cancellationToken);
+            }
+
+            var fixups = services.GetLanguageServices<IDocumentVisitor>(project.Language, DocumentVisitorLayer.Fixup).ToArray();
+            foreach (var fixup in fixups)
+            {
+                document = await fixup.VisitAsync(document, cancellationToken);
             }
 
             return document;

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26503.1
+VisualStudioVersion = 15.0.26504.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Proxy", "Proxy\Proxy\Moq.Proxy.csproj", "{C6932108-488E-4138-B411-6C1F63A0024D}"
 EndProject
@@ -14,13 +14,22 @@ EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Moq.Testing", "..\test\Moq.Testing\Moq.Testing.shproj", "{1BD7DFDE-2FC8-4899-9903-6CA5724CC185}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Tests", "..\test\Moq.Tests\Moq.Tests.csproj", "{9A09225F-E0BC-4890-BED4-D9F6F5DAC146}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C834EB32-37AD-4F37-BB87-2682E435E16A} = {C834EB32-37AD-4F37-BB87-2682E435E16A}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2093478C-CEA6-4034-BCDE-EDC7A5DD4532}"
 	ProjectSection(SolutionItems) = preProject
 		..\corebuild.proj = ..\corebuild.proj
 		Directory.Build.props = Directory.Build.props
 		Directory.Build.targets = Directory.Build.targets
+		Proxy\Proxy.Generator.Build\Moq.Proxy.Generator.props = Proxy\Proxy.Generator.Build\Moq.Proxy.Generator.props
+		Proxy\Proxy.Generator.Build\Moq.Proxy.Generator.targets = Proxy\Proxy.Generator.Build\Moq.Proxy.Generator.targets
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Sdk.Build", "Sdk.Build\Moq.Sdk.Build.csproj", "{C834EB32-37AD-4F37-BB87-2682E435E16A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sdk.Build.Tests", "..\test\Sdk.Build.Tests\Sdk.Build.Tests.csproj", "{42415884-4EF7-4C04-8A1D-0FAF032E4767}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -51,6 +60,14 @@ Global
 		{9A09225F-E0BC-4890-BED4-D9F6F5DAC146}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A09225F-E0BC-4890-BED4-D9F6F5DAC146}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A09225F-E0BC-4890-BED4-D9F6F5DAC146}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C834EB32-37AD-4F37-BB87-2682E435E16A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C834EB32-37AD-4F37-BB87-2682E435E16A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C834EB32-37AD-4F37-BB87-2682E435E16A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C834EB32-37AD-4F37-BB87-2682E435E16A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42415884-4EF7-4C04-8A1D-0FAF032E4767}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42415884-4EF7-4C04-8A1D-0FAF032E4767}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42415884-4EF7-4C04-8A1D-0FAF032E4767}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42415884-4EF7-4C04-8A1D-0FAF032E4767}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

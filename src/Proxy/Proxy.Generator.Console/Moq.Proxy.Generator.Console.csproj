@@ -14,9 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Proxy.Generator.Build\Moq.Proxy.Generator.Build.csproj" Condition="'$(Configuration)' == 'Debug'">
-      <Private>true</Private>
-    </ProjectReference>
     <ProjectReference Include="..\Proxy.Generator\Moq.Proxy.Generator.csproj">
       <Private>true</Private>
     </ProjectReference>
