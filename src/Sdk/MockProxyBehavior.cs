@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Moq.Proxy;
 using System.Reflection;
+using System;
 
 namespace Moq.Sdk
 {
@@ -10,13 +11,13 @@ namespace Moq.Sdk
     /// that can dynamically determine whether they should be applied to the 
     /// current <see cref="IMethodInvocation"/>.
     /// </summary>
-    public class MockProxyBehavior : IProxyBehavior, IMocked, IMock
+    public class MockProxyBehavior : IProxyBehavior, IMock
     {
-        public IList<IMethodInvocation> Invocations { get; } = new List<IMethodInvocation>();
-
         public IList<IMockBehavior> Behaviors { get; } = new List<IMockBehavior>();
 
-        public IMock Mock => this;
+        public IList<IMethodInvocation> Invocations { get; } = new List<IMethodInvocation>();
+
+        public MockState State { get; } = new MockState();
 
         public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior getNext)
         {

@@ -1,10 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>net461</TargetFramework>
+		<AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
+
 		<GeneratorProps>..\..\src\Proxy\Proxy.Generator.Build\bin\$(Configuration)\net461\Moq.Proxy.Generator.props</GeneratorProps>
 		<GeneratorTargets>..\..\src\Proxy\Proxy.Generator.Build\bin\$(Configuration)\net461\Moq.Proxy.Generator.targets</GeneratorTargets>
-		<SdkProps>..\..\src\Sdk\bin\$(Configuration)\netstandard1.4\build\Moq.Sdk.props</SdkProps>
-		<AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
+
+		<SdkProps>..\..\src\Sdk.Build\bin\$(Configuration)\net461\Moq.Sdk.Build.props</SdkProps>
+		<SdkTargets>..\..\src\Sdk.Build\bin\$(Configuration)\net461\Moq.Sdk.Build.targets</SdkTargets>
 		<PGenPath>..\..\src\Proxy\Proxy.Generator.Console\bin\$(Configuration)\net461</PGenPath>
 	</PropertyGroup>
 	<Import Project="$(GeneratorProps)" Condition="Exists('$(GeneratorProps)')" />
@@ -13,6 +16,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\Proxy\Proxy.Generator\Moq.Proxy.Generator.csproj" />
 		<ProjectReference Include="..\..\src\Proxy\Proxy\Moq.Proxy.csproj" />
+		<ProjectReference Include="..\..\src\Sdk.Build\Moq.Sdk.Build.csproj" />
 		<ProjectReference Include="..\..\src\Sdk\Moq.Sdk.csproj" />
 		<ProjectReference Include="..\..\src\Moq\Moq.csproj" />
 	</ItemGroup>
@@ -22,5 +26,6 @@
 	</Target>
 
 	<Import Project="$(GeneratorTargets)" Condition="Exists('$(GeneratorTargets)')" />
+	<Import Project="$(SdkTargets)" Condition="Exists('$(SdkTargets)')" />
 	<Import Project="..\Moq.Testing\Moq.Testing.projitems" Label="Shared" />
 </Project>

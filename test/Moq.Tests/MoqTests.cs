@@ -1,15 +1,57 @@
-﻿using Xunit;
-using static Moq.Arg;
+﻿using System;
+using System.ComponentModel;
+using Xunit;
+using Moq.Sdk;
+using Moq.Proxy;
+using static Moq.Syntax;
 
 namespace Moq.Tests
 {
     public class MoqTests
     {
         [Fact]
+        public void CanRaiseEvents()
+        {
+            var calculator = Mock.Of<ICalculator>();
+            calculator.InsertProxyBehavior(0, new EventBehavior());
+
+            var raised = false;
+
+            EventHandler handler = (sender, args) => raised = true;
+            calculator.PoweringUp += handler;
+
+            calculator.PoweringUp += Raise();
+
+            Assert.True(raised);
+
+            raised = false;
+            calculator.PoweringUp -= handler;
+            calculator.PoweringUp -= handler;
+
+            calculator.PoweringUp += Raise();
+
+            Assert.False(raised);
+
+            var property = "";
+            calculator.PropertyChanged += (sender, args) => property = args.PropertyName;
+
+            calculator.PropertyChanged += Raise<PropertyChangedEventHandler>(new PropertyChangedEventArgs("Mode"));
+
+            Assert.Equal("Mode", property);
+
+            var progress = 0;
+            calculator.Progress += (_, i) => progress = i;
+
+            calculator.Progress += Raise(10);
+
+            Assert.Equal(10, progress);
+        }
+
+        [Fact]
         public void CanSetupPropertyViaReturns()
         {
             var calculator = Mock.Of<ICalculator>();
-
+            
             calculator.Mode.Returns("Basic");
 
             var mode = calculator.Mode;
@@ -37,7 +79,7 @@ namespace Moq.Tests
             calculator.Add(2, 2).Returns(4);
             calculator.Add(2, 3).Returns(5);
             calculator.Add(10, Any<int>()).Returns(10);
-            calculator.Add(Is<int>(i => i > 20), Any<int>()).Returns(20);
+            calculator.Add(Any<int>(i => i > 20), Any<int>()).Returns(20);
 
             Assert.Equal(5, calculator.Add(2, 3));
             Assert.Equal(4, calculator.Add(2, 2));

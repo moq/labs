@@ -17,5 +17,10 @@ namespace Moq.Sdk
         /// Invocations performed on the mock.
         /// </summary>
         IList<IMethodInvocation> Invocations { get; }
+
+        /// <summary>
+        /// Arbitrary state associated with a mock instance.
+        /// </summary>
+        MockState State { get; }
     }
 }

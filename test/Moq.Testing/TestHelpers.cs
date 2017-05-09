@@ -28,6 +28,9 @@ static class TestHelpers
         var options = language == LanguageNames.CSharp ?
                 (CompilationOptions)new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary) :
                 (CompilationOptions)new VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, optionStrict: OptionStrict.On);
+        var parse = language == LanguageNames.CSharp ?
+                (ParseOptions)new CSharpParseOptions(Microsoft.CodeAnalysis.CSharp.LanguageVersion.Latest) :
+                (ParseOptions)new VisualBasicParseOptions(Microsoft.CodeAnalysis.VisualBasic.LanguageVersion.Latest);
 
         return ProjectInfo.Create(
             ProjectId.CreateNewId(),
@@ -36,6 +39,7 @@ static class TestHelpers
             assemblyName + "." + suffix,
             language,
             compilationOptions: options,
+            parseOptions: parse,
             metadataReferences: ReferencePaths.Paths
                 .Select(path => MetadataReference.CreateFromFile(path)));
     }

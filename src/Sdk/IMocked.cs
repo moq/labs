@@ -1,4 +1,6 @@
-﻿namespace Moq.Sdk
+﻿using System;
+
+namespace Moq.Sdk
 {
     /// <summary>
     /// Interface implemented by mocks that allows accessing 
