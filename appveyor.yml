@@ -5,8 +5,8 @@ init:
 
 build_script:
   - cmd: echo /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" >> msbuild.rsp
-  - cmd: corebuild.cmd /release /restore
-  - cmd: corebuild.cmd /release /build
+  - cmd: build.cmd /release /restore
+  - cmd: build.cmd /release /build
 
 nuget:
   disable_publish_on_pr: false

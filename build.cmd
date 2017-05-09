@@ -87,31 +87,33 @@ taskkill /f /im MSBuild.exe /fi "memusage gt 40" >NUL
 
 if "%MSBuildTargetName%" == "Rebuild"  (
   call :PrintColor Cyan "Cleaning..."
-  msbuild "%Root%corebuild.proj" /nologo /nr:%NodeReuse% %MultiProcessor% /t:Clean /p:target=Clean /p:Configuration=%BuildConfiguration% %MSBuildAdditionalArguments%
+  msbuild "%Root%build.proj" /nologo /nr:%NodeReuse% %MultiProcessor% /t:Clean /p:target=Clean /p:Configuration=%BuildConfiguration% %MSBuildAdditionalArguments%
   call :PrintColor Cyan "Restoring..."
-  msbuild "%Root%corebuild.proj" /nologo /nr:%NodeReuse% %MultiProcessor% /t:Restore /p:target=Restore /p:Configuration=%BuildConfiguration% %MSBuildAdditionalArguments%
+  msbuild "%Root%build.proj" /nologo /nr:%NodeReuse% %MultiProcessor% /t:Restore /p:target=Restore /p:Configuration=%BuildConfiguration% %MSBuildAdditionalArguments%
   call :PrintColor Cyan "Building..."
-  msbuild "%Root%corebuild.proj" /nologo /nr:%NodeReuse% %MultiProcessor% /t:Build /p:target=Build /p:Configuration=%BuildConfiguration% %MSBuildAdditionalArguments%
+  msbuild "%Root%build.proj" /nologo /nr:%NodeReuse% %MultiProcessor% /t:Build /p:target=Build /p:Configuration=%BuildConfiguration% %MSBuildAdditionalArguments%
   if "%All%" == "true" (
     call :PrintColor Cyan "Testing..."
-    msbuild "%Root%corebuild.proj" /nologo /nr:%NodeReuse% %MultiProcessor% /t:Test /p:target=Test /p:Configuration=%BuildConfiguration% %MSBuildAdditionalArguments%  
+    msbuild "%Root%build.proj" /nologo /nr:%NodeReuse% %MultiProcessor% /t:Test /p:target=Test /p:Configuration=%BuildConfiguration% %MSBuildAdditionalArguments%  
   )
 ) else (
   @echo on
-  msbuild "%Root%corebuild.proj" /nologo /nr:%NodeReuse% %MultiProcessor% %MSBuildTarget% /p:target=%MSBuildTargetName% /p:Configuration=%BuildConfiguration% %MSBuildAdditionalArguments%
+  msbuild "%Root%build.proj" /nologo /nr:%NodeReuse% %MultiProcessor% %MSBuildTarget% /p:target=%MSBuildTargetName% /p:Configuration=%BuildConfiguration% %MSBuildAdditionalArguments%
 )
 
 @echo off
-taskkill /f /im MSBuild.exe /fi "memusage gt 40" >NUL
 
 if ERRORLEVEL 1 (
+    taskkill /f /im MSBuild.exe /fi "memusage gt 40" >NUL
     echo.
     call :PrintColor Red "Build failed, for full log see msbuild.log."
     exit /b 1
 )
 
+taskkill /f /im MSBuild.exe /fi "memusage gt 40" >NUL
 echo.
 call :PrintColor Cyan "Build completed successfully, for full log see msbuild.log"
+
 exit /b 0
 
 :Usage
