@@ -10,8 +10,15 @@ namespace Moq.Sdk
     /// </summary>
     public static class CallContext<T>
     {
+        static readonly string defaultName = typeof(T).FullName;
         static ConcurrentDictionary<string, AsyncLocal<T>> state = new ConcurrentDictionary<string, AsyncLocal<T>>();
-        
+
+        /// <summary>
+        /// Stores a given object.
+        /// </summary>
+        /// <param name="data">The object to store in the call context.</param>
+        public static void SetData(T data) => SetData(defaultName, data);
+
         /// <summary>
         /// Stores a given object and associates it with the specified name.
         /// </summary>
@@ -21,6 +28,13 @@ namespace Moq.Sdk
             state.GetOrAdd(name, _ => new AsyncLocal<T>()).Value = data;
 
         /// <summary>
+        /// Retrieves an object from the <see cref="CallContext"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of the data being retrieved. Must match the type used when the <paramref name="name"/> was set via <see cref="SetData{T}(string, T)"/>.</typeparam>
+        /// <returns>The object in the call context associated with the specified name, or a default value for <typeparamref name="T"/> if none is found.</returns>
+        public static T GetData() => GetData(defaultName);
+
+        /// <summary>
         /// Retrieves an object with the specified name from the <see cref="CallContext"/>.
         /// </summary>
         /// <typeparam name="T">The type of the data being retrieved. Must match the type used when the <paramref name="name"/> was set via <see cref="SetData{T}(string, T)"/>.</typeparam>
@@ -28,6 +42,14 @@ namespace Moq.Sdk
         /// <returns>The object in the call context associated with the specified name, or a default value for <typeparamref name="T"/> if none is found.</returns>
         public static T GetData(string name) =>
             state.TryGetValue(name, out AsyncLocal<T> data) ? data.Value : default(T);
+
+        /// <summary>
+        /// Retrieves an object from the <see cref="CallContext"/>, and 
+        /// sets an initial value if it was not found.
+        /// </summary>
+        /// <typeparam name="T">The type of the data being retrieved. Must match the type used when the <paramref name="name"/> was set via <see cref="SetData{T}(string, T)"/>.</typeparam>
+        /// <returns>The object in the call context associated with the specified name, or the initial value returned from <paramref name="setInitialValue"/>.</returns>
+        public static T GetData(Func<T> setInitialValue) => GetData(defaultName, setInitialValue);
 
         /// <summary>
         /// Retrieves an object with the specified name from the <see cref="CallContext"/>, and 
