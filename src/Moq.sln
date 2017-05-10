@@ -30,7 +30,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Sdk.Build", "Sdk.Build\Moq.Sdk.Build.csproj", "{C834EB32-37AD-4F37-BB87-2682E435E16A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sdk.Build.Tests", "..\test\Sdk.Build.Tests\Sdk.Build.Tests.csproj", "{42415884-4EF7-4C04-8A1D-0FAF032E4767}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Sdk.Build.Tests", "..\test\Sdk.Build.Tests\Moq.Sdk.Build.Tests.csproj", "{42415884-4EF7-4C04-8A1D-0FAF032E4767}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Sdk.Tests", "..\test\Sdk.Tests\Moq.Sdk.Tests.csproj", "{EB66BC5E-4072-4F26-9772-979D8561883F}"
 EndProject

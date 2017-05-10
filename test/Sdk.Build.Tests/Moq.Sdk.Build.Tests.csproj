@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net461</TargetFramework>
+	<ProjectGuid>42415884-4ef7-4c04-8a1d-0faf032e4767</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Proxy\Proxy.Generator\Moq.Proxy.Generator.csproj" />

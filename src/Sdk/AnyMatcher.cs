@@ -9,7 +9,7 @@ namespace Moq.Sdk
     /// or a nullable value type.
     /// </summary>
     /// <typeparam name="T">Type of argument to match.</typeparam>
-    public class AnyArgumentMatcher<T> : IArgumentMatcher
+    public class AnyMatcher<T> : IArgumentMatcher
     {
         static bool IsValueType = typeof(T).GetTypeInfo().IsValueType;
         static bool IsNullable = typeof(T).GetTypeInfo().IsGenericType &&
@@ -18,9 +18,9 @@ namespace Moq.Sdk
         /// <summary>
         /// Gets the singleton instance of this matcher.
         /// </summary>
-        public static IArgumentMatcher Default { get; } = new AnyArgumentMatcher<T>();
+        public static IArgumentMatcher Default { get; } = new AnyMatcher<T>();
 
-        AnyArgumentMatcher() { }
+        AnyMatcher() { }
 
         /// <summary>
         /// Gets the type of the argument this matcher supports.
@@ -40,11 +40,11 @@ namespace Moq.Sdk
                 typeof(T).GetTypeInfo().IsAssignableFrom(value.GetType().GetTypeInfo());
         }
 
-        public override bool Equals(object obj) => Equals(this, obj as AnyArgumentMatcher<T>);
+        public override bool Equals(object obj) => Equals(this, obj as AnyMatcher<T>);
 
         public override int GetHashCode() => typeof(T).GetHashCode();
 
-        static bool Equals(AnyArgumentMatcher<T> obj1, AnyArgumentMatcher<T> obj2)
+        static bool Equals(AnyMatcher<T> obj1, AnyMatcher<T> obj2)
         {
             if (object.Equals(null, obj1) ||
                 object.Equals(null, obj2) ||
@@ -56,5 +56,7 @@ namespace Moq.Sdk
             // so they are equal.
             return true;
         }
+
+        public override string ToString() => "Any<" + Stringly.ToTypeName(ArgumentType) + ">";
     }
 }

@@ -1,11 +1,31 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net461</TargetFramework>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Proxy\Proxy.Generator\Moq.Proxy.Generator.csproj" />
-    <ProjectReference Include="..\..\src\Proxy\Proxy\Moq.Proxy.csproj" />
-    <ProjectReference Include="..\..\src\Sdk\Moq.Sdk.csproj" />
-  </ItemGroup>
-  <Import Project="..\Moq.Testing\Moq.Testing.projitems" Label="Shared" />
+	<PropertyGroup>
+		<TargetFramework>net461</TargetFramework>
+		<ProjectGuid>eb66bc5e-4072-4f26-9772-979d8561883f</ProjectGuid>
+		<AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
+
+		<GeneratorProps>..\..\src\Proxy\Proxy.Generator.Build\bin\$(Configuration)\net461\Moq.Proxy.Generator.props</GeneratorProps>
+		<GeneratorTargets>..\..\src\Proxy\Proxy.Generator.Build\bin\$(Configuration)\net461\Moq.Proxy.Generator.targets</GeneratorTargets>
+
+		<PGenPath>..\..\src\Proxy\Proxy.Generator.Console\bin\$(Configuration)\net461</PGenPath>
+	</PropertyGroup>
+	<Import Project="$(GeneratorProps)" Condition="Exists('$(GeneratorProps)')" />
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\src\Proxy\Proxy.Generator\Moq.Proxy.Generator.csproj" />
+		<ProjectReference Include="..\..\src\Proxy\Proxy\Moq.Proxy.csproj" />
+		<ProjectReference Include="..\..\src\Sdk\Moq.Sdk.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<AdditionalProxyInterface Include="Moq.Sdk.IMocked" />
+		<AdditionalProxyForType Include="Moq.Sdk.Tests.ICalculator" />
+	</ItemGroup>
+
+	<Target Name="EnsureGenerator" BeforeTargets="Build" Condition="!Exists('$(GeneratorTargets)')">
+		<Error Text="Proxy generator hasn't been build. Please run corebuild.cmd once before building this project.'" />
+	</Target>
+
+	<Import Project="$(GeneratorTargets)" Condition="Exists('$(GeneratorTargets)')" />
+	<Import Project="..\Moq.Testing\Moq.Testing.projitems" Label="Shared" />
 </Project>

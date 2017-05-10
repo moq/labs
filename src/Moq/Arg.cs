@@ -15,8 +15,8 @@ namespace Moq
         /// <typeparam name="T">The type of the argument.</typeparam>
         public static T Any<T>()
         {
-            CallContext<Stack<IArgumentMatcher>>.GetData(nameof(IArgumentMatcher), () => new Stack<IArgumentMatcher>())
-                .Push(AnyArgumentMatcher<T>.Default);
+            CallContext<Queue<IArgumentMatcher>>.GetData(nameof(IArgumentMatcher), () => new Queue<IArgumentMatcher>())
+                .Enqueue(AnyMatcher<T>.Default);
 
             return default(T);
         }
@@ -28,8 +28,8 @@ namespace Moq
         /// <param name="condition">The condition to check against actual invocation values.</param>
         public static T Any<T>(Func<T, bool> condition)
         {
-            CallContext<Stack<IArgumentMatcher>>.GetData(nameof(IArgumentMatcher), () => new Stack<IArgumentMatcher>())
-                .Push(new IsArgumentMatcher<T>(condition));
+            CallContext<Queue<IArgumentMatcher>>.GetData(nameof(IArgumentMatcher), () => new Queue<IArgumentMatcher>())
+                .Enqueue(new ConditionalMatcher<T>(condition));
 
             return default(T);
         }
@@ -48,8 +48,8 @@ namespace Moq
         {
             get
             {
-                CallContext<Stack<IArgumentMatcher>>.GetData(nameof(IArgumentMatcher), () => new Stack<IArgumentMatcher>())
-                    .Push(AnyArgumentMatcher<T>.Default);
+                CallContext<Queue<IArgumentMatcher>>.GetData(nameof(IArgumentMatcher), () => new Queue<IArgumentMatcher>())
+                    .Enqueue(AnyMatcher<T>.Default);
                 return default(T);
             }
         }

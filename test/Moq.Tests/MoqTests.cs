@@ -16,7 +16,7 @@ namespace Moq.Tests
             calculator.InsertBehavior(0, new EventBehavior());
 
             var raised = false;
-            
+
             EventHandler handler = (sender, args) => raised = true;
             calculator.PoweringUp += handler;
 
