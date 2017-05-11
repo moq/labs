@@ -18,7 +18,7 @@ namespace Moq
         /// </summary>
         public static void Returns<TResult>(this object target, TResult value)
         {
-            var invocation = CallContext<IMethodInvocation>.GetData(nameof(IMethodInvocation));
+            var invocation = CallContext<IMethodInvocation>.GetData();
             var mock = ((IMocked)invocation.Target).Mock;
             var filter = BuildFilter(invocation);
 
@@ -33,7 +33,7 @@ namespace Moq
         /// </summary>
         public static void Returns<TResult>(this object target, Func<TResult> value)
         {
-            var invocation = CallContext<IMethodInvocation>.GetData(nameof(IMethodInvocation));
+            var invocation = CallContext<IMethodInvocation>.GetData();
             var mock = ((IMocked)invocation.Target).Mock;
             var filter = BuildFilter(invocation);
 
@@ -71,7 +71,7 @@ namespace Moq
 
         static void Returns(Delegate value, InvokeBehavior behavior)
         {
-            var invocation = CallContext<IMethodInvocation>.GetData(nameof(IMethodInvocation));
+            var invocation = CallContext<IMethodInvocation>.GetData();
             EnsureCompatible(invocation, value);
             var mock = ((IMocked)invocation.Target).Mock;
             var filter = BuildFilter(invocation);
@@ -91,7 +91,7 @@ namespace Moq
 
         static SimpleBehaviorFilter BuildFilter(IMethodInvocation invocation)
         {
-            var currentMatchers = CallContext<Queue<IArgumentMatcher>>.GetData(nameof(IArgumentMatcher), () => new Queue<IArgumentMatcher>());
+            var currentMatchers = CallContext<Queue<IArgumentMatcher>>.GetData(() => new Queue<IArgumentMatcher>());
             var finalMatchers = new List<IArgumentMatcher>();
             var parameters = invocation.MethodBase.GetParameters();
 

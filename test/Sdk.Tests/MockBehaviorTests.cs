@@ -10,25 +10,23 @@ namespace Moq.Sdk.Tests
         public void RecordsInvocation()
         {
             var behavior = new MockBehavior();
+            var mock = new Mocked();
 
-            behavior.Invoke(new MethodInvocation(new Mocked(), typeof(object).GetMethod(nameof(object.ToString))), 
+            behavior.Invoke(new MethodInvocation(mock, typeof(object).GetMethod(nameof(object.ToString))), 
                 () => (m, n) => m.CreateValueReturn(null));
 
-            Assert.Equal(1, behavior.Invocations.Count);
+            Assert.Equal(1, mock.Mock.Invocations.Count);
         }
 
         [Fact]
-        public void ReturnsFromIMocked()
+        public void ThrowsForNonIMocked()
         {
             var behavior = new MockBehavior();
 
-            var result = behavior.Invoke(new MethodInvocation(
-                new Mocked(), 
-                typeof(Mocked).GetProperty(nameof(IMocked.Mock)).GetGetMethod()), 
-                null);
-
-            Assert.True(result.ReturnValue is IMock);
-            Assert.Equal(0, behavior.Invocations.Count);
+            Assert.Throws<ArgumentException>(() => behavior.Invoke(new MethodInvocation(
+                new object(),
+                typeof(Mocked).GetProperty(nameof(IMocked.Mock)).GetGetMethod()),
+                null));
         }
 
         [Fact]
@@ -50,7 +48,7 @@ namespace Moq.Sdk.Tests
 
         public class Mocked : IMocked
         {
-            public IMock Mock => throw new NotImplementedException();
+            public IMock Mock { get; } = new MockInfo();
         }
     }
 }

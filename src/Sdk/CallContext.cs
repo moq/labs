@@ -58,8 +58,14 @@ namespace Moq.Sdk
         /// <typeparam name="T">The type of the data being retrieved. Must match the type used when the <paramref name="name"/> was set via <see cref="SetData{T}(string, T)"/>.</typeparam>
         /// <param name="name">The name of the item in the call context.</param>
         /// <returns>The object in the call context associated with the specified name, or the initial value returned from <paramref name="setInitialValue"/>.</returns>
-        public static T GetData(string name, Func<T> setInitialValue) =>
-            state.GetOrAdd(name, _ => new AsyncLocal<T> { Value = setInitialValue() }).Value;
+        public static T GetData(string name, Func<T> setInitialValue)
+        {
+            var local = state.GetOrAdd(name, _ => new AsyncLocal<T> { Value = setInitialValue() });
+            if (object.Equals(local.Value, default(T)))
+                local.Value = setInitialValue();
+
+            return local.Value;
+        }
     }
 
     /// <summary>

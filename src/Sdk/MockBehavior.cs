@@ -1,8 +1,7 @@
 ﻿using System.Linq;
-using System.Collections.Generic;
 using Moq.Proxy;
-using System.Reflection;
 using System;
+using Moq.Sdk.Properties;
 
 namespace Moq.Sdk
 {
@@ -11,7 +10,7 @@ namespace Moq.Sdk
     /// that can dynamically determine whether they should be applied to the 
     /// current <see cref="IMethodInvocation"/>.
     /// </summary>
-    public class MockBehavior : IProxyBehavior, IMock
+    public class MockBehavior : IProxyBehavior
     {
         /// <summary>
         /// Creates an <see cref="IMockBehavior"/> from an anonymous delegate/lambda.
@@ -22,29 +21,21 @@ namespace Moq.Sdk
         public static IMockBehavior Create(Func<IMethodInvocation, bool> appliesTo, InvokeBehavior behavior) =>
             new AnonymousMockBehavior(appliesTo, behavior);
 
-        public IList<IMockBehavior> Behaviors { get; } = new List<IMockBehavior>();
-
-        public IList<IMethodInvocation> Invocations { get; } = new List<IMethodInvocation>();
-
-        public MockState State { get; } = new MockState();
-
         public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior getNext)
         {
-            // TODO: cache?
-            var mapping = invocation.Target.GetType().GetTypeInfo().GetRuntimeInterfaceMap(typeof(IMocked));
-            if (mapping.TargetMethods.Any(x => x == invocation.MethodBase))
-                return invocation.CreateValueReturn(this);
+            CallContext<IMethodInvocation>.SetData(invocation);
 
-            CallContext<IMethodInvocation>.SetData(nameof(IMethodInvocation), invocation);
+            var mock = invocation.Target is IMocked mocked ?
+                mocked.Mock : throw new ArgumentException(Resources.TargetNotMocked);
 
-            Invocations.Add(invocation);
+            mock.Invocations.Add(invocation);
 
-            if (Behaviors.Count == 0)
+            if (mock.Behaviors.Count == 0)
                 return getNext().Invoke(invocation, getNext);
 
             // This is the only added functionality of this behavior, to first match 
             // applicable InvokeBehaviors and execute them in sequence.
-            var applicableBehaviors = Behaviors.Where(behavior => behavior.AppliesTo(invocation)).ToArray();
+            var applicableBehaviors = mock.Behaviors.Where(behavior => behavior.AppliesTo(invocation)).ToArray();
             if (applicableBehaviors.Length == 0)
                 return getNext().Invoke(invocation, getNext);
 

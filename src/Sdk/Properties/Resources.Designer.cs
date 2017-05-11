@@ -69,5 +69,14 @@ namespace Moq.Sdk.Properties {
                 return ResourceManager.GetString("EventNotFound", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The target of the invocation does not implement IMocked..
+        /// </summary>
+        internal static string TargetNotMocked {
+            get {
+                return ResourceManager.GetString("TargetNotMocked", resourceCulture);
+            }
+        }
     }
 }

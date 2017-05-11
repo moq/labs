@@ -22,7 +22,7 @@ namespace Moq.Tests
         [Theory(Skip = "Manual Testing")]
         public async Task GeneratesAdditionalStuff(string languageName)
         {
-            var workspace = new AdhocWorkspace(ProxyGenerator.CreateHost(typeof(MockGenerator).Assembly));
+            var workspace = new AdhocWorkspace(ProxyGenerator.CreateHost(typeof(CSharpMockGenerator).Assembly));
             var projectInfo = CreateProjectInfo(languageName, "code");
             var project = workspace.AddProject(projectInfo);
             var compilation = await project.GetCompilationAsync(TimeoutToken(5));

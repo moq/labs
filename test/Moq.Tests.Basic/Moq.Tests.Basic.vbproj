@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>net461</TargetFramework>
-		<ProjectGuid>eb66bc5e-4072-4f26-9772-979d8561883f</ProjectGuid>
+		<ProjectGuid>9b6044cf-c2a1-4fc2-b6f0-2e8460684132</ProjectGuid>
 		<AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
 
 		<GeneratorProps>..\..\src\Proxy\Proxy.Generator.Build\bin\$(Configuration)\net461\Moq.Proxy.Generator.props</GeneratorProps>
@@ -9,7 +9,6 @@
 
 		<SdkProps>..\..\src\Sdk.Build\bin\$(Configuration)\net461\Moq.Sdk.Build.props</SdkProps>
 		<SdkTargets>..\..\src\Sdk.Build\bin\$(Configuration)\net461\Moq.Sdk.Build.targets</SdkTargets>
-
 		<PGenPath>..\..\src\Proxy\Proxy.Generator.Console\bin\$(Configuration)\net461</PGenPath>
 	</PropertyGroup>
 	<Import Project="$(GeneratorProps)" Condition="Exists('$(GeneratorProps)')" />
@@ -18,11 +17,14 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\Proxy\Proxy.Generator\Moq.Proxy.Generator.csproj" />
 		<ProjectReference Include="..\..\src\Proxy\Proxy\Moq.Proxy.csproj" />
+		<ProjectReference Include="..\..\src\Sdk.Build\Moq.Sdk.Build.csproj" />
 		<ProjectReference Include="..\..\src\Sdk\Moq.Sdk.csproj" />
+		<ProjectReference Include="..\..\src\Moq\Moq.csproj" />
+		<ProjectReference Include="..\ManualProxies\ManualProxies.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<AdditionalProxyForType Include="Moq.Sdk.Tests.ICalculator" />
+		<AdditionalProxyForType Include="Moq.Proxy.ICalculator" />
 	</ItemGroup>
 
 	<Target Name="EnsureGenerator" BeforeTargets="Build" Condition="!Exists('$(GeneratorTargets)')">
@@ -31,5 +33,4 @@
 
 	<Import Project="$(GeneratorTargets)" Condition="Exists('$(GeneratorTargets)')" />
 	<Import Project="$(SdkTargets)" Condition="Exists('$(SdkTargets)')" />
-	<Import Project="..\Moq.Testing\Moq.Testing.projitems" Label="Shared" />
 </Project>

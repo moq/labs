@@ -11,7 +11,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 namespace Moq.Sdk
 {
     [ExportLanguageService(typeof(IDocumentVisitor), LanguageNames.CSharp, DocumentVisitorLayer.Fixup)]
-    public class MockGenerator : CSharpSyntaxRewriter, IDocumentVisitor
+    public class CSharpMockGenerator : CSharpSyntaxRewriter, IDocumentVisitor
     {
         SyntaxGenerator generator;
 
@@ -24,6 +24,16 @@ namespace Moq.Sdk
             return document.WithSyntaxRoot(syntax);
         }
 
+        public override SyntaxNode VisitClassDeclaration(ClassDeclarationSyntax node)
+            => generator.AddMembers(
+                base.VisitClassDeclaration(node),
+                generator.FieldDeclaration(
+                    "mock",
+                    ParseTypeName(nameof(IMock)),
+                    initializer: generator.ObjectCreationExpression(
+                        ParseTypeName(nameof(MockInfo)))
+                ));
+
         public override SyntaxNode VisitPropertyDeclaration(PropertyDeclarationSyntax node)
         {
             // Make IMocked properties explicit.
@@ -33,7 +43,9 @@ namespace Moq.Sdk
                     .WithExplicitInterfaceSpecifier(
                         ExplicitInterfaceSpecifier(
                             IdentifierName(nameof(IMocked))))
-                    .WithModifiers(TokenList()));
+                    .WithModifiers(TokenList())
+                    .WithExpressionBody(ArrowExpressionClause(IdentifierName("mock")))
+                );
 
             return base.VisitPropertyDeclaration(node);
         }
