@@ -88,5 +88,26 @@ namespace Moq.Tests
             Assert.Equal(10, calculator.Add(10, 2));
             Assert.Equal(20, calculator.Add(25, 20));
         }
+
+        [Fact]
+        public void CanReturnFunction()
+        {
+            var calculator = Mock.Of<ICalculator>();
+
+            calculator.Add(2, 2).Returns(() => 4);
+
+            Assert.Equal(4, calculator.Add(2, 2));
+        }
+
+        [Fact]
+        public void CanReturnFunctionWithArgs()
+        {
+            var calculator = Mock.Of<ICalculator>();
+
+            calculator.Add(Any<int>(), Any<int>()).Returns((int x, int y) => x + y);
+
+            Assert.Equal(4, calculator.Add(2, 2));
+            Assert.Equal(5, calculator.Add(2, 3));
+        }
     }
 }
