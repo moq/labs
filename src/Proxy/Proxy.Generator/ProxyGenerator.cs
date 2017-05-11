@@ -79,8 +79,8 @@ namespace Moq.Proxy
             CancellationToken cancellationToken)
         {
             var options = languageName == LanguageNames.CSharp ?
-                    (CompilationOptions)new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary) :
-                    (CompilationOptions)new VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary);
+                (CompilationOptions)new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary) :
+                (CompilationOptions)new VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, optionStrict: OptionStrict.On);
 
             var project = workspace.AddProject(ProjectInfo.Create(
                 ProjectId.CreateNewId(),
