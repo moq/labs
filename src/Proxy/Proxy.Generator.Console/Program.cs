@@ -53,12 +53,14 @@ namespace Moq.Proxy
                     string.IsNullOrEmpty(languageName) ||
                     (sources.Count == 0 && references.Count == 0))
                 {
-                    // show some app description message
-                    Console.WriteLine($"Usage: {appName} [OPTIONS]+");
-                    Console.WriteLine();
+                    var writer = shouldShowHelp ? Console.Out : Console.Error;
 
-                    Console.WriteLine("Options:");
-                    options.WriteOptionDescriptions(Console.Out);
+                    // show some app description message
+                    writer.WriteLine($"Usage: {appName} [OPTIONS]+");
+                    writer.WriteLine();
+
+                    writer.WriteLine("Options:");
+                    options.WriteOptionDescriptions(writer);
                     return -1;
                 }
 
@@ -96,15 +98,15 @@ namespace Moq.Proxy
             }
             catch (OptionException e)
             {
-                Console.WriteLine($"{appName}: {e.Message}");
-                Console.WriteLine($"Try '{appName} --help' for more information.");
+                Console.Error.WriteLine($"{appName}: {e.Message}");
+                Console.Error.WriteLine($"Try '{appName} --help' for more information.");
                 return -1;
             }
             catch (Exception e)
             {
                 // TODO: should we render something different in this case? (non-options exception?)
-                Console.WriteLine($"{appName}: {e.Message}");
-                Console.WriteLine($"Try '{appName} --help' for more information.");
+                Console.Error.WriteLine($"{appName}: {e.Message}");
+                Console.Error.WriteLine($"Try '{appName} --help' for more information.");
                 return -1;
             }
         }
