@@ -55,6 +55,8 @@
 		      Condition="'$(OS)' == 'Windows_NT'" />
 	</Target>
 
+  <Target Name="Rebuild" DependsOnTargets="Clean;Restore;Build" />
+
 	<Target Name="_Restore" AfterTargets="Restore">
 		<MSBuild Projects="@(Solution)" Targets="Restore" />
 		<MSBuild Projects="test\Moq.Tests\Moq.Tests.csproj" Targets="Restore"  />

@@ -85,21 +85,8 @@ if not "%MSBuildTarget%" == "" set MSBuildTargetName=%MSBuildTarget:~3%
 
 taskkill /f /im MSBuild.exe /fi "memusage gt 40" >NUL
 
-if "%MSBuildTargetName%" == "Rebuild"  (
-  call :PrintColor Cyan "Cleaning..."
-  msbuild "%Root%build.proj" /nologo /nr:%NodeReuse% %MultiProcessor% /t:Clean /p:target=Clean /p:Configuration=%BuildConfiguration% %MSBuildAdditionalArguments%
-  call :PrintColor Cyan "Restoring..."
-  msbuild "%Root%build.proj" /nologo /nr:%NodeReuse% %MultiProcessor% /t:Restore /p:target=Restore /p:Configuration=%BuildConfiguration% %MSBuildAdditionalArguments%
-  call :PrintColor Cyan "Building..."
-  msbuild "%Root%build.proj" /nologo /nr:%NodeReuse% %MultiProcessor% /t:Build /p:target=Build /p:Configuration=%BuildConfiguration% %MSBuildAdditionalArguments%
-  if "%All%" == "true" (
-    call :PrintColor Cyan "Testing..."
-    msbuild "%Root%build.proj" /nologo /nr:%NodeReuse% %MultiProcessor% /t:Test /p:target=Test /p:Configuration=%BuildConfiguration% %MSBuildAdditionalArguments%  
-  )
-) else (
-  @echo on
-  msbuild "%Root%build.proj" /nologo /nr:%NodeReuse% %MultiProcessor% %MSBuildTarget% /p:target=%MSBuildTargetName% /p:Configuration=%BuildConfiguration% %MSBuildAdditionalArguments%
-)
+@echo on
+msbuild "%Root%build.proj" /nologo /nr:%NodeReuse% %MultiProcessor% %MSBuildTarget% /p:target=%MSBuildTargetName% /p:Configuration=%BuildConfiguration% %MSBuildAdditionalArguments%
 
 @echo off
 
