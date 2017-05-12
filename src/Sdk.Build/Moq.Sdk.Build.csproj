@@ -1,19 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>net461</TargetFramework>
-		<RootNamespace>Moq.Sdk</RootNamespace>
 	</PropertyGroup>
+	<ItemGroup>
+		<Content Include="Moq.Sdk.Build.props">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Moq.Sdk.Build.targets">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Proxy\Proxy.Generator\Moq.Proxy.Generator.csproj" />
 		<ProjectReference Include="..\Proxy\Proxy\Moq.Proxy.csproj" />
 		<ProjectReference Include="..\Sdk\Moq.Sdk.csproj" />
-	</ItemGroup>
-	<ItemGroup>
-	  <None Update="Moq.Sdk.Build.targets">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Moq.Sdk.Build.props">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
 	</ItemGroup>
 </Project>
