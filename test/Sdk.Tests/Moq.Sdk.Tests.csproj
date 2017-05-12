@@ -26,8 +26,8 @@
 		<AdditionalProxyForType Include="Moq.Sdk.Tests.ICalculator" />
 	</ItemGroup>
 
-	<Target Name="EnsureGenerator" BeforeTargets="Build" Condition="!Exists('$(GeneratorTargets)')">
-		<Error Text="Proxy generator hasn't been build. Please run corebuild.cmd once before building this project.'" />
+	<Target Name="EnsureGenerator" BeforeTargets="Build" Condition="!Exists('$(GeneratorTargets)') Or !Exists('$(SdkTargets)')">
+		<Error Text="Proxy or Sdk generators haven't been build. Please run build.cmd once before building this project.'" />
 	</Target>
 
 	<Import Project="$(GeneratorTargets)" Condition="Exists('$(GeneratorTargets)')" />

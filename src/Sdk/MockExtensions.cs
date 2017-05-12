@@ -80,8 +80,8 @@ namespace Moq.Sdk
         /// </summary>
         public static TMock AddBehavior<TMock>(this TMock mock, IMockBehavior behavior)
         {
-            if (mock is IMocked target)
-                target.Mock.Behaviors.Add(behavior);
+            if (mock is IMocked mocked)
+                mocked.Mock.Behaviors.Add(behavior);
             else
                 throw new ArgumentException(nameof(mock));
 
@@ -94,8 +94,8 @@ namespace Moq.Sdk
         /// </summary>
         public static TMock InsertBehavior<TMock>(this TMock mock, int index, IMockBehavior behavior)
         {
-            if (mock is IMocked target)
-                target.Mock.Behaviors.Insert(index, behavior);
+            if (mock is IMocked mocked)
+                mocked.Mock.Behaviors.Insert(index, behavior);
             else
                 throw new ArgumentException(nameof(mock));
 

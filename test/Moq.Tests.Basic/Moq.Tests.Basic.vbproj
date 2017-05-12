@@ -28,7 +28,7 @@
 	</ItemGroup>
 
 	<Target Name="EnsureGenerator" BeforeTargets="Build" Condition="!Exists('$(GeneratorTargets)')">
-		<Error Text="Proxy generator hasn't been build. Please run corebuild.cmd once before building this project.'" />
+		<Error Text="Proxy generator hasn't been build. Please run build.cmd once before building this project.'" />
 	</Target>
 
 	<Import Project="$(GeneratorTargets)" Condition="Exists('$(GeneratorTargets)')" />
