@@ -13,17 +13,40 @@ namespace Moq
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public static class MockExtensions
     {
+        public static TResult Callback<TResult>(this TResult target, Action callback)
+        {
+            var invocation = CallContext<IMethodInvocation>.GetData();
+            var mock = ((IMocked)invocation.Target).Mock;
+
+            mock.Invocations.Remove(invocation);
+
+            mock.Behaviors.Add(new InvocationFilterBehavior(
+                Matchers.AppliesTo(invocation), 
+                (mi, next) =>
+                {
+                    callback();
+                    return next()(mi, next);
+                }));
+
+            return target;
+        }
+
         /// <summary>
         /// Sets the return value for a property or non-void method.
         /// </summary>
-        public static void Returns<TResult>(this object target, TResult value)
+        public static TResult Returns<TResult>(this object target, TResult value)
         {
             var invocation = CallContext<IMethodInvocation>.GetData();
             var mock = ((IMocked)invocation.Target).Mock;
-            var filter = BuildFilter(invocation);
 
             mock.Invocations.Remove(invocation);
-            mock.AddBehavior(filter.AppliesTo, (mi, next) => mi.CreateValueReturn(value, mi.Arguments));
+
+            mock.Behaviors.Add(new InvocationFilterBehavior(
+                Matchers.AppliesTo(invocation), 
+                (mi, next) => mi.CreateValueReturn(value, mi.Arguments),
+                "Returns"));
+
+            return default(TResult);
         }
 
         /// <summary>
@@ -31,15 +54,19 @@ namespace Moq
         /// be evaluated dynamically using the given function on every 
         /// call.
         /// </summary>
-        public static void Returns<TResult>(this object target, Func<TResult> value)
+        public static TResult Returns<TResult>(this object target, Func<TResult> value)
         {
             var invocation = CallContext<IMethodInvocation>.GetData();
             var mock = ((IMocked)invocation.Target).Mock;
-            var filter = BuildFilter(invocation);
 
             mock.Invocations.Remove(invocation);
 
-            mock.AddBehavior(filter.AppliesTo, (mi, next) => mi.CreateValueReturn(value(), mi.Arguments));
+            mock.Behaviors.Add(new InvocationFilterBehavior(
+                Matchers.AppliesTo(invocation), 
+                (mi, next) => mi.CreateValueReturn(value(), mi.Arguments),
+                "Returns"));
+
+            return default(TResult);
         }
 
         /// <summary>
@@ -47,8 +74,8 @@ namespace Moq
         /// be evaluated dynamically using the given function on every 
         /// call.
         /// </summary>
-        public static void Returns<T, TResult>(this object target, Func<T, TResult> value)
-            => Returns(value, (mi, next)
+        public static TResult Returns<T, TResult>(this object target, Func<T, TResult> value)
+            => Returns<TResult>(value, (mi, next)
                 => mi.CreateValueReturn(value((T)mi.Arguments[0]), mi.Arguments));
 
         /// <summary>
@@ -56,8 +83,8 @@ namespace Moq
         /// be evaluated dynamically using the given function on every 
         /// call.
         /// </summary>
-        public static void Returns<T1, T2, TResult>(this object target, Func<T1, T2, TResult> value)
-            => Returns(value, (mi, next)
+        public static TResult Returns<T1, T2, TResult>(this object target, Func<T1, T2, TResult> value)
+            => Returns<TResult>(value, (mi, next)
                 => mi.CreateValueReturn(value((T1)mi.Arguments[0], (T2)mi.Arguments[1]), mi.Arguments));
 
         /// <summary>
@@ -65,19 +92,21 @@ namespace Moq
         /// be evaluated dynamically using the given function on every 
         /// call.
         /// </summary>
-        public static void Returns<T1, T2, T3, TResult>(this object target, Func<T1, T2, T3, TResult> value)
-            => Returns(value, (mi, next) 
+        public static TResult Returns<T1, T2, T3, TResult>(this object target, Func<T1, T2, T3, TResult> value)
+            => Returns<TResult>(value, (mi, next) 
                 => mi.CreateValueReturn(value((T1)mi.Arguments[0], (T2)mi.Arguments[1], (T3)mi.Arguments[2]), mi.Arguments));
 
-        static void Returns(Delegate value, InvokeBehavior behavior)
+        static TResult Returns<TResult>(Delegate value, InvokeBehavior behavior)
         {
             var invocation = CallContext<IMethodInvocation>.GetData();
             EnsureCompatible(invocation, value);
+
             var mock = ((IMocked)invocation.Target).Mock;
-            var filter = BuildFilter(invocation);
 
             mock.Invocations.Remove(invocation);
-            mock.AddBehavior(filter.AppliesTo, behavior);
+            mock.Behaviors.Add(new InvocationFilterBehavior(Matchers.AppliesTo(invocation), behavior, "Returns"));
+
+            return default(TResult);
         }
 
         static void EnsureCompatible(IMethodInvocation invocation, Delegate callback)
@@ -87,32 +116,6 @@ namespace Moq
                 throw new ArgumentException("Callback arguments do not match target invocation arguments.");
 
             // TODO: validate assignability
-        }
-
-        static SimpleBehaviorFilter BuildFilter(IMethodInvocation invocation)
-        {
-            var currentMatchers = CallContext<Queue<IArgumentMatcher>>.GetData(() => new Queue<IArgumentMatcher>());
-            var finalMatchers = new List<IArgumentMatcher>();
-            var parameters = invocation.MethodBase.GetParameters();
-
-            for (var i = 0; i < invocation.Arguments.Count; i++)
-            {
-                var argument = invocation.Arguments[i];
-                var parameter = parameters[i];
-
-                if (object.Equals(argument, DefaultValue.For(parameter.ParameterType)) &&
-                    currentMatchers.Count != 0 &&
-                    parameter.ParameterType.GetTypeInfo().IsAssignableFrom(currentMatchers.Peek().ArgumentType.GetTypeInfo()))
-                {
-                    finalMatchers.Add(currentMatchers.Dequeue());
-                }
-                else
-                {
-                    finalMatchers.Add(new ValueMatcher(parameter.ParameterType, argument));
-                }
-            }
-
-            return new SimpleBehaviorFilter(invocation, finalMatchers);
         }
     }
 }

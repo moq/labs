@@ -109,5 +109,56 @@ namespace Moq.Tests
             Assert.Equal(4, calculator.Add(2, 2));
             Assert.Equal(5, calculator.Add(2, 3));
         }
+
+        [Fact]
+        public void CanInvokeCallback()
+        {
+            var calculator = Mock.Of<ICalculator>();
+            var called = false;
+
+            calculator.Add(Any<int>(), Any<int>())
+                .Callback(() => called = true)
+                .Returns((int x, int y) => x + y);
+
+            calculator.Add(2, 2);
+
+            Assert.True(called);
+        }
+
+        [Fact]
+        public void CanInvokeTwoCallbacks()
+        {
+            var calculator = Mock.Of<ICalculator>();
+            var called1 = false;
+            var called2 = false;
+
+            calculator.Add(Any<int>(), Any<int>())
+                .Callback(() => called1 = true)
+                .Callback(() => called2 = true)
+                .Returns((int x, int y) => x + y);
+
+            calculator.Add(2, 2);
+
+            Assert.True(called1);
+            Assert.True(called2);
+        }
+
+        [Fact]
+        public void CannotInvokeCallbackAfterReturn()
+        {
+            var calculator = Mock.Of<ICalculator>();
+            var called = false;
+
+            calculator.Add(Any<int>(), Any<int>())
+                .Returns((int x, int y) => x + y)
+                // The reason this can't work is that Returns does not keep 
+                // invoking the next handler in the behavior pipeline, and 
+                // therefore short-circuits the behaviors at this point.
+                .Callback(() => called = true);
+
+            calculator.Add(2, 2);
+
+            Assert.False(called);
+        }
     }
 }

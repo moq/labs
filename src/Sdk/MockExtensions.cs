@@ -11,9 +11,9 @@ namespace Moq.Sdk
         /// <summary>
         /// Adds a behavior to a mock.
         /// </summary>
-		public static IMocked AddBehavior(this IMocked mock, Func<IMethodInvocation, bool> appliesTo, InvokeBehavior behavior)
+		public static IMocked AddBehavior(this IMocked mock, Func<IMethodInvocation, bool> appliesTo, InvokeBehavior behavior, string name = null)
         {
-            mock.Mock.Behaviors.Add(MockBehavior.Create(appliesTo, behavior));
+            mock.Mock.Behaviors.Add(MockBehavior.Create(appliesTo, behavior, name));
             return mock;
         }
 
@@ -21,18 +21,18 @@ namespace Moq.Sdk
         /// Inserts a behavior into the mock behavior pipeline at the specified 
         /// index.
         /// </summary>
-		public static IMocked InsertBehavior(this IMocked mock, int index, Func<IMethodInvocation, bool> appliesTo, InvokeBehavior behavior)
+		public static IMocked InsertBehavior(this IMocked mock, int index, Func<IMethodInvocation, bool> appliesTo, InvokeBehavior behavior, string name = null)
         {
-            mock.Mock.Behaviors.Insert(index, MockBehavior.Create(appliesTo, behavior));
+            mock.Mock.Behaviors.Insert(index, MockBehavior.Create(appliesTo, behavior, name));
             return mock;
         }
 
         /// <summary>
         /// Adds a behavior to a mock.
         /// </summary>
-		public static IMock AddBehavior(this IMock mock, Func<IMethodInvocation, bool> appliesTo, InvokeBehavior behavior)
+		public static IMock AddBehavior(this IMock mock, Func<IMethodInvocation, bool> appliesTo, InvokeBehavior behavior, string name = null)
         {
-            mock.Behaviors.Add(MockBehavior.Create(appliesTo, behavior));
+            mock.Behaviors.Add(MockBehavior.Create(appliesTo, behavior, name));
             return mock;
         }
 
@@ -40,21 +40,21 @@ namespace Moq.Sdk
         /// Inserts a behavior into the mock behasvior pipeline at the specified 
         /// index.
         /// </summary>
-        public static IMock InsertBehavior(this IMock mock, int index, Func<IMethodInvocation, bool> appliesTo, InvokeBehavior behavior)
+        public static IMock InsertBehavior(this IMock mock, int index, Func<IMethodInvocation, bool> appliesTo, InvokeBehavior behavior, string name = null)
         {
-            mock.Behaviors.Insert(index, MockBehavior.Create(appliesTo, behavior));
+            mock.Behaviors.Insert(index, MockBehavior.Create(appliesTo, behavior, name));
             return mock;
         }
 
         /// <summary>
         /// Adds a behavior to a mock.
         /// </summary>
-		public static TMock AddBehavior<TMock>(this TMock mock, Func<IMethodInvocation, bool> appliesTo, InvokeBehavior behavior)
+		public static TMock AddBehavior<TMock>(this TMock mock, Func<IMethodInvocation, bool> appliesTo, InvokeBehavior behavior, string name = null)
         {
             // We can't just add a constraint to the method signature, because this is 
             // implemented internally for Moq.Sdk to consume.
             if (mock is IMocked mocked)
-                mocked.Mock.Behaviors.Add(MockBehavior.Create(appliesTo, behavior));
+                mocked.Mock.Behaviors.Add(MockBehavior.Create(appliesTo, behavior, name));
             else
                 throw new ArgumentException(nameof(mock));
 
@@ -65,10 +65,10 @@ namespace Moq.Sdk
         /// Inserts a behavior into the mock behasvior pipeline at the specified 
         /// index.
         /// </summary>
-        public static TMock InsertBehavior<TMock>(this TMock mock, int index, Func<IMethodInvocation, bool> appliesTo, InvokeBehavior behavior)
+        public static TMock InsertBehavior<TMock>(this TMock mock, int index, Func<IMethodInvocation, bool> appliesTo, InvokeBehavior behavior, string name = null)
         {
             if (mock is IMocked mocked)
-                mocked.Mock.Behaviors.Insert(index, MockBehavior.Create(appliesTo, behavior));
+                mocked.Mock.Behaviors.Insert(index, MockBehavior.Create(appliesTo, behavior, name));
             else
                 throw new ArgumentException(nameof(mock));
 
