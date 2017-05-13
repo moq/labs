@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26507.0
+VisualStudioVersion = 15.0.26510.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Proxy", "Proxy\Proxy\Moq.Proxy.csproj", "{C6932108-488E-4138-B411-6C1F63A0024D}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Proxy.Generator", "Proxy\Proxy.Generator\Moq.Proxy.Generator.csproj", "{6F083467-DDA3-41B4-9E17-20C9ED52D336}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Sdk", "Sdk\Moq.Sdk.csproj", "{A1FA1859-8EA0-44E8-8EAD-9F11C3E9AC28}"
 EndProject
@@ -14,9 +12,6 @@ EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Moq.Testing", "..\test\Moq.Testing\Moq.Testing.shproj", "{1BD7DFDE-2FC8-4899-9903-6CA5724CC185}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Tests", "..\test\Moq.Tests\Moq.Tests.csproj", "{9A09225F-E0BC-4890-BED4-D9F6F5DAC146}"
-	ProjectSection(ProjectDependencies) = postProject
-		{C834EB32-37AD-4F37-BB87-2682E435E16A} = {C834EB32-37AD-4F37-BB87-2682E435E16A}
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2093478C-CEA6-4034-BCDE-EDC7A5DD4532}"
 	ProjectSection(SolutionItems) = preProject
@@ -28,15 +23,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Proxy\Proxy.Generator.Build\Moq.Proxy.Generator.targets = Proxy\Proxy.Generator.Build\Moq.Proxy.Generator.targets
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Sdk.Build", "Sdk.Build\Moq.Sdk.Build.csproj", "{C834EB32-37AD-4F37-BB87-2682E435E16A}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Sdk.Build.Tests", "..\test\Sdk.Build.Tests\Moq.Sdk.Build.Tests.csproj", "{42415884-4EF7-4C04-8A1D-0FAF032E4767}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Sdk.Tests", "..\test\Sdk.Tests\Moq.Sdk.Tests.csproj", "{EB66BC5E-4072-4F26-9772-979D8561883F}"
-EndProject
 Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "Moq.Tests.Basic", "..\test\Moq.Tests.Basic\Moq.Tests.Basic.vbproj", "{9B6044CF-C2A1-4FC2-B6F0-2E8460684132}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ManualProxies", "..\test\ManualProxies\ManualProxies.csproj", "{A1C91C3C-4E3B-4108-A301-5DF787F9CF4E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Proxy.Generator", "Proxy\Proxy.Generator\Moq.Proxy.Generator.csproj", "{0F176621-97F5-4141-A896-FE692C9944FA}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -51,10 +42,6 @@ Global
 		{C6932108-488E-4138-B411-6C1F63A0024D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6932108-488E-4138-B411-6C1F63A0024D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6932108-488E-4138-B411-6C1F63A0024D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6F083467-DDA3-41B4-9E17-20C9ED52D336}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6F083467-DDA3-41B4-9E17-20C9ED52D336}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6F083467-DDA3-41B4-9E17-20C9ED52D336}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6F083467-DDA3-41B4-9E17-20C9ED52D336}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A1FA1859-8EA0-44E8-8EAD-9F11C3E9AC28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A1FA1859-8EA0-44E8-8EAD-9F11C3E9AC28}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1FA1859-8EA0-44E8-8EAD-9F11C3E9AC28}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -67,18 +54,6 @@ Global
 		{9A09225F-E0BC-4890-BED4-D9F6F5DAC146}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A09225F-E0BC-4890-BED4-D9F6F5DAC146}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A09225F-E0BC-4890-BED4-D9F6F5DAC146}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C834EB32-37AD-4F37-BB87-2682E435E16A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C834EB32-37AD-4F37-BB87-2682E435E16A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C834EB32-37AD-4F37-BB87-2682E435E16A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C834EB32-37AD-4F37-BB87-2682E435E16A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{42415884-4EF7-4C04-8A1D-0FAF032E4767}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{42415884-4EF7-4C04-8A1D-0FAF032E4767}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{42415884-4EF7-4C04-8A1D-0FAF032E4767}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{42415884-4EF7-4C04-8A1D-0FAF032E4767}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EB66BC5E-4072-4F26-9772-979D8561883F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EB66BC5E-4072-4F26-9772-979D8561883F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EB66BC5E-4072-4F26-9772-979D8561883F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EB66BC5E-4072-4F26-9772-979D8561883F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9B6044CF-C2A1-4FC2-B6F0-2E8460684132}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9B6044CF-C2A1-4FC2-B6F0-2E8460684132}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B6044CF-C2A1-4FC2-B6F0-2E8460684132}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -87,6 +62,10 @@ Global
 		{A1C91C3C-4E3B-4108-A301-5DF787F9CF4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1C91C3C-4E3B-4108-A301-5DF787F9CF4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1C91C3C-4E3B-4108-A301-5DF787F9CF4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F176621-97F5-4141-A896-FE692C9944FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F176621-97F5-4141-A896-FE692C9944FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F176621-97F5-4141-A896-FE692C9944FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F176621-97F5-4141-A896-FE692C9944FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

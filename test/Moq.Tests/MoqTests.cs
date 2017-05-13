@@ -55,7 +55,7 @@ namespace Moq.Tests
             calculator.Mode.Returns("Basic");
 
             var mode = calculator.Mode;
-            new ICalculatorProxy();
+            
             Assert.Equal("Basic", mode);
         }
 
