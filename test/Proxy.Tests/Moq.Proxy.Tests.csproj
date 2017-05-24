@@ -20,5 +20,9 @@
 	  <Folder Include="Moq.Sdk\" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <PackageReference Include="System.Runtime" Version="4.3.0" />
+	</ItemGroup>
+
 	<Import Project="..\Moq.Testing\Moq.Testing.projitems" Label="Shared" />
 </Project>

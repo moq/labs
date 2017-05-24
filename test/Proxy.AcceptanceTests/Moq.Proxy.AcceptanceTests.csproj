@@ -12,7 +12,7 @@
 
 		<PackageReference Include="Microsoft.VisualStudio.Threading" Version="15.0.240" />
 
-		<PackageReference Include="Roslynator" Version="0.1.6" />
+		<PackageReference Include="Roslynator" Version="0.2.0" />
 	</ItemGroup>
 
 	<ItemGroup>

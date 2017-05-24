@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -11,7 +12,7 @@ using Microsoft.CodeAnalysis.VisualBasic;
 using Moq.Proxy;
 using Xunit;
 
-static class TestHelpers
+static partial class TestHelpers
 {
     public static (AdhocWorkspace workspace, Project project) CreateWorkspaceAndProject(string language, string assemblyName = "Code")
     {
@@ -26,11 +27,25 @@ static class TestHelpers
     {
         var suffix = language == LanguageNames.CSharp ? "CS" : "VB";
         var options = language == LanguageNames.CSharp ?
-                (CompilationOptions)new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary) :
-                (CompilationOptions)new VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, optionStrict: OptionStrict.On);
+                (CompilationOptions)new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default) :
+                (CompilationOptions)new VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, optionStrict: OptionStrict.On, assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default);
         var parse = language == LanguageNames.CSharp ?
                 (ParseOptions)new CSharpParseOptions(Microsoft.CodeAnalysis.CSharp.LanguageVersion.Latest) :
                 (ParseOptions)new VisualBasicParseOptions(Microsoft.CodeAnalysis.VisualBasic.LanguageVersion.Latest);
+
+        //The location of the .NET assemblies
+        var frameworkPath = Path.GetDirectoryName(typeof(object).Assembly.Location);
+        var referencePaths = new[]
+            {
+                Path.Combine(frameworkPath, "mscorlib.dll"),
+                Path.Combine(frameworkPath, "System.dll"),
+                Path.Combine(frameworkPath, "System.Core.dll"),
+                Path.Combine(frameworkPath, "System.Reflection.dll"),
+                Path.Combine(frameworkPath, "System.Runtime.dll"),
+            }
+            .Concat(ReferencePaths.Paths)
+            .Where(path => !string.IsNullOrEmpty(path) && File.Exists(path))
+            .Distinct(FileNameEqualityComparer.Default);
 
         return ProjectInfo.Create(
             ProjectId.CreateNewId(),
@@ -40,8 +55,7 @@ static class TestHelpers
             language,
             compilationOptions: options,
             parseOptions: parse,
-            metadataReferences: ReferencePaths.Paths
-                .Where(path => !string.IsNullOrEmpty(path) && File.Exists(path))
+            metadataReferences: referencePaths
                 .Select(path => MetadataReference.CreateFromFile(path)));
     }
 
@@ -71,5 +85,16 @@ static class TestHelpers
                 Environment.NewLine +
                 string.Join(Environment.NewLine, result.Diagnostics.Select(d => d.ToString())));
         }
+    }
+
+    public class FileNameEqualityComparer : IEqualityComparer<string>
+    {
+        public static IEqualityComparer<string> Default { get; } = new FileNameEqualityComparer();
+
+        FileNameEqualityComparer() { }
+
+        public bool Equals(string x, string y) => Path.GetFileName(x).Equals(Path.GetFileName(y));
+
+        public int GetHashCode(string obj) => Path.GetFileName(obj).GetHashCode();
     }
 }

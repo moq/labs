@@ -1,5 +1,5 @@
 ﻿{
-  "appDomain": "ifAvailable",
+  "appDomain": "required",
   "parallelizeAssembly": false,
   "parallelizeTestCollections": false,
   "methodDisplay": "classAndMethod",

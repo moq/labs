@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -6,15 +7,28 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.VisualBasic;
 using Microsoft.VisualStudio.Threading;
+using static TestHelpers;
 
 namespace Moq.Proxy
 {
     public class AcceptanceTestsContext : IDisposable
     {
-        static AdhocWorkspace workspace = new AdhocWorkspace(ProxyGenerator.CreateHost());
-        static MetadataReference[] references = ReferencePaths.Paths
-                .Select(path => MetadataReference.CreateFromFile(path))
-                .ToArray();
+        static readonly AdhocWorkspace workspace = new AdhocWorkspace(ProxyGenerator.CreateHost());
+        //The location of the .NET assemblies
+        static readonly string frameworkPath = Path.GetDirectoryName(typeof(object).Assembly.Location);
+        static readonly MetadataReference[] references = new[]
+            {
+                Path.Combine(frameworkPath, "mscorlib.dll"),
+                Path.Combine(frameworkPath, "System.dll"),
+                Path.Combine(frameworkPath, "System.Core.dll"),
+                Path.Combine(frameworkPath, "System.Reflection.dll"),
+                Path.Combine(frameworkPath, "System.Runtime.dll"),
+            }
+            .Concat(ReferencePaths.Paths)
+            .Where(path => !string.IsNullOrEmpty(path) && File.Exists(path))
+            .Distinct(FileNameEqualityComparer.Default)
+            .Select(path => MetadataReference.CreateFromFile(path))
+            .ToArray();
 
         Lazy<Project> csproj;
         Lazy<Project> vbproj;
@@ -40,7 +54,7 @@ namespace Moq.Proxy
                 "vbcode",
                 "vbcode.dll",
                 LanguageNames.VisualBasic,
-                compilationOptions: new VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
+                compilationOptions: new VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, optionStrict: OptionStrict.On),
                 metadataReferences: references)));
 
             vbbuild = new AsyncLazy<Compilation>(() => vbproj.Value.GetCompilationAsync(new CancellationTokenSource(AcceptanceTests.AsyncTimeoutMilliseconds).Token));
