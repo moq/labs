@@ -2,6 +2,7 @@
 	<PropertyGroup>
 		<TargetFramework>net461</TargetFramework>
 		<ProjectGuid>9a09225f-e0bc-4890-bed4-d9f6f5dac146</ProjectGuid>
+    <IncludeXunit>true</IncludeXunit>
 		<AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
 
 		<GeneratorProps>..\..\src\Proxy\Proxy.Generator.Build\bin\$(Configuration)\net461\Moq.Proxy.Generator.props</GeneratorProps>

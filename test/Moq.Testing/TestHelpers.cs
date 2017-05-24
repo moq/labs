@@ -41,6 +41,7 @@ static class TestHelpers
             compilationOptions: options,
             parseOptions: parse,
             metadataReferences: ReferencePaths.Paths
+                .Where(path => !string.IsNullOrEmpty(path) && File.Exists(path))
                 .Select(path => MetadataReference.CreateFromFile(path)));
     }
 

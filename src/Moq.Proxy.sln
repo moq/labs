@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.3
+VisualStudioVersion = 15.0.26510.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Proxy", "Proxy\Proxy\Moq.Proxy.csproj", "{CA234783-CB59-4296-9617-8A87368B2EF7}"
 EndProject
@@ -15,8 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Proxy.Tests", "..\test\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CE93609A-9760-4444-B713-0CCB8CCC5CA6}"
 	ProjectSection(SolutionItems) = preProject
-		..\test\Directory.Build.props = ..\test\Directory.Build.props
-		..\test\Directory.Build.targets = ..\test\Directory.Build.targets
+		..\Directory.Build.props = ..\Directory.Build.props
+		..\Directory.Build.targets = ..\Directory.Build.targets
+		Version.targets = Version.targets
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ManualProxies", "..\test\ManualProxies\ManualProxies.csproj", "{69A892A4-4F16-46C1-9700-AA3A260A66EC}"
@@ -24,6 +25,18 @@ EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Moq.Testing", "..\test\Moq.Testing\Moq.Testing.shproj", "{1BD7DFDE-2FC8-4899-9903-6CA5724CC185}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Proxy.AcceptanceTests", "..\test\Proxy.AcceptanceTests\Moq.Proxy.AcceptanceTests.csproj", "{B29A2094-6793-4EBF-B52D-2A9DA55B2928}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{9F9BDC37-D688-4A1D-B4C5-F0686C44E0E9}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{4263BD3F-118A-4860-BC56-FF2ACE481650}"
+	ProjectSection(SolutionItems) = preProject
+		..\test\Directory.Build.props = ..\test\Directory.Build.props
+		..\test\Directory.Build.targets = ..\test\Directory.Build.targets
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -65,5 +78,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9F9BDC37-D688-4A1D-B4C5-F0686C44E0E9} = {CE93609A-9760-4444-B713-0CCB8CCC5CA6}
+		{4263BD3F-118A-4860-BC56-FF2ACE481650} = {CE93609A-9760-4444-B713-0CCB8CCC5CA6}
 	EndGlobalSection
 EndGlobal

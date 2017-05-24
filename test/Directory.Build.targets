@@ -1,57 +1,99 @@
 <Project>
-  <PropertyGroup>
-    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <ReferencePathsFile>$(IntermediateOutputPath)ReferencePaths.g.cs</ReferencePathsFile>
-    <CoreCompileDependsOn Condition="'$(Language)' == 'C#'">
-      $(CoreCompileDependsOn);
-      GenerateReferencePaths;
-    </CoreCompileDependsOn>
-  </PropertyGroup>
+	<PropertyGroup>
+		<MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+		<ReferencePathsFile>$(IntermediateOutputPath)ReferencePaths.g.cs</ReferencePathsFile>
+		<CoreCompileDependsOn Condition="'$(Language)' == 'C#'">
+			$(CoreCompileDependsOn);
+			GenerateReferencePaths;
+		</CoreCompileDependsOn>
+	</PropertyGroup>
 
-  <ItemDefinitionGroup>
-    <ReferencePath>
-      <FrameworkFile/>
-    </ReferencePath>
-  </ItemDefinitionGroup>
+	<ItemDefinitionGroup>
+		<ReferencePath>
+			<FrameworkFile/>
+			<FusionName/>
+		</ReferencePath>
+	</ItemDefinitionGroup>
 
-  <Target Name="GenerateReferencePaths"
-          DependsOnTargets="ResolveAssemblyReferences"
-          Inputs="@(ReferencePath);$(TargetPath);$(MSBuildAllProjects)"
-          Outputs="$(ReferencePathsFile)">
+	<ItemGroup>
+		<ProxyReference Include="Moq" />
+		<ProxyReference Include="ManualProxies" />
+		<ProxyReference Include="mscorlib" />
+		<ProxyReference Include="System" />
+	</ItemGroup>
 
-    <WriteLinesToFile File="$(ReferencePathsFile)" Overwrite="true"
+	<Target Name="GenerateReferencePaths"
+			DependsOnTargets="ResolveReferences"
+			Inputs="@(ReferencePath);$(TargetPath);$(MSBuildAllProjects)"
+			Outputs="$(ReferencePathsFile)">
+
+		<FilterReferences References="@(ReferencePath)" Filter="@(ProxyReference)">
+			<Output TaskParameter="Filtered" ItemName="_FilteredReferencePath" />
+		</FilterReferences>
+
+		<WriteLinesToFile File="$(ReferencePathsFile)"
+						  Overwrite="true"
 						  Lines='static class ReferencePaths
 {
   public static string[] Paths = new[]
   { '/>
 
-    <WriteLinesToFile File="$(ReferencePathsFile)" Overwrite="false"
-						  Lines='
-    @"%(ReferencePath.FullPath)",'/>
+		<WriteLinesToFile File="$(ReferencePathsFile)"
+                      Overwrite="false"
+                      Lines='
+    @"%(_FilteredReferencePath.FullPath)",'/>
 
-    <WriteLinesToFile File="$(ReferencePathsFile)" Overwrite="false"
+		<WriteLinesToFile File="$(ReferencePathsFile)"
+						  Condition="'$(IncludeTargetPath)' != 'false'"
+						  Overwrite="false"
 						  Lines='
     @"$(TargetPath)",'/>
 
-    <WriteLinesToFile File="$(ReferencePathsFile)" Overwrite="false"
-						  Lines='
+		<WriteLinesToFile File="$(ReferencePathsFile)" Overwrite="false"
+							  Lines='
   }%3B
 }'/>
 
-    <ItemGroup>
-      <FileWrites Include="$(ReferencePathsFile)" />
-      <Compile Include="$(ReferencePathsFile)" />
-    </ItemGroup>
+		<ItemGroup>
+			<FileWrites Include="$(ReferencePathsFile)" />
+			<Compile Include="$(ReferencePathsFile)" />
+		</ItemGroup>
 
-  </Target>
+	</Target>
 
-  <Target Name="Test">
-    <PropertyGroup>
-      <XunitOptions>$(XunitOptions) -html $(OutputPath)test.html -xml $(OutputPath)test.xml -parallel all -noshadow</XunitOptions>
-    </PropertyGroup>
+	<Target Name="Test">
+		<PropertyGroup>
+			<XunitOptions>$(XunitOptions) -html $(OutputPath)test.html -xml $(OutputPath)test.xml -parallel all -noshadow</XunitOptions>
+		</PropertyGroup>
 
-    <Exec Command="$(XunitConsolePath) $(TargetPath) $(XunitOptions)" />
-  </Target>
+		<Exec Command="$(XunitConsolePath) $(TargetPath) $(XunitOptions)" />
+	</Target>
 
-  <Import Project="..\Directory.Build.targets" />
+	<UsingTask TaskName="FilterReferences" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+		<ParameterGroup>
+			<References ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+			<Filter ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+			<Filtered ParameterType="Microsoft.Build.Framework.ITaskItem[]" Output="true" />
+		</ParameterGroup>
+		<Task>
+			<Reference Include="Microsoft.Build" />
+			<Reference Include="System" />
+			<Reference Include="System.Core" />
+			<Using Namespace="Microsoft.Build.Framework" />
+			<Using Namespace="Microsoft.Build.Utilities" />
+			<Using Namespace="System" />
+			<Using Namespace="System.Linq" />
+			<Using Namespace="System.Text.RegularExpressions" />
+			<Code Type="Fragment" Language="cs">
+				<![CDATA[
+            Filtered = References
+              .Where(i => Filter.Any(x => Regex.IsMatch(i.GetMetadata("FusionName"), x.ItemSpec)))
+              .OrderBy(i => i.GetMetadata("Filename"))
+              .ToArray();
+              ]]>
+			</Code>
+		</Task>
+	</UsingTask>
+
+	<Import Project="..\Directory.Build.targets" />
 </Project>

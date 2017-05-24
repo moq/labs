@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>net461</TargetFramework>
+    <IncludeXunit>true</IncludeXunit>
 		<ProjectGuid>9b6044cf-c2a1-4fc2-b6f0-2e8460684132</ProjectGuid>
 		<AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
 

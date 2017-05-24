@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>net461</TargetFramework>
+		<IncludeXunit>true</IncludeXunit>
 	</PropertyGroup>
 	<ItemGroup>
 	  <Compile Include="..\..\src\Sdk\DefaultValue.cs" Link="Moq.Sdk\DefaultValue.cs" />
