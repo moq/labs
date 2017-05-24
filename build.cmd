@@ -1,6 +1,8 @@
 @echo off
 setlocal enabledelayedexpansion
 
+set MSBUILDLOGASYNC=1
+
 set BatchFile=%0
 set Root=%~dp0
 set NodeReuse=true
