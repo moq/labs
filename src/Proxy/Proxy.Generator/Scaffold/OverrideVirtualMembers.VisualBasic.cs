@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Editing;
+using Microsoft.CodeAnalysis.Host;
 using Microsoft.CodeAnalysis.Host.Mef;
 using Microsoft.CodeAnalysis.VisualBasic;
 using Microsoft.CodeAnalysis.VisualBasic.Syntax;
@@ -19,7 +20,7 @@ namespace Moq.Proxy.Scaffold
 
         // VB can't override virtual events :\
         // See https://github.com/dotnet/vblang/issues/63
-        protected override SyntaxNode AddEvent(SyntaxGenerator generator, SyntaxNode syntax, IEventSymbol symbol, SyntaxNode @event) 
+        protected override SyntaxNode AddEvent(SyntaxGenerator generator, SyntaxNode syntax, IEventSymbol symbol, SyntaxNode @event)
             => syntax.WithLeadingTrivia(syntax.GetLeadingTrivia().Add(
                 CommentTrivia($@"' NOTE: overriding virtual events is not supported by VB.NET. Skipping {generator.GetName(@event)}. See https://github.com/dotnet/vblang/issues/63
 ")));

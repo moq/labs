@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Moq.Proxy
+﻿namespace Moq.Proxy
 {
     /// <summary>
     /// The layer at which an <see cref="IDocumentVisitor"/> acts.

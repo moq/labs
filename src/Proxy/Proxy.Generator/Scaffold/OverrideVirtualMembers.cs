@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Editing;
+using Microsoft.CodeAnalysis.Host;
 
 namespace Moq.Proxy.Scaffold
 {
@@ -11,7 +12,7 @@ namespace Moq.Proxy.Scaffold
     {
         ICodeAnalysisServices services;
 
-        protected OverrideVirtualMembers(ICodeAnalysisServices services) 
+        protected OverrideVirtualMembers(ICodeAnalysisServices services)
             => this.services = services;
 
         public async Task<Document> VisitAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
@@ -83,7 +84,7 @@ namespace Moq.Proxy.Scaffold
         protected virtual SyntaxNode AddProperty(SyntaxGenerator generator, SyntaxNode syntax, IPropertySymbol symbol, SyntaxNode property)
             => generator.AddMembers(syntax, property);
 
-        SyntaxNode DeclareMethod(SyntaxGenerator generator, SyntaxNode syntax, IMethodSymbol symbol) 
+        SyntaxNode DeclareMethod(SyntaxGenerator generator, SyntaxNode syntax, IMethodSymbol symbol)
             => generator.AddMembers(
                 syntax,
                 generator.WithModifiers(
