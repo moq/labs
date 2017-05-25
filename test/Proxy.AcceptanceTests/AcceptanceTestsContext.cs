@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.VisualBasic;
-using Microsoft.VisualStudio.Threading;
 using static TestHelpers;
 
 namespace Moq.Proxy
@@ -32,8 +31,8 @@ namespace Moq.Proxy
 
         Lazy<Project> csproj;
         Lazy<Project> vbproj;
-        AsyncLazy<Compilation> csbuild;
-        AsyncLazy<Compilation> vbbuild;
+        Lazy<Task<Compilation>> csbuild;
+        Lazy<Task<Compilation>> vbbuild;
 
         public AcceptanceTestsContext()
         {
@@ -46,7 +45,7 @@ namespace Moq.Proxy
                 compilationOptions: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
                 metadataReferences: references)));
 
-            csbuild = new AsyncLazy<Compilation>(() => csproj.Value.GetCompilationAsync(new CancellationTokenSource(AcceptanceTests.AsyncTimeoutMilliseconds).Token));
+            csbuild = new Lazy<Task<Compilation>>(() => csproj.Value.GetCompilationAsync(new CancellationTokenSource(AcceptanceTests.AsyncTimeoutMilliseconds).Token));
 
             vbproj = new Lazy<Project>(() => workspace.AddProject(ProjectInfo.Create(
                 ProjectId.CreateNewId(),
@@ -57,7 +56,7 @@ namespace Moq.Proxy
                 compilationOptions: new VisualBasicCompilationOptions(OutputKind.DynamicallyLinkedLibrary, optionStrict: OptionStrict.On),
                 metadataReferences: references)));
 
-            vbbuild = new AsyncLazy<Compilation>(() => vbproj.Value.GetCompilationAsync(new CancellationTokenSource(AcceptanceTests.AsyncTimeoutMilliseconds).Token));
+            vbbuild = new Lazy<Task<Compilation>>(() => vbproj.Value.GetCompilationAsync(new CancellationTokenSource(AcceptanceTests.AsyncTimeoutMilliseconds).Token));
         }
 
         public AdhocWorkspace Workspace
@@ -67,7 +66,7 @@ namespace Moq.Proxy
             => language == LanguageNames.CSharp ? csproj.Value : vbproj.Value;
 
         public Task<Compilation> GetCompilationAsync(string language, CancellationToken cancellationToken)
-            => language == LanguageNames.CSharp ? csbuild.GetValueAsync(cancellationToken) : vbbuild.GetValueAsync(cancellationToken);
+            => language == LanguageNames.CSharp ? csbuild.Value : vbbuild.Value;
 
         public void Dispose()
         {
