@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net45</TargetFramework>
-    <GeneratorProps>..\..\..\src\Proxy\Proxy.Generator.Console\bin\$(Configuration)\net461\Moq.Proxy.Generator.props</GeneratorProps>
-    <GeneratorTargets>..\..\..\src\Proxy\Proxy.Generator.Console\bin\$(Configuration)\net461\Moq.Proxy.Generator.targets</GeneratorTargets>
+    <GeneratorProps>..\..\..\src\Proxy\Proxy.Generator.Console\bin\$(Configuration)\Moq.Proxy.Generator.props</GeneratorProps>
+    <GeneratorTargets>..\..\..\src\Proxy\Proxy.Generator.Console\bin\$(Configuration)\Moq.Proxy.Generator.targets</GeneratorTargets>
   </PropertyGroup>
 
   <Import Project="$(GeneratorProps)" Condition="Exists('$(GeneratorProps)')" />

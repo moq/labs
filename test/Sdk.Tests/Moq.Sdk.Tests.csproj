@@ -2,16 +2,16 @@
 	<PropertyGroup>
 		<TargetFramework>net461</TargetFramework>
 		<ProjectGuid>eb66bc5e-4072-4f26-9772-979d8561883f</ProjectGuid>
-    <IncludeXunit>true</IncludeXunit>
+		<IncludeXunit>true</IncludeXunit>
 		<AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
 
-		<GeneratorProps>..\..\src\Proxy\Proxy.Generator.Build\bin\$(Configuration)\net461\Moq.Proxy.Generator.props</GeneratorProps>
-		<GeneratorTargets>..\..\src\Proxy\Proxy.Generator.Build\bin\$(Configuration)\net461\Moq.Proxy.Generator.targets</GeneratorTargets>
+		<GeneratorProps>..\..\src\Proxy\Proxy.Generator.Build\bin\$(Configuration)\Moq.Proxy.Generator.props</GeneratorProps>
+		<GeneratorTargets>..\..\src\Proxy\Proxy.Generator.Build\bin\$(Configuration)\Moq.Proxy.Generator.targets</GeneratorTargets>
 
-		<SdkProps>..\..\src\Sdk.Build\bin\$(Configuration)\net461\Moq.Sdk.Build.props</SdkProps>
-		<SdkTargets>..\..\src\Sdk.Build\bin\$(Configuration)\net461\Moq.Sdk.Build.targets</SdkTargets>
+		<SdkProps>..\..\src\Sdk.Build\bin\$(Configuration)\Moq.Sdk.Build.props</SdkProps>
+		<SdkTargets>..\..\src\Sdk.Build\bin\$(Configuration)\Moq.Sdk.Build.targets</SdkTargets>
 
-		<PGenPath>..\..\src\Proxy\Proxy.Generator.Console\bin\$(Configuration)\net461</PGenPath>
+		<PGenPath>..\..\src\Proxy\Proxy.Generator.Console\bin\$(Configuration)</PGenPath>
 	</PropertyGroup>
 	<Import Project="$(GeneratorProps)" Condition="Exists('$(GeneratorProps)')" />
 	<Import Project="$(SdkProps)" Condition="Exists('$(SdkProps)')" />

@@ -3,7 +3,10 @@
 		<_ProjectProps>$(MSBuildProjectDirectory)\$(MSBuildProjectName).props</_ProjectProps>
 		<MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
 		<MSBuildAllProjects Condition="Exists('$(_ProjectProps)')">$(MSBuildAllProjects);$(_ProjectProps)</MSBuildAllProjects>
-	</PropertyGroup>
+
+    <!-- Build -->
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
 
 	<ItemGroup Condition="'$(IncludeMSBuild)' == 'true'">
 		<PackageReference Include="Microsoft.Build" Version="15.*" />
