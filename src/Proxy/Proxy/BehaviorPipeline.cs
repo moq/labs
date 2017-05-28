@@ -70,10 +70,27 @@ namespace Moq.Proxy
             if (Behaviors.Count == 0)
                 return target(input, null);
 
-            var index = 0;
-            var result = Behaviors[0].Invoke(input, () =>
+            var index = -1;
+            for (var i = 0; i < Behaviors.Count; i++)
             {
-                ++index;
+                if (Behaviors[i].AppliesTo(input))
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (index == -1)
+                return target(input, null);
+
+            var result = Behaviors[index].Invoke(input, () =>
+            {
+                for (index++; index < Behaviors.Count; index++)
+                {
+                    if (Behaviors[index].AppliesTo(input))
+                        break;
+                }
+
                 return (index < Behaviors.Count) ?
                     Behaviors[index].Invoke :
                     target;

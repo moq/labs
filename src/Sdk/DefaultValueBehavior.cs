@@ -11,6 +11,11 @@ namespace Moq.Sdk
     /// </summary>
     public class DefaultValueBehavior : IProxyBehavior
     {
+        /// <summary>
+        /// Always returns <see langword="true" />
+        /// </summary>
+        public bool AppliesTo(IMethodInvocation invocation) => true;
+
         /// <inheritdoc />
         public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior getNext)
         {

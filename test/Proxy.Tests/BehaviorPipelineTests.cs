@@ -28,6 +28,27 @@ namespace Moq.Proxy.Tests
         }
 
         [Fact]
+        public void WhenInvokingPipeline_ThenSkipsNonApplicableBehaviors()
+        {
+            var firstCalled = false;
+            var secondCalled = false;
+            var targetCalled = false;
+
+            var pipeline = new BehaviorPipeline(
+                ProxyBehavior.Create((m, n) => { firstCalled = true; return n().Invoke(m, n); }),
+                ProxyBehavior.Create((m, n) => { secondCalled = true; return n().Invoke(m, n); }, m => false));
+
+            Action a = WhenInvokingPipeline_ThenInvokesAllBehaviorsAndTarget;
+
+            pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo()),
+                new InvokeBehavior((m, n) => { targetCalled = true; return m.CreateValueReturn(null); }));
+
+            Assert.True(firstCalled);
+            Assert.False(secondCalled);
+            Assert.True(targetCalled);
+        }
+
+        [Fact]
         public void WhenInvokingPipeline_ThenBehaviorCanShortcircuitInvocation()
         {
             var firstCalled = false;

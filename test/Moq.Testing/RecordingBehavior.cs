@@ -7,6 +7,8 @@ public class RecordingBehavior : IProxyBehavior
 {
     List<object> invocations = new List<object>();
 
+    public bool AppliesTo(IMethodInvocation invocation) => true;
+
     public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior getNext)
     {
         var result = getNext().Invoke(invocation, getNext);

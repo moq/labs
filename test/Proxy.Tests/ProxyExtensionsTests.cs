@@ -17,6 +17,16 @@ namespace Moq.Proxy.Tests
         }
 
         [Fact]
+        public void WhenAddingProxyBehavior_ThenCanAddLambdaWithAppliesTo()
+        {
+            var proxy = new TestProxy();
+
+            proxy.AddBehavior((m, n) => null, m => true);
+
+            Assert.True(proxy.Behaviors[0].AppliesTo(null));
+        }
+
+        [Fact]
         public void WhenAddingProxyBehavior_ThenCanAddInterface()
         {
             var proxy = new TestProxy();
@@ -34,6 +44,16 @@ namespace Moq.Proxy.Tests
             proxy.AddBehavior((m, n) => null);
 
             Assert.Equal(1, ((IProxy)proxy).Behaviors.Count);
+        }
+
+        [Fact]
+        public void WhenAddingProxyBehaviorToObject_ThenCanAddLambdaWithAppliesTo()
+        {
+            object proxy = new TestProxy();
+
+            proxy.AddBehavior((m, n) => null, m => true);
+
+            Assert.True(((IProxy)proxy).Behaviors[0].AppliesTo(null));
         }
 
         [Fact]
@@ -59,6 +79,21 @@ namespace Moq.Proxy.Tests
         }
 
         [Fact]
+        public void WhenInsertingProxyBehavior_ThenCanAddLambdaWithAppliesTo()
+        {
+            var proxy = new TestProxy();
+
+            proxy.AddBehavior((m, n) => null);
+            proxy.InsertBehavior(0, (m, n) => throw new NotImplementedException(), m => true);
+            proxy.InsertBehavior(0, (m, n) => throw new ArgumentException(), m => false);
+
+            Assert.Equal(3, proxy.Behaviors.Count);
+            Assert.False(proxy.Behaviors[0].AppliesTo(null));
+            Assert.True(proxy.Behaviors[1].AppliesTo(null));
+            Assert.Throws<NotImplementedException>(() => proxy.Behaviors[1].Invoke(null, null));
+        }
+
+        [Fact]
         public void WhenInsertingProxyBehavior_ThenCanAddInterface()
         {
             var proxy = new TestProxy();
@@ -81,6 +116,21 @@ namespace Moq.Proxy.Tests
 
             Assert.Equal(2, ((IProxy)proxy).Behaviors.Count);
             Assert.Throws<NotImplementedException>(() => ((IProxy)proxy).Behaviors[0].Invoke(null, null));
+        }
+
+        [Fact]
+        public void WhenInsertingProxyBehaviorToObject_ThenCanAddLambdaWithAppliesTo()
+        {
+            object proxy = new TestProxy();
+
+            proxy.AddBehavior((m, n) => null);
+            proxy.InsertBehavior(0, (m, n) => throw new NotImplementedException(), m => true);
+            proxy.InsertBehavior(0, (m, n) => throw new ArgumentException(), m => false);
+
+            Assert.Equal(3, ((IProxy)proxy).Behaviors.Count);
+            Assert.False(((IProxy)proxy).Behaviors[0].AppliesTo(null));
+            Assert.True(((IProxy)proxy).Behaviors[1].AppliesTo(null));
+            Assert.Throws<NotImplementedException>(() => ((IProxy)proxy).Behaviors[1].Invoke(null, null));
         }
 
         [Fact]
@@ -114,6 +164,8 @@ namespace Moq.Proxy.Tests
 
         class TestProxyBehavior : IProxyBehavior
         {
+            public bool AppliesTo(IMethodInvocation invocation) => true;
+
             public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior getNext) => null;
         }
 
