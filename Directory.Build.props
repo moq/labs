@@ -5,7 +5,7 @@
 		<MSBuildAllProjects Condition="Exists('$(_ProjectProps)')">$(MSBuildAllProjects);$(_ProjectProps)</MSBuildAllProjects>
 
     <!-- Build -->
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendTargetFrameworkToOutputPath Condition="'$(AppendTargetFrameworkToOutputPath)' == ''">false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 
 	<ItemGroup Condition="'$(IncludeMSBuild)' == 'true'">
