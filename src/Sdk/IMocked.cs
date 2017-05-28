@@ -2,7 +2,7 @@
 {
     /// <summary>
     /// Interface implemented by mocks that allows accessing 
-    /// the <see cref="IMocked"/> interface for introspecting 
+    /// the <see cref="IMock"/> interface for introspecting 
     /// a mock instance.
     /// </summary>
     public interface IMocked
