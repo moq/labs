@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Microsoft.Build.Framework;
@@ -65,6 +66,21 @@ namespace Moq.Proxy
 
         [Output]
         public ITaskItem[] Proxies => proxies.ToArray();
+
+        protected override bool HandleTaskExecutionErrors()
+        {
+            var responseFile = Path.Combine(OutputPath, "pgen.rsp");
+
+            // When we fail, we create a pgen.rsp file for easy repro'ing of the 
+            // failure if necessary.
+            Log.LogWarning($@"Proxy generation failed. To re-run and debug the generation, please execute the following command:
+""{Path.GetFullPath(GenerateFullPathToTool())}"" @{responseFile} -debug");
+
+            Directory.CreateDirectory(OutputPath);
+            File.WriteAllText(responseFile, GenerateCommandLineCommands() + Environment.NewLine + GenerateResponseFileCommands());
+
+            return base.HandleTaskExecutionErrors();
+        }
 
         protected override string ToolName => "pgen.exe";
 

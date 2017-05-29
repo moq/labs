@@ -24,8 +24,8 @@ namespace Moq.Proxy.Tests
             var (workspace, project) = CreateWorkspaceAndProject(languageName);
 
             var code = languageName == LanguageNames.CSharp ?
-                File.ReadAllText(@"..\..\..\ProxyDiscovererTests.Compile.cs") :
-                File.ReadAllText(@"..\..\..\ProxyDiscovererTests.Compile.vb");
+                File.ReadAllText(@"..\..\ProxyDiscovererTests.Compile.cs") :
+                File.ReadAllText(@"..\..\ProxyDiscovererTests.Compile.vb");
 
             var document = project.AddDocument("test", code);
             project = document.Project;
@@ -51,8 +51,8 @@ namespace Moq.Proxy.Tests
                 References = ReferencePaths.Paths.Select(x => new MSBuild.TaskItem(x)).ToArray(),
                 Sources = new[] {
                     languageName == LanguageNames.CSharp ?
-                    new MSBuild.TaskItem(new FileInfo(@"..\..\..\ProxyDiscovererTests.Compile.cs").FullName) :
-                    new MSBuild.TaskItem(new FileInfo(@"..\..\..\ProxyDiscovererTests.Compile.vb").FullName)
+                    new MSBuild.TaskItem(new FileInfo(@"..\..\ProxyDiscovererTests.Compile.cs").FullName) :
+                    new MSBuild.TaskItem(new FileInfo(@"..\..\ProxyDiscovererTests.Compile.vb").FullName)
                 }
             };
 

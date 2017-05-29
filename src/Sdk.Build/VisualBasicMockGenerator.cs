@@ -24,14 +24,17 @@ namespace Moq.Sdk
             return document.WithSyntaxRoot(syntax);
         }
 
+        public override SyntaxNode VisitCompilationUnit(CompilationUnitSyntax node)
+            => base.VisitCompilationUnit(node.AddImports(
+                ImportsStatement(SingletonSeparatedList<ImportsClauseSyntax>(
+                    SimpleImportsClause(IdentifierName(typeof(LazyInitializer).Namespace))))));
+
         public override SyntaxNode VisitClassBlock(ClassBlockSyntax node)
             => generator.AddMembers(
                 base.VisitClassBlock(node),
                 generator.FieldDeclaration(
                     "_mock",
-                    ParseTypeName(nameof(IMock)),
-                    initializer: generator.ObjectCreationExpression(
-                        ParseTypeName(nameof(MockInfo)))
+                    ParseTypeName(nameof(IMock))
                 ));
 
         public override SyntaxNode VisitPropertyBlock(PropertyBlockSyntax node)
@@ -39,12 +42,52 @@ namespace Moq.Sdk
             var type = (TypeSyntax)generator.GetType(node);
             var name = generator.GetName(node);
 
-            if (type.ToString() == nameof(IMock) && 
+            if (type.ToString() == nameof(IMock) &&
                 name == nameof(IMocked.Mock))
             {
                 node = (PropertyBlockSyntax)generator.WithGetAccessorStatements(node, new[]
                 {
-                    generator.ReturnStatement(IdentifierName("_mock"))
+                    generator.ReturnStatement(
+                        generator.InvocationExpression(
+                            generator.MemberAccessExpression(
+                                generator.IdentifierName(nameof(LazyInitializer)),
+                                nameof(LazyInitializer.EnsureInitialized)),
+                            generator.Argument(
+                                RefKind.Ref,
+                                generator.IdentifierName("_mock")),
+                            ParenthesizedExpression(
+                                SingleLineFunctionLambdaExpression(
+                                    FunctionLambdaHeader(List<AttributeListSyntax>(), TokenList(), ParameterList(), null),
+                                    ObjectCreationExpression(
+                                        List<AttributeListSyntax>(),
+                                        IdentifierName(nameof(MockInfo)),
+                                        ArgumentList(SingletonSeparatedList<ArgumentSyntax>(
+                                            SimpleArgument(
+                                                SimpleMemberAccessExpression(
+                                                    IdentifierName("pipeline"),
+                                                    IdentifierName(nameof(BehaviorPipeline.Behaviors))
+                                                )
+                                            )
+                                        )),
+                                        null
+                                    )
+                                )
+                            )
+                        )
+                    )
+                            //generator.Argument(
+                            //    RefKind.None
+                            //    generator.ValueReturningLambdaExpression(
+                            //        new []
+                            //        {
+                            //            generator.ObjectCreationExpression(
+                            //                generator.IdentifierName(nameof(MockInfo)),
+                            //                generator.MemberAccessExpression(
+                            //                    generator.IdentifierName("pipeline"),
+                            //                    nameof(BehaviorPipeline.Behaviors)))
+                            //        }
+                            //    )
+                            //)
                 });
             }
 

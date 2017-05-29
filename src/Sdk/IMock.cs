@@ -6,13 +6,8 @@ namespace Moq.Sdk
     /// <summary>
     /// Provides introspection information about a mock.
     /// </summary>
-    public interface IMock
+    public interface IMock : IProxy
     {
-        /// <summary>
-        /// Set of configured behaviors for the mock.
-        /// </summary>
-        IList<IMockBehavior> Behaviors { get; }
-
         /// <summary>
         /// Invocations performed on the mock.
         /// </summary>

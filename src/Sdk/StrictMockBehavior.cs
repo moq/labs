@@ -3,12 +3,17 @@
 namespace Moq.Sdk
 {
     /// <summary>
-    /// Throws for all invocations performed, since it means the 
-    /// <see cref="MockBehavior"/> did not find a matching <see cref="IMockBehavior"/> 
-    /// to invoke.
+    /// Throws for all invocations performed, since it means a 
+    /// mock behavior could not be applied before reaching this 
+    /// fallback behavior.
     /// </summary>
     public class StrictMockBehavior : IProxyBehavior
     {
+        /// <summary>
+        /// Always returns <see langword="true" />
+        /// </summary>
+        public bool AppliesTo(IMethodInvocation invocation) => true;
+
         /// <summary>
         /// Throws <see cref="StrictMockException"/>.
         /// </summary>

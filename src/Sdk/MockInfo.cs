@@ -9,8 +9,12 @@ namespace Moq.Sdk
     /// </summary>
     public class MockInfo : IMock
     {
+        public MockInfo(IProxy proxy) => Behaviors = proxy.Behaviors;
+
+        public MockInfo(IList<IProxyBehavior> behaviors) => Behaviors = behaviors;
+
         /// <inheritdoc />
-        public IList<IMockBehavior> Behaviors { get; } = new List<IMockBehavior>();
+        public IList<IProxyBehavior> Behaviors { get; }
 
         /// <inheritdoc />
         public IList<IMethodInvocation> Invocations { get; } = new List<IMethodInvocation>();

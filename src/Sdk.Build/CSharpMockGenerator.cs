@@ -24,27 +24,51 @@ namespace Moq.Sdk
             return document.WithSyntaxRoot(syntax);
         }
 
+        public override SyntaxNode VisitCompilationUnit(CompilationUnitSyntax node)
+            => base.VisitCompilationUnit(node.AddUsings(UsingDirective(IdentifierName(typeof(LazyInitializer).Namespace))));
+
         public override SyntaxNode VisitClassDeclaration(ClassDeclarationSyntax node)
             => generator.AddMembers(
                 base.VisitClassDeclaration(node),
                 generator.FieldDeclaration(
                     "mock",
-                    ParseTypeName(nameof(IMock)),
-                    initializer: generator.ObjectCreationExpression(
-                        ParseTypeName(nameof(MockInfo)))
+                    ParseTypeName(nameof(IMock))
                 ));
 
         public override SyntaxNode VisitPropertyDeclaration(PropertyDeclarationSyntax node)
         {
-            // Make IMocked properties explicit.
-            if (generator.GetName(node) == nameof(IMocked.Mock) && 
+            if (generator.GetName(node) == nameof(IMocked.Mock) &&
                 generator.GetType(node).ToString() == nameof(IMock))
                 return base.VisitPropertyDeclaration(node
+                    // Make IMocked properties explicit.
                     .WithExplicitInterfaceSpecifier(
                         ExplicitInterfaceSpecifier(
                             IdentifierName(nameof(IMocked))))
                     .WithModifiers(TokenList())
-                    .WithExpressionBody(ArrowExpressionClause(IdentifierName("mock")))
+                    // => LazyInitializer.EnsureInitialized(ref mock, () => new MockInfo(pipeline.Behaviors));
+                    .WithExpressionBody(ArrowExpressionClause(
+                        InvocationExpression(
+                            MemberAccessExpression(
+                                SyntaxKind.SimpleMemberAccessExpression,
+                                IdentifierName(nameof(LazyInitializer)),
+                                IdentifierName(nameof(LazyInitializer.EnsureInitialized))),
+                            ArgumentList(SeparatedList(new ArgumentSyntax[]
+                            {
+                                Argument(RefExpression(IdentifierName("mock"))),
+                                Argument(ParenthesizedLambdaExpression(
+                                    ObjectCreationExpression(
+                                        IdentifierName(nameof(MockInfo)))
+                                    .WithArgumentList(ArgumentList(SingletonSeparatedList(Argument(
+                                        MemberAccessExpression(
+                                            SyntaxKind.SimpleMemberAccessExpression,
+                                            IdentifierName("pipeline"),
+                                            IdentifierName(nameof(BehaviorPipeline.Behaviors))
+                                        )
+                                    ))))
+                                ))
+                            }))
+                        )
+                    ))
                 );
 
             return base.VisitPropertyDeclaration(node);

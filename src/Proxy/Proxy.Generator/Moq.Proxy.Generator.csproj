@@ -8,7 +8,7 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CSharp" Version="4.3.0" />
 
-		<PackageReference Include="Roslynator" Version="0.2.0" />
+		<PackageReference Include="Roslynator" Version="0.2.3" />
 		<PackageReference Include="System.IO.Compression" Version="4.3.0" />
 		<PackageReference Include="netfx-System.StringResources" Version="3.0.14" />
 		<PackageReference Include="System.ValueTuple" Version="4.3.0" />

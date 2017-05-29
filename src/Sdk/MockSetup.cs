@@ -1,28 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using Moq.Proxy;
 
 namespace Moq.Sdk
 {
-    /// <summary>
-    /// Allows pushing argument matchers that can be converted into a 
-    /// filter by either calling <see cref="Pop"/> (which removes the 
-    /// matchers accumulated so far) or <see cref="Peek"/> (which just 
-    /// builds up the filter with the current matchers, but does not 
-    /// remove them from the current context).
-    /// </summary>
-    public static class Matchers
+    public class MockSetup
     {
-        static AsyncLocal<InvocationFilter> lastFilter = new AsyncLocal<InvocationFilter>();
+        static AsyncLocal<IMockSetup> lastSetup = new AsyncLocal<IMockSetup>();
 
-        /// <summary>
-        /// Gets a filter that can be used as the <see cref="IMockBehavior.AppliesTo(IMethodInvocation)"/> 
-        /// implementation given the current context and setup <paramref name="invocation"/>.
-        /// </summary>
-        public static InvocationFilter AppliesTo(IMethodInvocation invocation)
-            => lastFilter.Value ?? throw new InvalidOperationException();
+        public static IMockSetup Current => lastSetup.Value;
 
         /// <summary>
         /// Pushes an argument matcher in the current <see cref="CallContext{Queue{IArgumentMatcher}}"/>.
@@ -38,8 +28,8 @@ namespace Moq.Sdk
             CallContext<Queue<IArgumentMatcher>>.GetData(() => new Queue<IArgumentMatcher>())
                .Enqueue(matcher);
 
-            // Pushing new matchers clears the last known filter.
-            lastFilter.Value = null;
+            // Pushing new matchers clears the last known setup.
+            lastSetup.Value = null;
 
             return default(T);
         }
@@ -67,7 +57,7 @@ namespace Moq.Sdk
                 }
             }
 
-            lastFilter.Value = new InvocationFilter(invocation, finalMatchers);
+            lastSetup.Value = new MockSetupImpl(invocation, finalMatchers.ToArray());
         }
     }
 }

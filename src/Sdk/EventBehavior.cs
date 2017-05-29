@@ -8,20 +8,19 @@ namespace Moq.Sdk
 {
     /// <summary>
     /// A <see cref="IProxyBehavior"/> that keeps track of backing delegates 
-    /// for events, combining and removing handlers from them as += and -= is 
-    /// invoked on the mock.
+    /// for events, combining and removing handlers from them as += and -= 
+    /// are invoked on the mock.
     /// </summary>
     public class EventBehavior : IProxyBehavior
     {
+        public bool AppliesTo(IMethodInvocation invocation)
+            => invocation.MethodBase.IsSpecialName &&
+              (invocation.MethodBase.Name.StartsWith("add_") ||
+               invocation.MethodBase.Name.StartsWith("remove_"));
+
         /// <inheritdoc />
         public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior getNext)
         {
-            var isEventAddOrRemove = invocation.MethodBase.IsSpecialName &&
-                (invocation.MethodBase.Name.StartsWith("add_") || invocation.MethodBase.Name.StartsWith("remove_"));
-
-            if (!isEventAddOrRemove)
-                return getNext()(invocation, getNext);
-
             var info = invocation.MethodBase.DeclaringType.GetRuntimeEvent(
                 invocation.MethodBase.Name.Replace("add_", string.Empty).Replace("remove_", string.Empty));
 
@@ -33,7 +32,7 @@ namespace Moq.Sdk
                     try
                     {
                         var mock = ((IMocked)invocation.Target).Mock;
-                        if (mock.State.TryGetValue<Delegate>(info.Name, out var handler) && 
+                        if (mock.State.TryGetValue<Delegate>(info.Name, out var handler) &&
                             handler != null)
                         {
                             switch (raiser)
@@ -52,7 +51,7 @@ namespace Moq.Sdk
                             }
                         }
                     }
-                    finally 
+                    finally
                     {
                         CallContext<EventRaiser>.SetData(null);
                     }

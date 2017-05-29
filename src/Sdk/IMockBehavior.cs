@@ -11,11 +11,8 @@ namespace Moq.Sdk
     public interface IMockBehavior : IProxyBehavior
     {
         /// <summary>
-        /// Determines whether the behavior applies to the given 
-        /// <see cref="IMethodInvocation"/>.
+        /// The setup corresponding to this behavior.
         /// </summary>
-        /// <param name="invocation">The invocation to evaluate the 
-        /// behavior against.</param>
-        bool AppliesTo(IMethodInvocation invocation);
+        IMockSetup Setup { get; }
     }
 }

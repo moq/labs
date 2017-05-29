@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading;
@@ -26,6 +27,7 @@ namespace Moq.Proxy
             var additionalInterfaces = new List<string>();
             var additionalProxies = new List<string>();
             var additionalGenerators = new List<string>();
+            var debug = false;
 
             var options = new OptionSet
             {
@@ -38,6 +40,7 @@ namespace Moq.Proxy
                 { "p|proxy=", "optional additional proxy type to generate a proxy for", p => additionalProxies.Add(p.Trim()) },
                 { "g|generator=", "optional additional generator assembly to participate in proxy generation composition", g => additionalGenerators.Add(g.Trim()) },
                 new ResponseFileSource(),
+                { "d|debug", "launch a debugger before performing the code generation.", _ => debug = true },
                 { "h|help", "show this message and exit", h => shouldShowHelp = h != null },
             };
 
@@ -69,6 +72,9 @@ namespace Moq.Proxy
 
                 if (!Directory.Exists(outputPath))
                     Directory.CreateDirectory(outputPath);
+
+                if (debug)
+                    Debugger.Launch();
 
                 var generator = new ProxyGenerator();
                 var proxies = await generator.GenerateProxiesAsync(languageName,
@@ -106,7 +112,6 @@ namespace Moq.Proxy
             {
                 // TODO: should we render something different in this case? (non-options exception?)
                 Console.Error.WriteLine($"{appName}: {e.Message}");
-                Console.Error.WriteLine($"Try '{appName} --help' for more information.");
                 return -1;
             }
         }

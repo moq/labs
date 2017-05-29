@@ -10,7 +10,7 @@
 		<PackageReference Include="Microsoft.AspNet.Mvc" Version="*" />
 		<PackageReference Include="Microsoft.AspNet.WebApi" Version="*" />
 
-		<PackageReference Include="Roslynator" Version="0.2.0" />
+		<PackageReference Include="Roslynator" Version="0.2.3" />
 	</ItemGroup>
 
 	<ItemGroup>

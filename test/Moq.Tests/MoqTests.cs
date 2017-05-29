@@ -60,6 +60,19 @@ namespace Moq.Tests
         }
 
         [Fact]
+        public void CanSetupPropertyTwiceViaReturns()
+        {
+            var calculator = Mock.Of<ICalculator>();
+
+            calculator.Mode.Returns("Basic");
+            calculator.Mode.Returns("Advanced");
+
+            var mode = calculator.Mode;
+
+            Assert.Equal("Advanced", mode);
+        }
+
+        [Fact]
         public void CanSetupMethodWithArgumentsViaReturns()
         {
             var calculator = Mock.Of<ICalculator>();

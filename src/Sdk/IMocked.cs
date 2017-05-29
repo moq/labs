@@ -1,4 +1,6 @@
-﻿namespace Moq.Sdk
+﻿using Moq.Proxy;
+
+namespace Moq.Sdk
 {
     /// <summary>
     /// Interface implemented by mocks that allows accessing 
