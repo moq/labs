@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Moq.Sdk
 {
     /// <summary>
     /// Matches arguments against a fixed constant value.
     /// </summary>
-    public class ValueMatcher : IArgumentMatcher
+    public class ValueMatcher : IArgumentMatcher, IEquatable<ValueMatcher>
     {
         Tuple<Type, object> value;
 
@@ -32,25 +34,24 @@ namespace Moq.Sdk
         /// </summary>
         public bool Matches(object value) => object.Equals(value, MatchValue);
 
-        public override bool Equals(object obj) => Equals(this, obj as ValueMatcher);
+        public override string ToString()
+            => (ArgumentType == typeof(string) && MatchValue != null)
+                ? "\"" + MatchValue + "\""
+                : (MatchValue?.ToString() ?? "null");
+
+
+        #region Equality
+
+        public bool Equals(ValueMatcher other) => value.Equals(other?.value);
+
+        public bool Equals(object other, IEqualityComparer comparer) => ((IStructuralEquatable)value).Equals((other as ValueMatcher)?.value, comparer);
+
+        public int GetHashCode(IEqualityComparer comparer) => ((IStructuralEquatable)value).GetHashCode(comparer);
+
+        public override bool Equals(object obj) => Equals(obj as ValueMatcher);
 
         public override int GetHashCode() => value.GetHashCode();
 
-        static bool Equals(ValueMatcher obj1, ValueMatcher obj2)
-        {
-            if (object.Equals(null, obj1) ||
-                object.Equals(null, obj2) ||
-                obj1.GetType() != obj2.GetType())
-                return false;
-
-            if (object.ReferenceEquals(obj1, obj2)) return true;
-
-            return obj1.value.Equals(obj2.value);
-        }
-
-        public override string ToString()
-            => (ArgumentType == typeof(string) && MatchValue != null) 
-                ? "\"" + MatchValue + "\"" 
-                : (MatchValue?.ToString() ?? "null");
+        #endregion
     }
 }

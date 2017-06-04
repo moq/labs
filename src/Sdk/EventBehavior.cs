@@ -13,6 +13,10 @@ namespace Moq.Sdk
     /// </summary>
     public class EventBehavior : IProxyBehavior
     {
+        /// <summary>
+        /// Determines whether the given invocation is an event 
+        /// add or remove handler.
+        /// </summary>
         public bool AppliesTo(IMethodInvocation invocation)
             => invocation.MethodBase.IsSpecialName &&
               (invocation.MethodBase.Name.StartsWith("add_") ||
@@ -58,8 +62,7 @@ namespace Moq.Sdk
                 }
                 else
                 {
-                    var handler = invocation.Arguments.FirstOrDefault() as Delegate;
-                    if (handler != null)
+                    if (invocation.Arguments.FirstOrDefault() is Delegate handler)
                     {
                         var mock = ((IMocked)invocation.Target).Mock;
                         if (invocation.MethodBase.Name.StartsWith("add_"))

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -7,8 +8,8 @@ namespace Moq.Proxy
     /// <summary>
     /// Represents a method invocation.
     /// </summary>
-	public interface IMethodInvocation
-	{
+	public interface IMethodInvocation : IStructuralEquatable
+    {
         /// <summary>
         /// The arguments of the method invocation.
         /// </summary>
@@ -46,5 +47,5 @@ namespace Moq.Proxy
         /// <param name="exception">The exception to throw from the method invocation.</param>
         /// <returns>The <see cref="IMethodReturn"/> for the current invocation.</returns>
 		IMethodReturn CreateExceptionReturn(Exception exception);
-	}
+    }
 }

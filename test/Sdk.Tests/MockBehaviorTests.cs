@@ -11,7 +11,7 @@ namespace Moq.Sdk.Tests
         [Fact]
         public void RecordsInvocation()
         {
-            var behavior = new MockProxyBehavior();
+            var behavior = new MockTrackingBehavior();
             var mock = new Mocked();
 
             behavior.Invoke(new MethodInvocation(mock, typeof(object).GetMethod(nameof(object.ToString))),
@@ -23,7 +23,7 @@ namespace Moq.Sdk.Tests
         [Fact]
         public void ThrowsForNonIMocked()
         {
-            var behavior = new MockProxyBehavior();
+            var behavior = new MockTrackingBehavior();
 
             Assert.Throws<ArgumentException>(() => behavior.Invoke(new MethodInvocation(
                 new object(),
@@ -35,7 +35,7 @@ namespace Moq.Sdk.Tests
         public void WhenAddingMockBehavior_ThenCanInterceptSelectively()
         {
             var calculator = new ICalculatorProxy();
-            var behavior = new MockProxyBehavior();
+            var behavior = new MockTrackingBehavior();
 
             calculator.AddBehavior(behavior);
             calculator.AddBehavior((m, n) => m.CreateValueReturn("Basic"), m => m.MethodBase.Name == "get_Mode");

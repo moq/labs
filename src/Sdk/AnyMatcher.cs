@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace Moq.Sdk
@@ -9,7 +11,7 @@ namespace Moq.Sdk
     /// or a nullable value type.
     /// </summary>
     /// <typeparam name="T">Type of argument to match.</typeparam>
-    public class AnyMatcher<T> : IArgumentMatcher
+    public class AnyMatcher<T> : IArgumentMatcher, IEquatable<AnyMatcher<T>>, IStructuralEquatable
     {
         static bool IsValueType = typeof(T).GetTypeInfo().IsValueType;
         static bool IsNullable = typeof(T).GetTypeInfo().IsGenericType &&
@@ -40,23 +42,16 @@ namespace Moq.Sdk
                 typeof(T).GetTypeInfo().IsAssignableFrom(value.GetType().GetTypeInfo());
         }
 
-        public override bool Equals(object obj) => Equals(this, obj as AnyMatcher<T>);
-
-        public override int GetHashCode() => typeof(T).GetHashCode();
-
-        static bool Equals(AnyMatcher<T> obj1, AnyMatcher<T> obj2)
-        {
-            if (object.Equals(null, obj1) ||
-                object.Equals(null, obj2) ||
-                obj1.GetType() != obj2.GetType())
-                return false;
-
-            // If both are non-null and they have the same type, 
-            // they match essentially any value of the same type, 
-            // so they are equal.
-            return true;
-        }
-
         public override string ToString() => "Any<" + Stringly.ToTypeName(ArgumentType) + ">";
+
+        #region Equality
+
+        public bool Equals(AnyMatcher<T> other) => Equals(other);
+
+        public bool Equals(object other, IEqualityComparer comparer) => Equals(other);
+
+        public int GetHashCode(IEqualityComparer comparer) => GetHashCode();
+
+        #endregion
     }
 }

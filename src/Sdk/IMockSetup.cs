@@ -1,11 +1,12 @@
-﻿using Moq.Proxy;
+﻿using System.Collections;
+using Moq.Proxy;
 
 namespace Moq.Sdk
 {
     /// <summary>
     /// The configuration used to set up a <see cref="IMockBehavior" />.
     /// </summary>
-    public interface IMockSetup
+    public interface IMockSetup : IStructuralEquatable
     {
         /// <summary>
         /// The <see cref="IMethodInvocation"/> used to set up the behavior.

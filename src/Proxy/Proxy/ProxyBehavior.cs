@@ -14,7 +14,7 @@ namespace Moq.Proxy
         /// <param name="behavior">The actual behavior that will be invoked as part of the proxy.</param>
         /// <param name="appliesTo">Whether the <paramref name="behavior"/> applies to a particular <see cref="IMethodInvocation"/>. Defaults to 'always applies'.</param>
         /// <param name="name">Optional friendly name for the behavior for diagnostics.</param>
-        public static IProxyBehavior Create(InvokeBehavior behavior, AppliesTo appliesTo = null, string name = null) 
+        public static IProxyBehavior Create(InvokeBehavior behavior, AppliesTo appliesTo = null, string name = null)
             => new AnonymousProxyBehavior(behavior, appliesTo, name);
 
         class AnonymousProxyBehavior : IProxyBehavior
@@ -35,7 +35,7 @@ namespace Moq.Proxy
             public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior getNext) =>
                 behavior(invocation, getNext);
 
-            public override string ToString() => name ?? "custom";
+            public override string ToString() => name ?? "<unnamed>";
         }
     }
 }

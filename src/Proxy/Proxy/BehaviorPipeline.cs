@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace Moq.Proxy
@@ -9,14 +10,6 @@ namespace Moq.Proxy
     /// </summary>
     public class BehaviorPipeline
     {
-        /// <summary>
-        /// Creates a new <see cref="BehaviorPipeline"/>.
-        /// </summary>
-        public BehaviorPipeline()
-        {
-            Behaviors = new List<IProxyBehavior>();
-        }
-
         /// <summary>
         /// Creates a new <see cref="BehaviorPipeline"/> with the given set of 
         /// <see cref="InvokeBehavior"/> delegates.
@@ -52,28 +45,36 @@ namespace Moq.Proxy
         /// <param name="behaviors">Behaviors to add to the pipeline.</param>
         public BehaviorPipeline(IEnumerable<IProxyBehavior> behaviors)
         {
-            Behaviors = new List<IProxyBehavior>(behaviors);
+            Behaviors = new ObservableCollection<IProxyBehavior>(behaviors);
         }
 
-        public IList<IProxyBehavior> Behaviors { get; }
+        /// <summary>
+        /// Creates a new <see cref="BehaviorPipeline"/>.
+        /// </summary>
+        public BehaviorPipeline()
+        {
+            Behaviors = new ObservableCollection<IProxyBehavior>();
+        }
+
+        public ObservableCollection<IProxyBehavior> Behaviors { get; }
 
         /// <summary>
         /// Invoke the pipeline with the given input.
         /// </summary>
-        /// <param name="input">Input to the method call.</param>
+        /// <param name="invocation">Input to the method call.</param>
         /// <param name="target">The ultimate target of the call.</param>
         /// <param name="throwOnException">Whether to throw the <see cref="IMethodReturn.Exception"/> if it has a value after running 
         /// the beaviors.</param>
         /// <returns>Return value from the pipeline.</returns>
-        public IMethodReturn Invoke(IMethodInvocation input, InvokeBehavior target, bool throwOnException = false)
+        public IMethodReturn Invoke(IMethodInvocation invocation, InvokeBehavior target, bool throwOnException = false)
         {
             if (Behaviors.Count == 0)
-                return target(input, null);
+                return target(invocation, null);
 
             var index = -1;
             for (var i = 0; i < Behaviors.Count; i++)
             {
-                if (Behaviors[i].AppliesTo(input))
+                if (Behaviors[i].AppliesTo(invocation))
                 {
                     index = i;
                     break;
@@ -81,13 +82,13 @@ namespace Moq.Proxy
             }
 
             if (index == -1)
-                return target(input, null);
+                return target(invocation, null);
 
-            var result = Behaviors[index].Invoke(input, () =>
+            var result = Behaviors[index].Invoke(invocation, () =>
             {
                 for (index++; index < Behaviors.Count; index++)
                 {
-                    if (Behaviors[index].AppliesTo(input))
+                    if (Behaviors[index].AppliesTo(invocation))
                         break;
                 }
 

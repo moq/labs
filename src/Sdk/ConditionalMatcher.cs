@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace Moq.Sdk
@@ -8,15 +10,22 @@ namespace Moq.Sdk
     /// as long as it satisfies a given condition.
     /// </summary>
     /// <typeparam name="T">Type of argument being conditioned.</typeparam>
-    public class ConditionalMatcher<T> : IArgumentMatcher
+    public class ConditionalMatcher<T> : IArgumentMatcher, IEquatable<ConditionalMatcher<T>>
     {
         static bool IsValueType = typeof(T).GetTypeInfo().IsValueType;
         static bool IsNullable = typeof(T).GetTypeInfo().IsGenericType &&
             typeof(T).GetGenericTypeDefinition() == typeof(Nullable<>);
 
+        string name;
         Func<T, bool> condition;
+        Lazy<IStructuralEquatable> equatable;
 
-        public ConditionalMatcher(Func<T, bool> condition) => this.condition = condition;
+        public ConditionalMatcher(Func<T, bool> condition, string name = "condition")
+        {
+            this.condition = condition;
+            this.name = name;
+            equatable = new Lazy<IStructuralEquatable>(() => Tuple.Create(condition, name));
+        }
 
         /// <summary>
         /// Gets the type of the argument this matcher supports.
@@ -37,12 +46,20 @@ namespace Moq.Sdk
                 condition((T)value);
         }
 
-        public override bool Equals(object obj) => Equals(this, obj as ConditionalMatcher<T>);
+        public override string ToString() => "Any<" + Stringly.ToTypeName(ArgumentType) + ">(" + name + ")";
 
-        public override int GetHashCode() => condition.GetHashCode();
+        #region Equality
 
-        static bool Equals(ConditionalMatcher<T> obj1, ConditionalMatcher<T> obj2) => ReferenceEquals(obj1.condition, obj2.condition);
+        public bool Equals(ConditionalMatcher<T> other) => equatable.Value.Equals(other?.equatable?.Value, EqualityComparer<object>.Default);
 
-        public override string ToString() => "Any<" + Stringly.ToTypeName(ArgumentType) + ">(condition)";
+        public bool Equals(object other, IEqualityComparer comparer) => equatable.Value.Equals((other as ConditionalMatcher<T>)?.equatable?.Value, comparer);
+
+        public int GetHashCode(IEqualityComparer comparer) => equatable.Value.GetHashCode(comparer);
+
+        public override bool Equals(object obj) => Equals(obj as ConditionalMatcher<T>);
+
+        public override int GetHashCode() => GetHashCode(EqualityComparer<object>.Default);
+
+        #endregion
     }
 }

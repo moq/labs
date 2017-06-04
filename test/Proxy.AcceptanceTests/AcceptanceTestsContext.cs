@@ -20,6 +20,7 @@ namespace Moq.Proxy
                 Path.Combine(frameworkPath, "mscorlib.dll"),
                 Path.Combine(frameworkPath, "System.dll"),
                 Path.Combine(frameworkPath, "System.Core.dll"),
+                Path.Combine(frameworkPath, "System.ObjectModel.dll"),
                 Path.Combine(frameworkPath, "System.Reflection.dll"),
                 Path.Combine(frameworkPath, "System.Runtime.dll"),
             }

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Moq.Proxy;
+﻿using Moq.Proxy;
 using Moq.Sdk;
 using System.Reflection;
 using System.ComponentModel;
@@ -15,18 +14,19 @@ namespace Moq
     {
         public static TResult Callback<TResult>(this TResult target, Action callback)
         {
-            var invocation = CallContext<IMethodInvocation>.GetData();
-            var mock = ((IMocked)invocation.Target).Mock;
-
-            mock.Invocations.Remove(invocation);
-
-            mock.Behaviors.Add(new InvocationFilterBehavior(
-                Matchers.AppliesTo(invocation), 
-                (mi, next) =>
-                {
-                    callback();
-                    return next()(mi, next);
-                }));
+            var setup = MockSetup.Current;
+            if (setup != null)
+            {
+                var mock = ((IMocked)setup.Invocation.Target).Mock;
+                mock.Invocations.Remove(setup.Invocation);
+                mock.InsertBehavior(1, MockBehavior.Create(
+                    (mi, next) =>
+                    {
+                        callback();
+                        return next()(mi, next);
+                    },
+                    "Callback"));
+            }
 
             return target;
         }
@@ -36,15 +36,15 @@ namespace Moq
         /// </summary>
         public static TResult Returns<TResult>(this object target, TResult value)
         {
-            var invocation = CallContext<IMethodInvocation>.GetData();
-            var mock = ((IMocked)invocation.Target).Mock;
-
-            mock.Invocations.Remove(invocation);
-
-            mock.Behaviors.Add(new InvocationFilterBehavior(
-                Matchers.AppliesTo(invocation), 
-                (mi, next) => mi.CreateValueReturn(value, mi.Arguments),
-                "Returns"));
+            var setup = MockSetup.Current;
+            if (setup != null)
+            {
+                var mock = ((IMocked)setup.Invocation.Target).Mock;
+                mock.Invocations.Remove(setup.Invocation);
+                mock.InsertBehavior(1, MockBehavior.Create(
+                    (mi, next) => mi.CreateValueReturn(value, mi.Arguments),
+                    "Returns"));
+            }
 
             return default(TResult);
         }
@@ -56,15 +56,15 @@ namespace Moq
         /// </summary>
         public static TResult Returns<TResult>(this object target, Func<TResult> value)
         {
-            var invocation = CallContext<IMethodInvocation>.GetData();
-            var mock = ((IMocked)invocation.Target).Mock;
-
-            mock.Invocations.Remove(invocation);
-
-            mock.Behaviors.Add(new InvocationFilterBehavior(
-                Matchers.AppliesTo(invocation), 
-                (mi, next) => mi.CreateValueReturn(value(), mi.Arguments),
-                "Returns"));
+            var setup = MockSetup.Current;
+            if (setup != null)
+            {
+                var mock = ((IMocked)setup.Invocation.Target).Mock;
+                mock.Invocations.Remove(setup.Invocation);
+                mock.InsertBehavior(1, MockBehavior.Create(
+                    (mi, next) => mi.CreateValueReturn(value(), mi.Arguments),
+                    "Returns"));
+            }
 
             return default(TResult);
         }
@@ -93,18 +93,20 @@ namespace Moq
         /// call.
         /// </summary>
         public static TResult Returns<T1, T2, T3, TResult>(this object target, Func<T1, T2, T3, TResult> value)
-            => Returns<TResult>(value, (mi, next) 
+            => Returns<TResult>(value, (mi, next)
                 => mi.CreateValueReturn(value((T1)mi.Arguments[0], (T2)mi.Arguments[1], (T3)mi.Arguments[2]), mi.Arguments));
 
         static TResult Returns<TResult>(Delegate value, InvokeBehavior behavior)
         {
-            var invocation = CallContext<IMethodInvocation>.GetData();
-            EnsureCompatible(invocation, value);
+            var setup = MockSetup.Current;
+            if (setup != null)
+            {
+                EnsureCompatible(setup.Invocation, value);
+                var mock = ((IMocked)setup.Invocation.Target).Mock;
 
-            var mock = ((IMocked)invocation.Target).Mock;
-
-            mock.Invocations.Remove(invocation);
-            mock.Behaviors.Add(new InvocationFilterBehavior(Matchers.AppliesTo(invocation), behavior, "Returns"));
+                mock.Invocations.Remove(setup.Invocation);
+                mock.InsertBehavior(1, MockBehavior.Create(behavior, "Returns"));
+            }
 
             return default(TResult);
         }

@@ -27,7 +27,7 @@ namespace Moq
         {
             var proxy = (IProxy)ProxyFactory.Default.CreateProxy(proxiesAssembly, typeof(T), additionalInterfaces, new object[0]);
 
-            proxy.Behaviors.Add(new MockBehavior());
+            proxy.Behaviors.Add(new MockTrackingBehavior());
             // TODO: depending on Strict/Loose mock behavior, we should either 
             // add DefaultValueBehavior or StrictMockBehavior
             proxy.Behaviors.Add(new DefaultValueBehavior());

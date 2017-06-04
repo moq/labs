@@ -13,26 +13,14 @@ namespace Moq
         /// Matches any value of the given type.
         /// </summary>
         /// <typeparam name="T">The type of the argument.</typeparam>
-        public static T Any<T>()
-        {
-            CallContext<Queue<IArgumentMatcher>>.GetData(() => new Queue<IArgumentMatcher>())
-                .Enqueue(AnyMatcher<T>.Default);
-
-            return default(T);
-        }
+        public static T Any<T>() => MockSetup.Push<T>(AnyMatcher<T>.Default);
 
         /// <summary>
         /// Matches a value of the given type if it satisfies the specified condition.
         /// </summary>
         /// <typeparam name="T">The type of the argument.</typeparam>
         /// <param name="condition">The condition to check against actual invocation values.</param>
-        public static T Any<T>(Func<T, bool> condition)
-        {
-            CallContext<Queue<IArgumentMatcher>>.GetData(() => new Queue<IArgumentMatcher>())
-                .Enqueue(new ConditionalMatcher<T>(condition));
-
-            return default(T);
-        }
+        public static T Any<T>(Func<T, bool> condition) => MockSetup.Push<T>(new ConditionalMatcher<T>(condition));
     }
 
     /// <summary>
@@ -44,14 +32,6 @@ namespace Moq
         /// <summary>
         /// Matches any argument value with a matching type.
         /// </summary>
-        public static T Any
-        {
-            get
-            {
-                CallContext<Queue<IArgumentMatcher>>.GetData(() => new Queue<IArgumentMatcher>())
-                    .Enqueue(AnyMatcher<T>.Default);
-                return default(T);
-            }
-        }
+        public static T Any => MockSetup.Push<T>(AnyMatcher<T>.Default);
     }
 }

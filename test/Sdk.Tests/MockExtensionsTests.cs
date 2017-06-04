@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Moq.Proxy;
 using Xunit;
 
@@ -115,7 +116,9 @@ namespace Moq.Sdk.Tests
 
         class TestMockBehavior : IMockBehavior
         {
-            public IMockSetup Setup => null;
+            public IMockSetup Setup { get; set; } = new MockSetup(new FakeInvocation(), new IArgumentMatcher[0]);
+
+            public ObservableCollection<InvocationBehavior> Behaviors => null;
 
             public bool AppliesTo(IMethodInvocation invocation) => false;
 
@@ -129,6 +132,13 @@ namespace Moq.Sdk.Tests
             public IList<IMethodInvocation> Invocations { get; } = new List<IMethodInvocation>();
 
             public MockState State => new MockState();
+
+            public IMockSetup LastSetup { get; set; }
+
+            public IMockBehavior BehaviorFor(IMockSetup setup)
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }
