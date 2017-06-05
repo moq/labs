@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -25,8 +26,8 @@ namespace Moq.Proxy
     public class ProxyGenerator
     {
         // Used for MEF composition.
-        public static HostServices CreateHost(params Assembly[] additionalGenerators) 
-            => Roslynator.CreateHost(additionalGenerators == null ? 
+        public static HostServices CreateHost(params Assembly[] additionalGenerators)
+            => Roslynator.CreateHost(additionalGenerators == null ?
                 new[] { Assembly.GetExecutingAssembly() } :
                 additionalGenerators.Concat(new[] { Assembly.GetExecutingAssembly() }).ToArray());
 
@@ -223,9 +224,8 @@ namespace Moq.Proxy
 
             var services = workspace.Services.GetService<ICodeAnalysisServices>();
             var code = syntax.NormalizeWhitespace().ToFullString();
-            var filePath = default(string);
+            var filePath = Path.GetTempFileName();
 #if DEBUG
-            filePath = Path.GetTempFileName();
             File.WriteAllText(filePath, code);
 #endif
 
