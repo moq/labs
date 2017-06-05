@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading;
 using Moq.Proxy;
 
 namespace Moq.Sdk
@@ -12,14 +11,12 @@ namespace Moq.Sdk
     public partial class MockSetup : IMockSetup, IEquatable<MockSetup>
     {
         IArgumentMatcher[] matchers;
-        Lazy<string> toDisplay;
         Lazy<IStructuralEquatable> equatable;
 
         public MockSetup(IMethodInvocation invocation, IArgumentMatcher[] matchers)
         {
             Invocation = invocation;
             this.matchers = matchers;
-            toDisplay = new Lazy<string>(ToDisplay);
             equatable = new Lazy<IStructuralEquatable>(CreateEquatable);
         }
 
@@ -47,9 +44,7 @@ namespace Moq.Sdk
             return true;
         }
 
-        public override string ToString() => toDisplay.Value;
-
-        string ToDisplay()
+        public override string ToString()
         {
             var result = new StringBuilder();
             if (Invocation.MethodBase is MethodInfo info)
