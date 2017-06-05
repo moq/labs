@@ -14,6 +14,7 @@ using static Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory;
 namespace Moq.Proxy.Rewrite
 {
     [ExportLanguageService(typeof(IDocumentVisitor), LanguageNames.VisualBasic, DocumentVisitorLayer.Rewrite)]
+    [Shared]
     class VisualBasicProxy : VisualBasicSyntaxRewriter, IDocumentVisitor
     {
         SyntaxGenerator generator;

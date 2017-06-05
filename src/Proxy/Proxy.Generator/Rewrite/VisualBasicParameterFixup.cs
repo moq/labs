@@ -18,6 +18,7 @@ namespace Moq.Proxy.Rewrite
     /// https://developercommunity.visualstudio.com/content/problem/40204/running-implement-interface-code-action-results-in.html
     /// </summary>
     [ExportLanguageService(typeof(IDocumentVisitor), LanguageNames.VisualBasic, DocumentVisitorLayer.Rewrite)]
+    [Shared]
     class VisualBasicParameterFixup : VisualBasicSyntaxRewriter, IDocumentVisitor
     {
         ICodeAnalysisServices services;
