@@ -1,6 +1,10 @@
 <Project>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <!-- Always generate fully debuggable code for now by never optimizing. -->
+    <Optimize>False</Optimize>
+
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
 
   <Import Project="..\Directory.Build.props" />
