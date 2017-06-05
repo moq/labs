@@ -64,6 +64,12 @@ namespace Moq.Proxy
         /// </summary>
         public ITaskItem[] AdditionalGenerators { get; set; }
 
+        /// <summary>
+        /// Whether to cause the console program to launch a debugger on run 
+        /// for troubleshooting purposes.
+        /// </summary>
+        public bool Debug { get; set; }
+
         [Output]
         public ITaskItem[] Proxies => proxies.ToArray();
 
@@ -112,15 +118,18 @@ namespace Moq.Proxy
             // as a command line.
             if (!string.IsNullOrEmpty(FileExtension))
             {
-                builder.AppendSwitch("-e");
+                builder.AppendSwitch("-extension");
                 builder.AppendSwitch(FileExtension);
             }
 
-            builder.AppendSwitch("-l");
+            builder.AppendSwitch("-language");
             builder.AppendFileNameIfNotNull(LanguageName);
 
-            builder.AppendSwitch("-o");
+            builder.AppendSwitch("-output");
             builder.AppendFileNameIfNotNull(OutputPath);
+
+            if (Debug)
+                builder.AppendSwitch("-debug");
 
             return builder.ToString();
         }
@@ -137,7 +146,7 @@ namespace Moq.Proxy
             {
                 foreach (var additionalInterface in AdditionalInterfaces)
                 {
-                    builder.AppendLine("-i")
+                    builder.AppendLine("-interface")
                         .AppendLine(additionalInterface.ItemSpec);
                 }
             }
@@ -146,7 +155,7 @@ namespace Moq.Proxy
             {
                 foreach (var additionalProxy in AdditionalProxies)
                 {
-                    builder.AppendLine("-p")
+                    builder.AppendLine("-proxy")
                         .AppendLine(additionalProxy.ItemSpec);
                 }
             }
@@ -155,7 +164,7 @@ namespace Moq.Proxy
             {
                 foreach (var additionalGenerator in AdditionalGenerators)
                 {
-                    builder.AppendLine("-g")
+                    builder.AppendLine("-generator")
                         .AppendLine(additionalGenerator.ItemSpec);
                 }
             }
@@ -164,7 +173,7 @@ namespace Moq.Proxy
             {
                 foreach (var reference in References)
                 {
-                    builder.AppendLine("-r")
+                    builder.AppendLine("-reference")
                         .AppendLine("\"" + reference.GetMetadata("FullPath") + "\"");
                 }
             }
@@ -173,7 +182,7 @@ namespace Moq.Proxy
             {
                 foreach (var source in Sources)
                 {
-                    builder.AppendLine("-s")
+                    builder.AppendLine("-source")
                         .AppendLine("\"" + source.GetMetadata("FullPath") + "\"");
                 }
             }
