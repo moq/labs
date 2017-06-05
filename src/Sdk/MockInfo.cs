@@ -34,7 +34,12 @@ namespace Moq.Sdk
         public MockState State { get; } = new MockState();
 
         public IMockBehavior BehaviorFor(IMockSetup setup)
-            => setupBehaviorMap.GetOrAdd(setup, x => new MockBehavior(x));
+            => setupBehaviorMap.GetOrAdd(setup, x =>
+            {
+                var behavior = new MockBehavior(x);
+                Behaviors.Insert(1, behavior);
+                return behavior;
+            });
 
         void OnBehaviorsChanged(object sender, NotifyCollectionChangedEventArgs e)
         {

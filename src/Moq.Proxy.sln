@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Proxy.Tests", "..\test\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CE93609A-9760-4444-B713-0CCB8CCC5CA6}"
 	ProjectSection(SolutionItems) = preProject
+		..\appveyor.yml = ..\appveyor.yml
+		..\build.cmd = ..\build.cmd
 		..\build.proj = ..\build.proj
 		..\Directory.Build.props = ..\Directory.Build.props
 		..\Directory.Build.targets = ..\Directory.Build.targets

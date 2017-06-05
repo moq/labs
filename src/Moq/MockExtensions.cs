@@ -18,14 +18,17 @@ namespace Moq
             if (setup != null)
             {
                 var mock = ((IMocked)setup.Invocation.Target).Mock;
+
                 mock.Invocations.Remove(setup.Invocation);
-                mock.InsertBehavior(1, MockBehavior.Create(
+                var behavior = mock.BehaviorFor(setup);
+                behavior.Behaviors.Add(new InvocationBehavior(
                     (mi, next) =>
                     {
                         callback();
                         return next()(mi, next);
                     },
-                    "Callback"));
+                    "Callback")
+               );
             }
 
             return target;
@@ -41,9 +44,11 @@ namespace Moq
             {
                 var mock = ((IMocked)setup.Invocation.Target).Mock;
                 mock.Invocations.Remove(setup.Invocation);
-                mock.InsertBehavior(1, MockBehavior.Create(
+                var behavior = mock.BehaviorFor(setup);
+                behavior.Behaviors.Insert(0, new InvocationBehavior(
                     (mi, next) => mi.CreateValueReturn(value, mi.Arguments),
-                    "Returns"));
+                    "Returns")
+                );
             }
 
             return default(TResult);
@@ -61,9 +66,11 @@ namespace Moq
             {
                 var mock = ((IMocked)setup.Invocation.Target).Mock;
                 mock.Invocations.Remove(setup.Invocation);
-                mock.InsertBehavior(1, MockBehavior.Create(
+                var behavior = mock.BehaviorFor(setup);
+                behavior.Behaviors.Insert(0, new InvocationBehavior(
                     (mi, next) => mi.CreateValueReturn(value(), mi.Arguments),
-                    "Returns"));
+                    "Returns")
+               );
             }
 
             return default(TResult);
@@ -105,7 +112,9 @@ namespace Moq
                 var mock = ((IMocked)setup.Invocation.Target).Mock;
 
                 mock.Invocations.Remove(setup.Invocation);
-                mock.InsertBehavior(1, MockBehavior.Create(behavior, "Returns"));
+                var mockBehavior = mock.BehaviorFor(setup);
+
+                mockBehavior.Behaviors.Add(new InvocationBehavior(behavior, "Returns"));
             }
 
             return default(TResult);
