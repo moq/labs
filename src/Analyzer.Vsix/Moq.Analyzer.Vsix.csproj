@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net461;net462</TargetFrameworks>
+		<Dev>14.0</Dev>
+
+		<GeneratePkgDefFile>false</GeneratePkgDefFile>
+		<IncludeAssemblyInVSIXContainer>false</IncludeAssemblyInVSIXContainer>
+		<IncludeCopyLocalReferencesInVSIXContainer>true</IncludeCopyLocalReferencesInVSIXContainer>
+		<IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
+		<IncludeDebugSymbolsInLocalVSIXDeployment>false</IncludeDebugSymbolsInLocalVSIXDeployment>
+		<CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>
+		<CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
+		<VSSDKTargetPlatformRegRootSuffix>Moq</VSSDKTargetPlatformRegRootSuffix>
+		
+		<TargetVsixContainerName>Moq.Analyzer.vsix</TargetVsixContainerName>
+		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.VSSDK.BuildTools" Version="15.1.192" />
+		<PackageReference Include="Xamarin.VSSDK.BuildTools" Version="0.2.1-pre-build0027" />
+		<PackageReference Include="Roslynator" Version="0.2.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Analyzer\Moq.Analyzer.csproj" />
+		<ProjectReference Include="..\Proxy\Proxy.Generator\Moq.Proxy.Generator.csproj" />
+		<ProjectReference Include="..\Sdk.Generator\Moq.Sdk.Generator.csproj" />
+	</ItemGroup>
+
+	<!--<Import Project="BindingRedirects.targets" />-->
+</Project>

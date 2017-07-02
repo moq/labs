@@ -4,7 +4,7 @@
 	<PropertyGroup>
 		<Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
 		<IntermediateOutputPath>$(RestoreOutputPath)\</IntermediateOutputPath>
-		<AdditionalProperties>Configuration=$(Configuration)</AdditionalProperties>
+		<AdditionalProperties>Configuration=$(Configuration);Dev=15.0</AdditionalProperties>
 		<Out Condition="'$(Out)' == ''">out</Out>
 	</PropertyGroup>
 

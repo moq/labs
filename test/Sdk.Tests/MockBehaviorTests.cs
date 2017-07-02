@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Moq.Proxy;
 using Xunit;
+using Proxies;
 
 namespace Moq.Sdk.Tests
 {

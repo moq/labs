@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" InitialTargets="SetupBindingRedirects" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<PropertyGroup>
+		<BindingRedirects>BindingRedirects.pkgdef</BindingRedirects>
+		<!-- Expression applied to the %(ReferencePath.FusionName) to determine if binding redirection will be generated -->
+		<BindingRedirectFusionExpr>^Microsoft.CodeAnalysis|^System.Composition</BindingRedirectFusionExpr>
+		<!-- Whether to use 99.9.9.9 as the old version max range if no %(BindingRedirected.OldVersionTo) is found. 
+			 If not specified, the determined fusion version of the resolved @(ReferencePath) will be used instead. -->
+		<BindingRedirectAllVersions Condition="'$(BindingRedirectAllVersions)' == ''">true</BindingRedirectAllVersions>
+	</PropertyGroup>
+
+	<Target Name="SetupBindingRedirects">
+		<PropertyGroup>
+			<BindingRedirectsDependsOn>
+				CollectBindingRedirected;
+				CleanBindingRedirectsPackage;
+				GenerateBindingRedirectsPackage
+			</BindingRedirectsDependsOn>
+			<GetCopyToOutputDirectoryItemsDependsOn>
+				BindingRedirects;
+				$(GetCopyToOutputDirectoryItemsDependsOn)
+			</GetCopyToOutputDirectoryItemsDependsOn>
+			<ResolveReferencesDependsOn>
+				$(ResolveReferencesDependsOn);
+				BindingRedirects
+			</ResolveReferencesDependsOn>
+			<BuildDependsOn>
+				$(BuildDependsOn);
+				ReportBindingRedirects
+			</BuildDependsOn>
+		</PropertyGroup>
+	</Target>
+
+	<ItemDefinitionGroup>
+		<!-- Facade assemblies don't have this metadata attribute, so default it to something. -->
+		<ReferencePath>
+			<FusionName></FusionName>
+		</ReferencePath>
+	</ItemDefinitionGroup>
+
+	<Target Name="BindingRedirects" DependsOnTargets="$(BindingRedirectsDependsOn)" />
+
+	<Target Name="ReportBindingRedirects">
+		<Message Text="Binding redirects package file: $(IntermediateOutputPath)$(BindingRedirects)" Importance="high" />
+		<Message Text="Binding redirecting @(XamarinVisualStudioAssembly -> Count()) Xamarin.VisualStudio.* assemblies" Importance="high" />
+		<Message Text="    - %(XamarinVisualStudioAssembly.Filename)%(XamarinVisualStudioAssembly.Extension)" Importance="normal" />
+		<Message Text="Binding redirecting @(XamarinMessagingAssembly -> Count()) Xamarin.Messaging.* assemblies" Importance="high" />
+		<Message Text="    - %(XamarinMessagingAssembly.Filename)%(XamarinMessagingAssembly.Extension)" Importance="normal" />
+
+		<ItemGroup>
+			<ExtraBindingRedirects Include="@(BindingRedirected)" Exclude="@(XamarinVisualStudioAssembly);@(XamarinMessagingAssembly)" />
+		</ItemGroup>
+
+		<Message Text="Binding redirecting @(ExtraBindingRedirects -> Count()) extra assemblies" Importance="high" />
+		<Message Text="    - %(ExtraBindingRedirects.Filename)%(ExtraBindingRedirects.Extension)" Importance="normal" />
+	</Target>
+
+	<Target Name="CollectBindingRedirected" DependsOnTargets="ResolveAssemblyReferences">
+		<ItemGroup>
+			<BindingRedirected Include="@(ReferencePath)" Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(FusionName)', $(BindingRedirectFusionExpr)))" />
+			<!-- Special-case Clide since we don't want to bind-redirect v3 -->
+			<BindingRedirected Include="@(ReferencePath)" Condition="$([System.String]::new('%(FusionName)').StartsWith('Clide'))">
+				<OldVersionTo>2.9.9.9999</OldVersionTo>
+			</BindingRedirected>
+		</ItemGroup>
+	</Target>
+
+	<Target Name="CleanBindingRedirectsPackage"
+			Inputs="@(ReferencePath);$(MSBuildThisFileFullPath)$(MSBuildProjectFullPath)"
+			Outputs="$(IntermediateOutputPath)$(BindingRedirects)">
+		<!-- If we're in this target, it's because the file is out of date, or it doesn't exist -->
+		<Delete Files="$(IntermediateOutputPath)$(BindingRedirects)" Condition="Exists('$(IntermediateOutputPath)$(BindingRedirects)')" />
+	</Target>
+
+	<Target Name="GenerateBindingRedirectsPackage" Inputs="@(BindingRedirected)" Outputs="%(Identity)-BATCH">
+		<PropertyGroup>
+			<_FusionName>%(BindingRedirected.FusionName)</_FusionName>
+			<_IsFullName Condition=" $(_FusionName.IndexOf(',')) != '-1' ">true</_IsFullName>
+		</PropertyGroup>
+		<PropertyGroup Condition=" '$(_IsFullName)' == 'true' ">
+			<_Name>$(_FusionName.Substring(0, $(_FusionName.IndexOf(','))))</_Name>
+			<_IndexOfToken>$(_FusionName.IndexOf('PublicKeyToken='))</_IndexOfToken>
+			<_IndexOfToken>$([MSBuild]::Add($(_IndexOfToken), 15))</_IndexOfToken>
+			<_Token>$(_FusionName.Substring($(_IndexOfToken)))</_Token>
+		</PropertyGroup>
+
+		<ItemGroup Condition=" '$(_IsFullName)' == 'true' ">
+			<BindingRedirected>
+				<Guid>$([System.Guid]::NewGuid().ToString().ToUpper())</Guid>
+				<AssemblyName>$(_Name)</AssemblyName>
+				<PublicKeyToken>$(_Token)</PublicKeyToken>
+				<OldVersionFrom Condition=" '%(BindingRedirected.OldVersionFrom)' == '' ">0.0.0.0</OldVersionFrom>
+				<OldVersionTo Condition=" '%(BindingRedirected.OldVersionTo)' == '' And '$(BindingRedirectAllVersions)' == 'true'">99.9.9.9</OldVersionTo>
+				<OldVersionTo Condition=" '%(BindingRedirected.OldVersionTo)' == '' And '$(BindingRedirectAllVersions)' != 'true'">%(BindingRedirected.Version)</OldVersionTo>
+			</BindingRedirected>
+		</ItemGroup>
+
+		<WriteLinesToFile File="$(IntermediateOutputPath)$(BindingRedirects)" Overwrite="false"
+						  Condition=" '$(_IsFullName)' == 'true' And '%(BindingRedirected.PublicKeyToken)' != 'null' "
+						  Lines='[$RootKey$\RuntimeConfiguration\dependentAssembly\bindingRedirection\{%(BindingRedirected.Guid)}]
+"name"="%(BindingRedirected.AssemblyName)"
+"publicKeyToken"="%(BindingRedirected.PublicKeyToken)"
+"culture"="neutral"
+"oldVersion"="%(BindingRedirected.OldVersionFrom)-%(BindingRedirected.OldVersionTo)"
+"newVersion"="%(BindingRedirected.Version)"
+"codeBase"="$PackageFolder$\%(BindingRedirected.Filename)%(BindingRedirected.Extension)"
+'/>
+
+		<ItemGroup>
+			<FileWrites Include="$(IntermediateOutputPath)$(BindingRedirects)" />
+			<Content Include="$(IntermediateOutputPath)$(BindingRedirects)">
+				<IncludeInVSIX>true</IncludeInVSIX>
+				<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				<Link>$(BindingRedirects)</Link>
+			</Content>
+		</ItemGroup>
+	</Target>
+
+</Project>

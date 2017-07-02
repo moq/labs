@@ -43,7 +43,7 @@ namespace Moq.Proxy.Tests
                 var instances = services.GetLanguageServices(group.Key.Item1, group.Key.Item2, group.Key.Item3).ToArray();
 
                 Assert.Equal(group.Count(), instances.Length);
-                output.WriteLine(group.Key.Item1 + ":" + group.Key.Item2.Substring(0, group.Key.Item2.IndexOf(",")) + ":" + group.Key.Item3 + "=" + instances.Length);
+                //output.WriteLine(group.Key.Item1 + ":" + group.Key.Item2.Substring(0, group.Key.Item2.IndexOf(",")) + ":" + group.Key.Item3 + "=" + instances.Length);
             }
         }
     }

@@ -1,7 +1,18 @@
-<Project>
+<Project InitialTargets="FixupProjectReferences">
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
   </PropertyGroup>
 
-  <Import Project="..\Directory.Build.targets" />
+	<!-- For some reason, SDK-style P2P references are being resolved *after* ResolveAssemblyReferences and failing the build -->
+	<Target Name="FixupProjectReferences">
+		<PropertyGroup>
+			<ResolveAssemblyReferencesDependsOn>
+				$(ResolveAssemblyReferencesDependsOn);
+				ResolveProjectReferences
+			</ResolveAssemblyReferencesDependsOn>
+		</PropertyGroup>
+	</Target>
+
+
+	<Import Project="..\Directory.Build.targets" />
 </Project>

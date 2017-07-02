@@ -11,7 +11,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 namespace Moq.Sdk
 {
     [ExportLanguageService(typeof(IDocumentVisitor), LanguageNames.CSharp, DocumentVisitorLayer.Fixup)]
-    public class CSharpMockGenerator : CSharpSyntaxRewriter, IDocumentVisitor
+    public class CSharpFixup : CSharpSyntaxRewriter, IDocumentVisitor
     {
         SyntaxGenerator generator;
 
@@ -28,8 +28,9 @@ namespace Moq.Sdk
             => base.VisitCompilationUnit(node.AddUsings(UsingDirective(IdentifierName(typeof(LazyInitializer).Namespace))));
 
         public override SyntaxNode VisitClassDeclaration(ClassDeclarationSyntax node)
-            => generator.AddMembers(
+            => generator.InsertMembers(
                 base.VisitClassDeclaration(node),
+                1,
                 generator.FieldDeclaration(
                     "mock",
                     ParseTypeName(nameof(IMock))
