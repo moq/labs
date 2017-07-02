@@ -36,6 +36,12 @@ namespace Moq.Proxy
             // TODO: error handling
             => CreateHost(additionalGenerators.Select(x => Assembly.LoadFrom(x)).ToArray());
 
+        public const string ProxyNamespace = "Proxies";
+
+        public static string GetProxyName(ImmutableArray<ITypeSymbol> types) => string.Join("", types.Select(x => x.Name)) + "Proxy";
+
+        public static string GetProxyFullName(ImmutableArray<ITypeSymbol> types) => ProxyNamespace + "." + GetProxyName(types);
+
         /// <summary>
         /// Generates proxies by discovering proxy factory method invocations in the given 
         /// source documents.
@@ -189,15 +195,35 @@ namespace Moq.Proxy
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            var name = string.Join("", types.Select(x => x.Name)) + "Proxy";
-
             // NOTE: we append the additional interfaces *after* determining the proxy name, 
             // to avoid including them there.
             types = types.Concat(additionalInterfaces).ToImmutableArray();
-
-            var (baseType, interfaceTypes) = ValidateTypes(types);
             var generator = SyntaxGenerator.GetGenerator(project);
 
+            var (name, syntax) = CreateProxy(types, generator);
+
+            var services = workspace.Services.GetService<ICodeAnalysisServices>();
+            var code = syntax.NormalizeWhitespace().ToFullString();
+            var filePath = Path.GetTempFileName();
+#if DEBUG
+            File.WriteAllText(filePath, code);
+#endif
+
+            var document = workspace.AddDocument(DocumentInfo.Create(
+                DocumentId.CreateNewId(project.Id),
+                name,
+                filePath: filePath,
+                loader: TextLoader.From(TextAndVersion.Create(SourceText.From(code), VersionStamp.Create()))));
+
+            document = await ApplyVisitors(document, services, cancellationToken);
+
+            return document;
+        }
+
+        public static (string name, SyntaxNode syntax) CreateProxy(ImmutableArray<ITypeSymbol> types, SyntaxGenerator generator)
+        {
+            var name = GetProxyName(types);
+            var (baseType, interfaceTypes) = ValidateTypes(types);
             var syntax = generator.CompilationUnit(types
                 .Where(x => x.ContainingNamespace != null && x.ContainingNamespace.CanBeReferencedByName)
                 .Select(x => x.ContainingNamespace.ToDisplayString())
@@ -213,41 +239,43 @@ namespace Moq.Proxy
                 .Select(x => generator.NamespaceImportDeclaration(x))
                 .Concat(new[]
                 {
-                    generator.AddAttributes(
-                        generator.ClassDeclaration(name,
-                            accessibility: Accessibility.Public,
-                            modifiers: DeclarationModifiers.Partial,
-                            baseType: baseType == null ? null : generator.IdentifierName(baseType.Name),
-                            interfaceTypes: interfaceTypes.Select(x => generator.IdentifierName(x.Name))),
-                        generator.Attribute(nameof(CompilerGeneratedAttribute)))
+                    generator.NamespaceDeclaration(ProxyNamespace,
+                        generator.AddAttributes(
+                            generator.ClassDeclaration(name,
+                                accessibility: Accessibility.Public,
+                                modifiers: DeclarationModifiers.Partial,
+                                baseType: baseType == null ? null : generator.IdentifierName(baseType.Name),
+                                interfaceTypes: interfaceTypes.Select(x => generator.IdentifierName(x.Name))),
+                            generator.Attribute(nameof(CompilerGeneratedAttribute))
+                        )
+                    )
                 }));
 
-            var services = workspace.Services.GetService<ICodeAnalysisServices>();
-            var code = syntax.NormalizeWhitespace().ToFullString();
-            var filePath = Path.GetTempFileName();
-#if DEBUG
-            File.WriteAllText(filePath, code);
-#endif
+            return (name, syntax);
+        }
 
-            var document = workspace.AddDocument(DocumentInfo.Create(
-                DocumentId.CreateNewId(project.Id),
-                name,
-                filePath: filePath,
-                loader: TextLoader.From(TextAndVersion.Create(SourceText.From(code), VersionStamp.Create()))));
+        public static async Task<Document> ApplyVisitors(Document document, ICodeAnalysisServices services, CancellationToken cancellationToken)
+        {
+            var language = document.Project.Language;
+            var prepares = services.GetLanguageServices<IDocumentVisitor>(language, DocumentVisitorLayer.Prepare).ToArray();
+            foreach (var prepare in prepares)
+            {
+                document = await prepare.VisitAsync(document, cancellationToken);
+            }
 
-            var scaffolds = services.GetLanguageServices<IDocumentVisitor>(project.Language, DocumentVisitorLayer.Scaffold).ToArray();
+            var scaffolds = services.GetLanguageServices<IDocumentVisitor>(language, DocumentVisitorLayer.Scaffold).ToArray();
             foreach (var scaffold in scaffolds)
             {
                 document = await scaffold.VisitAsync(document, cancellationToken);
             }
 
-            var rewriters = services.GetLanguageServices<IDocumentVisitor>(project.Language, DocumentVisitorLayer.Rewrite).ToArray();
+            var rewriters = services.GetLanguageServices<IDocumentVisitor>(language, DocumentVisitorLayer.Rewrite).ToArray();
             foreach (var rewriter in rewriters)
             {
                 document = await rewriter.VisitAsync(document, cancellationToken);
             }
 
-            var fixups = services.GetLanguageServices<IDocumentVisitor>(project.Language, DocumentVisitorLayer.Fixup).ToArray();
+            var fixups = services.GetLanguageServices<IDocumentVisitor>(language, DocumentVisitorLayer.Fixup).ToArray();
             foreach (var fixup in fixups)
             {
                 document = await fixup.VisitAsync(document, cancellationToken);
@@ -256,7 +284,7 @@ namespace Moq.Proxy
             return document;
         }
 
-        (ITypeSymbol baseType, ImmutableArray<ITypeSymbol> interfaceTypes) ValidateTypes(ImmutableArray<ITypeSymbol> types)
+        static (ITypeSymbol baseType, ImmutableArray<ITypeSymbol> interfaceTypes) ValidateTypes(ImmutableArray<ITypeSymbol> types)
         {
             var baseType = default(ITypeSymbol);
             var interfaceTypes = default(ImmutableArray<ITypeSymbol>);

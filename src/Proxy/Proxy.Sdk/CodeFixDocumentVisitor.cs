@@ -7,15 +7,15 @@ using Microsoft.CodeAnalysis.Host;
 
 namespace Moq.Proxy
 {
-    abstract class CodeFixDocumentVisitor : IDocumentVisitor
+    public abstract class CodeFixDocumentVisitor : IDocumentVisitor
     {
         ICodeFixService codeFixService;
         string[] codeFixNames;
 
         protected CodeFixDocumentVisitor(ICodeAnalysisServices services, params string[] codeFixes)
         {
-            this.codeFixService = services.GetWorkspaceService<ICodeFixService>();
-            this.codeFixNames = codeFixes;
+            codeFixService = services.GetWorkspaceService<ICodeFixService>();
+            codeFixNames = codeFixes;
         }
 
         public async Task<Document> VisitAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))

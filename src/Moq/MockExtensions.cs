@@ -21,14 +21,34 @@ namespace Moq
 
                 mock.Invocations.Remove(setup.Invocation);
                 var behavior = mock.BehaviorFor(setup);
-                behavior.Behaviors.Add(new InvocationBehavior(
-                    (mi, next) =>
-                    {
-                        callback();
-                        return next()(mi, next);
-                    },
-                    "Callback")
-               );
+
+                // If there is already a behavior wrap it instead, 
+                // so we can do a callback after even if it's a 
+                // shortcircuiting one like Returns.
+                if (behavior.Behaviors.Count > 0)
+                {
+                    var wrapped = behavior.Behaviors.Pop();
+                    behavior.Behaviors.Add(new InvocationBehavior(
+                        (mi, next) =>
+                        {
+                            var result = next()(mi, next);
+                            callback();
+                            return result;
+                        },
+                        "Callback")
+                   );
+                }
+                else
+                {
+                    behavior.Behaviors.Add(new InvocationBehavior(
+                        (mi, next) =>
+                        {
+                            callback();
+                            return next()(mi, next);
+                        },
+                        "Callback")
+                   );
+                }
             }
 
             return target;

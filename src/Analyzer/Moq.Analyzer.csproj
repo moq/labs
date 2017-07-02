@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
 	<PropertyGroup>
 		<TargetFramework>net461</TargetFramework>
-		<RootNamespace>Moq.Proxy</RootNamespace>
 		<IncludeRoslyn>true</IncludeRoslyn>
 	</PropertyGroup>
 
@@ -15,8 +15,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Proxy.Sdk\Moq.Proxy.Sdk.csproj" />
-		<ProjectReference Include="..\Proxy\Moq.Proxy.csproj" />
+		<ProjectReference Include="..\Proxy\Proxy.Generator\Moq.Proxy.Generator.csproj" />
+		<ProjectReference Include="..\Proxy\Proxy\Moq.Proxy.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -24,12 +24,6 @@
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>
 			<DependentUpon>Resources.resx</DependentUpon>
-		</Compile>
-		<Compile Update="Scaffold\OverrideVirtualMembers.CSharp.cs">
-			<DependentUpon>OverrideVirtualMembers.cs</DependentUpon>
-		</Compile>
-		<Compile Update="Scaffold\OverrideVirtualMembers.VisualBasic.cs">
-			<DependentUpon>OverrideVirtualMembers.cs</DependentUpon>
 		</Compile>
 	</ItemGroup>
 

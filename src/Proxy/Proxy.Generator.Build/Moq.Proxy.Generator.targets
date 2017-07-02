@@ -48,7 +48,7 @@
 						 AdditionalProxies="@(AdditionalProxyForType)"
 						 AdditionalGenerators="@(AdditionalProxyGenerator)"
 						 ToolPath="$(PGenPath)"
-             Debug="$(DebugPGen)"/>
+						 Debug="$(DebugPGen)"/>
   </Target>
 
   <Target Name="_IncludeProxies">

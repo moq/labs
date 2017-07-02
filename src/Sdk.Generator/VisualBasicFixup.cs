@@ -11,7 +11,7 @@ using static Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory;
 namespace Moq.Sdk
 {
     [ExportLanguageService(typeof(IDocumentVisitor), LanguageNames.VisualBasic, DocumentVisitorLayer.Fixup)]
-    public class VisualBasicMockGenerator : VisualBasicSyntaxRewriter, IDocumentVisitor
+    public class VisualBasicFixup : VisualBasicSyntaxRewriter, IDocumentVisitor
     {
         SyntaxGenerator generator;
 
@@ -30,8 +30,9 @@ namespace Moq.Sdk
                     SimpleImportsClause(IdentifierName(typeof(LazyInitializer).Namespace))))));
 
         public override SyntaxNode VisitClassBlock(ClassBlockSyntax node)
-            => generator.AddMembers(
+            => generator.InsertMembers(
                 base.VisitClassBlock(node),
+                1,
                 generator.FieldDeclaration(
                     "_mock",
                     ParseTypeName(nameof(IMock))

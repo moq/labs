@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
+	<Metadata>
+		<Identity Id="Moq" Version="1.0" Language="en-US" Publisher="kzu" />
+		<DisplayName>Moq</DisplayName>
+		<Description xml:space="preserve">Provides analyzers and code fixes for Moq.</Description>
+	</Metadata>
+	<Installation>
+		<InstallationTarget Version="[14.0,)" Id="Microsoft.VisualStudio.Community" />
+	</Installation>
+	<Assets>
+		<Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="File" Path="Roslyn.Services.Editor.UnitTests.dll" />
+		<Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="File" Path="Moq.Proxy.Generator.dll"/>
+		<Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="File" Path="Moq.Sdk.Generator.dll"/>
+		<Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="File" Path="Moq.Analyzer.dll"/>
+		<Asset Type="Microsoft.VisualStudio.Analyzer" d:Source="File" Path="Moq.Analyzer.dll"/>
+		<!--<Asset Type="Microsoft.VisualStudio.Analyzer" d:Source="File" Path="Roslyn.Services.Editor.UnitTests.dll" />-->
+		<!--<Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="File" Path="BindingRedirects.pkgdef" />-->
+	</Assets>
+	<Prerequisites>
+		<Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0,)" DisplayName="Visual Studio core editor" />
+		<Prerequisite Id="Microsoft.VisualStudio.Component.Roslyn.LanguageServices" Version="[15.0,)" DisplayName="Roslyn Language Services" />
+	</Prerequisites>
+</PackageManifest>

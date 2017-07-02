@@ -35,7 +35,7 @@ namespace Moq.Sdk.Tests
                 References = ReferencePaths.Paths
                     .Concat(new[] { typeof(GeneratorTests).Assembly.ManifestModule.FullyQualifiedName })
                     .Select(x => new MSBuild.TaskItem(x)).ToArray(),
-                AdditionalGenerators = new[] { new MSBuild.TaskItem(typeof(CSharpMockGenerator).Assembly.ManifestModule.FullyQualifiedName) },
+                AdditionalGenerators = new[] { new MSBuild.TaskItem(typeof(CSharpPrepare).Assembly.ManifestModule.FullyQualifiedName) },
                 AdditionalInterfaces = new[] { new MSBuild.TaskItem(typeof(IMocked).FullName) },
                 AdditionalProxies = new[] { new MSBuild.TaskItem(typeof(ICalculator).FullName) },
             };

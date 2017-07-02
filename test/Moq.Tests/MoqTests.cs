@@ -171,7 +171,7 @@ namespace Moq.Tests
 
             calculator.Add(2, 2);
 
-            Assert.False(called);
+            Assert.True(called);
         }
     }
 }
