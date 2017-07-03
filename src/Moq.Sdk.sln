@@ -25,13 +25,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Analyzer.Vsix", "Analyz
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{072E955D-AE09-41B0-810C-7A005CF276CA}"
 	ProjectSection(SolutionItems) = preProject
+		..\appveyor.yml = ..\appveyor.yml
+		..\build.cmd = ..\build.cmd
+		..\build.proj = ..\build.proj
 		Directory.Build.props = Directory.Build.props
 		Directory.Build.targets = Directory.Build.targets
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Proxy.Generator.Console", "Proxy\Proxy.Generator.Console\Moq.Proxy.Generator.Console.csproj", "{886905FA-99B0-48E8-BD3E-6C6ED96CE69F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moq.Proxy.Sdk", "Proxy\Proxy.Sdk\Moq.Proxy.Sdk.csproj", "{8E379F7D-D919-4104-AB74-B5C071EBD0A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Proxy.Sdk", "Proxy\Proxy.Sdk\Moq.Proxy.Sdk.csproj", "{8E379F7D-D919-4104-AB74-B5C071EBD0A4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Sdk.Generator", "Sdk.Generator\Moq.Sdk.Generator.csproj", "{00D2D86C-1B49-4E6A-A659-30DBC01F9761}"
 EndProject
