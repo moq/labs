@@ -19,7 +19,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.VSSDK.BuildTools" Version="15.1.192" />
-		<PackageReference Include="Xamarin.VSSDK.BuildTools" Version="0.2.1-pre-build0027" />
+		<PackageReference Include="Xamarin.VSSDK.BuildTools" Version="0.2.1-alpha-build0001" />
 		<PackageReference Include="Roslynator" Version="0.2.3" />
 	</ItemGroup>
 
