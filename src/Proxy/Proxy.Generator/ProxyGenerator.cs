@@ -246,7 +246,7 @@ namespace Moq.Proxy
                                 modifiers: DeclarationModifiers.Partial,
                                 baseType: baseType == null ? null : generator.IdentifierName(baseType.Name),
                                 interfaceTypes: interfaceTypes.Select(x => generator.IdentifierName(x.Name))),
-                            generator.Attribute(nameof(CompilerGeneratedAttribute))
+                            generator.Attribute("CompilerGenerated")
                         )
                     )
                 }));
@@ -256,6 +256,11 @@ namespace Moq.Proxy
 
         public static async Task<Document> ApplyVisitors(Document document, ICodeAnalysisServices services, CancellationToken cancellationToken)
         {
+#if DEBUG
+            if (Debugger.IsAttached)
+                cancellationToken = CancellationToken.None;
+#endif
+
             var language = document.Project.Language;
             var prepares = services.GetLanguageServices<IDocumentVisitor>(language, DocumentVisitorLayer.Prepare).ToArray();
             foreach (var prepare in prepares)
