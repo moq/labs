@@ -13,4 +13,17 @@
 		</ItemGroup>
 	</Target>
 
+	<!-- Additional items we don't want XVS to ship at all -->
+	<Target Name="ExcludeVisualStudioAssemblies"
+			DependsOnTargets="GetVsixSourceItems"
+			BeforeTargets="RemoveVSSDKAssemblies"
+			Condition="'$(IncludeCopyLocalReferencesInVSIXContainer)' == 'true'">
+		<ItemGroup>
+			<SuppressPackaging Include="@(VSIXSourceItem)"
+							   Condition=" $([System.String]::new('%(Filename)').StartsWith('Microsoft.VisualStudio')) " />
+			<SuppressPackaging Include="@(VSIXSourceItem)"
+							   Condition=" $([System.String]::new('%(Filename)').StartsWith('System.')) " />
+		</ItemGroup>
+	</Target>
+
 </Project>

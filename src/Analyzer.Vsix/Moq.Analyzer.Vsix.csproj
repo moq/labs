@@ -13,12 +13,22 @@
 		<CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
 		<VSSDKTargetPlatformRegRootSuffix>Moq</VSSDKTargetPlatformRegRootSuffix>
 		
-		<TargetVsixContainerName>Moq.Analyzer.vsix</TargetVsixContainerName>
+		<TargetVsixContainerName>Moq.vsix</TargetVsixContainerName>
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.VSSDK.BuildTools" Version="15.1.192" />
+	  <Content Include="Properties\launchSettings.json" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="BindingRedirects.targets" />
+	  <None Include="Moq.Analyzer.Vsix.targets" />
+	  <None Include="source.extension.vsixmanifest" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.VSSDK.BuildTools" Version="15.1.192" Condition="'$(BuildingInsideVisualStudio)' != 'true'" />
 		<PackageReference Include="Xamarin.VSSDK.BuildTools" Version="0.2.1-alpha-build0001" />
 		<PackageReference Include="Roslynator" Version="0.2.3" />
 	</ItemGroup>

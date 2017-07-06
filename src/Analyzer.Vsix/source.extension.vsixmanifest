@@ -14,7 +14,6 @@
 		<Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="File" Path="Moq.Sdk.Generator.dll"/>
 		<Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="File" Path="Moq.Analyzer.dll"/>
 		<Asset Type="Microsoft.VisualStudio.Analyzer" d:Source="File" Path="Moq.Analyzer.dll"/>
-		<!--<Asset Type="Microsoft.VisualStudio.Analyzer" d:Source="File" Path="Roslyn.Services.Editor.UnitTests.dll" />-->
 		<!--<Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="File" Path="BindingRedirects.pkgdef" />-->
 	</Assets>
 	<Prerequisites>
