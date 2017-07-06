@@ -6,23 +6,18 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CodeActions;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Host;
 using System.IO;
 using Microsoft.CodeAnalysis.Text;
 using Moq.Analyzer.Properties;
 using Moq.Proxy;
 using Microsoft.CodeAnalysis.Editing;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis.Simplification;
+using Microsoft.CodeAnalysis.Formatting;
 
 namespace Moq.Analyzer
 {
-    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(MissingProxyCodeFix)), Shared]
+    [ExportCodeFixProvider(LanguageNames.CSharp, new [] { LanguageNames.VisualBasic }, Name = nameof(MissingProxyCodeFix)), Shared]
     public class MissingProxyCodeFix : CodeFixProvider
     {
         ICodeAnalysisServices analysisServices;
@@ -47,10 +42,12 @@ namespace Moq.Analyzer
             var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
 
             var diagnostic = context.Diagnostics.First();
-            var diagnosticSpan = diagnostic.Location.SourceSpan;
+            var sourceToken = root.FindToken(diagnostic.Location.SourceSpan.Start);
 
             // Find the invocation identified by the diagnostic.
-            var invocation = root.FindToken(diagnosticSpan.Start).Parent.AncestorsAndSelf().OfType<InvocationExpressionSyntax>().First();
+            var invocation = 
+                (SyntaxNode)sourceToken.Parent.AncestorsAndSelf().OfType<Microsoft.CodeAnalysis.CSharp.Syntax.InvocationExpressionSyntax>().FirstOrDefault() ??
+                (SyntaxNode)sourceToken.Parent.AncestorsAndSelf().OfType<Microsoft.CodeAnalysis.VisualBasic.Syntax.InvocationExpressionSyntax>().FirstOrDefault();
 
             // Register a code action that will invoke the fix.
             context.RegisterCodeFix(
@@ -61,7 +58,7 @@ namespace Moq.Analyzer
                 diagnostic);
         }
 
-        async Task<Solution> GenerateProxyAsync(Document document, InvocationExpressionSyntax invocation, CancellationToken cancellationToken)
+        async Task<Solution> GenerateProxyAsync(Document document, SyntaxNode invocation, CancellationToken cancellationToken)
         {
             var semanticModel = await document.GetSemanticModelAsync(cancellationToken);
             var symbol = semanticModel.GetSymbolInfo(invocation);
@@ -73,32 +70,47 @@ namespace Moq.Analyzer
                 var (name, syntax) = ProxyGenerator.CreateProxy(method.TypeArguments, generator);
 
                 var code = syntax.NormalizeWhitespace().ToFullString();
+                var workspace = document.Project.Solution.Workspace;
 
-                var workspace = new AdhocWorkspace(document.Project.Solution.Workspace.Services.HostServices, "Proxy");
-                var info = ProjectInfo.Create(
-                    ProjectId.CreateNewId(),
+                var projectId = ProjectId.CreateNewId();
+                var solution = workspace.CurrentSolution.AddProject(ProjectInfo.Create(
+                    projectId,
                     VersionStamp.Create(),
                     "Proxy",
                     "Proxy",
                     document.Project.Language,
                     compilationOptions: document.Project.CompilationOptions,
                     parseOptions: document.Project.ParseOptions,
-                    metadataReferences: document.Project.MetadataReferences);
-                var project = workspace.AddProject(info);
-                var file = Path.Combine(Path.GetDirectoryName(document.Project.FilePath), ProxyGenerator.ProxyNamespace, name + ".cs");
-                var proxy = project.AddDocument(Path.GetFileName(file),
-                    SourceText.From(code),
-                    new[] { "Proxies" },
-                    file);
+                    documents: document.Project.Documents
+                        .Where(d => d.Id != document.Id)
+                        .Select(d => DocumentInfo.Create(
+                            DocumentId.CreateNewId(projectId), d.Name, d.Folders, d.SourceCodeKind, filePath: d.FilePath)),
+                    projectReferences: document.Project.ProjectReferences,
+                    metadataReferences: document.Project.MetadataReferences));
+
+                var extension = document.Project.Language == LanguageNames.CSharp ? ".cs" : ".vb";
+                var file = Path.Combine(Path.GetDirectoryName(document.Project.FilePath), ProxyGenerator.ProxyNamespace, name + extension);
+                var docId = DocumentId.CreateNewId(projectId);
+                solution = solution.AddDocument(DocumentInfo.Create(
+                    docId,
+                    Path.GetFileName(file),
+                    filePath: file,
+                    folders: new[] { "Proxies" },
+                    loader: TextLoader.From(TextAndVersion.Create(SourceText.From(code), VersionStamp.Create()))));
+
+                var proxy = solution.GetDocument(docId);
 
                 proxy = await ProxyGenerator.ApplyVisitors(proxy, analysisServices, cancellationToken);
+                // This is somewhat expensive, but since we're adding it to the user' solution, we might 
+                // as well make it look great ;)
                 proxy = await Simplifier.ReduceAsync(proxy);
+                proxy = await Formatter.FormatAsync(proxy);
                 syntax = await proxy.GetSyntaxRootAsync();
 
-                var output = syntax.NormalizeWhitespace().ToFullString();
+                code = syntax.NormalizeWhitespace().ToFullString();
 
                 return document.Project.AddDocument(Path.GetFileName(file),
-                    output,
+                    code,
                     new[] { "Proxies" },
                     file)
                     .Project.Solution;

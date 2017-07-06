@@ -33,6 +33,11 @@ namespace Moq.Proxy.Rewrite
             return document.WithSyntaxRoot(syntax);
         }
 
+        // The namespace for the proxy should be global, just like C#
+        public override SyntaxNode VisitNamespaceStatement(NamespaceStatementSyntax node)
+            =>  base.VisitNamespaceStatement(node.WithName(ParseName("Global." + ProxyGenerator.ProxyNamespace)));
+
+
         public override SyntaxNode VisitClassBlock(ClassBlockSyntax node)
         {
             // Turn event fields into event declarations.
@@ -68,10 +73,9 @@ namespace Moq.Proxy.Rewrite
                 });
             }
 
-            node = (ClassBlockSyntax)base.VisitClassBlock(node);
-
-            // Add the IProxy implementation last so it's not visited.
-            node = node.AddImplements(ImplementsStatement(IdentifierName(nameof(IProxy))));
+            node = (ClassBlockSyntax)generator.AddInterfaceType(
+                base.VisitClassBlock(node),
+                generator.IdentifierName(nameof(IProxy)));
 
             var field = generator.FieldDeclaration(
                     "pipeline",
@@ -94,7 +98,7 @@ namespace Moq.Proxy.Rewrite
                 property.PropertyStatement.WithImplementsClause(
                     ImplementsClause(QualifiedName(IdentifierName(nameof(IProxy)), IdentifierName(nameof(IProxy.Behaviors))))));
 
-            return generator.InsertMembers(node, 0, field, property);
+            return generator.AddMembers(node, field, property);
         }
 
         public override SyntaxNode VisitMethodBlock(MethodBlockSyntax node)
