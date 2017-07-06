@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Composition;
 using System.Linq;
 using System.Threading;
@@ -44,15 +45,23 @@ namespace Moq.Proxy.Rewrite
                     .WithModifiers(x.Modifiers))
                 .ToArray());
 
+                        
             node = (ClassDeclarationSyntax)base.VisitClassDeclaration(node);
-
-            // Add the IProxy implementation last so it's not visited.
             node = node.AddBaseListTypes(SimpleBaseType(IdentifierName(nameof(IProxy))));
-            node = (ClassDeclarationSyntax)generator.InsertMembers(node, 0,
+
+            node = (ClassDeclarationSyntax)generator.AddMembers(node, 
                 generator.FieldDeclaration(
                     "pipeline",
                     generator.IdentifierName(nameof(BehaviorPipeline)),
-                    initializer: generator.ObjectCreationExpression(generator.IdentifierName(nameof(BehaviorPipeline)))));
+                    initializer: generator.ObjectCreationExpression(generator.IdentifierName(nameof(BehaviorPipeline))))
+                // #region IProxy
+                .WithLeadingTrivia(
+                    Whitespace(Environment.NewLine),
+                    Trivia(RegionDirectiveTrivia(false).WithEndOfDirectiveToken(
+                        Token(TriviaList(PreprocessingMessage(nameof(IProxy))), 
+                        SyntaxKind.EndOfDirectiveToken, 
+                        TriviaList()))),
+                    Whitespace(Environment.NewLine)));
 
             node = node.AddMembers(PropertyDeclaration(
                 GenericName(Identifier("IList"), TypeArgumentList(SingletonSeparatedList<TypeSyntax>(IdentifierName(nameof(IProxyBehavior))))),
@@ -63,7 +72,11 @@ namespace Moq.Proxy.Rewrite
                         SyntaxKind.SimpleMemberAccessExpression,
                         IdentifierName("pipeline"),
                         IdentifierName("Behaviors"))))
-                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)));
+                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
+                // #endregion
+                .WithTrailingTrivia(TriviaList(
+                    Whitespace(Environment.NewLine),
+                    Trivia(EndRegionDirectiveTrivia(false)))));
 
             return node;
         }
