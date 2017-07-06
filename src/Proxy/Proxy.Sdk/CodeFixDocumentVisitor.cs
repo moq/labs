@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Host;
 
@@ -20,8 +21,6 @@ namespace Moq.Proxy
 
         public async Task<Document> VisitAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var workspace = document.Project.Solution.Workspace;
-
             foreach (var codeFixName in codeFixNames)
             {
                 // If we request and process ALL codefixes at once, we'll get one for each 
@@ -32,23 +31,19 @@ namespace Moq.Proxy
                 var codeFixes = await codeFixService.GetCodeFixes(document, codeFixName, cancellationToken);
                 while (codeFixes.Length != 0)
                 {
-                    // We first try to apply all codefixes that don't involve our IProxy interface.
-                    var codeFix = codeFixes.FirstOrDefault(x
-                        => !x.Diagnostics.Any(d
-                            => d.GetMessage().Contains(nameof(IProxy))));
-
-                    if (codeFix == null)
+                    var operations = await codeFixes[0].Action.GetOperationsAsync(cancellationToken);
+                    ApplyChangesOperation operation;
+                    if ((operation = operations.OfType<ApplyChangesOperation>().FirstOrDefault()) != null)
                     {
-                        // We have at least one codeFix for IProxy, pick last instance, which would be 
-                        // the explicit implementation one.
-                        codeFix = codeFixes.Last();
+                        document = operation.ChangedSolution.GetDocument(document.Id);
+                        // Retrieve the codefixes for the updated doc again.
+                        codeFixes = await codeFixService.GetCodeFixes(document, codeFixName, cancellationToken);
                     }
-
-                    await codeFix.ApplyAsync(workspace, cancellationToken);
-                    // Retrieve the updated document for the next pass.
-                    document = workspace.CurrentSolution.GetDocument(document.Id);
-                    // Retrieve the codefixes for the updated doc again.
-                    codeFixes = await codeFixService.GetCodeFixes(document, codeFixName, cancellationToken);
+                    else
+                    {
+                        // If we got no applicable code fixes, exit the loop and move on to the next codefix.
+                        break;
+                    }
                 }
             }
 
