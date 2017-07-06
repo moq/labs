@@ -40,7 +40,7 @@ namespace Moq.Analyzer
         public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context)
         {
             var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
-
+            
             var diagnostic = context.Diagnostics.First();
             var sourceToken = root.FindToken(diagnostic.Location.SourceSpan.Start);
 
@@ -81,15 +81,26 @@ namespace Moq.Analyzer
                     document.Project.Language,
                     compilationOptions: document.Project.CompilationOptions,
                     parseOptions: document.Project.ParseOptions,
-                    documents: document.Project.Documents
-                        .Where(d => d.Id != document.Id)
-                        .Select(d => DocumentInfo.Create(
-                            DocumentId.CreateNewId(projectId), d.Name, d.Folders, d.SourceCodeKind, filePath: d.FilePath)),
                     projectReferences: document.Project.ProjectReferences,
                     metadataReferences: document.Project.MetadataReferences));
 
+                // Add the current project's output assembly if it exists, otherwise, all its source docs
+                if (document.Project.OutputFilePath == null || !File.Exists(document.Project.OutputFilePath))
+                {
+                    foreach (var doc in document.Project.Documents.Where(d => d.Id != document.Id))
+                    {
+                        solution = solution.AddDocument(DocumentInfo.Create(
+                            DocumentId.CreateNewId(projectId), doc.Name, doc.Folders, doc.SourceCodeKind, filePath: doc.FilePath));
+                    }
+                }
+                else
+                {
+                    solution = solution.GetProject(projectId)
+                        .AddMetadataReference(MetadataReference.CreateFromFile(document.Project.OutputFilePath)).Solution;
+                }
+
                 var extension = document.Project.Language == LanguageNames.CSharp ? ".cs" : ".vb";
-                var file = Path.Combine(Path.GetDirectoryName(document.Project.FilePath), ProxyGenerator.ProxyNamespace, name + extension);
+                var file = Path.Combine(Path.GetDirectoryName(document.Project.FilePath), ProxyFactory.ProxyNamespace, name + extension);
                 var docId = DocumentId.CreateNewId(projectId);
                 solution = solution.AddDocument(DocumentInfo.Create(
                     docId,

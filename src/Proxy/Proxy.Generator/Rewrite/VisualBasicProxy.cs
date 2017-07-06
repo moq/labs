@@ -35,7 +35,7 @@ namespace Moq.Proxy.Rewrite
 
         // The namespace for the proxy should be global, just like C#
         public override SyntaxNode VisitNamespaceStatement(NamespaceStatementSyntax node)
-            =>  base.VisitNamespaceStatement(node.WithName(ParseName("Global." + ProxyGenerator.ProxyNamespace)));
+            =>  base.VisitNamespaceStatement(node.WithName(ParseName("Global." + ProxyFactory.ProxyNamespace)));
 
 
         public override SyntaxNode VisitClassBlock(ClassBlockSyntax node)

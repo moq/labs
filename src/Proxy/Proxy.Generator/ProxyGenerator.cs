@@ -36,11 +36,9 @@ namespace Moq.Proxy
             // TODO: error handling
             => CreateHost(additionalGenerators.Select(x => Assembly.LoadFrom(x)).ToArray());
 
-        public const string ProxyNamespace = "Proxies";
-
         public static string GetProxyName(ImmutableArray<ITypeSymbol> types) => string.Join("", types.Select(x => x.Name)) + "Proxy";
 
-        public static string GetProxyFullName(ImmutableArray<ITypeSymbol> types) => ProxyNamespace + "." + GetProxyName(types);
+        public static string GetProxyFullName(ImmutableArray<ITypeSymbol> types) => ProxyFactory.ProxyNamespace + "." + GetProxyName(types);
 
         /// <summary>
         /// Generates proxies by discovering proxy factory method invocations in the given 
@@ -239,7 +237,7 @@ namespace Moq.Proxy
                 .Select(x => generator.NamespaceImportDeclaration(x))
                 .Concat(new[]
                 {
-                    generator.NamespaceDeclaration(ProxyNamespace,
+                    generator.NamespaceDeclaration(ProxyFactory.ProxyNamespace,
                         generator.AddAttributes(
                             generator.ClassDeclaration(name,
                                 accessibility: Accessibility.Public,
