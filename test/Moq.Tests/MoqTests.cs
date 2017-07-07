@@ -148,7 +148,8 @@ namespace Moq.Tests
             calculator.Add(Any<int>(), Any<int>())
                 .Callback(() => called1 = true)
                 .Callback(() => called2 = true)
-                .Returns((int x, int y) => x + y);
+                .Returns((int x, int y) => x + y)
+                ;
 
             calculator.Add(2, 2);
 
@@ -157,7 +158,7 @@ namespace Moq.Tests
         }
 
         [Fact]
-        public void CannotInvokeCallbackAfterReturn()
+        public void CanInvokeCallbackAfterReturn()
         {
             var calculator = Mock.Of<ICalculator>();
             var called = false;

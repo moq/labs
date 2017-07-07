@@ -31,10 +31,28 @@ namespace Moq
                     behavior.Behaviors.Add(new InvocationBehavior(
                         (mi, next) =>
                         {
-                            var result = next()(mi, next);
-                            callback();
+                            // If the wrapped target does not invoke the next 
+                            // behavior (us), then we invoke the callback explicitly.
+                            var called = false;
+
+                            // Note we're tweaking the GetNextBehavior to always 
+                            // call us, before invoking the actual next behavior.
+                            var result = wrapped.Invoke(mi, () => (_, __) =>
+                            {
+                                callback();
+                                called = true;
+                                return next()(mi, next);
+                            });
+
+                            // The Returns behavior does not invoke the GetNextBehavior, 
+                            // and therefore we won't have been called in that case, 
+                            // so call the callback before returning.
+                            if (!called)
+                                callback();
+
                             return result;
-                        },
+                        }
+                        ,
                         "Callback")
                    );
                 }
