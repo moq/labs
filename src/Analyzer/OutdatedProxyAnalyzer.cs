@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -6,16 +6,16 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using Moq.Analyzer.Properties;
 using Moq.Proxy;
 
-namespace Moq.Analyzer 
+namespace Moq.Analyzer
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
-    public class MissingProxyAnalyzer : DiagnosticAnalyzer
+    public class OutdatedProxyAnalyzer : DiagnosticAnalyzer
     {
-        public const string DiagnosticId = "MOQ001";
+        public const string DiagnosticId = "MOQ002";
 
-        static readonly LocalizableString Title = new LocalizableResourceString(nameof(Resources.MissingProxyAnalyzer_Title), Resources.ResourceManager, typeof(Resources));
-        static readonly LocalizableString Description = new LocalizableResourceString(nameof(Resources.MissingProxyAnalyzer_Description), Resources.ResourceManager, typeof(Resources));
-        static readonly LocalizableString MessageFormat = new LocalizableResourceString(nameof(Resources.MissingProxyAnalyzer_Message), Resources.ResourceManager, typeof(Resources));
+        static readonly LocalizableString Title = new LocalizableResourceString(nameof(Resources.OutdatedProxyAnalyzer_Title), Resources.ResourceManager, typeof(Resources));
+        static readonly LocalizableString Description = new LocalizableResourceString(nameof(Resources.OutdatedProxyAnalyzer_Description), Resources.ResourceManager, typeof(Resources));
+        static readonly LocalizableString MessageFormat = new LocalizableResourceString(nameof(Resources.OutdatedProxyAnalyzer_Message), Resources.ResourceManager, typeof(Resources));
 
         const string Category = "Build";
 
@@ -29,15 +29,12 @@ namespace Moq.Analyzer
             context.RegisterSyntaxNodeAction(AnalyzeSyntaxNode, Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.InvocationExpression);
         }
 
-        static void AnalyzeSyntaxNode(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeSyntaxNode(SyntaxNodeAnalysisContext context)
         {
-            var generator = context.Compilation.GetTypeByMetadataName(typeof(ProxyGeneratorAttribute).FullName);
-            if (generator == null)
-                return;
-
             var symbol = context.Compilation.GetSemanticModel(context.Node.SyntaxTree).GetSymbolInfo(context.Node);
             if (symbol.Symbol?.Kind == SymbolKind.Method)
             {
+                var generator = context.Compilation.GetTypeByMetadataName(typeof(ProxyGeneratorAttribute).FullName);
                 var method = (IMethodSymbol)symbol.Symbol;
                 if (method.GetAttributes().Any(x => x.AttributeClass == generator) &&
                     // Skip generic method definitions since they are typically usability overloads 
@@ -48,13 +45,25 @@ namespace Moq.Analyzer
 
                     // See if the proxy already exists
                     var proxy = context.Compilation.GetTypeByMetadataName(name);
-                    if (proxy == null)
+                    if (proxy != null)
                     {
-                        var diagnostic = Diagnostic.Create(Rule, context.Node.GetLocation(), 
-                            new [] { new KeyValuePair<string, string>("Name", name) }.ToImmutableDictionary(),
-                            name);
+                        // See if the symbol has any diagnostics associated
+                        var diag = context.Compilation.GetDiagnostics();
+                        var proxyPath = proxy.Locations[0].GetLineSpan().Path;
 
-                        context.ReportDiagnostic(diagnostic);
+                        Func<Location, bool> isProxyLoc = (loc) => loc.IsInSource && loc.GetLineSpan().Path == proxyPath;
+
+                        var proxyDiag = diag
+                            .Where(d => isProxyLoc(d.Location) || d.AdditionalLocations.Any(a => isProxyLoc(a)))
+                            .Where(d => d.Id == "CS0535");
+
+                        if (proxyDiag.Any())
+                        {
+                            // If there are compilation errors, we should update the proxy.
+                            var diagnostic = Diagnostic.Create(Rule, context.Node.GetLocation(), name);
+
+                            context.ReportDiagnostic(diagnostic);
+                        }
                     }
                 }
             }

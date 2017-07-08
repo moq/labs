@@ -132,6 +132,15 @@
   <data name="MissingProxyCodeFix_Title" xml:space="preserve">
     <value>Generate Proxy</value>
   </data>
+  <data name="OutdatedProxyAnalyzer_Description" xml:space="preserve">
+    <value>Existing generated proxy is no longer up-to-date.</value>
+  </data>
+  <data name="OutdatedProxyAnalyzer_Message" xml:space="preserve">
+    <value>Proxy named '{0}' must be updated.</value>
+  </data>
+  <data name="OutdatedProxyAnalyzer_Title" xml:space="preserve">
+    <value>Proxy must be updated</value>
+  </data>
   <data name="WrongProxyBaseType" xml:space="preserve">
     <value>Only one base type can be specified for a proxy to generate and it must be the first type in the list. Invalid set of symbols: {0}.</value>
   </data>

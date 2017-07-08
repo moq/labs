@@ -40,12 +40,20 @@ namespace Moq.Sdk
                 generator.FieldDeclaration("mock", ParseTypeName(nameof(IMock)))
                 // #region IMocked
                 .WithLeadingTrivia(
-                    Whitespace(Environment.NewLine),
-                    Trivia(RegionDirectiveTrivia(false).WithEndOfDirectiveToken(
-                        Token(TriviaList(PreprocessingMessage(nameof(IMocked))),
-                        SyntaxKind.EndOfDirectiveToken,
-                        TriviaList()))),
-                    Whitespace(Environment.NewLine)));
+                    CarriageReturnLineFeed,
+                    Trivia(RegionDirectiveTrivia(true)
+                        .WithRegionKeyword(Token(
+                            TriviaList(),
+                            SyntaxKind.RegionKeyword,
+                            TriviaList(Space)))
+                        .WithEndOfDirectiveToken(Token(
+                            TriviaList(PreprocessingMessage(nameof(IMocked))),
+                            SyntaxKind.EndOfDirectiveToken,
+                            TriviaList(CarriageReturnLineFeed))
+                        )
+                    )
+                )
+            );
 
             var prop = PropertyDeclaration(IdentifierName(nameof(IMock)), nameof(IMocked.Mock))
                 // Make IMocked properties explicit.
@@ -77,10 +85,12 @@ namespace Moq.Sdk
                         }))
                     )
                 ))
-              // ; #endregion
-              .WithSemicolonToken(Token(TriviaList(), SyntaxKind.SemicolonToken, TriviaList(
-                  Whitespace(Environment.NewLine),
-                  Trivia(EndRegionDirectiveTrivia(false)))));
+              .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
+              // #endregion
+              .WithTrailingTrivia(
+                CarriageReturnLineFeed,
+                Trivia(EndRegionDirectiveTrivia(false)),
+                CarriageReturnLineFeed);
 
             result = generator.AddMembers(result, prop);
 
