@@ -28,7 +28,7 @@ namespace Moq.Proxy.Tests
         [InlineData(LanguageNames.CSharp)]
         [InlineData(LanguageNames.VisualBasic)]
         [Theory]
-        public async Task GeneratedProxyDoesNotContainAdditionalInterfaceInName(string languageName)
+        public async Task GeneratedProxyNameContainsAdditionalInterfaceInName(string languageName)
         {
             var compilation = await CanGenerateProxy(languageName, typeof(INotifyPropertyChanged), typeof(IDisposable));
             var assembly = compilation.Emit();
@@ -36,8 +36,8 @@ namespace Moq.Proxy.Tests
 
             Assert.NotNull(proxyType);
             Assert.True(typeof(IDisposable).IsAssignableFrom(proxyType));
-            Assert.False(proxyType.FullName.Contains(nameof(IDisposable)),
-                $"Generated proxy should not contain the additional type {nameof(IDisposable)} in its name.");
+            Assert.True(proxyType.FullName.Contains(nameof(IDisposable)),
+                $"Generated proxy should contain the additional type {nameof(IDisposable)} in its name.");
         }
 
         [InlineData(LanguageNames.CSharp)]
