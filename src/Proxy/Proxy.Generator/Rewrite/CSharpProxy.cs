@@ -45,25 +45,56 @@ namespace Moq.Proxy.Rewrite
                     .WithModifiers(x.Modifiers))
                 .ToArray());
 
-                        
             node = (ClassDeclarationSyntax)base.VisitClassDeclaration(node);
             node = node.AddBaseListTypes(SimpleBaseType(IdentifierName(nameof(IProxy))));
 
-            node = (ClassDeclarationSyntax)generator.AddMembers(node, 
-                generator.FieldDeclaration(
-                    "pipeline",
-                    generator.IdentifierName(nameof(BehaviorPipeline)),
-                    initializer: generator.ObjectCreationExpression(generator.IdentifierName(nameof(BehaviorPipeline))))
-                // #region IProxy
-                .WithLeadingTrivia(
-                    Whitespace(Environment.NewLine),
-                    Trivia(RegionDirectiveTrivia(false).WithEndOfDirectiveToken(
-                        Token(TriviaList(PreprocessingMessage(nameof(IProxy))), 
-                        SyntaxKind.EndOfDirectiveToken, 
-                        TriviaList()))),
-                    Whitespace(Environment.NewLine)));
-
-            node = node.AddMembers(PropertyDeclaration(
+            node = node.AddMembers(
+                FieldDeclaration(
+                    VariableDeclaration(
+                        IdentifierName(Identifier(
+                            TriviaList(
+                                CarriageReturnLineFeed,
+                                Trivia(RegionDirectiveTrivia(true)
+                                    .WithRegionKeyword(Token(
+                                        TriviaList(),
+                                        SyntaxKind.RegionKeyword,
+                                        TriviaList(Space)))
+                                    .WithEndOfDirectiveToken(Token(
+                                        TriviaList(PreprocessingMessage(nameof(IProxy))),
+                                        SyntaxKind.EndOfDirectiveToken,
+                                        TriviaList(CarriageReturnLineFeed))
+                                    )
+                                )
+                            ),
+                            nameof(BehaviorPipeline),
+                            TriviaList(Space)
+                        )
+                    )
+                )
+                .WithVariables(
+                    SingletonSeparatedList(
+                        VariableDeclarator(Identifier(
+                            TriviaList(),
+                            "pipeline",
+                            TriviaList(Space)))
+                        .WithInitializer(
+                            EqualsValueClause(
+                                ObjectCreationExpression(IdentifierName("BehaviorPipeline"))
+                                .WithNewKeyword(Token(
+                                    TriviaList(),
+                                    SyntaxKind.NewKeyword,
+                                    TriviaList(Space)))
+                                .WithArgumentList(ArgumentList()))
+                            .WithEqualsToken(Token(
+                                TriviaList(),
+                                SyntaxKind.EqualsToken,
+                                TriviaList(Space)))))))
+            .WithSemicolonToken(Token(
+                TriviaList(),
+                SyntaxKind.SemicolonToken,
+                TriviaList(LineFeed))
+            ),
+            PropertyDeclaration(
                 GenericName(Identifier("IList"), TypeArgumentList(SingletonSeparatedList<TypeSyntax>(IdentifierName(nameof(IProxyBehavior))))),
                 Identifier(nameof(IProxy.Behaviors)))
                 .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(IdentifierName(nameof(IProxy))))
@@ -72,11 +103,15 @@ namespace Moq.Proxy.Rewrite
                         SyntaxKind.SimpleMemberAccessExpression,
                         IdentifierName("pipeline"),
                         IdentifierName("Behaviors"))))
-                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
+                .WithSemicolonToken(Token(
+                    TriviaList(),
+                    SyntaxKind.SemicolonToken,
+                    TriviaList(CarriageReturnLineFeed)))
                 // #endregion
                 .WithTrailingTrivia(TriviaList(
-                    Whitespace(Environment.NewLine),
-                    Trivia(EndRegionDirectiveTrivia(false)))));
+                    CarriageReturnLineFeed,
+                    Trivia(EndRegionDirectiveTrivia(true)),
+                    CarriageReturnLineFeed)));
 
             return node;
         }

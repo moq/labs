@@ -19,7 +19,7 @@ namespace Moq.Analyzer.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -102,6 +102,33 @@ namespace Moq.Analyzer.Properties {
         internal static string MissingProxyCodeFix_Title {
             get {
                 return ResourceManager.GetString("MissingProxyCodeFix_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Existing generated proxy is no longer up-to-date..
+        /// </summary>
+        internal static string OutdatedProxyAnalyzer_Description {
+            get {
+                return ResourceManager.GetString("OutdatedProxyAnalyzer_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Proxy named &apos;{0}&apos; must be updated..
+        /// </summary>
+        internal static string OutdatedProxyAnalyzer_Message {
+            get {
+                return ResourceManager.GetString("OutdatedProxyAnalyzer_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Proxy must be updated.
+        /// </summary>
+        internal static string OutdatedProxyAnalyzer_Title {
+            get {
+                return ResourceManager.GetString("OutdatedProxyAnalyzer_Title", resourceCulture);
             }
         }
         
