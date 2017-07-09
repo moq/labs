@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Proxies;
 
-namespace Tests
+namespace Moq.Sdk.Tests
 {
     public class IntrospectionTests
     {
