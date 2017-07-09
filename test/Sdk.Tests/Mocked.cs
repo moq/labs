@@ -10,8 +10,8 @@ namespace Moq.Sdk.Tests
         IMock mock;
         ObservableCollection<IProxyBehavior> behaviors = new ObservableCollection<IProxyBehavior>();
 
-        public IMock Mock => LazyInitializer.EnsureInitialized(ref mock, () => new MockInfo(behaviors));
+        public IMock Mock => LazyInitializer.EnsureInitialized(ref mock, () => new MockInfo(this));
 
-        public IList<IProxyBehavior> Behaviors => behaviors;
+        public ObservableCollection<IProxyBehavior> Behaviors => behaviors;
     }
 }

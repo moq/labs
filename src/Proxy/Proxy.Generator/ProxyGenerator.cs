@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -228,7 +229,7 @@ namespace Moq.Proxy
                 .Concat(new[]
                 {
                     typeof(EventArgs).Namespace,
-                    typeof(IList<>).Namespace,
+                    typeof(ObservableCollection<>).Namespace,
                     typeof(MethodBase).Namespace,
                     typeof(IProxy).Namespace,
                     typeof(CompilerGeneratedAttribute).Namespace,

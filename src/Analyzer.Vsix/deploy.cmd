@@ -1,0 +1,1 @@
+msbuild /t:Build;QuickDeploy /p:TargetFramework=net462 && devenv /updateConfiguration /rootSuffix Moq && devenv /rootSuffix Moq

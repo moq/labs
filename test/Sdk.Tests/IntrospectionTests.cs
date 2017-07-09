@@ -14,9 +14,10 @@ namespace Moq.Sdk.Tests
         public void CanIntrospectMock()
         {
             var mock = new ICalculatorProxy();
+           
+            var info = ((IMocked)mock).Mock;
 
-            var info = ((Moq.Sdk.IMocked)mock).Mock;
-
+            //info.BehaviorFor
             //info.BehaviorFor()
 
         }

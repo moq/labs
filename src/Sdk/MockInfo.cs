@@ -9,21 +9,21 @@ using Moq.Proxy;
 namespace Moq.Sdk
 {
     /// <summary>
-    /// Default implementation of <see cref="IMock"/> for inspecting 
-    /// a mock.
+    /// Default implementation of the mock introspection API <see cref="IMock"/>
     /// </summary>
     public class MockInfo : IMock
     {
+        IProxy proxy;
         ConcurrentDictionary<IMockSetup, IMockBehavior> setupBehaviorMap = new ConcurrentDictionary<IMockSetup, IMockBehavior>();
 
-        public MockInfo(ObservableCollection<IProxyBehavior> behaviors)
+        public MockInfo(IProxy proxy)
         {
-            Behaviors = behaviors;
-            behaviors.CollectionChanged += OnBehaviorsChanged;
+            this.proxy = proxy ?? throw new ArgumentNullException(nameof(proxy));
+            proxy.Behaviors.CollectionChanged += OnBehaviorsChanged;
         }
 
         /// <inheritdoc />
-        public IList<IProxyBehavior> Behaviors { get; }
+        public ObservableCollection<IProxyBehavior> Behaviors => proxy.Behaviors;
 
         /// <inheritdoc />
         public IList<IMethodInvocation> Invocations { get; } = new List<IMethodInvocation>();

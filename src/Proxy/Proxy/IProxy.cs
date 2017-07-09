@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Moq.Proxy
 {
@@ -8,8 +9,8 @@ namespace Moq.Proxy
 	public interface IProxy
 	{
         /// <summary>
-        /// List of behaviors configured for the proxy.
+        /// Behaviors configured for the proxy.
         /// </summary>
-		IList<IProxyBehavior> Behaviors { get; }
+		ObservableCollection<IProxyBehavior> Behaviors { get; }
 	}
 }

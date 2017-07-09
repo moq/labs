@@ -47,71 +47,33 @@ namespace Moq.Proxy.Rewrite
 
             node = (ClassDeclarationSyntax)base.VisitClassDeclaration(node);
             node = node.AddBaseListTypes(SimpleBaseType(IdentifierName(nameof(IProxy))));
-
-            node = node.AddMembers(
+            node = (ClassDeclarationSyntax)generator.InsertMembers(node, 0,
                 FieldDeclaration(
-                    VariableDeclaration(
-                        IdentifierName(Identifier(
-                            TriviaList(
-                                CarriageReturnLineFeed,
-                                Trivia(RegionDirectiveTrivia(true)
-                                    .WithRegionKeyword(Token(
-                                        TriviaList(),
-                                        SyntaxKind.RegionKeyword,
-                                        TriviaList(Space)))
-                                    .WithEndOfDirectiveToken(Token(
-                                        TriviaList(PreprocessingMessage(nameof(IProxy))),
-                                        SyntaxKind.EndOfDirectiveToken,
-                                        TriviaList(CarriageReturnLineFeed))
-                                    )
-                                )
-                            ),
-                            nameof(BehaviorPipeline),
-                            TriviaList(Space)
-                        )
-                    )
-                )
-                .WithVariables(
-                    SingletonSeparatedList(
-                        VariableDeclarator(Identifier(
-                            TriviaList(),
-                            "pipeline",
-                            TriviaList(Space)))
-                        .WithInitializer(
-                            EqualsValueClause(
-                                ObjectCreationExpression(IdentifierName("BehaviorPipeline"))
-                                .WithNewKeyword(Token(
-                                    TriviaList(),
-                                    SyntaxKind.NewKeyword,
-                                    TriviaList(Space)))
-                                .WithArgumentList(ArgumentList()))
-                            .WithEqualsToken(Token(
-                                TriviaList(),
-                                SyntaxKind.EqualsToken,
-                                TriviaList(Space)))))))
-            .WithSemicolonToken(Token(
-                TriviaList(),
-                SyntaxKind.SemicolonToken,
-                TriviaList(LineFeed))
-            ),
-            PropertyDeclaration(
-                GenericName(Identifier("IList"), TypeArgumentList(SingletonSeparatedList<TypeSyntax>(IdentifierName(nameof(IProxyBehavior))))),
-                Identifier(nameof(IProxy.Behaviors)))
-                .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(IdentifierName(nameof(IProxy))))
-                .WithExpressionBody(ArrowExpressionClause(
-                    MemberAccessExpression(
-                        SyntaxKind.SimpleMemberAccessExpression,
-                        IdentifierName("pipeline"),
-                        IdentifierName("Behaviors"))))
-                .WithSemicolonToken(Token(
-                    TriviaList(),
-                    SyntaxKind.SemicolonToken,
-                    TriviaList(CarriageReturnLineFeed)))
-                // #endregion
-                .WithTrailingTrivia(TriviaList(
-                    CarriageReturnLineFeed,
-                    Trivia(EndRegionDirectiveTrivia(true)),
-                    CarriageReturnLineFeed)));
+                    VariableDeclaration(IdentifierName(Identifier(nameof(BehaviorPipeline))))
+                    .WithVariables(
+                        SingletonSeparatedList(
+                            VariableDeclarator(Identifier("pipeline"))
+                            .WithInitializer(
+                                EqualsValueClause(
+                                    ObjectCreationExpression(IdentifierName(nameof(BehaviorPipeline)))
+                                    .WithArgumentList(ArgumentList())))))
+                    .NormalizeWhitespace()
+                ),
+                PropertyDeclaration(
+                    GenericName(
+                        Identifier("ObservableCollection"),
+                        TypeArgumentList(SingletonSeparatedList<TypeSyntax>(IdentifierName(nameof(IProxyBehavior))))),
+                    Identifier(nameof(IProxy.Behaviors)))
+                    .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(IdentifierName(nameof(IProxy))))
+                    .WithExpressionBody(ArrowExpressionClause(
+                        MemberAccessExpression(
+                            SyntaxKind.SimpleMemberAccessExpression,
+                            IdentifierName("pipeline"),
+                            IdentifierName("Behaviors"))))
+                     .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
+                    .NormalizeWhitespace()
+                    .WithTrailingTrivia(CarriageReturnLineFeed, CarriageReturnLineFeed)
+                );
 
             return node;
         }

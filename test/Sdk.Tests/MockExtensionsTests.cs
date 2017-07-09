@@ -127,7 +127,7 @@ namespace Moq.Sdk.Tests
 
         class Mock : IMock
         {
-            public IList<IProxyBehavior> Behaviors { get; } = new List<IProxyBehavior>();
+            public ObservableCollection<IProxyBehavior> Behaviors { get; } = new ObservableCollection<IProxyBehavior>();
 
             public IList<IMethodInvocation> Invocations { get; } = new List<IMethodInvocation>();
 

@@ -84,7 +84,7 @@ namespace Moq.Proxy.Rewrite
 
             var property = (PropertyBlockSyntax)generator.PropertyDeclaration(
                     nameof(IProxy.Behaviors),
-                    GenericName("IList", TypeArgumentList(IdentifierName(nameof(IProxyBehavior)))),
+                    GenericName("ObservableCollection", TypeArgumentList(IdentifierName(nameof(IProxyBehavior)))),
                     modifiers: DeclarationModifiers.ReadOnly,
                     getAccessorStatements: new[]
                     {
@@ -98,7 +98,7 @@ namespace Moq.Proxy.Rewrite
                 property.PropertyStatement.WithImplementsClause(
                     ImplementsClause(QualifiedName(IdentifierName(nameof(IProxy)), IdentifierName(nameof(IProxy.Behaviors))))));
 
-            return generator.AddMembers(node, field, property);
+            return generator.InsertMembers(node, 0, field, property);
         }
 
         public override SyntaxNode VisitMethodBlock(MethodBlockSyntax node)

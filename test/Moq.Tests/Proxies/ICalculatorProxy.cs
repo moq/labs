@@ -1,6 +1,6 @@
 ﻿using Moq.Proxy;
 using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -11,6 +11,10 @@ namespace Proxies
     [CompilerGenerated]
     public partial class ICalculatorProxy : ICalculator, IProxy, IMocked
     {
+        BehaviorPipeline pipeline = new BehaviorPipeline();
+
+        ObservableCollection<IProxyBehavior> IProxy.Behaviors => pipeline.Behaviors;
+
         public int? this[string name] { get => pipeline.Execute<int?>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), name)); set => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), name, value)); }
 
         public bool IsOn => pipeline.Execute<bool>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
@@ -37,16 +41,10 @@ namespace Proxies
 
         public event EventHandler TurnedOn { add => pipeline.Execute<EventHandler>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value)); remove => pipeline.Execute<EventHandler>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value)); }
 
-        #region IProxy
-        BehaviorPipeline pipeline = new BehaviorPipeline();
-
-        IList<IProxyBehavior> IProxy.Behaviors => pipeline.Behaviors;
-        #endregion
-
         #region IMocked
         IMock mock;
 
-        IMock IMocked.Mock => LazyInitializer.EnsureInitialized(ref mock, () => new MockInfo(pipeline.Behaviors));
+        IMock IMocked.Mock => LazyInitializer.EnsureInitialized(ref mock, () => new MockInfo(this));
         #endregion
     }
 }

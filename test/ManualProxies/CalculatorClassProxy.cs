@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Reflection;
 
 namespace Moq.Proxy
@@ -8,7 +9,7 @@ namespace Moq.Proxy
     {
         BehaviorPipeline pipeline = new BehaviorPipeline();
 
-        public IList<IProxyBehavior> Behaviors => pipeline.Behaviors;
+        public ObservableCollection<IProxyBehavior> Behaviors => pipeline.Behaviors;
 
         public override event EventHandler TurnedOn
         {

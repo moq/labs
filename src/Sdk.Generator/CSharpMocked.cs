@@ -83,11 +83,7 @@ namespace Moq.Sdk
                                 ObjectCreationExpression(
                                     IdentifierName(nameof(MockInfo)))
                                 .WithArgumentList(ArgumentList(SingletonSeparatedList(Argument(
-                                    MemberAccessExpression(
-                                        SyntaxKind.SimpleMemberAccessExpression,
-                                        IdentifierName("pipeline"),
-                                        IdentifierName(nameof(BehaviorPipeline.Behaviors))
-                                    )
+                                    ThisExpression()
                                 ))))
                             ))
                         }))

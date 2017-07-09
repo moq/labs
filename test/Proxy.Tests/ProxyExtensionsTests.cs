@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Xunit;
 
 namespace Moq.Proxy.Tests
@@ -171,7 +172,7 @@ namespace Moq.Proxy.Tests
 
         class TestProxy : IProxy
         {
-            public IList<IProxyBehavior> Behaviors { get; } = new List<IProxyBehavior>();
+            public ObservableCollection<IProxyBehavior> Behaviors { get; } = new ObservableCollection<IProxyBehavior>();
         }
     }
 }

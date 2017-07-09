@@ -6,3 +6,5 @@ For Visual Studio 2017:
 ```
 msbuild /t:QuickDeploy /p:TargetFramework=net462 && devenv /updateConfiguration /rootSuffix Moq && devenv /rootSuffix Moq
 ```
+
+You can also just run deploy.cmd which contains the above command line.

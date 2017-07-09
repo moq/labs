@@ -69,12 +69,7 @@ namespace Moq.Sdk
                                         List<AttributeListSyntax>(),
                                         IdentifierName(nameof(MockInfo)),
                                         ArgumentList(SingletonSeparatedList<ArgumentSyntax>(
-                                            SimpleArgument(
-                                                SimpleMemberAccessExpression(
-                                                    IdentifierName("pipeline"),
-                                                    IdentifierName(nameof(BehaviorPipeline.Behaviors))
-                                                )
-                                            )
+                                            SimpleArgument(MeExpression())
                                         )),
                                         null
                                     )
