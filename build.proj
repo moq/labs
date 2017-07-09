@@ -31,7 +31,7 @@
 
 	<Target Name="Test">
 		<ItemGroup>
-			<_TestAssembly Include="test\**\bin\**\*Tests.dll" />
+			<_TestAssembly Include="test\**\bin\$(Configuration)\**\*Tests.dll" />
 			<TestAssembly Include="@(_TestAssembly)"
 									  Condition="$([System.String]::new('%(Filename)').Contains('Acceptance')) == 'false' And '%(Filename)' != 'Roslyn.Services.Editor.UnitTests'" />
 		</ItemGroup>
@@ -42,7 +42,7 @@
 
 	<Target Name="Acceptance">
 		<ItemGroup>
-			<TestAssembly Include="test\**\bin\**\*AcceptanceTests.dll" />
+			<TestAssembly Include="test\**\bin\$(Configuration)\**\*AcceptanceTests.dll" />
 		</ItemGroup>
 
 		<Exec Command='"$(XunitConsolePath)" "%(TestAssembly.FullPath)" $(XunitOptions) -html "$(Out)\%(TestAssembly.Filename).html" -xml "$(Out)\%(TestAssembly.Filename).xml"'
