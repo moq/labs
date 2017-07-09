@@ -75,7 +75,7 @@ namespace Moq
         /// <summary>
         /// Sets the return value for a property or non-void method.
         /// </summary>
-        public static TResult Returns<TResult>(this object target, TResult value)
+        public static TResult Returns<TResult>(this TResult target, TResult value)
         {
             var setup = MockSetup.Current;
             if (setup != null)
@@ -97,7 +97,7 @@ namespace Moq
         /// be evaluated dynamically using the given function on every 
         /// call.
         /// </summary>
-        public static TResult Returns<TResult>(this object target, Func<TResult> value)
+        public static TResult Returns<TResult>(this TResult target, Func<TResult> value)
         {
             var setup = MockSetup.Current;
             if (setup != null)
@@ -119,7 +119,7 @@ namespace Moq
         /// be evaluated dynamically using the given function on every 
         /// call.
         /// </summary>
-        public static TResult Returns<T, TResult>(this object target, Func<T, TResult> value)
+        public static TResult Returns<T, TResult>(this TResult target, Func<T, TResult> value)
             => Returns<TResult>(value, (mi, next)
                 => mi.CreateValueReturn(value((T)mi.Arguments[0]), mi.Arguments));
 
@@ -128,7 +128,7 @@ namespace Moq
         /// be evaluated dynamically using the given function on every 
         /// call.
         /// </summary>
-        public static TResult Returns<T1, T2, TResult>(this object target, Func<T1, T2, TResult> value)
+        public static TResult Returns<T1, T2, TResult>(this TResult target, Func<T1, T2, TResult> value)
             => Returns<TResult>(value, (mi, next)
                 => mi.CreateValueReturn(value((T1)mi.Arguments[0], (T2)mi.Arguments[1]), mi.Arguments));
 
@@ -137,7 +137,7 @@ namespace Moq
         /// be evaluated dynamically using the given function on every 
         /// call.
         /// </summary>
-        public static TResult Returns<T1, T2, T3, TResult>(this object target, Func<T1, T2, T3, TResult> value)
+        public static TResult Returns<T1, T2, T3, TResult>(this TResult target, Func<T1, T2, T3, TResult> value)
             => Returns<TResult>(value, (mi, next)
                 => mi.CreateValueReturn(value((T1)mi.Arguments[0], (T2)mi.Arguments[1], (T3)mi.Arguments[2]), mi.Arguments));
 
