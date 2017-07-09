@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -18,6 +19,13 @@ namespace Moq.Sdk
 
         public async Task<Document> VisitAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
         {
+            var hasSdk = document.Project.MetadataReferences.Any(x => x.Display.EndsWith("Moq.Sdk.dll")) ||
+                document.Project.ProjectReferences.Select(x => document.Project.Solution.GetProject(x.ProjectId).AssemblyName).Any(x => x == "Moq.Sdk");
+
+            // Only apply the Moq visitor if the project actually contains a Moq.Sdk reference.
+            if (!hasSdk)
+                return document;
+
             generator = SyntaxGenerator.GetGenerator(document);
             var syntax = await document.GetSyntaxRootAsync(cancellationToken);
             syntax = Visit(syntax);
