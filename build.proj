@@ -20,7 +20,6 @@
 	</ItemDefinitionGroup>
 
 	<ItemGroup>
-		<Solution Include="src\Moq.Proxy.sln" />
 		<Solution Include="src\Moq.Sdk.sln" />
 		<Solution Include="src\Moq.sln" />
 	</ItemGroup>
