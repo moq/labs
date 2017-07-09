@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using Proxies;
+using Moq.Proxy;
 
 namespace Moq.Sdk.Tests
 {
@@ -13,6 +14,7 @@ namespace Moq.Sdk.Tests
         [Fact]
         public void CanIntrospectMock()
         {
+            var proxy = IntrospectionTests.Create<ICalculator>();
             var mock = new ICalculatorProxy();
            
             var info = ((IMocked)mock).Mock;
@@ -21,5 +23,8 @@ namespace Moq.Sdk.Tests
             //info.BehaviorFor()
 
         }
+
+        [ProxyGenerator]
+        public static T Create<T>() => default(T);
     }
 }
