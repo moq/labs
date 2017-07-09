@@ -61,6 +61,15 @@ namespace Moq.Analyzer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Generate Proxy.
+        /// </summary>
+        internal static string GenerateProxyCodeFix_Title {
+            get {
+                return ResourceManager.GetString("GenerateProxyCodeFix_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Only classes and interfaces can be used in proxies. Invalid set of symbols: {0}..
         /// </summary>
         internal static string InvalidProxyTypes {
@@ -97,15 +106,6 @@ namespace Moq.Analyzer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Generate Proxy.
-        /// </summary>
-        internal static string MissingProxyCodeFix_Title {
-            get {
-                return ResourceManager.GetString("MissingProxyCodeFix_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Existing generated proxy is no longer up-to-date..
         /// </summary>
         internal static string OutdatedProxyAnalyzer_Description {
@@ -129,6 +129,15 @@ namespace Moq.Analyzer.Properties {
         internal static string OutdatedProxyAnalyzer_Title {
             get {
                 return ResourceManager.GetString("OutdatedProxyAnalyzer_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Proxy.
+        /// </summary>
+        internal static string UpdateProxyCodeFix_Title {
+            get {
+                return ResourceManager.GetString("UpdateProxyCodeFix_Title", resourceCulture);
             }
         }
         

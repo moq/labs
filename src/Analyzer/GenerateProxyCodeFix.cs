@@ -17,17 +17,42 @@ using Microsoft.CodeAnalysis.Formatting;
 
 namespace Moq.Analyzer
 {
-    [ExportCodeFixProvider(LanguageNames.CSharp, new [] { LanguageNames.VisualBasic }, Name = nameof(GenerateProxyCodeFix)), Shared]
-    public class GenerateProxyCodeFix : CodeFixProvider
+    [ExportCodeFixProvider(LanguageNames.CSharp, new[] { LanguageNames.VisualBasic }, Name = nameof(GenerateProxyCodeFix)), Shared]
+    public class GenerateProxyCodeFix : ProxyCodeFix
     {
-        ICodeAnalysisServices analysisServices;
-
         [ImportingConstructor]
-        public GenerateProxyCodeFix([Import(AllowDefault = true)] ICodeAnalysisServices analysisServices) => this.analysisServices = analysisServices;
+        public GenerateProxyCodeFix([Import(AllowDefault = true)] ICodeAnalysisServices analysisServices) 
+            : base(analysisServices, Strings.GenerateProxyCodeFix.Title) { }
 
         public sealed override ImmutableArray<string> FixableDiagnosticIds
         {
-            get => ImmutableArray.Create(MissingProxyAnalyzer.DiagnosticId, OutdatedProxyAnalyzer.DiagnosticId);
+            get => ImmutableArray.Create(MissingProxyAnalyzer.DiagnosticId);
+        }
+    }
+
+    [ExportCodeFixProvider(LanguageNames.CSharp, new[] { LanguageNames.VisualBasic }, Name = nameof(GenerateProxyCodeFix)), Shared]
+    public class UpdateProxyCodeFix : ProxyCodeFix
+    {
+        [ImportingConstructor]
+        public UpdateProxyCodeFix([Import(AllowDefault = true)] ICodeAnalysisServices analysisServices) 
+            : base(analysisServices, Strings.UpdateProxyCodeFix.Title) { }
+
+        public sealed override ImmutableArray<string> FixableDiagnosticIds
+        {
+            get => ImmutableArray.Create(OutdatedProxyAnalyzer.DiagnosticId);
+        }
+    }
+
+    public abstract class ProxyCodeFix : CodeFixProvider
+    {
+        ICodeAnalysisServices analysisServices;
+        string title;
+
+        [ImportingConstructor]
+        public ProxyCodeFix([Import(AllowDefault = true)] ICodeAnalysisServices analysisServices, string title)
+        {
+            this.analysisServices = analysisServices;
+            this.title = title;
         }
 
         public sealed override FixAllProvider GetFixAllProvider()
@@ -52,7 +77,7 @@ namespace Moq.Analyzer
             // Register a code action that will invoke the fix.
             context.RegisterCodeFix(
                 CodeAction.Create(
-                    title: Strings.MissingProxyCodeFix.Title,
+                    title: this.title,
                     createChangedSolution: c => GenerateProxyAsync(context.Document, invocation, c),
                     equivalenceKey: nameof(GenerateProxyCodeFix)),
                 diagnostic);

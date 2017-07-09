@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="GenerateProxyCodeFix_Title" xml:space="preserve">
+    <value>Generate Proxy</value>
+  </data>
   <data name="InvalidProxyTypes" xml:space="preserve">
     <value>Only classes and interfaces can be used in proxies. Invalid set of symbols: {0}.</value>
   </data>
@@ -129,9 +132,6 @@
   <data name="MissingProxyAnalyzer_Title" xml:space="preserve">
     <value>Proxy not found</value>
   </data>
-  <data name="MissingProxyCodeFix_Title" xml:space="preserve">
-    <value>Generate Proxy</value>
-  </data>
   <data name="OutdatedProxyAnalyzer_Description" xml:space="preserve">
     <value>Existing generated proxy is no longer up-to-date.</value>
   </data>
@@ -140,6 +140,9 @@
   </data>
   <data name="OutdatedProxyAnalyzer_Title" xml:space="preserve">
     <value>Proxy must be updated</value>
+  </data>
+  <data name="UpdateProxyCodeFix_Title" xml:space="preserve">
+    <value>Update Proxy</value>
   </data>
   <data name="WrongProxyBaseType" xml:space="preserve">
     <value>Only one base type can be specified for a proxy to generate and it must be the first type in the list. Invalid set of symbols: {0}.</value>
