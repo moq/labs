@@ -18,45 +18,45 @@ namespace Moq.Tests
             var raised = false;
 
             EventHandler handler = (sender, args) => raised = true;
-            calculator.PoweringUp += handler;
+            calculator.TurnedOn += handler;
 
-            calculator.PoweringUp += Raise.Event();
+            calculator.TurnedOn += Raise.Event();
 
             Assert.True(raised);
 
             raised = false;
-            calculator.PoweringUp -= handler;
-            calculator.PoweringUp -= handler;
+            calculator.TurnedOn -= handler;
+            calculator.TurnedOn -= handler;
 
-            calculator.PoweringUp += Raise();
+            calculator.TurnedOn += Raise();
 
             Assert.False(raised);
+        }
+
+        [Fact]
+        public void CanRaiseEventsWithArgs()
+        {
+            var mock = Mock.Of<INotifyPropertyChanged>();
+            mock.InsertBehavior(0, new EventBehavior());
 
             var property = "";
-            calculator.PropertyChanged += (sender, args) => property = args.PropertyName;
+            mock.PropertyChanged += (sender, args) => property = args.PropertyName;
 
-            calculator.PropertyChanged += Raise<PropertyChangedEventHandler>(new PropertyChangedEventArgs("Mode"));
+            mock.PropertyChanged += Raise<PropertyChangedEventHandler>(new PropertyChangedEventArgs("Mode"));
 
             Assert.Equal("Mode", property);
-
-            var progress = 0;
-            calculator.Progress += (_, i) => progress = i;
-
-            calculator.Progress += Raise(10);
-
-            Assert.Equal(10, progress);
         }
 
         [Fact]
         public void CanSetupPropertyViaReturns()
         {
             var calculator = Mock.Of<ICalculator>();
-            
-            calculator.Mode.Returns("Basic");
+
+            calculator.Mode.Returns(CalculatorMode.Standard);
 
             var mode = calculator.Mode;
             
-            Assert.Equal("Basic", mode);
+            Assert.Equal(CalculatorMode.Standard, mode);
         }
 
         [Fact]
@@ -64,12 +64,12 @@ namespace Moq.Tests
         {
             var calculator = Mock.Of<ICalculator>();
 
-            calculator.Mode.Returns("Basic");
-            calculator.Mode.Returns("Advanced");
+            calculator.Mode.Returns(CalculatorMode.Standard);
+            calculator.Mode.Returns(CalculatorMode.Scientific);
 
             var mode = calculator.Mode;
 
-            Assert.Equal("Advanced", mode);
+            Assert.Equal(CalculatorMode.Scientific, mode);
         }
 
         [Fact]

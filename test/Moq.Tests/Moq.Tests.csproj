@@ -7,11 +7,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\src\Proxy\Proxy.Generator\Moq.Proxy.Generator.csproj" />
 		<ProjectReference Include="..\..\src\Proxy\Proxy\Moq.Proxy.csproj" />
 		<ProjectReference Include="..\..\src\Sdk\Moq.Sdk.csproj" />
 		<ProjectReference Include="..\..\src\Moq\Moq.csproj" />
+		<ProjectReference Include="..\ManualProxies\ManualProxies.csproj" />
 	</ItemGroup>
 
-	<Import Project="..\Moq.Testing\Moq.Testing.projitems" Label="Shared" />
 </Project>
