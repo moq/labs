@@ -4,7 +4,9 @@ namespace Moq.Proxy
 {
     public abstract class CalculatorBase
     {
+#pragma warning disable CS0067
         public virtual event EventHandler TurnedOn;
+#pragma warning restore CS0067
 
         public abstract bool IsOn { get; }
 
