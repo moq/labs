@@ -83,14 +83,15 @@ namespace Moq.Proxy
                     additionalInterfaces.ToImmutableArray(),
                     additionalProxies.ToImmutableArray(),
                     additionalGenerators.ToImmutableArray(),
-                    CancellationToken.None);
+                    CancellationToken.None)
+                    .ConfigureAwait(false);
 
                 foreach (var proxy in proxies)
                 {
                     var proxyFile = Path.Combine(outputPath, proxy.Name + extension);
                     // NOTE: should we provide a -pretty to skip this step?
-                    var document = await Simplifier.ReduceAsync(proxy);
-                    var syntax = await document.GetSyntaxRootAsync();
+                    var document = await Simplifier.ReduceAsync(proxy).ConfigureAwait(false);
+                    var syntax = await document.GetSyntaxRootAsync().ConfigureAwait(false);
                     var output = syntax.NormalizeWhitespace().ToFullString();
                     if (!File.Exists(proxyFile) || !File.ReadAllText(proxyFile).Equals(output, StringComparison.Ordinal))
                     {

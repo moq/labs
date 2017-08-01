@@ -87,7 +87,7 @@ namespace Moq.Analyzer
 
         async Task<Solution> GenerateProxyAsync(Document document, SyntaxNode invocation, CancellationToken cancellationToken)
         {
-            var semanticModel = await document.GetSemanticModelAsync(cancellationToken);
+            var semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
             var symbol = semanticModel.GetSymbolInfo(invocation);
             if (symbol.Symbol?.Kind == SymbolKind.Method)
             {
@@ -111,13 +111,12 @@ namespace Moq.Analyzer
                     proxyDoc = proxyDoc.WithSyntaxRoot(syntax);
                 }
 
-                proxyDoc = await ProxyGenerator.ApplyVisitors(proxyDoc, analysisServices, cancellationToken);
+                proxyDoc = await ProxyGenerator.ApplyVisitors(proxyDoc, analysisServices, cancellationToken).ConfigureAwait(false);
                 // This is somewhat expensive, but since we're adding it to the user' solution, we might 
                 // as well make it look great ;)
-                proxyDoc = await Simplifier.ReduceAsync(proxyDoc);
-                proxyDoc = await Formatter.FormatAsync(proxyDoc);
-                syntax = await proxyDoc.GetSyntaxRootAsync();
-                //syntax = syntax.NormalizeWhitespace();
+                proxyDoc = await Simplifier.ReduceAsync(proxyDoc).ConfigureAwait(false);
+                proxyDoc = await Formatter.FormatAsync(proxyDoc).ConfigureAwait(false);
+                syntax = await proxyDoc.GetSyntaxRootAsync().ConfigureAwait(false);
 
                 return proxyDoc.WithSyntaxRoot(syntax).Project.Solution;
             }

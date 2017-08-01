@@ -36,7 +36,7 @@
 									  Condition="$([System.String]::new('%(Filename)').Contains('Acceptance')) == 'false' And '%(Filename)' != 'Roslyn.Services.Editor.UnitTests'" />
 		</ItemGroup>
 
-		<Exec Command='"$(XunitConsolePath)" "%(TestAssembly.FullPath)" $(XunitOptions) -html "$(Out)\%(TestAssembly.Filename).html" -xml "$(Out)\%(TestAssembly.Filename).xml"'
+		<Exec Command='"$(XunitConsolePathX86)" "%(TestAssembly.FullPath)" $(XunitOptions) -html "$(Out)\%(TestAssembly.Filename).html" -xml "$(Out)\%(TestAssembly.Filename).xml"'
 			  Condition="'@(TestAssembly)' != ''"/>
 	</Target>
 

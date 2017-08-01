@@ -119,11 +119,11 @@ namespace Moq.Proxy.Tests
         }
 
         [InlineData(LanguageNames.CSharp)]
-        [InlineData(LanguageNames.VisualBasic)]
+        //[InlineData(LanguageNames.VisualBasic)]
         [Theory]
         public async Task WhenTypeHasVirtualMembers(string language)
         {
-            var target = await GenerateProxy<Calculator>(language);
+            var target = await GenerateProxy<Calculator>(language).ConfigureAwait(false);
             var intercepted = false;
 
             target.AddBehavior((method, next) => { intercepted = true; return next()(method, next); });

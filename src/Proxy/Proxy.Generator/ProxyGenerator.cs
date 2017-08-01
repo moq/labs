@@ -131,7 +131,7 @@ namespace Moq.Proxy
             }
 
             var discoverer = new ProxyDiscoverer();
-            var proxies = await discoverer.DiscoverProxiesAsync(project, cancellationToken);
+            var proxies = await discoverer.DiscoverProxiesAsync(project, cancellationToken).ConfigureAwait(false);
             if (additionalProxySymbols.Count != 0)
             {
                 var set = new HashSet<ImmutableArray<ITypeSymbol>>(proxies, StructuralComparer<ImmutableArray<ITypeSymbol>>.Default);
@@ -152,7 +152,7 @@ namespace Moq.Proxy
                 // NOTE: we add the additional interfaces at this point, so that they affect both the 
                 // originally discovered proxies, as well as the additional proxy types explicitly 
                 // requested.
-                documents.Add(await GenerateProxyAsync(workspace, project, cancellationToken, proxy, additional));
+                documents.Add(await GenerateProxyAsync(workspace, project, cancellationToken, proxy, additional).ConfigureAwait(false));
             }
 
             return documents.ToImmutableArray();
@@ -214,7 +214,7 @@ namespace Moq.Proxy
                 filePath: filePath,
                 loader: TextLoader.From(TextAndVersion.Create(SourceText.From(code), VersionStamp.Create()))));
 
-            document = await ApplyVisitors(document, services, cancellationToken);
+            document = await ApplyVisitors(document, services, cancellationToken).ConfigureAwait(false);
 
 #if DEBUG
             File.WriteAllText(filePath, code);
@@ -268,25 +268,25 @@ namespace Moq.Proxy
             var prepares = services.GetLanguageServices<IDocumentVisitor>(language, DocumentVisitorLayer.Prepare).ToArray();
             foreach (var prepare in prepares)
             {
-                document = await prepare.VisitAsync(document, cancellationToken);
+                document = await prepare.VisitAsync(document, cancellationToken).ConfigureAwait(false);
             }
 
             var scaffolds = services.GetLanguageServices<IDocumentVisitor>(language, DocumentVisitorLayer.Scaffold).ToArray();
             foreach (var scaffold in scaffolds)
             {
-                document = await scaffold.VisitAsync(document, cancellationToken);
+                document = await scaffold.VisitAsync(document, cancellationToken).ConfigureAwait(false);
             }
 
             var rewriters = services.GetLanguageServices<IDocumentVisitor>(language, DocumentVisitorLayer.Rewrite).ToArray();
             foreach (var rewriter in rewriters)
             {
-                document = await rewriter.VisitAsync(document, cancellationToken);
+                document = await rewriter.VisitAsync(document, cancellationToken).ConfigureAwait(false);
             }
 
             var fixups = services.GetLanguageServices<IDocumentVisitor>(language, DocumentVisitorLayer.Fixup).ToArray();
             foreach (var fixup in fixups)
             {
-                document = await fixup.VisitAsync(document, cancellationToken);
+                document = await fixup.VisitAsync(document, cancellationToken).ConfigureAwait(false);
             }
 
             return document;

@@ -19,7 +19,7 @@ namespace Moq.Proxy.Discovery
         {
             var discoverer = project.LanguageServices.GetRequiredService<IProxyDiscoverer>();
             
-            var compilation = await project.GetCompilationAsync(cancellationToken);
+            var compilation = await project.GetCompilationAsync(cancellationToken).ConfigureAwait(false);
             var proxyGeneratorSymbol = compilation.GetTypeByMetadataName(typeof(ProxyGeneratorAttribute).FullName);
 
             // TODO: message.

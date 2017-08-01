@@ -31,7 +31,7 @@ namespace Moq.Proxy.Scaffold
         {
             foreach (var codeFixName in codeFixNames)
             {
-                document = await codeFixService.ApplyAsync(codeFixName, document, cancellationToken);
+                document = await codeFixService.ApplyAsync(codeFixName, document, cancellationToken).ConfigureAwait(false);
             }
 
             return document;

@@ -14,8 +14,8 @@ namespace Moq.Proxy.Discovery
             where TSyntax : SyntaxNode
         {
             var proxies = new HashSet<ImmutableArray<ITypeSymbol>>(StructuralComparer<ImmutableArray<ITypeSymbol>>.Default);
-            var semantic = await document.GetSemanticModelAsync(cancellationToken);
-            var syntax = await document.GetSyntaxRootAsync(cancellationToken);
+            var semantic = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
+            var syntax = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
             cancellationToken.ThrowIfCancellationRequested();
 
             foreach (var node in syntax.DescendantNodes().OfType<TSyntax>())

@@ -32,7 +32,7 @@ namespace Moq.Proxy.Rewrite
         {
             generator = SyntaxGenerator.GetGenerator(document);
 
-            var syntax = await document.GetSyntaxRootAsync(cancellationToken);
+            var syntax = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
             syntax = Visit(syntax);
 
             return document.WithSyntaxRoot(syntax);
