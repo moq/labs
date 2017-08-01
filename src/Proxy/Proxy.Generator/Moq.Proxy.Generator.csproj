@@ -8,7 +8,7 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CSharp" Version="4.3.0" />
 
-		<PackageReference Include="Roslynator" Version="0.2.3" />
+		<PackageReference Include="Roslynator" Version="0.2.6" />
 		<PackageReference Include="System.IO.Compression" Version="4.3.0" />
 		<PackageReference Include="netfx-System.StringResources" Version="3.1.8" />
 		<PackageReference Include="System.ValueTuple" Version="4.3.0" />
@@ -16,7 +16,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Proxy.Sdk\Moq.Proxy.Sdk.csproj" />
-		<ProjectReference Include="..\Proxy\Moq.Proxy.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -24,12 +23,6 @@
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>
 			<DependentUpon>Resources.resx</DependentUpon>
-		</Compile>
-		<Compile Update="Scaffold\OverrideVirtualMembers.CSharp.cs">
-			<DependentUpon>OverrideVirtualMembers.cs</DependentUpon>
-		</Compile>
-		<Compile Update="Scaffold\OverrideVirtualMembers.VisualBasic.cs">
-			<DependentUpon>OverrideVirtualMembers.cs</DependentUpon>
 		</Compile>
 	</ItemGroup>
 

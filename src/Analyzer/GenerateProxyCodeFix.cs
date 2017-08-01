@@ -28,6 +28,8 @@ namespace Moq.Analyzer
         {
             get => ImmutableArray.Create(MissingProxyAnalyzer.DiagnosticId);
         }
+
+        
     }
 
     [ExportCodeFixProvider(LanguageNames.CSharp, new[] { LanguageNames.VisualBasic }, Name = nameof(GenerateProxyCodeFix)), Shared]

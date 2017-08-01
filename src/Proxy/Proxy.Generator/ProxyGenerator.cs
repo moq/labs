@@ -216,6 +216,10 @@ namespace Moq.Proxy
 
             document = await ApplyVisitors(document, services, cancellationToken);
 
+#if DEBUG
+            File.WriteAllText(filePath, code);
+#endif
+
             return document;
         }
 

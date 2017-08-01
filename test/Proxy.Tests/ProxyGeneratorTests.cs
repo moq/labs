@@ -54,6 +54,23 @@ namespace Moq.Proxy.Tests
                 "Generated proxy did not have the 'CompilerGeneratedAttribute' attribute applied.");
         }
 
+        [InlineData(LanguageNames.CSharp)]
+        [InlineData(LanguageNames.VisualBasic)]
+        [Theory]
+        public async Task GeneratedProxyTypeOverridesVirtualObjectMembers(string languageName)
+        {
+            var compilation = await CanGenerateProxy(languageName, typeof(INotifyPropertyChanged), typeof(IDisposable));
+            var assembly = compilation.Emit();
+            var proxyType = assembly.GetExportedTypes().FirstOrDefault();
+
+            Assert.NotNull(proxyType);
+
+            Assert.True(proxyType.GetTypeInfo().DeclaredMethods.Any(m =>
+                m.Name == nameof(object.GetHashCode) ||
+                m.Name == nameof(object.ToString) ||
+                m.Name == nameof(object.Equals)));
+        }
+
         [Fact]
         public Task INotifyPropertyChanged()
             => CanGenerateProxy(LanguageNames.VisualBasic, typeof(INotifyPropertyChanged));
@@ -213,8 +230,8 @@ namespace Moq.Proxy.Tests
                 additional);
 
             var syntax = await document.GetSyntaxRootAsync();
-
-            document = project.AddDocument("proxy." + (language == LanguageNames.CSharp ? "cs" : "vb"), syntax, filePath: Path.GetTempFileName());
+            document = project.AddDocument("proxy." + (language == LanguageNames.CSharp ? "cs" : "vb"), syntax, 
+                filePath: document.FilePath);
 
             await AssertCode.NoErrorsAsync(document);
 

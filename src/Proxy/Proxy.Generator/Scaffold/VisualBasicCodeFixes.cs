@@ -1,4 +1,6 @@
 ﻿using System.Composition;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Host;
@@ -9,17 +11,30 @@ namespace Moq.Proxy.Scaffold
     [ExportLanguageService(typeof(IDocumentVisitor), LanguageNames.VisualBasic, DocumentVisitorLayer.Scaffold)]
     [Shared]
 
-    class VisualBasicCodeFixes : CodeFixDocumentVisitor
+    class VisualBasicCodeFixes : IDocumentVisitor
     {
+        static readonly string[] codeFixNames = new[]
+        {
+            CodeFixNames.VisualBasic.ImplementAbstractClass,
+            CodeFixNames.VisualBasic.ImplementInterface,
+            "OverrideAllMembersCodeFix",
+            CodeFixNames.VisualBasic.AddOverloads,
+        };
+
+        ICodeFixService codeFixService;
+
         [ImportingConstructor]
         public VisualBasicCodeFixes(ICodeAnalysisServices services)
-            : base(services,
-                  CodeFixNames.VisualBasic.ImplementAbstractClass,
-                  CodeFixNames.VisualBasic.ImplementInterface,
-                  CodeFixNames.VisualBasic.AddOverloads,
-                  CodeFixNames.All.SimplifyNames,
-                  CodeFixNames.All.RemoveUnnecessaryImports)
+            => codeFixService = services.GetWorkspaceService<ICodeFixService>();
+
+        public async Task<Document> VisitAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
         {
+            foreach (var codeFixName in codeFixNames)
+            {
+                document = await codeFixService.ApplyAsync(codeFixName, document, cancellationToken);
+            }
+
+            return document;
         }
     }
 }

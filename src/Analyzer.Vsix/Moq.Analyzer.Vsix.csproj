@@ -30,7 +30,7 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.VSSDK.BuildTools" Version="15.1.192" Condition="'$(BuildingInsideVisualStudio)' != 'true'" />
 		<PackageReference Include="Xamarin.VSSDK.BuildTools" Version="0.2.1-alpha-build0001" />
-		<PackageReference Include="Roslynator" Version="0.2.3" />
+		<PackageReference Include="Roslynator" Version="0.2.6" />
 	</ItemGroup>
 
 	<ItemGroup>

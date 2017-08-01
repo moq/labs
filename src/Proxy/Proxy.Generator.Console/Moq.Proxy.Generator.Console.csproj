@@ -17,7 +17,6 @@
     <ProjectReference Include="..\Proxy.Generator\Moq.Proxy.Generator.csproj">
       <Private>true</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Proxy.Sdk\Moq.Proxy.Sdk.csproj" />
     <ProjectReference Include="..\Proxy\Moq.Proxy.csproj">
       <Private>true</Private>
     </ProjectReference>
