@@ -4,13 +4,13 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net461</TargetFramework>
     <!-- .NETCore 2.0 will support net461 APIs, which are now required by Roslyn 2.0 -->
-    <!--<TargetFrameworks>netcoreapp1.1;net461</TargetFrameworks>-->
+    <!--<TargetFrameworks>netcoreapp2.0;net461</TargetFrameworks>-->
     <AssemblyName>pgen</AssemblyName>
     <RootNamespace>Moq.Proxy</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Mono.Options" Version="4.4.0" />
+    <PackageReference Include="Mono.Options" Version="4.4.0" NoWarn="NU1201" />
   </ItemGroup>
 
   <ItemGroup>

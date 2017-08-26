@@ -12,5 +12,4 @@
 		<ProjectReference Include="..\..\src\Moq\Moq.csproj" />
 		<ProjectReference Include="..\ManualProxies\ManualProxies.csproj" />
 	</ItemGroup>
-
 </Project>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -60,7 +61,9 @@ namespace Moq.Analyzer
                         if (proxyDiag.Any())
                         {
                             // If there are compilation errors, we should update the proxy.
-                            var diagnostic = Diagnostic.Create(Rule, context.Node.GetLocation(), name);
+                            var diagnostic = Diagnostic.Create(Rule, context.Node.GetLocation(),
+                                new[] { new KeyValuePair<string, string>("Name", name) }.ToImmutableDictionary(),
+                                name);
 
                             context.ReportDiagnostic(diagnostic);
                         }
