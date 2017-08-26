@@ -16,7 +16,6 @@
   <ItemGroup Condition="'$(IncludeRoslyn)' == 'true'">
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="2.3.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Features" Version="2.3.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.EditorFeatures" Version="2.3.0" />
   </ItemGroup>
 
   <Import Project="$(_ProjectProps)" Condition="'$(MSBuildProjectExtension)' != '.props' And Exists('$(_ProjectProps)')" />
