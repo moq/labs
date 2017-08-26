@@ -35,15 +35,9 @@ static partial class TestHelpers
 
         //The location of the .NET assemblies
         var frameworkPath = Path.GetDirectoryName(typeof(object).Assembly.Location);
-        var referencePaths = new[]
-            {
-                Path.Combine(frameworkPath, "mscorlib.dll"),
-                Path.Combine(frameworkPath, "System.dll"),
-                Path.Combine(frameworkPath, "System.Core.dll"),
-                Path.Combine(frameworkPath, "System.ObjectModel.dll"),
-                Path.Combine(frameworkPath, "System.Reflection.dll"),
-                Path.Combine(frameworkPath, "System.Runtime.dll"),
-            }
+        var netstandardPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @".nuget\packages\NETStandard.Library\2.0.0\build\netstandard2.0\ref");
+
+        var referencePaths = Directory.EnumerateFiles(netstandardPath, "*.dll")
             .Concat(ReferencePaths.Paths)
             .Where(path => !string.IsNullOrEmpty(path) && File.Exists(path))
             .Distinct(FileNameEqualityComparer.Default);

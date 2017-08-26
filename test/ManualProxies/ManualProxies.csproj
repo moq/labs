@@ -3,6 +3,9 @@
 		<TargetFramework>netstandard2.0</TargetFramework>
 	</PropertyGroup>
 	<ItemGroup>
+	  <None Remove="App.config" />
+	</ItemGroup>
+	<ItemGroup>
 	  <ProjectReference Include="..\..\src\Proxy\Proxy\Moq.Proxy.csproj" />
 	</ItemGroup>
 </Project>

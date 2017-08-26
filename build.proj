@@ -4,13 +4,15 @@
 	<PropertyGroup>
 		<Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
 		<IntermediateOutputPath>$(RestoreOutputPath)\</IntermediateOutputPath>
-		<AdditionalProperties>Configuration=$(Configuration);Dev=15.0</AdditionalProperties>
-		<Out Condition="'$(Out)' == ''">out</Out>
+    <Dev Condition="'$(Dev)' == '' and '$(Configuration)' == 'Debug'">15.0</Dev>
+    <Dev Condition="'$(Dev)' == '' and '$(Configuration)' == 'Release'">14.0</Dev>
+    <AdditionalProperties>Configuration=$(Configuration);Dev=$(Dev)</AdditionalProperties>
+    <Out Condition="'$(Out)' == ''">out</Out>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="GitInfo" Version="*" />
-		<PackageReference Include="xunit.runner.console" Version="2.3.0-beta3-build3705" />
+		<PackageReference Include="xunit.runner.console" Version="2.3.0-beta4-build3742" />
 	</ItemGroup>
 
 	<ItemDefinitionGroup>
@@ -36,7 +38,7 @@
 									  Condition="$([System.String]::new('%(Filename)').Contains('Acceptance')) == 'false' And '%(Filename)' != 'Roslyn.Services.Editor.UnitTests'" />
 		</ItemGroup>
 
-		<Exec Command='"$(XunitConsolePathX86)" "%(TestAssembly.FullPath)" $(XunitOptions) -html "$(Out)\%(TestAssembly.Filename).html" -xml "$(Out)\%(TestAssembly.Filename).xml"'
+		<Exec Command='"$(XunitConsolePath)" "%(TestAssembly.FullPath)" $(XunitOptions) -html "$(Out)\%(TestAssembly.Filename).html" -xml "$(Out)\%(TestAssembly.Filename).xml"'
 			  Condition="'@(TestAssembly)' != ''"/>
 	</Target>
 

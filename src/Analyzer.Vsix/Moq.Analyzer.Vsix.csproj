@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net461;net462</TargetFrameworks>
-		<TargetFramework Condition="'$(BuildingInsideVisualStudio)' != 'true'">net461</TargetFramework>
+		<TargetFramework>net462</TargetFramework>
 
 		<GeneratePkgDefFile>false</GeneratePkgDefFile>
 		<IncludeAssemblyInVSIXContainer>false</IncludeAssemblyInVSIXContainer>

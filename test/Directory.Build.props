@@ -9,8 +9,9 @@
 
 	<ItemGroup Condition="'$(IncludeXunit)' == 'true'">
 		<PackageReference Include="xunit" Version="2.2.0" />
-    <PackageReference Include="xunit.runner.console" Version="2.3.0-beta1-build3642" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
+    <PackageReference Include="xunit.runner.console" Version="2.3.0-beta4-build3742" />
+    <PackageReference Include="NETStandard.Library" Version="2.0.0" />
   </ItemGroup>
 
   <Import Project="..\Directory.Build.props" />
