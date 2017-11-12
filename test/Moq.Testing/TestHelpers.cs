@@ -36,6 +36,8 @@ static partial class TestHelpers
         //The location of the .NET assemblies
         var frameworkPath = Path.GetDirectoryName(typeof(object).Assembly.Location);
         var netstandardPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @".nuget\packages\NETStandard.Library\2.0.0\build\netstandard2.0\ref");
+        if (!Directory.Exists(netstandardPath))
+            netstandardPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), @"dotnet\sdk\NuGetFallbackFolder\netstandard.library\2.0.0\build\netstandard2.0\ref");
 
         var referencePaths = Directory.EnumerateFiles(netstandardPath, "*.dll")
             .Concat(ReferencePaths.Paths)
