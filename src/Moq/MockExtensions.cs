@@ -3,6 +3,7 @@ using Moq.Sdk;
 using System.Reflection;
 using System.ComponentModel;
 using System;
+using System.Linq;
 
 namespace Moq
 {
@@ -53,7 +54,7 @@ namespace Moq
                             return result;
                         }
                         ,
-                        "Callback")
+                        "Callback", "Callback.After")
                    );
                 }
                 else
@@ -64,7 +65,7 @@ namespace Moq
                             callback();
                             return next()(mi, next);
                         },
-                        "Callback")
+                        "Callback", "Callback")
                    );
                 }
             }
@@ -83,10 +84,20 @@ namespace Moq
                 var mock = ((IMocked)setup.Invocation.Target).Mock;
                 mock.Invocations.Remove(setup.Invocation);
                 var behavior = mock.BehaviorFor(setup);
-                behavior.Behaviors.Insert(0, new InvocationBehavior(
-                    (mi, next) => mi.CreateValueReturn(value, mi.Arguments),
-                    "Returns")
-                );
+                var returnBehavior = behavior.Behaviors.OfType<ReturnsInvocationBehavior>().FirstOrDefault();
+                if (returnBehavior != null)
+                {
+                    returnBehavior.ReturnValue.ValueGetter = () => value;
+                }
+                else
+                {
+                    var returnValue = new ReturnValue(() => value);
+                    behavior.Behaviors.Add(new ReturnsInvocationBehavior(
+                        (mi, next) => mi.CreateValueReturn(returnValue.ValueGetter(), mi.Arguments),
+                        returnValue,
+                        "Returns")
+                    );
+                }
             }
 
             return default(TResult);
@@ -105,10 +116,20 @@ namespace Moq
                 var mock = ((IMocked)setup.Invocation.Target).Mock;
                 mock.Invocations.Remove(setup.Invocation);
                 var behavior = mock.BehaviorFor(setup);
-                behavior.Behaviors.Insert(0, new InvocationBehavior(
-                    (mi, next) => mi.CreateValueReturn(value(), mi.Arguments),
-                    "Returns")
-               );
+                var returnBehavior = behavior.Behaviors.OfType<ReturnsInvocationBehavior>().FirstOrDefault();
+                if (returnBehavior != null)
+                {
+                    returnBehavior.ReturnValue.ValueGetter = () => value();
+                }
+                else
+                {
+                    var returnValue = new ReturnValue(() => value());
+                    behavior.Behaviors.Add(new ReturnsInvocationBehavior(
+                        (mi, next) => mi.CreateValueReturn(returnValue.ValueGetter(), mi.Arguments),
+                        returnValue,
+                        "Returns")
+                    );
+                }
             }
 
             return default(TResult);
@@ -152,7 +173,7 @@ namespace Moq
                 mock.Invocations.Remove(setup.Invocation);
                 var mockBehavior = mock.BehaviorFor(setup);
 
-                mockBehavior.Behaviors.Add(new InvocationBehavior(behavior, "Returns"));
+                mockBehavior.Behaviors.Add(new InvocationBehavior(behavior, "Returns", "Returns"));
             }
 
             return default(TResult);
