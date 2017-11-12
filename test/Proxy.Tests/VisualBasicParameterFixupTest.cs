@@ -9,7 +9,7 @@ using static TestHelpers;
 
 namespace Moq.Proxy.Tests
 {
-    class VisualBasicParameterFixupTest
+    public class VisualBasicParameterFixupTest
     {
 
         [Fact]

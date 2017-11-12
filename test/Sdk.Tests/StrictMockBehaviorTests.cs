@@ -2,7 +2,7 @@
 
 namespace Moq.Sdk.Tests
 {
-    class StrictMockBehaviorTests
+    public class StrictMockBehaviorTests
     {
         [Fact]
         public void ThrowsStrictMockException()

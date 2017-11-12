@@ -14,7 +14,7 @@ namespace Moq.Proxy.Tests
 
             proxy.AddBehavior((m, n) => null);
 
-            Assert.Equal(1, proxy.Behaviors.Count);
+            Assert.Single(proxy.Behaviors);
         }
 
         [Fact]
@@ -34,7 +34,7 @@ namespace Moq.Proxy.Tests
 
             proxy.AddBehavior(new TestProxyBehavior());
 
-            Assert.Equal(1, proxy.Behaviors.Count);
+            Assert.Single(proxy.Behaviors);
         }
 
         [Fact]
@@ -44,7 +44,7 @@ namespace Moq.Proxy.Tests
 
             proxy.AddBehavior((m, n) => null);
 
-            Assert.Equal(1, ((IProxy)proxy).Behaviors.Count);
+            Assert.Single(((IProxy)proxy).Behaviors);
         }
 
         [Fact]
@@ -64,7 +64,7 @@ namespace Moq.Proxy.Tests
 
             proxy.AddBehavior(new TestProxyBehavior());
 
-            Assert.Equal(1, ((IProxy)proxy).Behaviors.Count);
+            Assert.Single(((IProxy)proxy).Behaviors);
         }
 
         [Fact]

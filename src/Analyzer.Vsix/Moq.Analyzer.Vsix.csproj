@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net462</TargetFramework>
+		<TargetFramework>net47</TargetFramework>
 
 		<GeneratePkgDefFile>false</GeneratePkgDefFile>
 		<IncludeAssemblyInVSIXContainer>false</IncludeAssemblyInVSIXContainer>
@@ -28,7 +28,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.VSSDK.BuildTools" Version="15.1.192" Condition="'$(BuildingInsideVisualStudio)' != 'true'" />
-		<PackageReference Include="Xamarin.VSSDK.BuildTools" Version="0.2.1-alpha-build0001" />
+		<PackageReference Include="Xamarin.VSSDK.BuildTools" Version="0.2.1-alpha-build0012" />
 	</ItemGroup>
 
 	<ItemGroup>

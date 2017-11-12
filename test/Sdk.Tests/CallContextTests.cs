@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Moq.Sdk.Tests
 {
-    class CallContextTests
+    public class CallContextTests
     {
         [Fact]
         public void WhenFlowingData_ThenCanUseContext()

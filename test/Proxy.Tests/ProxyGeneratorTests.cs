@@ -65,10 +65,10 @@ namespace Moq.Proxy.Tests
 
             Assert.NotNull(proxyType);
 
-            Assert.True(proxyType.GetTypeInfo().DeclaredMethods.Any(m =>
+            Assert.Contains(proxyType.GetTypeInfo().DeclaredMethods, m =>
                 m.Name == nameof(object.GetHashCode) ||
                 m.Name == nameof(object.ToString) ||
-                m.Name == nameof(object.Equals)));
+                m.Name == nameof(object.Equals));
         }
 
         [Fact]

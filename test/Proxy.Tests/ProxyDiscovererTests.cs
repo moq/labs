@@ -57,7 +57,7 @@ namespace Moq.Proxy.Tests
             };
 
             Assert.True(task.Execute());
-            Assert.Equal(1, task.Proxies.Count());
+            Assert.Single(task.Proxies);
         }
     }
 }

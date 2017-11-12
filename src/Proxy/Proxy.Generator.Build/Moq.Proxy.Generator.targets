@@ -47,7 +47,8 @@
 						 AdditionalInterfaces="@(AdditionalProxyInterface)"
 						 AdditionalProxies="@(AdditionalProxyForType)"
 						 AdditionalGenerators="@(AdditionalProxyGenerator)"
-						 ToolPath="$(PGenPath)"
+						 ToolPath="$(PGenPath.TrimEnd('\').TrimEnd('/'))"
+             WorkingDirectory="$(PGenPath.TrimEnd('\').TrimEnd('/'))"
 						 Debug="$(DebugPGen)"/>
   </Target>
 

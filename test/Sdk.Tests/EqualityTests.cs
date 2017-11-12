@@ -142,8 +142,8 @@ namespace Moq.Sdk.Tests
             var hash = new HashSet<IMockSetup>();
             Assert.True(hash.Add(setup));
             Assert.False(hash.Add(other));
-            Assert.True(hash.Contains(setup));
-            Assert.True(hash.Contains(other));
+            Assert.Contains(setup, hash);
+            Assert.Contains(other, hash);
 
             Assert.False(setup.Equals(
                 new MockSetup(new MethodInvocation(new object(), method, args), new[] { any, conditional, value })));

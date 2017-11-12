@@ -28,7 +28,7 @@ namespace Moq.Sdk.Tests
 #endif
             var task = new GenerateProxies
             {
-                BuildEngine = new MockBuildEngine(output),
+                BuildEngine = new MockBuildEngine(output, true),
                 LanguageName = languageName,
                 ToolPath = new DirectoryInfo($@"..\..\..\..\src\Proxy\Proxy.Generator.Console\bin\{config}").FullName,
                 OutputPath = new DirectoryInfo(".").FullName,
@@ -40,7 +40,7 @@ namespace Moq.Sdk.Tests
             };
 
             Assert.True(task.Execute());
-            Assert.Equal(1, task.Proxies.Count());
+            Assert.Single(task.Proxies);
 
             var (workspace, project) = CreateWorkspaceAndProject(languageName);
             var compilation = await project.GetCompilationAsync(TimeoutToken(5));

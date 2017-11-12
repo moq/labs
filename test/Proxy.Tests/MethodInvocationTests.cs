@@ -2,6 +2,7 @@
 
 namespace Moq.Proxy.Tests
 {
+#pragma warning disable xUnit1013 // Public method should be marked as test
     public class MethodInvocationTests
     {
         public void Do() { }
@@ -112,4 +113,5 @@ namespace Moq.Proxy.Tests
             Assert.Equal("void DoOut(out int value)", actual);
         }
     }
+#pragma warning restore xUnit1013 // Public method should be marked as test
 }

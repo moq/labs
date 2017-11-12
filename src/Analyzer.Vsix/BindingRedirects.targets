@@ -7,7 +7,7 @@
 		<BindingRedirectFusionExpr>^Microsoft.CodeAnalysis|^System.Composition</BindingRedirectFusionExpr>
 		<!-- Whether to use 99.9.9.9 as the old version max range if no %(BindingRedirected.OldVersionTo) is found. 
 			 If not specified, the determined fusion version of the resolved @(ReferencePath) will be used instead. -->
-		<BindingRedirectAllVersions Condition="'$(BindingRedirectAllVersions)' == ''">true</BindingRedirectAllVersions>
+		<BindingRedirectAllVersions Condition="'$(BindingRedirectAllVersions)' == ''">false</BindingRedirectAllVersions>
 	</PropertyGroup>
 
 	<Target Name="SetupBindingRedirects">

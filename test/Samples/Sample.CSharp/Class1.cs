@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using Moq;
 using Moq.Proxy;
 
 namespace Sample.CSharp
@@ -9,9 +10,31 @@ namespace Sample.CSharp
         public void Test()
         {
             var mock = Mock.Of<ICustomFormatter, IDisposable>();
+            var foo = Mock.Of<IFoo>();
+            var bar = Mock.Of<IBar>();
 
+            var value = "foo";
+
+            foo.Id
+                .Callback(() => value = "before")
+                .Returns(() => value)
+                .Callback(() => value = "after")
+                .Returns(() => value);
+
+            Console.WriteLine(foo.Id);
+            Console.WriteLine(foo.Id);
         }
     }
+}
+
+public interface IBar
+{
+}
+
+public interface IFoo
+{
+    string Id { get; }
+    string Title { get; set; }
 }
 
 static class Mock

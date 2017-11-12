@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net461</TargetFramework>
+		<TargetFramework>net47</TargetFramework>
 		<RootNamespace>Moq.Proxy</RootNamespace>
 		<IncludeRoslyn>true</IncludeRoslyn>
 	</PropertyGroup>
@@ -8,11 +8,11 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CSharp" Version="4.3.0" />
 
-		<PackageReference Include="Roslynator" Version="0.2.7" />
+		<PackageReference Include="Roslynator" Version="0.2.8" />
 		<PackageReference Include="System.IO.Compression" Version="4.3.0" />
 		<PackageReference Include="netfx-System.StringResources" Version="3.1.8" />
-		<PackageReference Include="System.ValueTuple" Version="4.3.0" />
-	</ItemGroup>
+    <PackageReference Include="System.ValueTuple" Version="4.4.0" />
+  </ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Proxy.Sdk\Moq.Proxy.Sdk.csproj" />

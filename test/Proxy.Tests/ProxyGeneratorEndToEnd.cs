@@ -12,7 +12,7 @@ using static TestHelpers;
 
 namespace Moq.Proxy.Tests
 {
-    class ProxyGeneratorEndToEnd
+    public class ProxyGeneratorEndToEnd
     {
         ITestOutputHelper output;
 

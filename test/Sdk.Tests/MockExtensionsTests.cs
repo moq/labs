@@ -15,7 +15,7 @@ namespace Moq.Sdk.Tests
 
             mock.AddBehavior((m, n) => null, m => true);
 
-            Assert.Equal(1, mock.Mock.Behaviors.Count);
+            Assert.Single(mock.Mock.Behaviors);
         }
 
         [Fact]
@@ -25,7 +25,7 @@ namespace Moq.Sdk.Tests
 
             mock.AddBehavior(new TestMockBehavior());
 
-            Assert.Equal(1, mock.Mock.Behaviors.Count);
+            Assert.Single(mock.Mock.Behaviors);
         }
 
         [Fact]
@@ -35,7 +35,7 @@ namespace Moq.Sdk.Tests
 
             mock.AddBehavior((m, n) => null, m => true);
 
-            Assert.Equal(1, ((IMocked)mock).Mock.Behaviors.Count);
+            Assert.Single(((IMocked)mock).Mock.Behaviors);
         }
 
         [Fact]
@@ -45,7 +45,7 @@ namespace Moq.Sdk.Tests
 
             mock.AddBehavior(new TestMockBehavior());
 
-            Assert.Equal(1, ((IMocked)mock).Mock.Behaviors.Count);
+            Assert.Single(((IMocked)mock).Mock.Behaviors);
         }
 
         [Fact]
