@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.VisualBasic;
-using Moq.Proxy;
+using Stunts;
 using Xunit;
 using static TestHelpers;
 
 static class DynamicProxy
 {
-    static AdhocWorkspace workspace = new AdhocWorkspace(ProxyGenerator.CreateHost());
+    static AdhocWorkspace workspace = new AdhocWorkspace();
 
     public static Task<T> Of<T>(string language, bool save = false)
         => Of<T>(language, new Type[0], save);

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.10
+VisualStudioVersion = 15.0.27110.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Sdk", "Sdk\Moq.Sdk.csproj", "{234A39D6-6265-462D-A482-6A22BD351718}"
 EndProject
@@ -21,8 +21,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Proxy.Tests", "..\test\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Analyzer", "Analyzer\Moq.Analyzer.csproj", "{D6C737CA-5E8C-49F2-96DA-4062264D6866}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Analyzer.Vsix", "Analyzer.Vsix\Moq.Analyzer.Vsix.csproj", "{D54839E8-325E-4994-86BC-1079516CB245}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{072E955D-AE09-41B0-810C-7A005CF276CA}"
 	ProjectSection(SolutionItems) = preProject
 		..\appveyor.yml = ..\appveyor.yml
@@ -40,6 +38,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Proxy.Sdk", "Proxy\Proxy.Sdk\Moq.Proxy.Sdk.csproj", "{8E379F7D-D919-4104-AB74-B5C071EBD0A4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Sdk.Generator", "Sdk.Generator\Moq.Sdk.Generator.csproj", "{00D2D86C-1B49-4E6A-A659-30DBC01F9761}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Proxy.Internal", "Proxy\Proxy.Internal\Moq.Proxy.Internal.csproj", "{FE12FA41-C5F8-4E38-AB9B-A70F20AD9011}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -82,10 +82,6 @@ Global
 		{D6C737CA-5E8C-49F2-96DA-4062264D6866}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6C737CA-5E8C-49F2-96DA-4062264D6866}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6C737CA-5E8C-49F2-96DA-4062264D6866}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D54839E8-325E-4994-86BC-1079516CB245}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D54839E8-325E-4994-86BC-1079516CB245}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D54839E8-325E-4994-86BC-1079516CB245}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D54839E8-325E-4994-86BC-1079516CB245}.Release|Any CPU.Build.0 = Release|Any CPU
 		{886905FA-99B0-48E8-BD3E-6C6ED96CE69F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{886905FA-99B0-48E8-BD3E-6C6ED96CE69F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{886905FA-99B0-48E8-BD3E-6C6ED96CE69F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -98,6 +94,10 @@ Global
 		{00D2D86C-1B49-4E6A-A659-30DBC01F9761}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00D2D86C-1B49-4E6A-A659-30DBC01F9761}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{00D2D86C-1B49-4E6A-A659-30DBC01F9761}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE12FA41-C5F8-4E38-AB9B-A70F20AD9011}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE12FA41-C5F8-4E38-AB9B-A70F20AD9011}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE12FA41-C5F8-4E38-AB9B-A70F20AD9011}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE12FA41-C5F8-4E38-AB9B-A70F20AD9011}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

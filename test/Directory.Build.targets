@@ -2,11 +2,11 @@
 	<PropertyGroup>
 		<MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
 		<ReferencePathsFile>$(IntermediateOutputPath)ReferencePaths.g.cs</ReferencePathsFile>
-		<CoreCompileDependsOn Condition="'$(Language)' == 'C#'">
-			$(CoreCompileDependsOn);
-			GenerateReferencePaths;
-		</CoreCompileDependsOn>
-	</PropertyGroup>
+    <CoreCompileDependsOn Condition="'$(Language)' == 'C#'">
+      $(CoreCompileDependsOn);
+      GenerateReferencePaths;
+    </CoreCompileDependsOn>
+  </PropertyGroup>
 
 	<ItemDefinitionGroup>
 		<ReferencePath>
@@ -14,52 +14,6 @@
 			<FusionName/>
 		</ReferencePath>
 	</ItemDefinitionGroup>
-
-	<ItemGroup>
-		<ProxyReference Include="Moq" />
-		<ProxyReference Include="ManualProxies" />
-		<ProxyReference Include="mscorlib" />
-		<ProxyReference Include="System" />
-	</ItemGroup>
-
-	<Target Name="GenerateReferencePaths"
-			DependsOnTargets="ResolveReferences"
-			Inputs="@(ReferencePath);$(TargetPath);$(MSBuildAllProjects)"
-			Outputs="$(ReferencePathsFile)">
-
-		<FilterReferences References="@(ReferencePath)" Filter="@(ProxyReference)">
-			<Output TaskParameter="Filtered" ItemName="_FilteredReferencePath" />
-		</FilterReferences>
-
-		<WriteLinesToFile File="$(ReferencePathsFile)"
-						  Overwrite="true"
-						  Lines='static class ReferencePaths
-{
-  public static string[] Paths = new[]
-  { '/>
-
-		<WriteLinesToFile File="$(ReferencePathsFile)"
-                      Overwrite="false"
-                      Lines='
-    @"%(_FilteredReferencePath.FullPath)",'/>
-
-		<WriteLinesToFile File="$(ReferencePathsFile)"
-						  Condition="'$(IncludeTargetPath)' != 'false'"
-						  Overwrite="false"
-						  Lines='
-    @"$(TargetPath)",'/>
-
-		<WriteLinesToFile File="$(ReferencePathsFile)" Overwrite="false"
-							  Lines='
-  }%3B
-}'/>
-
-		<ItemGroup>
-			<FileWrites Include="$(ReferencePathsFile)" />
-			<Compile Include="$(ReferencePathsFile)" />
-		</ItemGroup>
-
-	</Target>
 
 	<Target Name="Test">
 		<PropertyGroup>
@@ -69,7 +23,55 @@
 		<Exec Command="$(XunitConsolePath) $(TargetPath) $(XunitOptions)" />
 	</Target>
 
-	<UsingTask TaskName="FilterReferences" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+  <ItemGroup>
+    <IncludeReferenceFilter Include="mscorlib" />
+    <IncludeReferenceFilter Include="System" />
+    <IncludeReferenceFilter Include="Moq" />
+    <IncludeReferenceFilter Include="Stunt" />
+    <IncludeReferenceFilter Include="ManualProxies" />
+  </ItemGroup>
+
+  <Target Name="GenerateReferencePaths"
+    AfterTargets="ResolveReferences"
+    Condition="'$(Language)' == 'C#'"
+    Inputs="@(ReferencePath);$(TargetPath);$(MSBuildAllProjects)"
+    Outputs="$(ReferencePathsFile)">
+
+    <FilterReferences References="@(ReferencePath)" Filter="@(IncludeReferenceFilter)">
+      <Output TaskParameter="Filtered" ItemName="_FilteredReferencePath" />
+    </FilterReferences>
+
+    <WriteLinesToFile File="$(ReferencePathsFile)"
+						  Overwrite="true"
+						  Lines='static class ReferencePaths
+{
+  public static string[] Paths = new[]
+  { '/>
+
+    <WriteLinesToFile File="$(ReferencePathsFile)"
+                      Overwrite="false"
+                      Lines='
+    @"%(_FilteredReferencePath.FullPath)",'/>
+
+    <WriteLinesToFile File="$(ReferencePathsFile)"
+						  Condition="'$(IncludeTargetPath)' != 'false'"
+						  Overwrite="false"
+						  Lines='
+    @"$(TargetPath)",'/>
+
+    <WriteLinesToFile File="$(ReferencePathsFile)" Overwrite="false"
+							  Lines='
+  }%3B
+}'/>
+
+    <ItemGroup>
+      <FileWrites Include="$(ReferencePathsFile)" />
+      <Compile Include="$(ReferencePathsFile)" />
+    </ItemGroup>
+
+  </Target>
+
+  <UsingTask TaskName="FilterReferences" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
 		<ParameterGroup>
 			<References ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
 			<Filter ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />

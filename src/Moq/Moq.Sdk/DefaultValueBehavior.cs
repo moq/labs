@@ -1,15 +1,15 @@
 ﻿using System.Linq;
 using System.Reflection;
-using Moq.Proxy;
+using Stunts;
 
 namespace Moq.Sdk
 {
     /// <summary>
-    /// A <see cref="IProxyBehavior"/> that returns default values from an 
+    /// A <see cref="IStuntBehavior"/> that returns default values from an 
     /// invocation, both for the method return type as well as any out/ref 
     /// parameters.
     /// </summary>
-    public class DefaultValueBehavior : IProxyBehavior
+    public class DefaultValueBehavior : IStuntBehavior
     {
         /// <summary>
         /// Always returns <see langword="true" />
