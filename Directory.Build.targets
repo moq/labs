@@ -5,26 +5,5 @@
 	  <MSBuildAllProjects Condition="Exists('$(_ProjectTargets)')">$(MSBuildAllProjects);$(_ProjectTargets)</MSBuildAllProjects>
   </PropertyGroup>
 
-	<!-- Cleanup invalid warnings from fake duplicates -->
-	<Target Name="_ClearPackageFileConflicts" BeforeTargets="_HandlePackageFileConflicts">
-		<ItemGroup>
-			<_ReferenceCopyLocalPaths Include="@(ReferenceCopyLocalPaths)" />
-			<_FileDefinitions Include="@(FileDefinitions)" />
-			<_AllCopyLocalItems Include="@(AllCopyLocalItems)" />
-
-			<ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" />
-			<FileDefinitions Remove="@(FileDefinitions)" />
-			<AllCopyLocalItems Remove="@(AllCopyLocalItems)" />
-		</ItemGroup>
-	</Target>
-
-	<Target Name="_RestorePackageFileConflicts" AfterTargets="_HandlePackageFileConflicts">
-		<ItemGroup>
-			<ReferenceCopyLocalPaths Include="@(_ReferenceCopyLocalPaths)" />
-			<FileDefinitions Include="@(_FileDefinitions)" />
-			<AllCopyLocalItems Include="@(_AllCopyLocalItems)" />
-		</ItemGroup>
-	</Target>
-
-	<Import Project="$(_ProjectTargets)" Condition="'$(MSBuildProjectExtension)' != '.props' And Exists('$(_ProjectTargets)')" />
+	<Import Project="$(_ProjectTargets)" Condition="'$(MSBuildProjectExtension)' != '.targets' And Exists('$(_ProjectTargets)')" />
 </Project>
