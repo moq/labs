@@ -12,7 +12,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="GitInfo" Version="*" />
-		<PackageReference Include="xunit.runner.console" Version="2.3.0-beta4-build3742" />
+		<PackageReference Include="xunit.runner.console" Version="2.3.1" />
 	</ItemGroup>
 
 	<ItemDefinitionGroup>
