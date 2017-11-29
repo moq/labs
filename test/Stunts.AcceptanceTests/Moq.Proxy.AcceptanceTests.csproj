@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net461</TargetFramework>
+		<IncludeXunit>true</IncludeXunit>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="*" />
+		<PackageReference Include="EntityFramework" Version="6.*" />
+		<PackageReference Include="Microsoft.AspNet.Mvc" Version="*" />
+		<PackageReference Include="Microsoft.AspNet.WebApi" Version="*" />
+
+		<PackageReference Include="Roslynator" Version="0.2.10" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\src\Proxy\Proxy\Moq.Proxy.csproj" />
+		<ProjectReference Include="..\..\src\Proxy\Proxy.Generator\Moq.Proxy.Generator.csproj" />
+		<ProjectReference Include="..\..\src\Proxy\Proxy.Generator.Build\Moq.Proxy.Generator.Build.csproj" />
+		<ProjectReference Include="..\..\src\Proxy\Proxy.Generator.Console\Moq.Proxy.Generator.Console.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="System.Configuration" />
+		<Reference Include="System.Transactions" />
+	</ItemGroup>
+
+	<Import Project="..\Moq.Testing\Moq.Testing.projitems" Label="Shared" />
+
+</Project>

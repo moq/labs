@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net471</TargetFramework>
+    <AssemblyName>Roslyn.VisualStudio.Services.UnitTests</AssemblyName>
+    <RootNamespace>Microsoft.CodeAnalysisiagnostics</RootNamespace>
+    <IncludeRoslyn>true</IncludeRoslyn>
+
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>$(MSBuildProjectDirectory)\RoslynInternalKey.Private.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+
+</Project>

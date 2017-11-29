@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net471</TargetFramework>
+		<IncludeXunit>true</IncludeXunit>
+    <EnableDefaultItems>false</EnableDefaultItems>
+  </PropertyGroup>
+
+	<ItemGroup>
+	  <Compile Include="..\..\src\Stunts\Stunts\contentFiles\cs\netstandard1.3\Stunt.cs" Link="Stunt.cs" />
+	  <Compile Include="..\Moq.Testing\AssertCode.cs" Link="Helpers\AssertCode.cs" />
+	  <Compile Include="..\Moq.Testing\MockBuildEngine.cs" Link="Helpers\MockBuildEngine.cs" />
+	  <Compile Include="..\Moq.Testing\RecordingBehavior.cs" Link="Helpers\RecordingBehavior.cs" />
+	  <Compile Include="..\Moq.Testing\TestHelpers.cs" Link="Helpers\TestHelpers.cs" />
+	  <Compile Include="..\Moq.Testing\TestOutputLogger.cs" Link="Helpers\TestOutputLogger.cs" />
+	  <Compile Include="BehaviorPipelineTests.cs" />
+	  <Compile Include="DefaultEqualityBehaviorTests.cs" />
+	  <Compile Include="DefaultValueBehaviorTests.cs" />
+	  <Compile Include="DynamicStunt.cs" />
+	  <Compile Include="GlobalSuppressions.cs" />
+	  <Compile Include="ManualStuntTest.cs" />
+	  <Compile Include="MethodInvocationTests.cs" />
+	  <Compile Include="StuntDiscovererTests.cs" />
+	  <Compile Include="StuntExtensionsTests.cs" />
+	  <Compile Include="StuntGeneratorEndToEnd.cs" />
+	  <Compile Include="StuntGeneratorTests.cs" />
+	  <Compile Include="VisualBasicParameterFixupTest.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+    <None Include="StuntDiscovererTests.Compile.vb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="StuntDiscovererTests.Compile.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+	<ItemGroup>
+    <ProjectReference Include="..\..\src\Stunts\Stunts\Stunts.csproj" />
+    <ProjectReference Include="..\..\src\Stunts\Stunts.Internal\Stunts.Internal.csproj" />
+    <ProjectReference Include="..\..\src\Stunts\Stunts.Sdk\Stunts.Sdk.csproj" />
+    <ProjectReference Include="..\ManualStunts\ManualStunts.csproj" />
+  </ItemGroup>
+
+</Project>

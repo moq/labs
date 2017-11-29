@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net471</TargetFramework>
+    <OptionStrict>On</OptionStrict>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\..\src\Stunts\Stunts\contentFiles\vb\netstandard1.3\Stunt.vb" Link="Stunt.vb" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Stunts\Stunts\Stunts.csproj" />
+  </ItemGroup>
+
+</Project>

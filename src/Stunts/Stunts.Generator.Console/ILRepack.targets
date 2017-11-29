@@ -1,0 +1,37 @@
+﻿<Project>
+
+  <Target Name="ILRepack" 
+          AfterTargets="CoreCompile" 
+          DependsOnTargets="ResolveReferences;CoreCompile" 
+          Inputs="@(IntermediateAssembly->'%(FullPath)')" 
+          Outputs="$(IntermediateOutputPath)ilrepack.txt" 
+          Returns="@(MergedAssemblies)" 
+          Condition="Exists(@(IntermediateAssembly->'%(FullPath)')) and '$(ILRepack)' != 'false'">
+
+    <GetReferenceAssemblyPaths BypassFrameworkInstallChecks="False" TargetFrameworkMoniker="$(TargetFrameworkMoniker)">
+      <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FullFrameworkReferenceAssemblyPaths" />
+    </GetReferenceAssemblyPaths>
+    
+    <ItemGroup>
+      <MergedAssemblies Include="@(ReferencePath)" 
+                        Condition="$([MSBuild]::ValueOrDefault('%(ResolvedFrom)', '')) != '{TargetFrameworkDirectory}' and 
+                                   $([MSBuild]::ValueOrDefault('%(ResolvedFrom)', '')) != 'ImplicitlyExpandDesignTimeFacades'" />
+    </ItemGroup>
+    
+    <PropertyGroup>
+      <ILRepackArgs Condition="'$(AssemblyOriginatorKeyFile)' != ''">/keyfile:"$(AssemblyOriginatorKeyFile)"</ILRepackArgs>
+      <ILRepackMain>"@(IntermediateAssembly->'%(FullPath)')"</ILRepackMain>
+      <ILRepackRefs>@(MergedAssemblies->'"%(FullPath)"', ' ')</ILRepackRefs>
+    </PropertyGroup>
+
+    <Exec Command="&quot;$(ILRepack)&quot; $(ILRepackArgs) /out:$(ILRepackMain) $(ILRepackMain) $(ILRepackRefs)" 
+          WorkingDirectory="$(MSBuildProjectDirectory)\$(OutputPath)" 
+          StandardErrorImportance="high" 
+          StandardOutputImportance="low" 
+          ConsoleToMSBuild="true" />
+
+    <!-- To avoid running unnecessarily if input assembly isn't newer than our generated txt file -->
+    <Touch AlwaysCreate="true" Files="$(IntermediateOutputPath)ilrepack.txt" />
+  </Target>
+
+</Project>
