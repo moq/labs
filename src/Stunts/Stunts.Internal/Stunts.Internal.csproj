@@ -11,6 +11,8 @@
 
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>$(MSBuildProjectDirectory)\RoslynInternalKey.Private.snk</AssemblyOriginatorKeyFile>
+
+    <PrimaryOutputKind>Analyzers</PrimaryOutputKind>
   </PropertyGroup>
 
 </Project>

@@ -61,7 +61,7 @@ namespace Stunts.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Only classes and interfaces can be used in stunts. Invalid set of symbols: {0}..
+        ///   Looks up a localized string similar to Only classes and interfaces can be used. Invalid set of symbols: {0}..
         /// </summary>
         internal static string InvalidStuntTypes {
             get {
@@ -79,11 +79,11 @@ namespace Stunts.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Only one base type can be specified for a stunt to generate and it must be the first type in the list. Invalid set of symbols: {0}..
+        ///   Looks up a localized string similar to Only one base class can be specified, and it must be the first in the type list. Invalid set of symbols: {0}..
         /// </summary>
-        internal static string WrongStuntBaseType {
+        internal static string WrongBaseType {
             get {
-                return ResourceManager.GetString("WrongStuntBaseType", resourceCulture);
+                return ResourceManager.GetString("WrongBaseType", resourceCulture);
             }
         }
     }

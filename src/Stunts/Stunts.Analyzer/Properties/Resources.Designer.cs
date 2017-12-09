@@ -88,7 +88,7 @@ namespace Stunts.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invoked method requires a proxy to be generated at design-time or compile-time..
+        ///   Looks up a localized string similar to Invoked method requires a stunt to be generated at design-time or compile-time..
         /// </summary>
         internal static string MissingStuntAnalyzer_Description {
             get {
@@ -156,15 +156,6 @@ namespace Stunts.Properties {
         internal static string UpdateStuntCodeFix_Title {
             get {
                 return ResourceManager.GetString("UpdateStuntCodeFix_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Only one base type can be specified for a stunt to generate and it must be the first type in the list. Invalid set of symbols: {0}..
-        /// </summary>
-        internal static string WrongStuntBaseType {
-            get {
-                return ResourceManager.GetString("WrongStuntBaseType", resourceCulture);
             }
         }
     }

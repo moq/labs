@@ -127,7 +127,7 @@
     <value>Only classes and interfaces can be used in stunts. Invalid set of symbols: {0}.</value>
   </data>
   <data name="MissingStuntAnalyzer_Description" xml:space="preserve">
-    <value>Invoked method requires a proxy to be generated at design-time or compile-time.</value>
+    <value>Invoked method requires a stunt to be generated at design-time or compile-time.</value>
   </data>
   <data name="MissingStuntAnalyzer_Message" xml:space="preserve">
     <value>A corresponding stunt was not found in the current compilation.</value>
@@ -149,8 +149,5 @@
   </data>
   <data name="UpdateStuntCodeFix_Title" xml:space="preserve">
     <value>Update Stunt</value>
-  </data>
-  <data name="WrongStuntBaseType" xml:space="preserve">
-    <value>Only one base type can be specified for a stunt to generate and it must be the first type in the list. Invalid set of symbols: {0}.</value>
   </data>
 </root>

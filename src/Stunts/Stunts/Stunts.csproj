@@ -1,5 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard1.3</TargetFramework>
+
+    <!-- Avoid restore graph errors since the main packaging project also has implicit PackageId=Stunts -->
+    <PackageId>Stunts.Core</PackageId>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="contentFiles\**\*.cs" />
+    <None Remove="contentFiles\**\*.*" />
+    <None Include="contentFiles\**\*.*" Pack="true" />
+  </ItemGroup>
 </Project>

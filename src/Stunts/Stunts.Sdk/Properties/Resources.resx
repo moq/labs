@@ -118,12 +118,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="InvalidStuntTypes" xml:space="preserve">
-    <value>Only classes and interfaces can be used in stunts. Invalid set of symbols: {0}.</value>
+    <value>Only classes and interfaces can be used. Invalid set of symbols: {0}.</value>
   </data>
   <data name="StuntsRequired" xml:space="preserve">
     <value>Project '{0}' does not reference the required Stunts assembly.</value>
   </data>
-  <data name="WrongStuntBaseType" xml:space="preserve">
-    <value>Only one base type can be specified for a stunt to generate and it must be the first type in the list. Invalid set of symbols: {0}.</value>
+  <data name="WrongBaseType" xml:space="preserve">
+    <value>Only one base class can be specified, and it must be the first in the type list. Invalid set of symbols: {0}.</value>
   </data>
 </root>

@@ -11,22 +11,27 @@ using Microsoft.CodeAnalysis.Simplification;
 
 namespace Stunts
 {
-    class StuntCodeAction : CodeAction
+    public class StuntCodeAction : CodeAction
     {
         string title;
         readonly Document document;
         readonly Diagnostic diagnostic;
         readonly SyntaxNode invocation;
+        readonly NamingConvention naming;
 
-        public StuntCodeAction(string title, Document document, Diagnostic diagnostic, SyntaxNode invocation)
+        public StuntCodeAction(string title, Document document, Diagnostic diagnostic, SyntaxNode invocation, NamingConvention naming)
         {
             this.title = title;
             this.document = document;
             this.diagnostic = diagnostic;
             this.invocation = invocation;
+            this.naming = naming;
         }
 
         public override string Title => title;
+
+        protected virtual StuntGenerator CreateGenerator(NamingConvention naming) => new StuntGenerator(naming);
+
 
         protected override async Task<Solution> GetChangedSolutionAsync(CancellationToken cancellationToken)
         {
@@ -43,7 +48,7 @@ namespace Stunts
             {
                 var method = (IMethodSymbol)symbol.Symbol;
                 var generator = SyntaxGenerator.GetGenerator(document.Project);
-                var stunts = new StuntGenerator();
+                var stunts = CreateGenerator(naming);
 
                 var (name, syntax) = stunts.CreateStunt(
                     method.TypeArguments.OfType<INamedTypeSymbol>().First(),
@@ -51,14 +56,15 @@ namespace Stunts
 
                 // TODO: F#
                 var extension = document.Project.Language == LanguageNames.CSharp ? ".cs" : ".vb";
-                var file = Path.Combine(Path.GetDirectoryName(document.Project.FilePath), StuntNaming.StuntsNamespace, name + extension);
+                var file = Path.Combine(Path.GetDirectoryName(document.Project.FilePath), naming.Namespace, name + extension);
+                var folders = naming.Namespace.Split('.');
 
-                var stuntDoc = document.Project.Documents.FirstOrDefault(d => d.Name == Path.GetFileName(file) && d.Folders.SequenceEqual(new[] { "Stunts" }));
+                var stuntDoc = document.Project.Documents.FirstOrDefault(d => d.Name == Path.GetFileName(file) && d.Folders.SequenceEqual(folders));
                 if (stuntDoc == null)
                 {
                     stuntDoc = document.Project.AddDocument(Path.GetFileName(file),
                         syntax,
-                        new[] { "Stunts" },
+                        folders,
                         file);
                 }
                 else

@@ -10,14 +10,14 @@ namespace Stunts
     public static class StuntNaming
     {
         /// <summary>
-        /// The namespace where generated proxies are declared.
+        /// The namespace where generated stunts are declared.
         /// </summary>
-        public const string StuntsNamespace = "Stunts";
+        public const string Namespace = "Stunts";
 
         /// <summary>
         /// The suffix added to stunt type names.
         /// </summary>
-        public const string StuntSuffix = "Stunt";
+        public const string NameSuffix = "Stunt";
 
         /// <summary>
         /// Gets the runtime stunt name from its base type and implemented interfaces.
@@ -26,13 +26,13 @@ namespace Stunts
         {
             Array.Sort(implementedInterfaces, Comparer<Type>.Create((x, y) => x.Name.CompareTo(y.Name)));
 
-            return baseType.Name + string.Join("", implementedInterfaces.Select(x => x.Name)) + StuntSuffix;
+            return baseType.Name + string.Join("", implementedInterfaces.Select(x => x.Name)) + NameSuffix;
         }
 
         /// <summary>
         /// Gets the runtime stunt full name from its base type and implemented interfaces.
         /// </summary>
         public static string GetFullName(Type baseType, Type[] implementedInterfaces)
-            => StuntsNamespace + "." + GetName(baseType, implementedInterfaces);
+            => Namespace + "." + GetName(baseType, implementedInterfaces);
     }
 }

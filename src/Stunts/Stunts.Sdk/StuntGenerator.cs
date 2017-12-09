@@ -19,9 +19,8 @@ namespace Stunts
 {
     public class StuntGenerator
     {
-        static readonly string StuntsAssembly = Path.GetFileName(typeof(IStunt).Assembly.ManifestModule.FullyQualifiedName);
+        NamingConvention naming;
 
-        string targetNamespace;
         // Configured processors, by language, then phase.
         Dictionary<string, Dictionary<ProcessorPhase, IDocumentProcessor[]>> processors;
 
@@ -29,9 +28,9 @@ namespace Stunts
         /// Instantiates the set of default <see cref="IDocumentProcessor"/> for the generator, 
         /// used for example when using the default constructor <see cref="StuntGenerator()"/>.
         /// </summary>
-        /// <returns></returns>
         public static IDocumentProcessor[] GetDefaultProcessors() => new IDocumentProcessor[]
         {
+            new EnsureStuntsReference(),
             new CSharpScaffold(),
             new VisualBasicScaffold(),
             new CSharpRewrite(),
@@ -39,11 +38,13 @@ namespace Stunts
             new VisualBasicParameterFixup(),
         };
 
-        public StuntGenerator() : this(StuntNaming.StuntsNamespace, GetDefaultProcessors()) { }
+        public StuntGenerator() : this(new NamingConvention(), GetDefaultProcessors()) { }
 
-        protected StuntGenerator(string targetNamespace, IDocumentProcessor[] processors)
+        public StuntGenerator(NamingConvention naming) : this(naming, GetDefaultProcessors()) { }
+
+        protected StuntGenerator(NamingConvention naming, IDocumentProcessor[] processors)
         {
-            this.targetNamespace = targetNamespace;
+            this.naming = naming;
             this.processors = processors
                 .GroupBy(processor => processor.Language)
                 .ToDictionary(
@@ -53,16 +54,8 @@ namespace Stunts
                         .ToDictionary(byphase => byphase.Key, byphase => byphase.ToArray()));
         }
 
-        /// <summary>
-        /// Gets the canonical name for a stunt based on its base type and implemented interfaces.
-        /// </summary>
-        public virtual string GetStuntName(INamedTypeSymbol baseType, ImmutableArray<INamedTypeSymbol> implementedInterfaces) => StuntSymbolNaming.GetName(baseType, implementedInterfaces);
-
-        public virtual async Task<Document> GenerateDocumentAsync(Project project, ITypeSymbol[] types, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Document> GenerateDocumentAsync(Project project, ITypeSymbol[] types, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (!project.MetadataReferences.Any(r => r.Display.EndsWith(StuntsAssembly, StringComparison.Ordinal)))
-                throw new ArgumentException(Strings.StuntsRequired(project.Name));
-
             cancellationToken.ThrowIfCancellationRequested();
 
             var generator = SyntaxGenerator.GetGenerator(project);
@@ -83,7 +76,7 @@ namespace Stunts
                 document = workspace.AddDocument(DocumentInfo.Create(
                     DocumentId.CreateNewId(project.Id),
                     name,
-                    folders: targetNamespace.Split('.'),
+                    folders: naming.Namespace.Split('.'),
                     filePath: filePath,
                     loader: TextLoader.From(TextAndVersion.Create(SourceText.From(code), VersionStamp.Create()))));
             }
@@ -92,7 +85,7 @@ namespace Stunts
                 document = project.AddDocument(
                     name,
                     SourceText.From(code),
-                    folders: targetNamespace.Split('.'),
+                    folders: naming.Namespace.Split('.'),
                     filePath: filePath);
             }
 
@@ -105,9 +98,9 @@ namespace Stunts
             return document;
         }
 
-        public virtual (string name, SyntaxNode syntax) CreateStunt(INamedTypeSymbol baseType, ImmutableArray<INamedTypeSymbol> implementedInterfaces, SyntaxGenerator generator)
+        public (string name, SyntaxNode syntax) CreateStunt(INamedTypeSymbol baseType, ImmutableArray<INamedTypeSymbol> implementedInterfaces, SyntaxGenerator generator)
         {
-            var name = GetStuntName(baseType, implementedInterfaces);
+            var name = naming.GetName(baseType, implementedInterfaces);
             var imports = new HashSet<string>
             {
                 typeof(EventArgs).Namespace,
@@ -129,7 +122,7 @@ namespace Stunts
                 .Select(generator.NamespaceImportDeclaration)
                 .Concat(new[]
                 {
-                    generator.NamespaceDeclaration(targetNamespace,
+                    generator.NamespaceDeclaration(naming.Namespace,
                         generator.AddAttributes(
                             generator.ClassDeclaration(name,
                                 accessibility: Accessibility.Public,
@@ -145,7 +138,7 @@ namespace Stunts
             return (name, syntax);
         }
 
-        public virtual async Task<Document> ApplyVisitors(Document document, CancellationToken cancellationToken)
+        public async Task<Document> ApplyVisitors(Document document, CancellationToken cancellationToken)
         {
 #if DEBUG
             if (Debugger.IsAttached)
@@ -199,7 +192,7 @@ namespace Stunts
             {
                 baseType = (INamedTypeSymbol)types[0];
                 if (types.Skip(1).Any(x => x.TypeKind == TypeKind.Class))
-                    throw new ArgumentException(Strings.WrongStuntBaseType(string.Join(",", types.Select(x => x.Name))));
+                    throw new ArgumentException(Strings.WrongBaseType(string.Join(",", types.Select(x => x.Name))));
                 if (types.Skip(1).Any(x => x.TypeKind != TypeKind.Interface))
                     throw new ArgumentException(Strings.InvalidStuntTypes(string.Join(",", types.Select(x => x.Name))));
 
@@ -208,7 +201,7 @@ namespace Stunts
             else
             {
                 if (types.Any(x => x.TypeKind == TypeKind.Class))
-                    throw new ArgumentException(Strings.WrongStuntBaseType(string.Join(",", types.Select(x => x.Name))));
+                    throw new ArgumentException(Strings.WrongBaseType(string.Join(",", types.Select(x => x.Name))));
                 if (types.Any(x => x.TypeKind != TypeKind.Interface))
                     throw new ArgumentException(Strings.InvalidStuntTypes(string.Join(",", types.Select(x => x.Name))));
 

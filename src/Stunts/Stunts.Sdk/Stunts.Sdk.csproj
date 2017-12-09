@@ -12,10 +12,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="netfx-System.StringResources" Version="3.1.8" />
-  </ItemGroup>
-
-	<ItemGroup>
 	  <Compile Update="Properties\Resources.Designer.cs">
 	    <DesignTime>True</DesignTime>
 	    <AutoGen>True</AutoGen>
