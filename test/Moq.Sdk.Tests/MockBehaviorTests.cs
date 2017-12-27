@@ -36,7 +36,7 @@ namespace Moq.Sdk.Tests
         [Fact]
         public void WhenAddingMockBehavior_ThenCanInterceptSelectively()
         {
-            var calculator = (ICalculator)MockFactory.Default.CreateMock(Assembly.GetExecutingAssembly(), typeof(ICalculator), new Type[0], new object[0]);
+            var calculator = new CalculatorInterfaceStunt();
 
             calculator.AddBehavior((m, n) => m.CreateValueReturn(CalculatorMode.Scientific), m => m.MethodBase.Name == "get_Mode");
             calculator.AddBehavior(new DefaultValueBehavior());
