@@ -11,7 +11,7 @@
     <Authors>kzu</Authors>
     <Owners>kzu</Owners>
     <Summary>"Dynamic proxies" that can run everywhere, including mobile!</Summary>
-    <Description>Design-time generated classes whose behavior cna be configured dynamically at run-time with arbitrary behaviors (a.k.a. "proxies").</Description>
+    <Description>Design-time generated classes whose behavior can be configured dynamically at run-time with arbitrary behaviors (a.k.a. "proxies").</Description>
     <PackageReleaseNotes>
     </PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/moq/moq/</PackageProjectUrl>
