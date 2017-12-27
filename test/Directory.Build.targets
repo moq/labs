@@ -1,4 +1,4 @@
-<Project>
+<Project InitialTargets="FixupProjectReferences">
 	<PropertyGroup>
 		<MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
 		<ReferencePathsFile>$(IntermediateOutputPath)ReferencePaths.g.cs</ReferencePathsFile>
@@ -23,21 +23,43 @@
 		<Exec Command="$(XunitConsolePath) $(TargetPath) $(XunitOptions)" />
 	</Target>
 
+  <!-- For some reason, SDK-style P2P references are being resolved *after* ResolveAssemblyReferences and failing the build -->
+  <Target Name="FixupProjectReferences">
+    <PropertyGroup>
+      <ResolveAssemblyReferencesDependsOn>
+        $(ResolveAssemblyReferencesDependsOn);
+        ResolveProjectReferences
+      </ResolveAssemblyReferencesDependsOn>
+    </PropertyGroup>
+  </Target>
+
+  <ItemGroup>
+    <PackageReference Update="NETStandard.Library" PrivateAssets="all" />
+  </ItemGroup>
+
   <ItemGroup>
     <IncludeReferenceFilter Include="mscorlib" />
     <IncludeReferenceFilter Include="System" />
-    <IncludeReferenceFilter Include="Moq" />
-    <IncludeReferenceFilter Include="Stunt" />
-    <IncludeReferenceFilter Include="ManualProxies" />
+    <IncludeReferenceFilter Include="Stunts" />
+    <IncludeReferenceFilter Include="ManualStunts" />
+    <ExcludeReferenceFilter Include="Stunts\.Analyzer" />
+    <ExcludeReferenceFilter Include="Stunts\.Sdk" />
   </ItemGroup>
 
-  <Target Name="GenerateReferencePaths"
-    AfterTargets="ResolveReferences"
-    Condition="'$(Language)' == 'C#'"
-    Inputs="@(ReferencePath);$(TargetPath);$(MSBuildAllProjects)"
-    Outputs="$(ReferencePathsFile)">
+  <PropertyGroup>
+    <CoreCompileDependsOn>
+      $(CoreCompileDependsOn);
+      GenerateReferencePaths
+    </CoreCompileDependsOn>
+  </PropertyGroup>
 
-    <FilterReferences References="@(ReferencePath)" Filter="@(IncludeReferenceFilter)">
+  <Target Name="GenerateReferencePaths"
+          Condition="'$(Language)' == 'C#'"
+          Inputs="$(MSBuildAllProjects)"
+          Outputs="$(ReferencePathsFile)"
+          DependsOnTargets="ResolveReferences">
+
+    <FilterReferences References="@(ReferencePath)" Include="@(IncludeReferenceFilter)" Exclude="@(ExcludeReferenceFilter)">
       <Output TaskParameter="Filtered" ItemName="_FilteredReferencePath" />
     </FilterReferences>
 
@@ -74,8 +96,9 @@
   <UsingTask TaskName="FilterReferences" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
 		<ParameterGroup>
 			<References ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
-			<Filter ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
-			<Filtered ParameterType="Microsoft.Build.Framework.ITaskItem[]" Output="true" />
+			<Include ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+      <Exclude ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+      <Filtered ParameterType="Microsoft.Build.Framework.ITaskItem[]" Output="true" />
 		</ParameterGroup>
 		<Task>
 			<Reference Include="Microsoft.Build" />
@@ -89,7 +112,9 @@
 			<Code Type="Fragment" Language="cs">
 				<![CDATA[
             Filtered = References
-              .Where(i => Filter.Any(x => Regex.IsMatch(i.GetMetadata("FusionName"), x.ItemSpec)))
+              .Where(i => 
+                Include.Any(x => Regex.IsMatch(i.GetMetadata("FusionName"), x.ItemSpec)) && 
+                !Exclude.Any(x => Regex.IsMatch(i.GetMetadata("FusionName"), x.ItemSpec)))
               .OrderBy(i => i.GetMetadata("Filename"))
               .ToArray();
               ]]>

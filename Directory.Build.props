@@ -1,16 +1,19 @@
 <Project>
   <PropertyGroup>
-    <_ProjectProps>$(MSBuildProjectDirectory)\$(MSBuildProjectName).props</_ProjectProps>
-    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <MSBuildAllProjects Condition="Exists('$(_ProjectProps)')">$(MSBuildAllProjects);$(_ProjectProps)</MSBuildAllProjects>
-
     <!-- Build -->
     <AppendTargetFrameworkToOutputPath Condition="'$(AppendTargetFrameworkToOutputPath)' == '' and '$(TargetFrameworks)' == ''">false</AppendTargetFrameworkToOutputPath>
 
     <MSBuildVersion>15.*</MSBuildVersion>
     <RoslynVersion>2.3.1</RoslynVersion>
     <XunitVersion>2.3.1</XunitVersion>
+
+    <IncludeFrameworkReferencesInPackage>false</IncludeFrameworkReferencesInPackage>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NuGet.Build.Packaging" Version="0.2.2" PrivateAssets="all" />
+    <PackageReference Include="netfx-System.StringResources" Version="3.1.8" PrivateAssets="all" />
+  </ItemGroup>
 
   <ItemGroup Condition="'$(IncludeMSBuild)' == 'true'">
     <PackageReference Include="Microsoft.Build" Version="$(MSBuildVersion)" />
@@ -22,5 +25,20 @@
     <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Features" Version="$(RoslynVersion)" />
   </ItemGroup>
 
-  <Import Project="$(_ProjectProps)" Condition="'$(MSBuildProjectExtension)' != '.props' And Exists('$(_ProjectProps)')" />
+  <ItemGroup Condition="'$(IncludeXunit)' == 'true'">
+    <PackageReference Include="xunit" Version="$(XunitVersion)" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="$(XunitVersion)" Condition="'$(CI)' == 'true'" />
+    <PackageReference Include="xunit.runner.console" Version="$(XunitVersion)" />
+    <PackageReference Include="NETStandard.Library" Version="2.0.0" />
+  </ItemGroup>
+
+  <PropertyGroup Condition="'$(IncludeXunit)' == 'true'">
+    <AutoUnifyAssemblyReferences>true</AutoUnifyAssemblyReferences>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+  </PropertyGroup>
+  
+  <!-- Import [project].props if it exists -->
+  <Import Project="$(MSBuildProjectDirectory)\$(MSBuildProjectName).props"
+          Condition="'$(MSBuildProjectExtension)' != '.props' And Exists('$(MSBuildProjectDirectory)\$(MSBuildProjectName).props')" />
 </Project>
