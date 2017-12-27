@@ -4,9 +4,7 @@
 	<PropertyGroup>
 		<Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
 		<IntermediateOutputPath>$(RestoreOutputPath)\</IntermediateOutputPath>
-    <Dev Condition="'$(Dev)' == '' and '$(Configuration)' == 'Debug'">15.0</Dev>
-    <Dev Condition="'$(Dev)' == '' and '$(Configuration)' == 'Release'">14.0</Dev>
-    <AdditionalProperties>Configuration=$(Configuration);Dev=$(Dev)</AdditionalProperties>
+    <AdditionalProperties>Configuration=$(Configuration)</AdditionalProperties>
     <Out Condition="'$(Out)' == ''">out</Out>
 	</PropertyGroup>
 
@@ -24,6 +22,7 @@
 	<ItemGroup>
 		<Solution Include="src\Stunts\Stunts.sln" />
 		<Solution Include="src\Moq\Moq.sln" />
+		<Solution Include="test\Samples\Samples.sln" />
 	</ItemGroup>
 
 	<Target Name="Build">
