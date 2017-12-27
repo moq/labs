@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\..\src\Moq\Moq\contentFiles\cs\netstandard1.3\Mock.cs" Link="Mock.cs" Visible="false" />
+    <Compile Include="..\..\..\src\Moq\Moq\contentFiles\cs\netstandard1.3\Mock.cs" Link="Mock.cs" />
   </ItemGroup>
 
   <ItemGroup>

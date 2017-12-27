@@ -14,8 +14,8 @@ namespace Moq
     {
         /// <summary>
         /// Marks the mock as being set up, meaning 
-        /// invocation tracking should be suspended 
-        /// until the returned <see cref="IDisposable"/> 
+        /// invocation tracking and strict behavior 
+        /// should be suspended until the returned <see cref="IDisposable"/> 
         /// is disposed.
         /// </summary>
         /// <param name="mock"></param>
@@ -35,10 +35,10 @@ namespace Moq
             public SetupDisposable(IMock mock)
             {
                 this.mock = mock;
-                mock.State.TryAdd<bool?>(MockTrackingBehavior.SkipTrackingState, true);
+                mock.State.TryAdd<bool?>(KnownStates.Setup, true);
             }
 
-            public void Dispose() => mock.State.TryRemove<bool?>(MockTrackingBehavior.SkipTrackingState, out var _);
+            public void Dispose() => mock.State.TryRemove<bool?>(KnownStates.Setup, out var _);
         }
     }
 }

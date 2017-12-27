@@ -194,5 +194,21 @@ namespace Moq.Tests
 
             Assert.Throws<ArgumentException>(() => calculator.Add(2, 3));
         }
+
+        [Fact]
+        public void CanSetupPropertyViaReturnsForStrictMock()
+        {
+            var calculator = Mock.Of<ICalculator>(MockBehavior.Strict);
+
+            using (calculator.Setup())
+            {
+                calculator.Mode.Returns(CalculatorMode.Standard);
+            }
+
+            var mode = calculator.Mode;
+
+            Assert.Equal(CalculatorMode.Standard, mode);
+            Assert.Throws<StrictMockException>(() => calculator.Add(2, 4));
+        }
     }
 }
