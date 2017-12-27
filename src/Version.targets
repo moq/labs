@@ -1,25 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project InitialTargets="SetVersion" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <GitSkipCache>true</GitSkipCache>
+    <GitIgnoreTagVersion>true</GitIgnoreTagVersion>
+  </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="GitInfo" Version="*" />
+    <PackageReference Include="MSBuilder.CI" Version="0.1.2" PrivateAssets="all" />
+    <PackageReference Include="GitInfo" Version="2.0.7" PrivateAssets="all" />
   </ItemGroup>
 
-	<Target Name="SetVersion" DependsOnTargets="GitVersion">
-		<PropertyGroup>
-      <!-- CI checkouts may be against a specific commit, not a branch, so add -pr as label -->
-			<GitSemVerDashLabel Condition="'$(GitBranch)' == 'undefined' Or '$(APPVEYOR_PULL_REQUEST_NUMBER)' != ''">$(GitSemVerDashLabel)-pr$(APPVEYOR_PULL_REQUEST_NUMBER)</GitSemVerDashLabel>
-      <!-- If there's no label, but we're not at the tip of the base version, add a -pre because this is not the base build -->
-      <GitSemVerDashLabel Condition="'$(GitSemVerDashLabel)' == '' And '$(GitCommits)' != '0'">-pre</GitSemVerDashLabel>
+  <Target Name="Version" DependsOnTargets="SetVersion">
+    <Message Importance="high" Text="PackageVersion=$(PackageVersion)
+AssemblyVersion=$(AssemblyVersion)" />
+  </Target>
 
-      <PackageVersion Condition="'$(GitSemVerDashLabel)' == ''">$(GitBaseVersionMajor).$(GitBaseVersionMinor).$(GitBaseVersionPatch)</PackageVersion>
-      <PackageVersion Condition="'$(GitSemVerDashLabel)' != ''">$(GitBaseVersionMajor).$(GitBaseVersionMinor).$(GitBaseVersionPatch)$(GitSemVerDashLabel).$(GitCommits)</PackageVersion>
-
-      <AssemblyVersion>$(GitBaseVersionMajor).$(GitBaseVersionMinor).$(GitBaseVersionPatch)</AssemblyVersion>
+  <Target Name="_SetLocalCommits" BeforeTargets="_GitPopulateVersionInfo" Condition="'$(CI)' != 'true'">
+    <PropertyGroup>
+      <!-- Local builds should always be commit count +1, since we'll be always working on the next version to be published. -->
+      <GitCommits>$([MSBuild]::Add('$(GitCommits)', '1'))</GitCommits>
     </PropertyGroup>
-	</Target>
+  </Target>
 
-	<PropertyGroup>
-		<VersionImported>true</VersionImported>
-	</PropertyGroup>
+  <!-- '$(ExcludeRestorePackageImports)' == 'true' when invoking /t:Restore -->
+  <Target Name="SetVersion" BeforeTargets="Build;GetPackageVersion" DependsOnTargets="GitVersion" Condition="'$(ExcludeRestorePackageImports)' != 'true'">
+    <PropertyGroup>
+      <!-- PR builds are *always* prerelease -->
+      <!-- TFS case: BUILD_REASON=PullRequest and BUILD_SOURCEBRANCH=refs/pull/#/merge -->
+      <GitSemVerDashLabel Condition="'$(TF_BUILD)' == 'true' and '$(BUILD_REASON)' == 'PullRequest'">$(GitSemVerDashLabel)-pr$(BUILD_SOURCEBRANCH.Substring(10).TrimEnd('/merge'))</GitSemVerDashLabel>
+      <GitSemVerDashLabel Condition="'$(APPVEYOR_PULL_REQUEST_NUMBER)' != ''">$(GitSemVerDashLabel)-pr$(APPVEYOR_PULL_REQUEST_NUMBER)</GitSemVerDashLabel>
+
+			<!-- Adjust branch name to CI provided value if available -->
+			<GitBranch Condition="'$(SYSTEM_PULLREQUEST_TARGETBRANCH)' != ''">$(SYSTEM_PULLREQUEST_TARGETBRANCH)</GitBranch>
+			<GitBranch Condition="'$(SYSTEM_PULLREQUEST_TARGETBRANCH)' == '' and '$(BUILD_SOURCEBRANCHNAME)' != ''">$(BUILD_SOURCEBRANCHNAME)</GitBranch>
+			<GitBranch Condition="'$(APPVEYOR_REPO_BRANCH)' != ''">$(APPVEYOR_REPO_BRANCH)</GitBranch>
+
+      <!-- NOTE: build metadata does not affect version matching, so even if you work from a different branch+commit that gets 
+           rebased+merged later on, the version # might still be the same (provided there weren't additional commits in master 
+           before the rebase+merge.
+      -->
+      <_IndexOfBranchSlash>$(GitBranch.LastIndexOf('/'))</_IndexOfBranchSlash>
+      <_IndexOfBranchSubstring>$([MSBuild]::Add('$(_IndexOfBranchSlash)', '1'))</_IndexOfBranchSubstring>
+      <_GitBranch Condition="'$(_IndexOfBranchSlash)' != '0'">$(GitBranch.Substring($(_IndexOfBranchSubstring)))</_GitBranch>
+      <_GitBranch Condition="'$(_IndexOfBranchSlash)' == '0'">$(GitBranch)</_GitBranch>
+
+      <!-- We'll use GitFlow and ship publicly from master, meaning we don't need branch metadata from there -->
+      <SemVerMetadata Condition="'$(_GitBranch)' != 'master'">$(_GitBranch).</SemVerMetadata>
+      <SemVerMetadata>$(SemVerMetadata)sha.$(GitCommit)</SemVerMetadata>
+
+      <!-- If there is a pre-release label, fix the major.minor.build and increment the release label digit instead. -->
+      <PackageVersion Condition="'$(GitSemVerDashLabel)' != ''">$(GitBaseVersionMajor).$(GitBaseVersionMinor).$(GitBaseVersionPatch)$(GitSemVerDashLabel).$(GitCommits)+$(SemVerMetadata)</PackageVersion>
+      <!-- If shipping stable, semver the package version -->
+      <PackageVersion Condition="'$(GitSemVerDashLabel)' == ''">$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)+$(SemVerMetadata)</PackageVersion>
+      <AssemblyVersion>$(GitBaseVersionMajor).$(GitBaseVersionMinor).$(GitBaseVersionPatch)</AssemblyVersion>
+      <FileVersion>$(GitSemVerMajor).$(GitSemVerMinor).$(GitSemVerPatch)</FileVersion>
+      <InformationalVersion>$(PackageVersion)</InformationalVersion>
+    </PropertyGroup>
+  </Target>
+
 </Project>
