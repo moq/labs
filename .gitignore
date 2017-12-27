@@ -12,3 +12,4 @@ obj
 *.cache
 *.log
 *.binlog
+*.rsp
