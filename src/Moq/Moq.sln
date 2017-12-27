@@ -28,9 +28,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Stunts", "Stunts", "{EEC3EC48-ACB2-4D25-B592-F360F676BE45}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Sdk.Tests", "..\..\test\Moq.Sdk.Tests\Moq.Sdk.Tests.csproj", "{EB66BC5E-4072-4F26-9772-979D8561883F}"
-	ProjectSection(ProjectDependencies) = postProject
-		{6496C171-32F2-47DD-A8EE-B99E9E26B6C6} = {6496C171-32F2-47DD-A8EE-B99E9E26B6C6}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stunts.Internal", "..\Stunts\Stunts.Internal\Stunts.Internal.csproj", "{0271D7C1-1A51-4148-944C-1DB4D1946B9C}"
 EndProject

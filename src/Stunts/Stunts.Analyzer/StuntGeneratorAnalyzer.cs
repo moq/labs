@@ -81,62 +81,6 @@ namespace Stunts
             context.RegisterSyntaxNodeAction(AnalyzeSyntaxNode, Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.SimpleMemberAccessExpression);
         }
 
-        //void AnalyzeSymbol(SymbolAnalysisContext context)
-        //{
-        //    // Get the matching symbol for the given generator attribute from the current compilation.
-        //    var generator = context.Compilation.GetTypeByMetadataName(generatorAttribute.FullName);
-        //    if (generator == null)
-        //        // This may be an extender authoring error, but another analyzer should ensure proper 
-        //        // metadata references exist. Typically, the same nuget package that adds this analyzer 
-        //        // also adds the required assembly references, so this should never happen anyway.
-        //        return;
-
-        //    var method = (IMethodSymbol)context.Symbol;
-        //    if (method.GetAttributes().Any(x => x.AttributeClass == generator) &&
-        //        // We don't generate anything if generator is applied to a non-generic method.
-        //        !method.TypeArguments.IsDefaultOrEmpty)
-        //    // Skip generic method definitions since they are typically usability overloads 
-        //    // like Mock.Of<T>(...)
-        //    // TODO: doesn't seem like this would be needed?
-        //    //!method.TypeArguments.Any(x => x.Kind == SymbolKind.TypeParameter))
-        //    {
-        //        var name = naming.GetFullName(method.TypeArguments.OfType<INamedTypeSymbol>());
-
-        //        // See if the stunt already exists
-        //        var stunt = context.Compilation.GetTypeByMetadataName(name);
-        //        if (stunt == null)
-        //        {
-        //            var diagnostic = Diagnostic.Create(
-        //                MissingDescriptor,
-        //                context.Symbol.Locations[0],
-        //                name);
-
-        //            context.ReportDiagnostic(diagnostic);
-        //        }
-        //        else
-        //        {
-        //            // See if the symbol has any diagnostics associated
-        //            var diag = context.Compilation.GetDiagnostics().Where(d => d.Id == "CS0535");
-        //            var stuntPath = stunt.Locations[0].GetLineSpan().Path;
-
-        //            bool IsStuntLoc(Location loc) => loc.IsInSource && loc.GetLineSpan().Path == stuntPath;
-        //            var stuntDiag = diag
-        //                .Where(d => IsStuntLoc(d.Location) || d.AdditionalLocations.Any(IsStuntLoc));
-
-        //            if (stuntDiag.Any())
-        //            {
-        //                // If there are compilation errors, we should update the proxy.
-        //                var diagnostic = Diagnostic.Create(
-        //                    OutdatedDescriptor,
-        //                    context.Symbol.Locations[0],
-        //                    name);
-
-        //                context.ReportDiagnostic(diagnostic);
-        //            }
-        //        }
-        //    }
-        //}
-
         void AnalyzeSyntaxNode(SyntaxNodeAnalysisContext context)
         {
             // Get the matching symbol for the given generator attribute from the current compilation.

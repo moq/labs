@@ -14,10 +14,7 @@ namespace Moq
         public GenerateMockCodeFix()
             : base(Strings.GenerateMockCodeFix.Title) { }
 
-        public override ImmutableArray<string> FixableDiagnosticIds
-        {
-            get => ImmutableArray.Create(MissingMockAnalyzer.DiagnosticId);
-        }
+        public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create("MOQ001");
 
         protected override CodeAction CreateCodeAction(Document document, Diagnostic diagnostic, SyntaxNode invocation)
             => new MockCodeAction(Title, document, diagnostic, invocation);
@@ -29,10 +26,7 @@ namespace Moq
         public UpdateMockCodeFix()
             : base(Strings.UpdateMockCodeFix.Title) { }
 
-        public override ImmutableArray<string> FixableDiagnosticIds
-        {
-            get => ImmutableArray.Create(OutdatedMockAnalyzer.DiagnosticId);
-        }
+        public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create("MOQ002");
 
         protected override CodeAction CreateCodeAction(Document document, Diagnostic diagnostic, SyntaxNode invocation)
             => new MockCodeAction(Title, document, diagnostic, invocation);
