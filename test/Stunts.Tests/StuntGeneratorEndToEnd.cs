@@ -1,13 +1,7 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.VisualBasic;
 using Xunit;
 using Xunit.Abstractions;
-using static TestHelpers;
 
 namespace Stunts.Tests
 {
@@ -23,7 +17,7 @@ namespace Stunts.Tests
         public async Task WhenTypeIsInterface(string language)
         {
             var dynamic = new DynamicStunt(language);
-            var target = await dynamic.GenerateAsync<ICalculator>();
+            var target = await dynamic.CreateAsync<ICalculator>();
             var intercepted = false;
 
             target.AddBehavior((method, next) => { intercepted = true; return next()(method, next); });
@@ -89,7 +83,7 @@ namespace Stunts.Tests
         public async Task WhenTypeIsAbstract(string language)
         {
             var dynamic = new DynamicStunt(language);
-            var target = await dynamic.GenerateAsync<CalculatorBase>();
+            var target = await dynamic.CreateAsync<CalculatorBase>();
             var intercepted = false;
 
             target.AddBehavior((method, next) => { intercepted = true; return next()(method, next); });
@@ -127,7 +121,7 @@ namespace Stunts.Tests
         public async Task WhenTypeHasVirtualMembers(string language)
         {
             var dynamic = new DynamicStunt(language);
-            var target = await dynamic.GenerateAsync<Calculator>();
+            var target = await dynamic.CreateAsync<Calculator>();
             var intercepted = false;
 
             target.AddBehavior((method, next) => { intercepted = true; return next()(method, next); });

@@ -17,7 +17,7 @@ namespace Stunts.Tests
 
         public DynamicStunt(string language) => this.language = language;
 
-        public async Task<T> GenerateAsync<T>(params object[] args)
+        public async Task<T> CreateAsync<T>(params object[] args)
         {
             var compilation = await GenerateAsync(typeof(T));
             var assembly = compilation.Emit();
@@ -35,7 +35,7 @@ namespace Stunts.Tests
             var document = await generator.GenerateDocumentAsync(project, symbols, TimeoutToken(5));
 
             var syntax = await document.GetSyntaxRootAsync();
-            document = project.AddDocument(StuntNaming.GetName(types[0], types.Skip(1).ToArray()) + (language == LanguageNames.CSharp ? "cs" : "vb"), 
+            document = project.AddDocument(StuntNaming.GetName(types[0], types.Skip(1).ToArray()) + (language == LanguageNames.CSharp ? ".cs" : ".vb"), 
                 syntax, 
                 filePath: document.FilePath);
 

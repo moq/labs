@@ -24,7 +24,6 @@ namespace Stunts.Tests.GeneratorTests
 
         public StuntGeneratorTests(ITestOutputHelper output) => this.output = output;
 
-
         [InlineData(LanguageNames.CSharp)]
         [InlineData(LanguageNames.VisualBasic)]
         [Theory]
@@ -149,8 +148,8 @@ namespace Stunts.Tests.GeneratorTests
         [InlineData(LanguageNames.CSharp)]
         [InlineData(LanguageNames.VisualBasic)]
         [Theory]
-        public Task WhenTypeIsInterface(string language)
-            => CreateStunt(new StuntGenerator(), language, typeof(ICalculator));
+        public Task WhenTypeIsInterface(string language, bool trace = false)
+            => CreateStunt(new StuntGenerator(), language, typeof(ICalculator), trace);
 
         // TODO: why does this fail for VB? 
         // [InlineData(LanguageNames.VisualBasic)]
@@ -342,7 +341,7 @@ End Class")]
     public class TestGenerator : StuntGenerator
     {
         public TestGenerator()
-            : base("Test", GetDefaultProcessors().Concat(new[] { new TestProcessor() }).ToArray()) { }
+            : base(new NamingConvention(), GetDefaultProcessors().Concat(new[] { new TestProcessor() }).ToArray()) { }
 
         class TestProcessor : CSharpSyntaxRewriter, IDocumentProcessor
         {
