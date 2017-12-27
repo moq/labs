@@ -60,30 +60,30 @@ namespace Moq
         /// Creates a stunt that inherits or implements the type <typeparamref name="T"/>.
         /// </summary>
         [MockGenerator]
-        public static T Of<T>(MockBehavior behavior, params object[] constructorArgs) => Create<T>(MockBehavior.Loose, constructorArgs);
+        public static T Of<T>(MockBehavior behavior, params object[] constructorArgs) => Create<T>(behavior, constructorArgs);
 
         [MockGenerator]
-        public static T Of<T, T1>(MockBehavior behavior, params object[] constructorArgs) => Create<T>(MockBehavior.Loose, constructorArgs, typeof(T1));
+        public static T Of<T, T1>(MockBehavior behavior, params object[] constructorArgs) => Create<T>(behavior, constructorArgs, typeof(T1));
 
         [MockGenerator]
-        public static T Of<T, T1, T2>(MockBehavior behavior, params object[] constructorArgs) => Create<T>(MockBehavior.Loose, constructorArgs, typeof(T1), typeof(T2));
+        public static T Of<T, T1, T2>(MockBehavior behavior, params object[] constructorArgs) => Create<T>(behavior, constructorArgs, typeof(T1), typeof(T2));
 
         [MockGenerator]
-        public static T Of<T, T1, T2, T3>(MockBehavior behavior, params object[] constructorArgs) => Create<T>(MockBehavior.Loose, constructorArgs, typeof(T1), typeof(T2), typeof(T3));
+        public static T Of<T, T1, T2, T3>(MockBehavior behavior, params object[] constructorArgs) => Create<T>(behavior, constructorArgs, typeof(T1), typeof(T2), typeof(T3));
 
         [MockGenerator]
-        public static T Of<T, T1, T2, T3, T4>(MockBehavior behavior, params object[] constructorArgs) => Create<T>(MockBehavior.Loose, constructorArgs, typeof(T1), typeof(T2), typeof(T3), typeof(T4));
+        public static T Of<T, T1, T2, T3, T4>(MockBehavior behavior, params object[] constructorArgs) => Create<T>(behavior, constructorArgs, typeof(T1), typeof(T2), typeof(T3), typeof(T4));
 
         [MockGenerator]
-        public static T Of<T, T1, T2, T3, T4, T5>(MockBehavior behavior, params object[] constructorArgs) => Create<T>(MockBehavior.Loose, constructorArgs, typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5));
+        public static T Of<T, T1, T2, T3, T4, T5>(MockBehavior behavior, params object[] constructorArgs) => Create<T>(behavior, constructorArgs, typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5));
 
         [MockGenerator]
-        public static T Of<T, T1, T2, T3, T4, T5, T6>(MockBehavior behavior, params object[] constructorArgs) => Create<T>(MockBehavior.Loose, constructorArgs, typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6));
+        public static T Of<T, T1, T2, T3, T4, T5, T6>(MockBehavior behavior, params object[] constructorArgs) => Create<T>(behavior, constructorArgs, typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6));
 
         [MockGenerator]
-        public static T Of<T, T1, T2, T3, T4, T5, T6, T7>(MockBehavior behavior, params object[] constructorArgs) => Create<T>(MockBehavior.Loose, constructorArgs, typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7));
+        public static T Of<T, T1, T2, T3, T4, T5, T6, T7>(MockBehavior behavior, params object[] constructorArgs) => Create<T>(behavior, constructorArgs, typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7));
 
         [MockGenerator]
-        public static T Of<T, T1, T2, T3, T4, T5, T6, T7, T8>(MockBehavior behavior, params object[] constructorArgs) => Create<T>(MockBehavior.Loose, constructorArgs, typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8));
+        public static T Of<T, T1, T2, T3, T4, T5, T6, T7, T8>(MockBehavior behavior, params object[] constructorArgs) => Create<T>(behavior, constructorArgs, typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8));
     }
 }
