@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\..\src\Stunts\Stunts\contentFiles\cs\netstandard1.3\Stunt.cs" Link="Stunt.cs" />
+    <Compile Include="..\..\..\src\Stunts\Stunts\contentFiles\cs\netstandard1.3\Stunt.cs" Link="Stunt.cs" Visible="false" />
   </ItemGroup>
 
   <ItemGroup>

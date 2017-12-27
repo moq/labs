@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Reflection;
 using Moq;
-using Moq.Proxy;
+using Moq.Sdk;
 
 namespace Sample.CSharp
 {
@@ -29,19 +28,13 @@ namespace Sample.CSharp
 
 public interface IBar
 {
+    void DoBar();
 }
 
 public interface IFoo
 {
+    void Do();
+
     string Id { get; }
     string Title { get; set; }
-}
-
-static class Mock
-{
-    [ProxyGenerator]
-    public static T Of<T, T1>() => Moq.Mock.Of<T>(typeof(Mock).GetTypeInfo().Assembly, typeof(T1));
-
-    [ProxyGenerator]
-    public static T Of<T>() => Moq.Mock.Of<T>(typeof(Mock).GetTypeInfo().Assembly);
 }

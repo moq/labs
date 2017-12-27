@@ -6,11 +6,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\..\src\Stunts\Stunts\contentFiles\vb\netstandard1.3\Stunt.vb" Link="Stunt.vb" />
+    <Compile Include="..\..\..\src\Stunts\Stunts\contentFiles\vb\netstandard1.3\Stunt.vb" Link="Stunt.vb" Visible="false" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\Stunts\Stunts\Stunts.csproj" />
+    <Analyzer Include="..\..\..\src\Stunts\Stunts.Analyzer\bin\$(Configuration)\Stunts.dll" />
+    <Analyzer Include="..\..\..\src\Stunts\Stunts.Analyzer\bin\$(Configuration)\Stunts.Sdk.dll" />
+    <Analyzer Include="..\..\..\src\Stunts\Stunts.Analyzer\bin\$(Configuration)\Roslyn.VisualStudio.Services.UnitTests.dll" />
+    <Analyzer Include="..\..\..\src\Stunts\Stunts.Analyzer\bin\$(Configuration)\Stunts.Analyzer.dll" />
   </ItemGroup>
 
 </Project>

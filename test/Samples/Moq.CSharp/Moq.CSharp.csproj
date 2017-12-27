@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net471</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\..\src\Moq\Moq\contentFiles\cs\netstandard1.3\Mock.cs" Link="Mock.cs" Visible="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Stunts\Stunts\Stunts.csproj" />
+    <ProjectReference Include="..\..\..\src\Moq\Moq\Moq.csproj" />
+    <ProjectReference Include="..\..\..\src\Moq\Moq.Sdk\Moq.Sdk.csproj" />
+
+    <Analyzer Include="..\..\..\src\Moq\Moq.Analyzer\bin\$(Configuration)\Stunts.dll" />
+    <Analyzer Include="..\..\..\src\Moq\Moq.Analyzer\bin\$(Configuration)\Stunts.Sdk.dll" />
+    <Analyzer Include="..\..\..\src\Moq\Moq.Analyzer\bin\$(Configuration)\Stunts.Analyzer.dll" />
+    <Analyzer Include="..\..\..\src\Moq\Moq.Analyzer\bin\$(Configuration)\Roslyn.VisualStudio.Services.UnitTests.dll" />
+
+    <Analyzer Include="..\..\..\src\Moq\Moq.Analyzer\bin\$(Configuration)\Moq.Sdk.dll" />
+    <Analyzer Include="..\..\..\src\Moq\Moq.Analyzer\bin\$(Configuration)\Moq.Analyzer.dll" />
+
+  </ItemGroup>
+
+</Project>

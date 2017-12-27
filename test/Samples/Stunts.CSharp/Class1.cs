@@ -24,12 +24,14 @@ public class Tests
         Console.WriteLine(result1);
         Console.WriteLine(result2);
 
-        var foo = Stunt.Of<IFoo>();
+        var foo = Stunt.Of<IBar>();
     }
 }
 
 namespace Sample
 {
+    public interface IBar { }
+
     public interface IFoo
     {
         void Do();
