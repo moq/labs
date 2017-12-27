@@ -66,9 +66,10 @@ public static class AssertCode
         var compilation = await document.Project.GetCompilationAsync(TimeoutToken(2));
         var noWarn = new HashSet<string>
         {
-            "CS1701", // fusion reference mismatch, binding redirect required.
+            //"CS1701", // fusion reference mismatch, binding redirect required.
         };
-        if (compilation.GetDiagnostics().Where(d => !noWarn.Contains(d.Id)).Any(d => d.Severity == DiagnosticSeverity.Error || d.Severity == DiagnosticSeverity.Warning))
+        var diagnostics = compilation.GetDiagnostics(TimeoutToken(2)).Where(d => !noWarn.Contains(d.Id)).ToArray();
+        if (diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error || d.Severity == DiagnosticSeverity.Warning))
         {
             SyntaxNode syntax;
             try
@@ -91,13 +92,25 @@ public static class AssertCode
 
             Assert.False(true,
                 Environment.NewLine +
-                string.Join(Environment.NewLine, compilation.GetDiagnostics().Where(d => d.Severity == DiagnosticSeverity.Error || d.Severity == DiagnosticSeverity.Warning).Select(d
-                    => $"'{syntax.GetText().GetSubText(d.Location.SourceSpan).ToString()}' : {d.ToString()}")) +
-                Environment.NewLine +
-                string.Join(Environment.NewLine,
-                    syntax.ToString()
-                    .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
-                    .Select((line, index) => $"{(index + indexOffset).ToString().PadLeft(3, ' ')}| {line}")));
+                "Errors:" +
+                    Environment.NewLine +
+                    string.Join(Environment.NewLine, diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error || d.Severity == DiagnosticSeverity.Warning).Select(d
+                        => $"  '{d.Location.SourceTree.GetText().GetSubText(d.Location.SourceSpan).ToString()}' : {d.ToString()}")) +
+                    Environment.NewLine +
+                "Source:" +
+                    Environment.NewLine +
+                    string.Join(Environment.NewLine,
+                        syntax.ToString()
+                        .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
+                        .Select((line, index) => $"{(index + indexOffset).ToString().PadLeft(3, ' ')}| {line}")) +
+                    Environment.NewLine +
+                "References:" +
+                    Environment.NewLine +
+                    string.Join(Environment.NewLine,
+                        document.Project.MetadataReferences
+                        .OfType<PortableExecutableReference>()
+                        .Select(x => "  - " + x.FilePath)) +
+                    Environment.NewLine);
         }
     }
 }

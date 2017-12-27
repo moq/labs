@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Moq.Proxy;
+using Stunts;
 
 namespace Moq.Sdk
 {
-    /// <summary>
-    /// Represents a mock's behavior.
-    /// </summary>
+    /// <inheritdoc />
     public class MockBehavior : IMockBehavior
     {
         public MockBehavior(IMockSetup setup) => Setup = setup;
@@ -24,6 +22,11 @@ namespace Moq.Sdk
 
         public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior getNext)
         {
+            // NOTE: the mock behavior is like a sub-pipeline within the overall stunt 
+            // behavior pipeline, where all the behaviors added automatically apply as 
+            // since they all share the same AppliesTo implementation, which is the setup 
+            // itself.
+
             if (Behaviors.Count == 0)
                 return getNext().Invoke(invocation, getNext);
 
@@ -41,6 +44,6 @@ namespace Moq.Sdk
 
         // TODO: render all behaviors too?
         public override string ToString()
-            => Setup.ToString() + string.Join(Environment.NewLine, Behaviors.Select(x => "\t" + x.ToString()));
+            => Setup + string.Join(Environment.NewLine, Behaviors.Select(x => "\t" + x));
     }
 }

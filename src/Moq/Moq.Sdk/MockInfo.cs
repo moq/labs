@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
-using Moq.Proxy;
+using Stunts;
 
 namespace Moq.Sdk
 {
@@ -13,17 +13,17 @@ namespace Moq.Sdk
     /// </summary>
     public class MockInfo : IMock
     {
-        IProxy proxy;
+        IStunt stunt;
         ConcurrentDictionary<IMockSetup, IMockBehavior> setupBehaviorMap = new ConcurrentDictionary<IMockSetup, IMockBehavior>();
 
-        public MockInfo(IProxy proxy)
+        public MockInfo(IStunt stunt)
         {
-            this.proxy = proxy ?? throw new ArgumentNullException(nameof(proxy));
-            proxy.Behaviors.CollectionChanged += OnBehaviorsChanged;
+            this.stunt = stunt ?? throw new ArgumentNullException(nameof(stunt));
+            stunt.Behaviors.CollectionChanged += OnBehaviorsChanged;
         }
 
         /// <inheritdoc />
-        public ObservableCollection<IProxyBehavior> Behaviors => proxy.Behaviors;
+        public ObservableCollection<IStuntBehavior> Behaviors => stunt.Behaviors;
 
         /// <inheritdoc />
         public IList<IMethodInvocation> Invocations { get; } = new List<IMethodInvocation>();
@@ -37,7 +37,10 @@ namespace Moq.Sdk
             => setupBehaviorMap.GetOrAdd(setup, x =>
             {
                 var behavior = new MockBehavior(x);
-                Behaviors.Insert(1, behavior);
+                // The tracking behavior must appear before the mock behaviors.
+                var tracking = Behaviors.OfType<MockTrackingBehavior>().FirstOrDefault();
+                var index = tracking == null ? 0 : (Behaviors.IndexOf(tracking) + 1);
+                Behaviors.Insert(index, behavior);
                 return behavior;
             });
 

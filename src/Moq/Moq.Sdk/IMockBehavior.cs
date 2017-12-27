@@ -1,14 +1,14 @@
 ﻿using System.Collections.ObjectModel;
-using Moq.Proxy;
+using Stunts;
 
 namespace Moq.Sdk
 {
     /// <summary>
-    /// An <see cref="IProxyBehavior"/> that applies a set of behaviors 
+    /// An <see cref="IStuntBehavior"/> that applies a set of behaviors 
     /// selectively when the current invocation satisfies the 
     /// <see cref="IMockSetup.AppliesTo(IMethodInvocation)"/> method.
     /// </summary>
-    public interface IMockBehavior : IProxyBehavior
+    public interface IMockBehavior : IStuntBehavior
     {
         /// <summary>
         /// List of behaviors that should be executed whenever the 

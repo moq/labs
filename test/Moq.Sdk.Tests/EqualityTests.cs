@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Moq.Proxy;
+using Stunts;
 using Xunit;
 
 namespace Moq.Sdk.Tests

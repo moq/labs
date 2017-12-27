@@ -1,9 +1,33 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <TargetFramework>netstandard1.4</TargetFramework>
   </PropertyGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\Proxy\Proxy\Moq.Proxy.csproj" />
-    <ProjectReference Include="..\Sdk\Moq.Sdk.csproj" />
+    <ProjectReference Include="..\..\Stunts\Stunts\Stunts.csproj" />
+    <ProjectReference Include="..\Moq.Sdk\Moq.Sdk.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="contentFiles\**\*.cs" />
+    <None Remove="contentFiles\**\*.*" />
+    <None Include="contentFiles\**\*.*" Pack="true" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>

@@ -2,16 +2,16 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using Moq.Proxy;
+using Stunts;
 
 namespace Moq.Sdk
 {
     /// <summary>
-    /// A <see cref="IProxyBehavior"/> that keeps track of backing delegates 
+    /// A <see cref="IStuntBehavior"/> that keeps track of backing delegates 
     /// for events, combining and removing handlers from them as += and -= 
     /// are invoked on the mock.
     /// </summary>
-    public class EventBehavior : IProxyBehavior
+    public class EventBehavior : IStuntBehavior
     {
         /// <summary>
         /// Determines whether the given invocation is an event 
@@ -19,8 +19,8 @@ namespace Moq.Sdk
         /// </summary>
         public bool AppliesTo(IMethodInvocation invocation)
             => invocation.MethodBase.IsSpecialName &&
-              (invocation.MethodBase.Name.StartsWith("add_") ||
-               invocation.MethodBase.Name.StartsWith("remove_"));
+              (invocation.MethodBase.Name.StartsWith("add_", StringComparison.Ordinal) ||
+               invocation.MethodBase.Name.StartsWith("remove_", StringComparison.Ordinal));
 
         /// <inheritdoc />
         public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior getNext)
@@ -65,7 +65,7 @@ namespace Moq.Sdk
                     if (invocation.Arguments.FirstOrDefault() is Delegate handler)
                     {
                         var mock = ((IMocked)invocation.Target).Mock;
-                        if (invocation.MethodBase.Name.StartsWith("add_"))
+                        if (invocation.MethodBase.Name.StartsWith("add_", StringComparison.Ordinal))
                             CombineDelegate(info, handler, mock);
                         else
                             RemoveDelegate(info, handler, mock);

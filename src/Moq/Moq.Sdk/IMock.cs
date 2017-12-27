@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
-using Moq.Proxy;
+using Stunts;
 
 namespace Moq.Sdk
 {
     /// <summary>
     /// Provides introspection information about a mock.
     /// </summary>
-    public interface IMock : IProxy
+    public interface IMock : IStunt
     {
         /// <summary>
         /// Returns a <see cref="IMockBehavior"/> for the given <see cref="IMockSetup"/>.

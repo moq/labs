@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using Moq.Proxy;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using Microsoft.CodeAnalysis;
+using Stunts;
 using Xunit;
-using Proxies;
 
 namespace Moq.Sdk.Tests
 {
@@ -35,17 +36,16 @@ namespace Moq.Sdk.Tests
         [Fact]
         public void WhenAddingMockBehavior_ThenCanInterceptSelectively()
         {
-            var calculator = new ICalculatorProxy();
-            var behavior = new MockTrackingBehavior();
+            var calculator = (ICalculator)MockFactory.Default.CreateMock(Assembly.GetExecutingAssembly(), typeof(ICalculator), new Type[0], new object[0]);
 
-            calculator.AddBehavior(behavior);
-            calculator.AddBehavior((m, n) => m.CreateValueReturn("Basic"), m => m.MethodBase.Name == "get_Mode");
+            calculator.AddBehavior((m, n) => m.CreateValueReturn(CalculatorMode.Scientific), m => m.MethodBase.Name == "get_Mode");
             calculator.AddBehavior(new DefaultValueBehavior());
+            calculator.AddBehavior(new DefaultEqualityBehavior());
 
             var mode = calculator.Mode;
             var add = calculator.Add(3, 2);
 
-            Assert.Equal("Basic", mode);
+            Assert.Equal(CalculatorMode.Scientific, mode);
             Assert.Equal(0, add);
         }
     }

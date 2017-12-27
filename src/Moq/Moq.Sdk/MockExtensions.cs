@@ -1,5 +1,5 @@
 ﻿using System;
-using Moq.Proxy;
+using Stunts;
 
 namespace Moq.Sdk
 {

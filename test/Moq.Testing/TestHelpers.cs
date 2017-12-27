@@ -14,16 +14,16 @@ using Xunit;
 
 static partial class TestHelpers
 {
-    public static (AdhocWorkspace workspace, Project project) CreateWorkspaceAndProject(string language, string assemblyName = "Code")
+    public static (AdhocWorkspace workspace, Project project) CreateWorkspaceAndProject(string language, string assemblyName = "Code", bool includeStuntApi = true, bool includeMockApi = false)
     {
         var workspace = new AdhocWorkspace();
-        var projectInfo = CreateProjectInfo(language, assemblyName);
+        var projectInfo = CreateProjectInfo(language, assemblyName, includeStuntApi, includeMockApi);
         var project = workspace.AddProject(projectInfo);
 
         return (workspace, project);
     }
 
-    public static ProjectInfo CreateProjectInfo(string language, string assemblyName)
+    public static ProjectInfo CreateProjectInfo(string language, string assemblyName, bool includeStuntApi = true, bool includeMockApi = false)
     {
         var suffix = language == LanguageNames.CSharp ? "CS" : "VB";
         var options = language == LanguageNames.CSharp ?
@@ -44,17 +44,72 @@ static partial class TestHelpers
         if (!Directory.Exists(netstandardPath))
             throw new InvalidOperationException("Failed to find location of .NETStandard 2.0 reference assemblies");
 
-        var referencePaths = Directory.EnumerateFiles(netstandardPath, "*.dll")
+        //var referencePaths = new[]
+        //{
+        //    //typeof(object).Assembly.Location,
+        //    //typeof(Enumerable).Assembly.Location,
+        //    typeof(Stunts.IStunt).Assembly.Location,
+        //    //typeof(Moq.Sdk.IMock).Assembly.Location,
+        //    Assembly.GetExecutingAssembly().Location,
+        //    //typeof(LazyInitializer).Assembly.Location,
+
+        //    typeof(System.Object).Assembly.Location,                                     //mscorlib
+        //    typeof(System.Composition.ExportAttribute).Assembly.Location,                //System.Composition.AttributeModel
+        //    typeof(System.Composition.Convention.ConventionBuilder).Assembly.Location,   //System.Composition.Convention
+        //    typeof(System.Composition.Hosting.CompositionHost).Assembly.Location,        //System.Composition.Hosting
+        //    typeof(System.Composition.CompositionContext).Assembly.Location,             //System.Composition.Runtime
+        //    typeof(System.Composition.CompositionContextExtensions).Assembly.Location,   //System.Composition.TypedParts
+        //    typeof(System.CodeDom.Compiler.CodeCompiler).Assembly.Location,              //System.CodeDom.Compiler
+
+        //    Path.Combine(frameworkPath, "System.dll"),
+        //    Path.Combine(frameworkPath, "System.Core.dll"),
+        //    Path.Combine(frameworkPath, "System.Runtime.dll"),
+
+        //    @"C:\Program Files\dotnet\sdk\NuGetFallbackFolder\netstandard.library\2.0.0\build\netstandard2.0\ref\netstandard.dll",
+        //    @"C:\Program Files\dotnet\sdk\NuGetFallbackFolder\netstandard.library\2.0.0\build\netstandard2.0\ref\System.Runtime.dll",
+        //    @"C:\Program Files\dotnet\sdk\NuGetFallbackFolder\netstandard.library\2.0.0\build\netstandard2.0\ref\System.Reflection.dll",
+        //    //@"C:\Program Files\dotnet\sdk\NuGetFallbackFolder\netstandard.library\2.0.0\build\netstandard2.0\ref\System.Threading.dll",
+        //    //@"C:\Program Files\dotnet\sdk\NuGetFallbackFolder\netstandard.library\2.0.0\build\netstandard2.0\ref\System.Threading.Tasks.dll",
+        //};
+
+        var referencePaths =
+            Directory.EnumerateFiles(netstandardPath, "*.dll")
             .Concat(ReferencePaths.Paths)
+            //ReferencePaths.Paths
+            //.Concat(Directory.EnumerateFiles(netstandardPath, "*.dll"))
             .Where(path => !string.IsNullOrEmpty(path) && File.Exists(path))
             .Distinct(FileNameEqualityComparer.Default);
 
         var projectId = ProjectId.CreateNewId();
-        var stuntApi = language == LanguageNames.CSharp ?
-            new FileInfo(@"..\..\..\..\src\Stunts\Stunts\contentFiles\cs\netstandard1.3\Stunt.cs").FullName :
-            new FileInfo(@"..\..\..\..\src\Stunts\Stunts\contentFiles\vb\netstandard1.3\Stunt.vb").FullName;
+        var documents = new List<DocumentInfo>();
 
-        Assert.True(File.Exists(stuntApi));
+        if (includeStuntApi)
+        {
+            var stuntApi = language == LanguageNames.CSharp ?
+                new FileInfo(@"..\..\..\..\src\Stunts\Stunts\contentFiles\cs\netstandard1.3\Stunt.cs").FullName :
+                new FileInfo(@"..\..\..\..\src\Stunts\Stunts\contentFiles\vb\netstandard1.3\Stunt.vb").FullName;
+
+            Assert.True(File.Exists(stuntApi));
+            documents.Add(DocumentInfo.Create(
+                DocumentId.CreateNewId(projectId, Path.GetFileName(stuntApi)),
+                Path.GetFileName(stuntApi),
+                loader: new FileTextLoader(stuntApi, Encoding.Default),
+                filePath: stuntApi));
+        }
+
+        if (includeMockApi)
+        {
+            var mockApi = language == LanguageNames.CSharp ?
+                new FileInfo(@"..\..\..\..\src\Moq\Moq\contentFiles\cs\netstandard1.3\Mock.cs").FullName :
+                new FileInfo(@"..\..\..\..\src\Moq\Moq\contentFiles\vb\netstandard1.3\Mock.vb").FullName;
+
+            Assert.True(File.Exists(mockApi));
+            documents.Add(DocumentInfo.Create(
+                DocumentId.CreateNewId(projectId, Path.GetFileName(mockApi)),
+                Path.GetFileName(mockApi),
+                loader: new FileTextLoader(mockApi, Encoding.Default),
+                filePath: mockApi));
+        }
 
         return ProjectInfo.Create(
             projectId,
@@ -66,14 +121,7 @@ static partial class TestHelpers
             parseOptions: parse,
             metadataReferences: referencePaths
                 .Select(path => MetadataReference.CreateFromFile(path)),
-            documents: new[] 
-            {
-                DocumentInfo.Create(
-                    DocumentId.CreateNewId(projectId, Path.GetFileName(stuntApi)),
-                    Path.GetFileName(stuntApi), 
-                    loader: new FileTextLoader(stuntApi, Encoding.Default),
-                    filePath: stuntApi)
-            });
+            documents: documents.ToArray());
     }
 
     public static CancellationToken TimeoutToken(int seconds)

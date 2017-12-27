@@ -1,17 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading;
-using Moq.Proxy;
+using Stunts;
 
 namespace Moq.Sdk.Tests
 {
-    public class Mocked : IMocked, IProxy
+    public class Mocked : IMocked, IStunt
     {
         IMock mock;
-        ObservableCollection<IProxyBehavior> behaviors = new ObservableCollection<IProxyBehavior>();
+        ObservableCollection<IStuntBehavior> behaviors = new ObservableCollection<IStuntBehavior>();
 
         public IMock Mock => LazyInitializer.EnsureInitialized(ref mock, () => new MockInfo(this));
 
-        public ObservableCollection<IProxyBehavior> Behaviors => behaviors;
+        public ObservableCollection<IStuntBehavior> Behaviors => behaviors;
     }
 }

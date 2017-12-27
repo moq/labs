@@ -2,8 +2,8 @@
 using System.ComponentModel;
 using Xunit;
 using Moq.Sdk;
-using Moq.Proxy;
 using static Moq.Syntax;
+using Stunts;
 
 namespace Moq.Tests
 {
@@ -146,10 +146,9 @@ namespace Moq.Tests
             var called2 = false;
 
             calculator.Add(Any<int>(), Any<int>())
-                .Callback(() => called1 = true)
-                .Callback(() => called2 = true)
-                .Returns((int x, int y) => x + y)
-                ;
+                .Callback((int _, int __) => called1 = true)
+                .Callback((int _, int __) => called2 = true)
+                .Returns((int x, int y) => x + y);
 
             calculator.Add(2, 2);
 
@@ -165,9 +164,6 @@ namespace Moq.Tests
 
             calculator.Add(Any<int>(), Any<int>())
                 .Returns((int x, int y) => x + y)
-                // The reason this can't work is that Returns does not keep 
-                // invoking the next handler in the behavior pipeline, and 
-                // therefore short-circuits the behaviors at this point.
                 .Callback(() => called = true);
 
             calculator.Add(2, 2);

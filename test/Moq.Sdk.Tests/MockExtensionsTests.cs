@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Moq.Proxy;
+using Stunts;
 using Xunit;
 
 namespace Moq.Sdk.Tests
@@ -127,7 +127,7 @@ namespace Moq.Sdk.Tests
 
         class Mock : IMock
         {
-            public ObservableCollection<IProxyBehavior> Behaviors { get; } = new ObservableCollection<IProxyBehavior>();
+            public ObservableCollection<IStuntBehavior> Behaviors { get; } = new ObservableCollection<IStuntBehavior>();
 
             public IList<IMethodInvocation> Invocations { get; } = new List<IMethodInvocation>();
 
@@ -135,10 +135,7 @@ namespace Moq.Sdk.Tests
 
             public IMockSetup LastSetup { get; set; }
 
-            public IMockBehavior BehaviorFor(IMockSetup setup)
-            {
-                throw new NotImplementedException();
-            }
+            public IMockBehavior BehaviorFor(IMockSetup setup) => throw new NotImplementedException();
         }
     }
 }

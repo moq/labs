@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Moq.Sdk;
 
 namespace Moq

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using Moq.Proxy;
+using Stunts;
 
 namespace Moq.Sdk
 {

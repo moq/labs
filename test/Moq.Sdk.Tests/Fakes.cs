@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using Moq.Proxy;
+using Stunts;
 
 namespace Moq.Sdk.Tests
 {

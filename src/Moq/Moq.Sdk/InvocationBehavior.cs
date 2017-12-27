@@ -1,4 +1,4 @@
-﻿using Moq.Proxy;
+﻿using Stunts;
 
 namespace Moq.Sdk
 {
@@ -17,6 +17,6 @@ namespace Moq.Sdk
 
         public string Kind { get; }
 
-        public override string ToString() => Name ?? "<unnamed>";
+        public override string ToString() => Kind + ":" + (Name ?? "<unnamed>");
     }
 }

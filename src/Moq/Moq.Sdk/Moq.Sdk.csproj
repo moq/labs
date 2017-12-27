@@ -3,10 +3,7 @@
 		<TargetFramework>netstandard1.4</TargetFramework>
 	</PropertyGroup>
 	<ItemGroup>
-	  <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="4.3.0" />
-	</ItemGroup>
-	<ItemGroup>
-		<ProjectReference Include="..\Proxy\Proxy\Moq.Proxy.csproj" />
+	  <ProjectReference Include="..\..\Stunts\Stunts\Stunts.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Compile Update="Properties\Resources.Designer.cs">

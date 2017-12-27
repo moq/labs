@@ -22,8 +22,8 @@
 	</ItemDefinitionGroup>
 
 	<ItemGroup>
-		<Solution Include="src\Moq.Sdk.sln" />
-		<Solution Include="src\Moq.sln" />
+		<Solution Include="src\Stunts\Stunts.sln" />
+		<Solution Include="src\Moq\Moq.sln" />
 	</ItemGroup>
 
 	<Target Name="Build">
@@ -60,7 +60,6 @@
 
 	<Target Name="_Restore" AfterTargets="Restore">
 		<MSBuild Projects="@(Solution)" Targets="Restore" />
-		<MSBuild Projects="test\Moq.Tests\Moq.Tests.csproj" Targets="Restore"  />
 	</Target>
 
 	<Target Name="GitVersion">

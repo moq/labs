@@ -1,18 +1,53 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <TargetFramework>net47</TargetFramework>
-    <ProjectGuid>eb66bc5e-4072-4f26-9772-979d8561883f</ProjectGuid>
+    <TargetFramework>net471</TargetFramework>
     <IncludeXunit>true</IncludeXunit>
+
+    <!-- Don't include this assembly in the generated ReferencePaths.g.cs because we confuse Roslyn with NS2 + net471 refs -->
+    <IncludeTargetPath>false</IncludeTargetPath>
+    <!-- We declare the Analyzer to be a dependency for IDE build order -->
+    <AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Proxy\Proxy.Generator.Build\Moq.Proxy.Generator.Build.csproj" />
-    <ProjectReference Include="..\..\src\Proxy\Proxy.Generator\Moq.Proxy.Generator.csproj" />
-    <ProjectReference Include="..\..\src\Proxy\Proxy.Sdk\Moq.Proxy.Sdk.csproj" />
-    <ProjectReference Include="..\..\src\Proxy\Proxy\Moq.Proxy.csproj" />
-    <ProjectReference Include="..\..\src\Sdk.Generator\Moq.Sdk.Generator.csproj" />
-    <ProjectReference Include="..\..\src\Sdk\Moq.Sdk.csproj" />
+    <Compile Remove="DynamicMock.cs" />
+    <Compile Remove="DynamicMockTests.cs" />
   </ItemGroup>
 
-  <Import Project="..\Moq.Testing\Moq.Testing.projitems" Label="Shared" />
+  <ItemGroup>
+    <Compile Include="..\Moq.Testing\AssertCode.cs" Link="Helpers\AssertCode.cs" />
+    <Compile Include="..\Moq.Testing\MockBuildEngine.cs" Link="Helpers\MockBuildEngine.cs" />
+    <Compile Include="..\Moq.Testing\RecordingBehavior.cs" Link="Helpers\RecordingBehavior.cs" />
+    <Compile Include="..\Moq.Testing\TestHelpers.cs" Link="Helpers\TestHelpers.cs" />
+    <Compile Include="..\Moq.Testing\TestOutputLogger.cs" Link="Helpers\TestOutputLogger.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- TODO: since we can't get Roslyn to compile code during test run, we must generate mocks at design-time  -->
+    <Analyzer Include="..\..\src\Stunts\Stunts.Analyzer\bin\$(Configuration)\Stunts.dll" />
+    <Analyzer Include="..\..\src\Stunts\Stunts.Analyzer\bin\$(Configuration)\Stunts.Sdk.dll" />
+    <Analyzer Include="..\..\src\Stunts\Stunts.Analyzer\bin\$(Configuration)\Roslyn.VisualStudio.Services.UnitTests.dll" />
+    <Analyzer Include="..\..\src\Stunts\Stunts.Analyzer\bin\$(Configuration)\Stunts.Analyzer.dll" />
+    <Analyzer Include="..\..\src\Moq\Moq.Analyzer\bin\$(Configuration)\Moq.Sdk.dll" />
+    <Analyzer Include="..\..\src\Moq\Moq.Analyzer\bin\$(Configuration)\Moq.Analyzer.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <IncludeReferenceFilter Include="Moq" />
+    <ExcludeReferenceFilter Include="Moq.Analyzer" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="DynamicMock.cs" />
+    <None Include="DynamicMockTests.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Moq\Moq.Sdk\Moq.Sdk.csproj" />
+    <ProjectReference Include="..\..\src\Stunts\Stunts\Stunts.csproj" />
+    <ProjectReference Include="..\..\src\Stunts\Stunts.Sdk\Stunts.Sdk.csproj" />
+    <ProjectReference Include="..\ManualStunts\ManualStunts.csproj" />
+  </ItemGroup>
+
 </Project>

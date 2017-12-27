@@ -1,5 +1,4 @@
 ﻿using System;
-using Moq.Sdk;
 
 namespace Moq
 {
