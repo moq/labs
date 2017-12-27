@@ -8,20 +8,18 @@
 </Query>
 
 var comment = @"        /// <summary>
-        /// Sets the return value for a property or non-void method to 
-        /// be evaluated dynamically using the given function on every 
-        /// call.
+        /// Specifies a callback to invoke when the method is called that receives the original arguments.
         /// </summary>";
 
-for (int i = 6; i < 16; i++)
+for (int i = 2; i < 16; i++)
 {
-	var typeargs = string.Join(", ", Enumerable.Range(1, i + 1).Select(t => "T" + t)) + ", TResult";
-	var args = string.Join(", ", Enumerable.Range(1, i + 1).Select((t, a) => $"(T{t})mi.Arguments[{a}]"));
+	var typeargs = string.Join(", ", Enumerable.Range(1, i + 1).Select(t => "T" + t));
+	var args = string.Join(", ", Enumerable.Range(1, i + 1).Select((t, a) => $"(T{t})args[{a}]"));
 	var method =
 $@"{comment}
-    public static TResult Returns<{typeargs}>(this TResult target, Func<{typeargs}> value)
-        => Returns<TResult>(value, (mi, next)
-            => mi.CreateValueReturn(value({args}), mi.Arguments));"
+    public static TResult Callback<{typeargs}, TResult>(this TResult target, Action<{typeargs}> callback)
+        => Callback(target, args => callback({args}));
+"
 .Dump();
 
 }

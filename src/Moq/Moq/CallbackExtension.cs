@@ -6,10 +6,10 @@ using System;
 namespace Moq
 {
     /// <summary>
-    /// Extensions for configuring mocks.
+    /// Extensions for configuring callbacks when invoking mocks.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public static partial class CallbackExtensions
+    public static partial class CallbackExtension
     {
         static TResult Callback<TResult>(this TResult target, Action<IArgumentCollection> callback)
         {
