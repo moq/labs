@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Text;
 using System.Linq;
 using System.Collections;
+using System.Runtime.CompilerServices;
 
 namespace Stunts
 {
@@ -21,7 +22,7 @@ namespace Stunts
             MethodBase = method;
             Arguments = new ArgumentCollection(arguments, method.GetParameters());
             Context = new Dictionary<string, object>();
-            equatable = new Lazy<IStructuralEquatable>(() => Tuple.Create(target, method, arguments));
+            equatable = new Lazy<IStructuralEquatable>(() => Tuple.Create(RuntimeHelpers.GetHashCode(target), method, arguments));
         }
 
         public IArgumentCollection Arguments { get; }
