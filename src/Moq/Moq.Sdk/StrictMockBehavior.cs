@@ -1,4 +1,5 @@
-﻿using Stunts;
+﻿using System;
+using Stunts;
 
 namespace Moq.Sdk
 {
@@ -21,7 +22,9 @@ namespace Moq.Sdk
         /// </summary>
         public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior getNext)
         {
-            if (!KnownStates.InSetup(invocation.Target))
+            if (invocation == null) throw new ArgumentNullException(nameof(invocation));
+
+            if (!KnownStates.InSetup(invocation?.Target))
                 throw new StrictMockException();
 
             // Otherwise, fallback to returning default values so that 

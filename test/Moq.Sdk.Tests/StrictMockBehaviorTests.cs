@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using System;
+using Xunit;
 
 namespace Moq.Sdk.Tests
 {
@@ -8,7 +9,7 @@ namespace Moq.Sdk.Tests
         public void ThrowsStrictMockException()
         {
             Assert.Throws<StrictMockException>(() =>
-                new StrictMockBehavior().Invoke(null, null));
+                new StrictMockBehavior().Invoke(new FakeInvocation(), () => throw new NotImplementedException()));
         }
     }
 }
