@@ -170,5 +170,29 @@ namespace Moq.Tests
 
             Assert.True(called);
         }
+
+        [Fact]
+        public void ThrowsWithException()
+        {
+            var calculator = Mock.Of<ICalculator>();
+
+            calculator
+                .Add(2, 3)
+                .Throws(new ArgumentException());
+
+            Assert.Throws<ArgumentException>(() => calculator.Add(2, 3));
+        }
+
+        [Fact]
+        public void ThrowsWithExceptionType()
+        {
+            var calculator = Mock.Of<ICalculator>();
+
+            calculator
+                .Add(2, 3)
+                .Throws<ArgumentException>();
+
+            Assert.Throws<ArgumentException>(() => calculator.Add(2, 3));
+        }
     }
 }
