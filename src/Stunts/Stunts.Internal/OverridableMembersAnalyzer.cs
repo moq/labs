@@ -9,17 +9,17 @@ namespace Stunts
     [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public class OverridableMembersAnalyzer : DiagnosticAnalyzer
     {
-        public const string DiagnosticId = "ST001";
+        public const string DiagnosticId = "ST999";
         public const string Category = "Build";
 
-        static DiagnosticDescriptor Rule = new DiagnosticDescriptor(
+        static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
             DiagnosticId,
             nameof(OverridableMembersAnalyzer),
             nameof(OverridableMembersAnalyzer),
             Category,
             DiagnosticSeverity.Hidden, isEnabledByDefault: true);
 
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule); } }
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule);
 
         public override void Initialize(AnalysisContext context)
         {
