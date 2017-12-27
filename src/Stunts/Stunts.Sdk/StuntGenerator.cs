@@ -32,7 +32,9 @@ namespace Stunts
         {
             new EnsureStuntsReference(),
             new CSharpScaffold(),
+            new CSharpFileHeader(),
             new VisualBasicScaffold(),
+            new VisualBasicFileHeader(),
             new CSharpRewrite(),
             new VisualBasicRewrite(),
             new VisualBasicParameterFixup(),
@@ -59,9 +61,7 @@ namespace Stunts
             cancellationToken.ThrowIfCancellationRequested();
 
             var generator = SyntaxGenerator.GetGenerator(project);
-            var (baseType, implementedInterfaces) = ValidateTypes(types);
-
-            var (name, syntax) = CreateStunt(baseType, implementedInterfaces, generator);
+            var (name, syntax) = CreateStunt(types.OfType<INamedTypeSymbol>(), generator);
             var code = syntax.NormalizeWhitespace().ToFullString();
 
             var filePath = Path.GetTempFileName();
@@ -98,9 +98,9 @@ namespace Stunts
             return document;
         }
 
-        public (string name, SyntaxNode syntax) CreateStunt(INamedTypeSymbol baseType, ImmutableArray<INamedTypeSymbol> implementedInterfaces, SyntaxGenerator generator)
+        public (string name, SyntaxNode syntax) CreateStunt(IEnumerable<INamedTypeSymbol> symbols, SyntaxGenerator generator)
         {
-            var name = naming.GetName(baseType, implementedInterfaces);
+            var name = naming.GetName(symbols);
             var imports = new HashSet<string>
             {
                 typeof(EventArgs).Namespace,
@@ -110,6 +110,7 @@ namespace Stunts
                 typeof(CompilerGeneratedAttribute).Namespace,
             };
 
+            var (baseType, implementedInterfaces) = ValidateTypes(symbols.ToArray());
             if (baseType != null && baseType.ContainingNamespace != null && baseType.ContainingNamespace.CanBeReferencedByName)
                 imports.Add(baseType.ContainingNamespace.ToDisplayString());
 
@@ -184,19 +185,22 @@ namespace Stunts
             return document;
         }
 
-        static (INamedTypeSymbol baseType, ImmutableArray<INamedTypeSymbol> additionalInterfaces) ValidateTypes(ITypeSymbol[] types)
+        static (INamedTypeSymbol baseType, ImmutableArray<INamedTypeSymbol> additionalInterfaces) ValidateTypes(INamedTypeSymbol[] types)
         {
+            if (types.Length == 0)
+                throw new ArgumentException(Strings.SymbolRequired);
+
             var baseType = default(INamedTypeSymbol);
             var additionalInterfaces = default(IEnumerable<INamedTypeSymbol>);
             if (types[0].TypeKind == TypeKind.Class)
             {
-                baseType = (INamedTypeSymbol)types[0];
+                baseType = types[0];
                 if (types.Skip(1).Any(x => x.TypeKind == TypeKind.Class))
                     throw new ArgumentException(Strings.WrongBaseType(string.Join(",", types.Select(x => x.Name))));
                 if (types.Skip(1).Any(x => x.TypeKind != TypeKind.Interface))
                     throw new ArgumentException(Strings.InvalidStuntTypes(string.Join(",", types.Select(x => x.Name))));
 
-                additionalInterfaces = types.Skip(1).Cast<INamedTypeSymbol>();
+                additionalInterfaces = types.Skip(1);
             }
             else
             {
@@ -205,7 +209,7 @@ namespace Stunts
                 if (types.Any(x => x.TypeKind != TypeKind.Interface))
                     throw new ArgumentException(Strings.InvalidStuntTypes(string.Join(",", types.Select(x => x.Name))));
 
-                additionalInterfaces = types.Cast<INamedTypeSymbol>();
+                additionalInterfaces = types;
             }
 
             return (baseType, additionalInterfaces.OrderBy(x => x.Name).ToImmutableArray());

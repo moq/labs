@@ -123,6 +123,9 @@
   <data name="StuntsRequired" xml:space="preserve">
     <value>Project '{0}' does not reference the required Stunts assembly.</value>
   </data>
+  <data name="SymbolRequired" xml:space="preserve">
+    <value>At least one symbol is required.</value>
+  </data>
   <data name="WrongBaseType" xml:space="preserve">
     <value>Only one base class can be specified, and it must be the first in the type list. Invalid set of symbols: {0}.</value>
   </data>

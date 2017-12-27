@@ -50,9 +50,7 @@ namespace Stunts
                 var generator = SyntaxGenerator.GetGenerator(document.Project);
                 var stunts = CreateGenerator(naming);
 
-                var (name, syntax) = stunts.CreateStunt(
-                    method.TypeArguments.OfType<INamedTypeSymbol>().First(),
-                    method.TypeArguments.OfType<INamedTypeSymbol>().Skip(1).ToImmutableArray(), generator);
+                var (name, syntax) = stunts.CreateStunt(method.TypeArguments.OfType<INamedTypeSymbol>(), generator);
 
                 // TODO: F#
                 var extension = document.Project.Language == LanguageNames.CSharp ? ".cs" : ".vb";
@@ -76,7 +74,9 @@ namespace Stunts
                 // This is somewhat expensive, but since we're adding it to the user' solution, we might 
                 // as well make it look great ;)
                 stuntDoc = await Simplifier.ReduceAsync(stuntDoc).ConfigureAwait(false);
-                stuntDoc = await Formatter.FormatAsync(stuntDoc).ConfigureAwait(false);
+                if (document.Project.Language != LanguageNames.VisualBasic)
+                    stuntDoc = await Formatter.FormatAsync(stuntDoc).ConfigureAwait(false);
+
                 syntax = await stuntDoc.GetSyntaxRootAsync().ConfigureAwait(false);
 
                 return stuntDoc.WithSyntaxRoot(syntax).Project.Solution;

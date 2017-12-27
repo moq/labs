@@ -11,7 +11,7 @@ namespace Stunts
     {
         /// <summary>
         /// Gets or sets the default <see cref="IStuntFactory"/> to use 
-        /// to create proxies.
+        /// to create stunts.
         /// </summary>
         public static IStuntFactory Default { get; set; } = new StuntFactory();
 

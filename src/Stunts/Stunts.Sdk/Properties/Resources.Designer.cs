@@ -79,6 +79,15 @@ namespace Stunts.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to At least one symbol is required..
+        /// </summary>
+        internal static string SymbolRequired {
+            get {
+                return ResourceManager.GetString("SymbolRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Only one base class can be specified, and it must be the first in the type list. Invalid set of symbols: {0}..
         /// </summary>
         internal static string WrongBaseType {
