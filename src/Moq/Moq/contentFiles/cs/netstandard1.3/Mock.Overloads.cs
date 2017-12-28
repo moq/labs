@@ -11,7 +11,7 @@ namespace Moq
     internal partial class Mock
     {
         /// <summary>
-        /// Creates a stunt that inherits or implements the type <typeparamref name="T"/>.
+        /// Creates a mock that inherits or implements the type <typeparamref name="T"/>.
         /// </summary>
         [MockGenerator]
         public static T Of<T>(params object[] constructorArgs) => Create<T>(MockBehavior.Loose, constructorArgs);
@@ -41,7 +41,7 @@ namespace Moq
         public static T Of<T, T1, T2, T3, T4, T5, T6, T7, T8>(params object[] constructorArgs) => Create<T>(MockBehavior.Loose, constructorArgs, typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8));
 
         /// <summary>
-        /// Creates a stunt that inherits or implements the type <typeparamref name="T"/>.
+        /// Creates a mock that inherits or implements the type <typeparamref name="T"/>.
         /// </summary>
         [MockGenerator]
         public static T Of<T>(MockBehavior behavior, params object[] constructorArgs) => Create<T>(behavior, constructorArgs);
