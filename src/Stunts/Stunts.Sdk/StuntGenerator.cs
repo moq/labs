@@ -132,7 +132,9 @@ namespace Stunts
                                 modifiers: DeclarationModifiers.Partial,
                                 baseType: baseType == null ? null : generator.IdentifierName(baseType.Name),
                                 interfaceTypes: implementedInterfaces
-                                    .Select(x => generator.IdentifierName(x.Name))
+                                    .Select(x => generator.IdentifierName(x.ContainingType != null 
+                                        ? x.ContainingType.Name + "." + x.Name 
+                                        : x.Name))
                             )
                         )
                     )

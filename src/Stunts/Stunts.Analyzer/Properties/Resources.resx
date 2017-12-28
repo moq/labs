@@ -144,6 +144,15 @@
   <data name="OutdatedStuntAnalyzer_Title" xml:space="preserve">
     <value>Stunt must be updated</value>
   </data>
+  <data name="UnsupportedNestedTypeAnalyzer_Description" xml:space="preserve">
+    <value>Generating code for nested types is not supported yet.</value>
+  </data>
+  <data name="UnsupportedNestedTypeAnalyzer_Message" xml:space="preserve">
+    <value>Cannot generate code for nested types: {0}</value>
+  </data>
+  <data name="UnsupportedNestedTypeAnalyzer_Title" xml:space="preserve">
+    <value>Unsupported nested type</value>
+  </data>
   <data name="UpdateStuntCodeFix_FixAllTitle" xml:space="preserve">
     <value>Update all stunts in {0} {1}</value>
   </data>

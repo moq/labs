@@ -142,6 +142,33 @@ namespace Stunts.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Generating code for nested types is not supported yet..
+        /// </summary>
+        internal static string UnsupportedNestedTypeAnalyzer_Description {
+            get {
+                return ResourceManager.GetString("UnsupportedNestedTypeAnalyzer_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot generate code for nested types: {0}.
+        /// </summary>
+        internal static string UnsupportedNestedTypeAnalyzer_Message {
+            get {
+                return ResourceManager.GetString("UnsupportedNestedTypeAnalyzer_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unsupported nested type.
+        /// </summary>
+        internal static string UnsupportedNestedTypeAnalyzer_Title {
+            get {
+                return ResourceManager.GetString("UnsupportedNestedTypeAnalyzer_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Update all stunts in {0} {1}.
         /// </summary>
         internal static string UpdateStuntCodeFix_FixAllTitle {
