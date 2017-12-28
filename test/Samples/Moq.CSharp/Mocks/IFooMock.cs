@@ -21,20 +21,28 @@ namespace Mocks
     {
         readonly BehaviorPipeline pipeline = new BehaviorPipeline();
 
+        [CompilerGenerated]
         ObservableCollection<IStuntBehavior> IStunt.Behaviors => pipeline.Behaviors;
 
+        [CompilerGenerated]
         public string Id => pipeline.Execute<string>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
 
+        [CompilerGenerated]
         public string Title { get => pipeline.Execute<string>(new MethodInvocation(this, MethodBase.GetCurrentMethod())); set => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value)); }
 
+        [CompilerGenerated]
         public void Do() => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
+        [CompilerGenerated]
         public override bool Equals(object obj) => pipeline.Execute<bool>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), obj));
+        [CompilerGenerated]
         public override int GetHashCode() => pipeline.Execute<int>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
+        [CompilerGenerated]
         public override string ToString() => pipeline.Execute<string>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
 
         #region IMocked
         IMock mock;
 
+        [CompilerGenerated]
         IMock IMocked.Mock => LazyInitializer.EnsureInitialized(ref mock, () => new MockInfo(this));
         #endregion
     }

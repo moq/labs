@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27110.0
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stunts.CSharp", "Stunts.CSharp\Stunts.CSharp.csproj", "{2ECBF73E-266C-4124-A1D9-8BD9917DA0D9}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.CSharp", "Moq.CSharp\Moq.CSharp.csproj", "{D37B0764-9385-450B-96D3-38296BD2C50E}"
 EndProject
 Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "Moq.VisualBasic", "Moq.VisualBasic\Moq.VisualBasic.vbproj", "{82E587FD-CD00-4007-B37D-AFE92F685689}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ManualStunts", "..\ManualStunts\ManualStunts.csproj", "{2C21C0D3-E461-4484-B2AC-91A9C5772325}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{82E587FD-CD00-4007-B37D-AFE92F685689}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{82E587FD-CD00-4007-B37D-AFE92F685689}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{82E587FD-CD00-4007-B37D-AFE92F685689}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C21C0D3-E461-4484-B2AC-91A9C5772325}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C21C0D3-E461-4484-B2AC-91A9C5772325}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C21C0D3-E461-4484-B2AC-91A9C5772325}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C21C0D3-E461-4484-B2AC-91A9C5772325}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

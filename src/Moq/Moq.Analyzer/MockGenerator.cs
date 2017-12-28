@@ -7,12 +7,12 @@ namespace Moq
     class MockGenerator : StuntGenerator
     {
         public MockGenerator(NamingConvention naming)
-            : base(naming, GetDefaultProcessors().Concat(new IDocumentProcessor[]
+            : base(naming, new IDocumentProcessor[]
                 {
                     new EnsureSdkReference(),
                     new CSharpMocked(),
                     new VisualBasicMocked(),
-                }).ToArray())
+                }.Concat(GetDefaultProcessors()).ToArray())
         {
         }
     }

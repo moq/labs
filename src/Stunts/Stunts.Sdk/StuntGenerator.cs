@@ -33,11 +33,13 @@ namespace Stunts
             new EnsureStuntsReference(),
             new CSharpScaffold(),
             new CSharpFileHeader(),
+            new CSharpRewrite(),
+            new CSharpCompilerGenerated(),
             new VisualBasicScaffold(),
             new VisualBasicFileHeader(),
-            new CSharpRewrite(),
             new VisualBasicRewrite(),
             new VisualBasicParameterFixup(),
+            new VisualBasicCompilerGenerated(),
         };
 
         public StuntGenerator() : this(new NamingConvention(), GetDefaultProcessors()) { }

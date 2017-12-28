@@ -96,18 +96,31 @@ namespace Stunts.Tests.GeneratorTests
                 $"Generated stunt should contain the additional type {nameof(IDisposable)} in its name.");
         }
 
-        [InlineData(LanguageNames.CSharp)]
-        [InlineData(LanguageNames.VisualBasic)]
-        [Theory(Skip = "Should add CompilerGenerated to each member instead.")]
+        [InlineData(LanguageNames.CSharp, true)]
+        [InlineData(LanguageNames.VisualBasic, true)]
+        [Theory]
         public async Task GeneratedInterfaceHasCompilerGeneratedAttribute(string language, bool trace = false)
         {
-            var compilation = await CreateStunt(new StuntGenerator(), language, typeof(INotifyPropertyChanged), trace);
+            var compilation = await CreateStunt(new StuntGenerator(), language, typeof(ICalculator), trace);
             var assembly = compilation.Emit();
             var type = assembly.GetExportedTypes().FirstOrDefault();
 
             Assert.NotNull(type);
-            Assert.True(type.GetCustomAttributes(typeof(CompilerGeneratedAttribute), false).Any(),
-                "Generated stunt did not have the 'CompilerGeneratedAttribute' attribute applied.");
+
+            Assert.All(
+                type.GetInterfaceMap(typeof(ICalculator)).TargetMethods.Where(m => !m.IsSpecialName),
+                x => Assert.True(x.GetCustomAttributes(typeof(CompilerGeneratedAttribute), false).Any(),
+                $"Generated member {x.Name} did not have the 'CompilerGeneratedAttribute' attribute applied."));
+
+            Assert.All(
+                type.GetProperties(BindingFlags.Instance | BindingFlags.Public),
+                x => Assert.True(x.GetCustomAttributes(typeof(CompilerGeneratedAttribute), false).Any(),
+                $"Generated member {x.Name} did not have the 'CompilerGeneratedAttribute' attribute applied."));
+
+            Assert.All(
+                type.GetEvents(BindingFlags.Instance | BindingFlags.Public),
+                x => Assert.True(x.GetCustomAttributes(typeof(CompilerGeneratedAttribute), false).Any(),
+                $"Generated member {x.Name} did not have the 'CompilerGeneratedAttribute' attribute applied."));
         }
 
         [InlineData(LanguageNames.CSharp)]
