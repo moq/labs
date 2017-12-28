@@ -238,17 +238,6 @@ namespace Moq.Tests
         }
 
         [Fact]
-        public void CanSetupVoidMethod()
-        {
-            var calculator = Mock.Of<ICalculator>(MockBehavior.Strict);
-
-            calculator.Setup(c => c.TurnOn())
-                .Throws<InvalidOperationException>();
-
-            Assert.Throws<InvalidOperationException>(() => calculator.TurnOn());
-        }
-
-        [Fact(Skip = "NotImplemented")]
         public void CanSetupPropertyWithValueForStrictMock()
         {
             var calculator = Mock.Of<ICalculator>(MockBehavior.Strict);
@@ -258,7 +247,18 @@ namespace Moq.Tests
             var mode = calculator.Mode;
 
             Assert.Equal(CalculatorMode.Scientific, mode);
-            Assert.Throws<StrictMockException>(() => calculator.Add(2, 4));
+            Assert.Throws<StrictMockException>(() => calculator.IsOn);
+        }
+
+        [Fact]
+        public void CanSetupVoidMethod()
+        {
+            var calculator = Mock.Of<ICalculator>(MockBehavior.Strict);
+
+            calculator.Setup(c => c.TurnOn())
+                .Throws<InvalidOperationException>();
+
+            Assert.Throws<InvalidOperationException>(() => calculator.TurnOn());
         }
 
     }

@@ -12,8 +12,10 @@ Namespace Global.Moq
             mocked.Mock.Behaviors.Add(New MockTrackingBehavior())
 
             If behavior = MockBehavior.Strict Then
+                mocked.Mock.Behaviors.Add(New PropertyBehavior() With {.SetterRequiresSetup = True})
                 mocked.Mock.Behaviors.Add(New StrictMockBehavior())
             Else
+                mocked.Mock.Behaviors.Add(New PropertyBehavior())
                 mocked.Mock.Behaviors.Add(New DefaultValueBehavior())
             End If
 

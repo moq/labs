@@ -18,6 +18,7 @@ namespace Moq
 
             if (behavior == MockBehavior.Strict)
             {
+                mocked.Mock.Behaviors.Add(new PropertyBehavior { SetterRequiresSetup = true });
                 mocked.Mock.Behaviors.Add(new StrictMockBehavior());
             }
             else

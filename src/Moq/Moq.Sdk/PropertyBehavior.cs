@@ -11,6 +11,13 @@ namespace Moq.Sdk
     public class PropertyBehavior : IStuntBehavior
     {
         /// <summary>
+        /// Whether invoking a property setter requires the mock to be in a 
+        /// setup state (which is always required for strict mocks, but never 
+        /// for loose mocks by default).
+        /// </summary>
+        public bool SetterRequiresSetup { get; set; }
+
+        /// <summary>
         /// Determines whether the given invocation is a property 
         /// getter or setter.
         /// </summary>
@@ -32,7 +39,8 @@ namespace Moq.Sdk
                 state.TryGetValue<object>("_" + invocation.MethodBase.Name.Substring(4), out var value))
                 return invocation.CreateValueReturn(value);
 
-            if (invocation.MethodBase.Name.StartsWith("set_", StringComparison.Ordinal))
+            if (invocation.MethodBase.Name.StartsWith("set_", StringComparison.Ordinal) && 
+                (!SetterRequiresSetup || KnownStates.InSetup(invocation.Target)))
             {
                 state.Set("_" + invocation.MethodBase.Name.Substring(4), invocation.Arguments[0]);
                 return invocation.CreateValueReturn(null);

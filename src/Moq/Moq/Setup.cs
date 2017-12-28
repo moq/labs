@@ -44,8 +44,6 @@ namespace Moq
             using (Setup(mock))
             {
                 var stunt = mock as IStunt ?? throw new ArgumentException(Strings.TargetNotMocked, nameof(mock));
-                var behavior = stunt.Behaviors.OfType<DefaultValueBehavior>().FirstOrDefault();
-
                 return function(mock);
             }
         }
