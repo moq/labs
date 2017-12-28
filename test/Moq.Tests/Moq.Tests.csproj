@@ -18,7 +18,7 @@
     <!-- TODO: since we can't get Roslyn to compile code during test run, we must generate mocks at design-time  -->
     <Analyzer Include="..\..\src\Stunts\Stunts.Analyzer\bin\$(Configuration)\Stunts.dll" />
     <Analyzer Include="..\..\src\Stunts\Stunts.Analyzer\bin\$(Configuration)\Stunts.Sdk.dll" />
-    <Analyzer Include="..\..\src\Stunts\Stunts.Analyzer\bin\$(Configuration)\Roslyn.VisualStudio.Services.UnitTests.dll" />
+    <Analyzer Include="..\..\src\Stunts\Stunts.Analyzer\bin\$(Configuration)\Roslyn.Services.Test.Utilities.dll" />
     <Analyzer Include="..\..\src\Stunts\Stunts.Analyzer\bin\$(Configuration)\Stunts.Analyzer.dll" />
     <Analyzer Include="..\..\src\Moq\Moq.Analyzer\bin\$(Configuration)\Moq.Sdk.dll" />
     <Analyzer Include="..\..\src\Moq\Moq.Analyzer\bin\$(Configuration)\Moq.Analyzer.dll" />
