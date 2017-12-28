@@ -1,7 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using Moq.Properties;
 using Moq.Sdk;
+using Stunts;
 
 namespace Moq
 {
@@ -23,7 +25,7 @@ namespace Moq
         public static IDisposable Setup(this object mock)
         {
             var target = mock is IMocked mocked ?
-                mocked.Mock : throw new ArgumentException(Resources.TargetNotMocked);
+                mocked.Mock : throw new ArgumentException(Strings.TargetNotMocked, nameof(mock));
 
             return new SetupDisposable(target);
         }
@@ -34,6 +36,17 @@ namespace Moq
             {
                 action(mock);
                 return new SetupAdapter(MockSetup.Current);
+            }
+        }
+
+        public static TResult Setup<T, TResult>(this T mock, Func<T, TResult> function)
+        {
+            using (Setup(mock))
+            {
+                var stunt = mock as IStunt ?? throw new ArgumentException(Strings.TargetNotMocked, nameof(mock));
+                var behavior = stunt.Behaviors.OfType<DefaultValueBehavior>().FirstOrDefault();
+
+                return function(mock);
             }
         }
 

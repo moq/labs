@@ -21,8 +21,8 @@ namespace Moq.Sdk
 
         /// <summary>
         /// The last invocation to the mock, turned into a 
-        /// <see cref="IMockSetup"/> ready for use for adding 
-        /// new behaviors when that invocation is performed.
+        /// <see cref="IMockSetup"/> ready for use to add
+        /// new behaviors when a matching invocation is performed.
         /// </summary>
         IMockSetup LastSetup { get; }
 

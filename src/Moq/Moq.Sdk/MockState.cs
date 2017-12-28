@@ -24,7 +24,7 @@ namespace Moq.Sdk
         /// Gets whether the state contains data of the given type <typeparamref name="T"/> 
         /// and <paramref name="key"/>.
         /// </summary>
-        public bool Contains<T>(string key) => state.ContainsKey(Tuple.Create(typeof(T), key));
+        public bool Contains<T>(object key) => state.ContainsKey(Key<T>(key));
 
         /// <summary>
         /// Adds the state of the given type <typeparamref name="T"/> by using the 
@@ -37,8 +37,15 @@ namespace Moq.Sdk
         /// Adds the state of the given type <typeparamref name="T"/> and <paramref name="key"/> 
         /// by using the specified function, if a value with the given type does not already exist.
         /// </summary>
-        public T GetOrAdd<T>(string key, Func<T> valueFactory)
-            => (T)state.GetOrAdd(Tuple.Create(typeof(T), key), _ => valueFactory());
+        public T GetOrAdd<T>(object key, Func<T> valueFactory)
+            => (T)state.GetOrAdd(Key<T>(key), _ => valueFactory());
+
+        /// <summary>
+        /// Sets the state of the given type <typeparamref name="T"/> and <paramref name="key"/>, 
+        /// regardless of whether there is an existing value assigned.
+        /// </summary>
+        public void Set<T>(object key, T value)
+            => state[Key<T>(key)] = value;
 
         /// <summary>
         /// Attempts to add the specified value to the mock state.
@@ -56,7 +63,7 @@ namespace Moq.Sdk
         /// <param name="key">The key of the element to add.</param>
         /// <param name="value">The value of the element to add.</param>
         /// <returns></returns>
-        public bool TryAdd<T>(string key, T value) => state.TryAdd(Tuple.Create(typeof(T), key), value);
+        public bool TryAdd<T>(object key, T value) => state.TryAdd(Key<T>(key), value);
 
         /// <summary>
         /// Attempts to get the value of the given <typeparamref name="T"/> from the mock state.
@@ -81,9 +88,9 @@ namespace Moq.Sdk
         /// <param name="value">When this method returns, contains the object from the mock state
         /// that has the specified <typeparamref name="T"/>, or the default value of the type if 
         /// the operation failed.</param>
-        public bool TryGetValue<T>(string key, out T value)
+        public bool TryGetValue<T>(object key, out T value)
         {
-            var result = state.TryGetValue(Tuple.Create(typeof(T), key), out var _value);
+            var result = state.TryGetValue(Key<T>(key), out var _value);
             value = (T)_value;
             return result;
         }
@@ -112,9 +119,9 @@ namespace Moq.Sdk
         /// <param name="value">When this method returns, contains the object removed from the 
         /// mock state, or the default value of the <typeparamref name="T"/> type if key does not exist.</param>
         /// <returns><see langword="true"/> if the object was removed successfully; otherwise, <see langword="false"/>.</returns>
-        public bool TryRemove<T>(string key, out T value)
+        public bool TryRemove<T>(object key, out T value)
         {
-            var result = state.TryRemove(Tuple.Create(typeof(T), key), out var _value);
+            var result = state.TryRemove(Key<T>(key), out var _value);
             value = (T)_value;
             return result;
         }
@@ -146,6 +153,11 @@ namespace Moq.Sdk
         /// <returns><see langword="true"/> if the value with the given <typeparamref name="T"/> was equal 
         /// to <paramref name="comparisonValue"/> and was replaced with <paramref name="newValue"/>; otherwise, 
         /// <see langword="false"/>.</returns>
-        public bool TryUpdate<T>(string key, T newValue, T comparisonValue) => state.TryUpdate(Tuple.Create(typeof(T), key), newValue, comparisonValue);
+        public bool TryUpdate<T>(object key, T newValue, T comparisonValue) => state.TryUpdate(Key<T>(key), newValue, comparisonValue);
+
+        /// <summary>
+        /// Gets the key to use depending on the received <typeparamref name="T"/>.
+        /// </summary>
+        object Key<T>(object key) => typeof(T) == typeof(object) ? key : Tuple.Create(typeof(T), key);
     }
 }

@@ -11,7 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\src\Moq\Moq\contentFiles\cs\netstandard1.3\Mock.cs" Link="Mock.cs" />
+    <Compile Include="..\..\src\Moq\Moq\contentFiles\cs\netstandard1.3\*.cs" Visible="false" />
   </ItemGroup>
 
   <ItemGroup>

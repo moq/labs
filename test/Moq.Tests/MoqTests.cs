@@ -60,6 +60,18 @@ namespace Moq.Tests
         }
 
         [Fact]
+        public void CanSetupPropertyDirectly()
+        {
+            var calculator = Mock.Of<ICalculator>();
+
+            calculator.Mode = CalculatorMode.Scientific;
+
+            var mode = calculator.Mode;
+
+            Assert.Equal(CalculatorMode.Scientific, mode);
+        }
+
+        [Fact]
         public void CanSetupPropertyTwiceViaReturns()
         {
             var calculator = Mock.Of<ICalculator>();
@@ -213,6 +225,19 @@ namespace Moq.Tests
         }
 
         [Fact]
+        public void CanSetupPropertyForStrictMock()
+        {
+            var calculator = Mock.Of<ICalculator>(MockBehavior.Strict);
+
+            calculator.Setup(c => c.Mode).Returns(CalculatorMode.Scientific);
+
+            var mode = calculator.Mode;
+
+            Assert.Equal(CalculatorMode.Scientific, mode);
+            Assert.Throws<StrictMockException>(() => calculator.Add(2, 4));
+        }
+
+        [Fact]
         public void CanSetupVoidMethod()
         {
             var calculator = Mock.Of<ICalculator>(MockBehavior.Strict);
@@ -222,5 +247,19 @@ namespace Moq.Tests
 
             Assert.Throws<InvalidOperationException>(() => calculator.TurnOn());
         }
+
+        [Fact(Skip = "NotImplemented")]
+        public void CanSetupPropertyWithValueForStrictMock()
+        {
+            var calculator = Mock.Of<ICalculator>(MockBehavior.Strict);
+
+            calculator.Setup(c => c.Mode = CalculatorMode.Scientific);
+
+            var mode = calculator.Mode;
+
+            Assert.Equal(CalculatorMode.Scientific, mode);
+            Assert.Throws<StrictMockException>(() => calculator.Add(2, 4));
+        }
+
     }
 }

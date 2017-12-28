@@ -7,7 +7,7 @@ using Stunts;
 namespace Moq.Sdk
 {
     /// <summary>
-    /// A <see cref="IStuntBehavior"/> that keeps track of backing delegates 
+    /// An <see cref="IStuntBehavior"/> that keeps track of backing delegates 
     /// for events, combining and removing handlers from them as += and -= 
     /// are invoked on the mock.
     /// </summary>

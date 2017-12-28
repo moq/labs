@@ -5,7 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\..\src\Moq\Moq\contentFiles\vb\netstandard1.3\Mock.vb" Link="Mock.vb" Visible="false" />
+    <Compile Include="..\..\..\src\Moq\Moq\contentFiles\vb\netstandard1.3\*.vb">
+      <Link>My Project\%(Filename)%(Extension)</Link>
+      <!-- For whatever reason, the VB project system isn't honoring this metadata -->
+      <Visible>false</Visible>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
