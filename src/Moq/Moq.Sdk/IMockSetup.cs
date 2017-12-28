@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Reflection;
 using Stunts;
 
 namespace Moq.Sdk
@@ -9,20 +10,21 @@ namespace Moq.Sdk
     public interface IMockSetup : IStructuralEquatable
     {
         /// <summary>
-        /// The <see cref="IMethodInvocation"/> used to set up the behavior.
+        /// The mock invocation that was intercepted for this setup.
         /// </summary>
-        IMethodInvocation Invocation { get; }
+		IMethodInvocation Invocation { get; }
 
         /// <summary>
-        /// The <see cref="IArgumentMatcher"/>s used to set up the behavior.
+        /// The <see cref="IArgumentMatcher"/>s used to set up the mock and that 
+        /// will be used to evaluate the <see cref="AppliesTo(IMethodInvocation)"/> 
+        /// method together with the original setup <see cref="Invocation"/>.
         /// </summary>
         IArgumentMatcher[] Matchers { get; }
 
         /// <summary>
-        /// Tests whether the current setup applies to an actual invocation.
+        /// Tests whether the setup applies to an actual invocation.
         /// </summary>
-        /// <param name="actualInvocation">An actual invocation performed 
-        /// on the mock.
+        /// <param name="actualInvocation">An actual invocation performed on the mock.
         /// </param>
         bool AppliesTo(IMethodInvocation actualInvocation);
     }

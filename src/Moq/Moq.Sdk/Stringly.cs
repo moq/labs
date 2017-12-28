@@ -6,7 +6,7 @@ using System.Linq;
 /// Utilities for rendering .NET types as C# type names, with support for generics, 
 /// nested types and aliases.
 /// </summary>
-static partial class Stringly
+static class Stringly
 {
     /// <summary>
     /// Gets the C# name for the type, including proper rendering of generics, 

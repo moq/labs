@@ -200,15 +200,27 @@ namespace Moq.Tests
         {
             var calculator = Mock.Of<ICalculator>(MockBehavior.Strict);
 
+            // NOTE: since the mock is strict, we need to tell we're going to set it up
             using (calculator.Setup())
             {
-                calculator.Mode.Returns(CalculatorMode.Standard);
+                calculator.Mode.Returns(CalculatorMode.Scientific);
             }
 
             var mode = calculator.Mode;
 
-            Assert.Equal(CalculatorMode.Standard, mode);
+            Assert.Equal(CalculatorMode.Scientific, mode);
             Assert.Throws<StrictMockException>(() => calculator.Add(2, 4));
+        }
+
+        [Fact]
+        public void CanSetupVoidMethod()
+        {
+            var calculator = Mock.Of<ICalculator>(MockBehavior.Strict);
+
+            calculator.Setup(c => c.TurnOn())
+                .Throws<InvalidOperationException>();
+
+            Assert.Throws<InvalidOperationException>(() => calculator.TurnOn());
         }
     }
 }

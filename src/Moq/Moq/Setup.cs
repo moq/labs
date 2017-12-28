@@ -28,6 +28,15 @@ namespace Moq
             return new SetupDisposable(target);
         }
 
+        public static ISetup Setup<T>(this T mock, Action<T> action)
+        {
+            using (Setup(mock))
+            {
+                action(mock);
+                return new SetupAdapter(MockSetup.Current);
+            }
+        }
+
         class SetupDisposable : IDisposable
         {
             IMock mock;
@@ -40,5 +49,24 @@ namespace Moq
 
             public void Dispose() => mock.State.TryRemove<bool?>(KnownStates.Setup, out var _);
         }
+    }
+
+    class SetupAdapter : ISetup, IFluentInterface
+    {
+        public SetupAdapter(IMockSetup setup) => Setup = setup;
+
+        internal IMockSetup Setup { get; }
+    }
+
+    public interface ISetup
+    {
+    }
+}
+
+namespace Moq.Sdk
+{
+    public static class ISetupExtension
+    {
+        public static IMockSetup Sdk(this ISetup setup) => (setup as SetupAdapter)?.Setup;
     }
 }

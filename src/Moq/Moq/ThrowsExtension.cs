@@ -1,5 +1,4 @@
-﻿using Stunts;
-using Moq.Sdk;
+﻿using Moq.Sdk;
 using System.ComponentModel;
 using System;
 
@@ -9,7 +8,7 @@ namespace Moq
     /// Extensions for throwing exception from mock invocations.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public static partial class ThrowsExtension
+    public static class ThrowsExtension
     {
         /// <summary>
         /// Specifies the exception to throw when the method is invoked.
