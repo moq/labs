@@ -12,7 +12,7 @@ namespace Stunts.Tests
         public void SetsRefValue()
         {
             var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.VoidWithRef));
-            var behavior = new DefaultValueBehavior();
+            IStuntBehavior behavior = new DefaultValueBehavior();
 
             var result = behavior.Invoke(new MethodInvocation(new object(), method, new object[1]), () => null);
 
@@ -25,7 +25,7 @@ namespace Stunts.Tests
         public void SetsRefEnumValue()
         {
             var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.VoidWithRefEnum));
-            var behavior = new DefaultValueBehavior();
+            IStuntBehavior behavior = new DefaultValueBehavior();
 
             var result = behavior.Invoke(new MethodInvocation(new object(), method, new object[1]), () => null);
 
@@ -38,7 +38,7 @@ namespace Stunts.Tests
         public void SetsOutValue()
         {
             var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.VoidWithOut));
-            var behavior = new DefaultValueBehavior();
+            IStuntBehavior behavior = new DefaultValueBehavior();
 
             var result = behavior.Invoke(new MethodInvocation(new object(), method, new object[1]), () => null);
 
@@ -51,7 +51,7 @@ namespace Stunts.Tests
         public void SetsReturnEnum()
         {
             var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.ReturnEnum));
-            var behavior = new DefaultValueBehavior();
+            IStuntBehavior behavior = new DefaultValueBehavior();
 
             var result = behavior.Invoke(new MethodInvocation(new object(), method, new object[0]), () => null);
 
@@ -62,7 +62,7 @@ namespace Stunts.Tests
         public void SetsReturnNullableEnum()
         {
             var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.ReturnNullableEnum));
-            var behavior = new DefaultValueBehavior();
+            IStuntBehavior behavior = new DefaultValueBehavior();
 
             var result = behavior.Invoke(new MethodInvocation(new object(), method, new object[0]), () => null);
 
@@ -74,7 +74,7 @@ namespace Stunts.Tests
         public void SetsReturnArray()
         {
             var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.ReturnArray));
-            var behavior = new DefaultValueBehavior();
+            IStuntBehavior behavior = new DefaultValueBehavior();
 
             var result = behavior.Invoke(new MethodInvocation(new object(), method, new object[0]), () => null);
 
@@ -87,7 +87,7 @@ namespace Stunts.Tests
         public void SetsReturnTask()
         {
             var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.ReturnTask));
-            var behavior = new DefaultValueBehavior();
+            IStuntBehavior behavior = new DefaultValueBehavior();
 
             var result = behavior.Invoke(new MethodInvocation(new object(), method, new object[0]), () => null);
 
@@ -100,7 +100,7 @@ namespace Stunts.Tests
         public void SetsReturnGenericTask()
         {
             var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.ReturnGenericTask));
-            var behavior = new DefaultValueBehavior();
+            IStuntBehavior behavior = new DefaultValueBehavior();
 
             var result = behavior.Invoke(new MethodInvocation(new object(), method, new object[0]), () => null);
 
@@ -113,7 +113,7 @@ namespace Stunts.Tests
         public void SetsReturnGenericTaskEnum()
         {
             var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.ReturnGenericTaskEnum));
-            var behavior = new DefaultValueBehavior();
+            IStuntBehavior behavior = new DefaultValueBehavior();
 
             var result = behavior.Invoke(new MethodInvocation(new object(), method, new object[0]), () => null);
 
@@ -124,10 +124,25 @@ namespace Stunts.Tests
         }
 
         [Fact]
+        public void SetsCustomGenericEnumerable()
+        {
+            var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.ReturnGenericEnumerable));
+            var behavior = new DefaultValueBehavior();
+
+            behavior.Provider.Register(typeof(IEnumerable<object>), _ => new object[] { 5, 10 });
+
+            var result = ((IStuntBehavior)behavior).Invoke(new MethodInvocation(new object(), method, new object[0]), () => null);
+
+            Assert.NotNull(result.ReturnValue);
+            Assert.True(result.ReturnValue is object[]);
+            Assert.Equal(2, ((object[])result.ReturnValue).Length);
+        }
+
+        [Fact]
         public void SetsReturnEnumerable()
         {
             var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.ReturnEnumerable));
-            var behavior = new DefaultValueBehavior();
+            IStuntBehavior behavior = new DefaultValueBehavior();
 
             var result = behavior.Invoke(new MethodInvocation(new object(), method, new object[0]), () => null);
 
@@ -139,7 +154,7 @@ namespace Stunts.Tests
         public void SetsReturnGenericEnumerable()
         {
             var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.ReturnGenericEnumerable));
-            var behavior = new DefaultValueBehavior();
+            IStuntBehavior behavior = new DefaultValueBehavior();
 
             var result = behavior.Invoke(new MethodInvocation(new object(), method, new object[0]), () => null);
 
@@ -155,11 +170,20 @@ namespace Stunts.Tests
 
             Assert.True(parameter.ParameterType.IsByRef);
 
-            var value = DefaultValue.For(parameter.ParameterType);
+            var value = new DefaultValue().For(parameter.ParameterType);
 
             Assert.NotNull(value);
             Assert.True(value is object[]);
             Assert.Empty((object[])value);
+        }
+
+        [Fact]
+        public void DefaultValueForArrayWithRank()
+        {
+            var array = new int[0][][];
+            var value = new DefaultValue().For(array.GetType());
+
+            Assert.Equal(array.GetType().GetArrayRank(), value.GetType().GetArrayRank());
         }
 
         public interface IDefaultValues

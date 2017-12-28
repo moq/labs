@@ -11,6 +11,11 @@ namespace Stunts
     public class DefaultValueBehavior : IStuntBehavior
     {
         /// <summary>
+        /// Gets or sets the provider of default values for the behavior.
+        /// </summary>
+        public DefaultValue Provider { get; set; } = new DefaultValue();
+
+        /// <summary>
         /// Always returns <see langword="true" />
         /// </summary>
         public bool AppliesTo(IMethodInvocation invocation) => true;
@@ -19,7 +24,7 @@ namespace Stunts
         /// Fills in the ref, out and return values with the defaults determined 
         /// by the <see cref="DefaultValue"/> utility class.
         /// </summary>
-        public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior getNext)
+        IMethodReturn IStuntBehavior.Invoke(IMethodInvocation invocation, GetNextBehavior getNext)
         {
             var arguments = invocation.Arguments.ToArray();
             var parameters = invocation.MethodBase.GetParameters();
@@ -29,7 +34,7 @@ namespace Stunts
                 // This covers both out & ref
                 if (parameter.ParameterType.IsByRef)
                 {
-                    arguments[i] = DefaultValue.For(parameter.ParameterType);
+                    arguments[i] = Provider.For(parameter.ParameterType);
                 }
             }
 
@@ -37,7 +42,7 @@ namespace Stunts
             if (invocation.MethodBase is MethodInfo info &&
                 info.ReturnType != typeof(void))
             {
-                returnValue = DefaultValue.For(info.ReturnType);
+                returnValue = Provider.For(info.ReturnType);
             }
 
             return invocation.CreateValueReturn(returnValue, arguments);

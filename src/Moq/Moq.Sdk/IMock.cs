@@ -15,14 +15,16 @@ namespace Moq.Sdk
         IMockBehavior BehaviorFor(IMockSetup setup);
 
         /// <summary>
-        /// Invocations performed on the mock.
+        /// Invocations performed on the mock so far.
         /// </summary>
         IList<IMethodInvocation> Invocations { get; }
 
         /// <summary>
         /// The last invocation to the mock, turned into a 
-        /// <see cref="IMockSetup"/> ready for use to add
-        /// new behaviors when a matching invocation is performed.
+        /// <see cref="IMockSetup"/> ready for use together with the 
+        /// <see cref="BehaviorFor(IMockSetup)"/> method to locate 
+        /// the maching <see cref="IMockBehavior"/> to add new behaviors 
+        /// to when a matching invocation is performed.
         /// </summary>
         IMockSetup LastSetup { get; }
 

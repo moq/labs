@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using Stunts;
@@ -36,6 +37,9 @@ namespace Moq.Sdk
             var currentMatchers = CallContext<Queue<IArgumentMatcher>>.GetData(() => new Queue<IArgumentMatcher>());
             var finalMatchers = new List<IArgumentMatcher>();
             var parameters = invocation.MethodBase.GetParameters();
+            var defaultValue = (invocation.Target as IMocked)?.
+                Mock.Behaviors.OfType<DefaultValueBehavior>().FirstOrDefault()?.Provider ??
+                new DefaultValue();
 
             for (var i = 0; i < invocation.Arguments.Count; i++)
             {
@@ -45,7 +49,7 @@ namespace Moq.Sdk
                 // This is a bit fuzzy since we compare the actual argument value against the 
                 // default value for the parameter type, or the type of the matcher in the 
                 // queue of argument matchers to see if applies instead.
-                if (object.Equals(argument, DefaultValue.For(parameter.ParameterType)) &&
+                if (object.Equals(argument, defaultValue.For(parameter.ParameterType)) &&
                     currentMatchers.Count != 0 &&
                     parameter.ParameterType.GetTypeInfo().IsAssignableFrom(currentMatchers.Peek().ArgumentType.GetTypeInfo()))
                 {

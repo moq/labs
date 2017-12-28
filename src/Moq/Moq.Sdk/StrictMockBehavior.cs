@@ -10,7 +10,7 @@ namespace Moq.Sdk
     /// </summary>
     public class StrictMockBehavior : IStuntBehavior
     {
-        DefaultValueBehavior fallback = new DefaultValueBehavior();
+        IStuntBehavior fallback = new DefaultValueBehavior();
 
         /// <summary>
         /// Always returns <see langword="true" />
