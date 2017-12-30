@@ -63,12 +63,12 @@ public static class AssertCode
 
     public static async Task NoErrorsAsync(Document document)
     {
-        var compilation = await document.Project.GetCompilationAsync(TimeoutToken(2));
+        var compilation = await document.Project.GetCompilationAsync(TimeoutToken(5));
         var noWarn = new HashSet<string>
         {
             //"CS1701", // fusion reference mismatch, binding redirect required.
         };
-        var diagnostics = compilation.GetDiagnostics(TimeoutToken(2)).Where(d => !noWarn.Contains(d.Id)).ToArray();
+        var diagnostics = compilation.GetDiagnostics(TimeoutToken(5)).Where(d => !noWarn.Contains(d.Id)).ToArray();
         if (diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error || d.Severity == DiagnosticSeverity.Warning))
         {
             SyntaxNode syntax;
@@ -78,7 +78,7 @@ public static class AssertCode
                 syntax = await document.GetSyntaxRootAsync(TimeoutToken(1));
                 syntax = syntax.NormalizeWhitespace();
                 document = document.WithSyntaxRoot(syntax);
-                compilation = await document.Project.GetCompilationAsync(TimeoutToken(2));
+                compilation = await document.Project.GetCompilationAsync(TimeoutToken(5));
             }
             catch
             {
