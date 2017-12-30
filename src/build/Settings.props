@@ -20,6 +20,9 @@
     <!-- We explicitly write all assemblies to a single bin directory for performance reasons -->
     <GenerateProjectSpecificOutputFolder>false</GenerateProjectSpecificOutputFolder>
 
+    <!-- Don't allow NuGet to fallback to the implicit folder since that generates CI warnings -->
+    <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
+
     <!-- Generate satellite assemblies using Roslyn to avoid some al.exe issues 
         (see https://github.com/dotnet/roslyn/issues/23190 and https://github.com/dotnet/roslyn/issues/23191) -->
     <GenerateSatelliteAssembliesForCore>true</GenerateSatelliteAssembliesForCore>
