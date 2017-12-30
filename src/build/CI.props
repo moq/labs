@@ -1,0 +1,27 @@
+<Project>
+    <!--
+    ============================================================
+                CI Property
+	
+    Determines if the current build is a CI build by checking for 
+    various well-known CI systems environment variables.
+    ==============================================================
+    -->
+    <PropertyGroup Condition="'$(CI)' == ''">
+        <!-- CI is a common variable used by CI systems -->
+        <CI Condition="'$(TEAMCITY_VERSION)' != '' or 
+                       '$(APPVEYOR)' != '' or 
+                       '$(BuildRunner)' == 'MyGet' or 
+                       '$(JENKINS_HOME)' != '' or 
+                       '$(TF_BUILD)' == 'true' or
+                       '$(IsVSTSBuild)' == 'true' or
+                       '$(TRAVIS)' == 'true'">true</CI>
+        <CI Condition="'$(CI)' == ''">false</CI>
+    </PropertyGroup>
+
+    <!-- Returns the value of the $(CI) property and renders it to the 
+         output as a high-importance message   -->
+    <Target Name="GetCI" Returns="$(CI)">
+        <Message Importance="high" Text="CI=$(CI)" />
+    </Target>
+</Project>

@@ -1,0 +1,39 @@
+<Project>
+  <Import Project="CI.props" />
+  <Import Project="Packaging.props" />
+
+  <PropertyGroup>
+    <!-- When targetting a single framework, we don't need the added subdir -->
+    <AppendTargetFrameworkToOutputPath Condition="'$(AppendTargetFrameworkToOutputPath)' == '' and '$(TargetFrameworks)' == ''">false</AppendTargetFrameworkToOutputPath>
+    <!-- We never emit runtime-specific assemblies, so opt-out of this. -->
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+
+    <UseSharedCompilation>true</UseSharedCompilation>
+
+    <RootPath>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\'))</RootPath>
+    <BaseOutputPath Condition="'$(BaseOutputPath)' == ''">$(RootPath)bin\</BaseOutputPath>
+    <OutputPath>$(BaseOutputPath)$(Configuration)\</OutputPath>
+    <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)' == ''">$(BaseOutputPath)obj\</BaseIntermediateOutputPath>
+    <BaseIntermediateOutputPath>$(BaseIntermediateOutputPath)$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)</IntermediateOutputPath>
+
+    <!-- We explicitly write all assemblies to a single bin directory for performance reasons -->
+    <GenerateProjectSpecificOutputFolder>false</GenerateProjectSpecificOutputFolder>
+
+    <!-- Generate satellite assemblies using Roslyn to avoid some al.exe issues 
+        (see https://github.com/dotnet/roslyn/issues/23190 and https://github.com/dotnet/roslyn/issues/23191) -->
+    <GenerateSatelliteAssembliesForCore>true</GenerateSatelliteAssembliesForCore>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <!-- We use msbuild.rsp to always generate .binlog for easy build diagnostics. Don't show them in the IDE -->
+    <None Remove="*.binlog" />
+  </ItemGroup>
+  
+  <!-- IsTestProject is set by xunit  -->
+  <Import Project="Settings.Tests.props" Condition="'$(IsTestProject)' == 'true'" />
+
+  <!-- Import [project].props if it exists -->
+  <Import Project="$(MSBuildProjectDirectory)\$(MSBuildProjectName).props"
+          Condition="'$(MSBuildProjectExtension)' != '.props' And Exists('$(MSBuildProjectDirectory)\$(MSBuildProjectName).props')" />
+</Project>

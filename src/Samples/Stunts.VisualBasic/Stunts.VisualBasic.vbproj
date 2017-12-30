@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net471</TargetFramework>
+    <OptionStrict>On</OptionStrict>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\..\src\Stunts\Stunts\contentFiles\vb\netstandard1.3\Stunt.vb" Link="Stunt.vb" Visible="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Stunts\Stunts\Stunts.csproj" />
+
+    <Analyzer Include="$(BinPath)\Stunts.dll" />
+    <Analyzer Include="$(BinPath)\Stunts.Sdk.dll" />
+    <Analyzer Include="$(BinPath)\Stunts.Analyzer.dll" />
+    <Analyzer Include="$(BinPath)\Roslyn.Services.Test.Utilities.dll" />
+  </ItemGroup>
+
+</Project>

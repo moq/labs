@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net471</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\..\src\Moq\Moq\contentFiles\cs\netstandard1.3\*.cs" Visible="False" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Stunts\Stunts\Stunts.csproj" />
+    <ProjectReference Include="..\..\..\src\Moq\Moq\Moq.csproj" />
+    <ProjectReference Include="..\..\..\src\Moq\Moq.Sdk\Moq.Sdk.csproj" />
+
+    <Analyzer Include="$(BinPath)\Stunts.dll" />
+    <Analyzer Include="$(BinPath)\Stunts.Sdk.dll" />
+    <Analyzer Include="$(BinPath)\Stunts.Analyzer.dll" />
+    <Analyzer Include="$(BinPath)\Roslyn.Services.Test.Utilities.dll" />
+    <Analyzer Include="$(BinPath)\Moq.Sdk.dll" />
+    <Analyzer Include="$(BinPath)\Moq.Analyzer.dll" />
+  </ItemGroup>
+
+</Project>

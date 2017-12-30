@@ -6,11 +6,12 @@
 		<IntermediateOutputPath>$(RestoreOutputPath)\</IntermediateOutputPath>
     <AdditionalProperties>Configuration=$(Configuration)</AdditionalProperties>
     <Out Condition="'$(Out)' == ''">out</Out>
+    <GitVersionFile>src\GitInfo.txt</GitVersionFile>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="GitInfo" Version="*" />
-		<PackageReference Include="xunit.runner.console" Version="2.3.1" />
+		<PackageReference Include="xunit.runner.msbuild" Version="2.3.1" />
 	</ItemGroup>
 
 	<ItemDefinitionGroup>
@@ -20,9 +21,9 @@
 	</ItemDefinitionGroup>
 
 	<ItemGroup>
-		<Solution Include="src\Stunts\Stunts.sln" />
-		<Solution Include="src\Moq\Moq.sln" />
-		<Solution Include="test\Samples\Samples.sln" />
+		<Solution Include="src\Stunts.sln" />
+		<Solution Include="src\Moq.sln" />
+		<Solution Include="src\Samples\Samples.sln" />
 	</ItemGroup>
 
 	<Target Name="Build">
@@ -32,26 +33,22 @@
 
 	<Target Name="Test">
 		<ItemGroup>
-			<_TestAssembly Include="test\**\bin\$(Configuration)\**\*Tests.dll" />
-			<TestAssembly Include="@(_TestAssembly)"
-									  Condition="$([System.String]::new('%(Filename)').Contains('Acceptance')) == 'false' And '%(Filename)' != 'Roslyn.Services.Editor.UnitTests'" />
+			<TestAssembly Include="bin\$(Configuration)\*Tests.dll" Exclude="bin\$(Configuration)\*AcceptanceTests.dll" />
 		</ItemGroup>
 
-		<Exec Command='"$(XunitConsolePath)" "%(TestAssembly.FullPath)" $(XunitOptions) -html "$(Out)\%(TestAssembly.Filename).html" -xml "$(Out)\%(TestAssembly.Filename).xml"'
-			  Condition="'@(TestAssembly)' != ''"/>
+    <xunit Assemblies="@(TestAssembly)" />
 	</Target>
 
 	<Target Name="Acceptance">
 		<ItemGroup>
-			<TestAssembly Include="test\**\bin\$(Configuration)\**\*AcceptanceTests.dll" />
+			<TestAssembly Include="bin\$(Configuration)\*AcceptanceTests.dll" />
 		</ItemGroup>
 
-		<Exec Command='"$(XunitConsolePath)" "%(TestAssembly.FullPath)" $(XunitOptions) -html "$(Out)\%(TestAssembly.Filename).html" -xml "$(Out)\%(TestAssembly.Filename).xml"'
-			  Condition="'@(TestAssembly)' != ''"/>
+    <xunit Assemblies="@(TestAssembly)" />
 	</Target>
 
 	<Target Name="Clean">
-		<Exec Command='for /d /r . %%d in (bin,obj,.vs) do @if exist "%%d" rd /s/q "%%d"'
+		<Exec Command='for /d /r . %%d in (out,bin,obj,.vs) do @if exist "%%d" rd /s/q "%%d"'
 		      Condition="'$(OS)' == 'Windows_NT'" />
 	</Target>
 
@@ -79,6 +76,6 @@
 		<MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
 	</Target>
 
-	<Import Project="src\Version.targets" />
+	<Import Project="src\build\Version.targets" />
 	<Import Project="corebuild\corebuild.targets" />
 </Project>

@@ -12,7 +12,7 @@
   <ItemGroup>
     <Compile Remove="contentFiles\**\*.cs" />
     <None Remove="contentFiles\**\*.*" />
-    <None Include="contentFiles\**\*.*" Pack="true" />
+    <None Include="contentFiles\**\*.*" Pack="true" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

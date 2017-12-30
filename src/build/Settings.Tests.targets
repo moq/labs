@@ -1,0 +1,106 @@
+<Project>
+	<PropertyGroup>
+		<ReferencePathsFile>$(IntermediateOutputPath)ReferencePaths.g.cs</ReferencePathsFile>
+    <CoreCompileDependsOn Condition="'$(Language)' == 'C#'">
+      $(CoreCompileDependsOn);
+      GenerateReferencePaths;
+    </CoreCompileDependsOn>
+  </PropertyGroup>
+
+	<ItemDefinitionGroup>
+		<ReferencePath>
+			<FrameworkFile/>
+			<FusionName/>
+		</ReferencePath>
+	</ItemDefinitionGroup>
+
+	<Target Name="Test" DependsOnTargets="Build">
+    <xunit Assemblies="@(TargetPathWithTargetPlatformMoniker)" />
+  </Target>
+
+  <ItemGroup>
+    <IncludeReferenceFilter Include="mscorlib" />
+    <IncludeReferenceFilter Include="System" />
+    <IncludeReferenceFilter Include="Stunts" />
+    <IncludeReferenceFilter Include="Sample" />
+    <ExcludeReferenceFilter Include="Stunts\.Analyzer" />
+    <ExcludeReferenceFilter Include="Stunts\.Sdk" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <CoreCompileDependsOn>
+      $(CoreCompileDependsOn);
+      GenerateReferencePaths
+    </CoreCompileDependsOn>
+  </PropertyGroup>
+
+  <Target Name="GenerateReferencePaths"
+          Condition="'$(Language)' == 'C#'"
+          Inputs="$(MSBuildAllProjects)"
+          Outputs="$(ReferencePathsFile)"
+          DependsOnTargets="ResolveReferences">
+
+    <FilterReferences References="@(ReferencePath)" Include="@(IncludeReferenceFilter)" Exclude="@(ExcludeReferenceFilter)">
+      <Output TaskParameter="Filtered" ItemName="_FilteredReferencePath" />
+    </FilterReferences>
+
+    <WriteLinesToFile File="$(ReferencePathsFile)"
+						  Overwrite="true"
+						  Lines='static class ReferencePaths
+{
+  public static string[] Paths = new[]
+  { '/>
+
+    <WriteLinesToFile File="$(ReferencePathsFile)"
+                      Overwrite="false"
+                      Lines='
+    @"%(_FilteredReferencePath.FullPath)",'/>
+
+    <WriteLinesToFile File="$(ReferencePathsFile)"
+						  Condition="'$(IncludeTargetPath)' != 'false'"
+						  Overwrite="false"
+						  Lines='
+    @"$(TargetPath)",'/>
+
+    <WriteLinesToFile File="$(ReferencePathsFile)" Overwrite="false"
+							  Lines='
+  }%3B
+}'/>
+
+    <ItemGroup>
+      <FileWrites Include="$(ReferencePathsFile)" />
+      <Compile Include="$(ReferencePathsFile)" />
+    </ItemGroup>
+
+  </Target>
+
+  <UsingTask TaskName="FilterReferences" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+		<ParameterGroup>
+			<References ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+			<Include ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+      <Exclude ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+      <Filtered ParameterType="Microsoft.Build.Framework.ITaskItem[]" Output="true" />
+		</ParameterGroup>
+		<Task>
+			<Reference Include="Microsoft.Build" />
+			<Reference Include="System" />
+			<Reference Include="System.Core" />
+			<Using Namespace="Microsoft.Build.Framework" />
+			<Using Namespace="Microsoft.Build.Utilities" />
+			<Using Namespace="System" />
+			<Using Namespace="System.Linq" />
+			<Using Namespace="System.Text.RegularExpressions" />
+			<Code Type="Fragment" Language="cs">
+				<![CDATA[
+            Filtered = References
+              .Where(i => 
+                Include.Any(x => Regex.IsMatch(i.GetMetadata("FusionName"), x.ItemSpec)) && 
+                !Exclude.Any(x => Regex.IsMatch(i.GetMetadata("FusionName"), x.ItemSpec)))
+              .OrderBy(i => i.GetMetadata("Filename"))
+              .ToArray();
+              ]]>
+			</Code>
+		</Task>
+	</UsingTask>
+
+</Project>

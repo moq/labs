@@ -1,5 +1,0 @@
-<Project>
-  <!-- Import [project].targets if it exists -->
-	<Import Project="$(MSBuildProjectDirectory)\$(MSBuildProjectName).targets"
-          Condition="'$(MSBuildProjectExtension)' != '.targets' And Exists('$(MSBuildProjectDirectory)\$(MSBuildProjectName).targets')" />
-</Project>

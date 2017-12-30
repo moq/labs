@@ -65,7 +65,7 @@ if %MSBuildMajorVersion% LSS 15 (
 
 :: Ensure developer command prompt variables are set
 if "%VisualStudioVersion%" == "" (
-  for /f "delims=" %%i in ('msbuild -nologo %Root%corebuild\corebuild.targets /t:GetVsInstallRoot /v:minimal') do set "VsInstallRoot=%%i" & goto :VsInstallRootDone
+  for /f "delims=" %%i in ('msbuild -nologo %Root%corebuild\corebuild.targets /t:_GetVsInstallRoot /v:minimal') do set "VsInstallRoot=%%i" & goto :VsInstallRootDone
 :VsInstallRootDone
   for /f "tokens=* delims= " %%i in ("%VsInstallRoot%") do set "VsInstallRoot=%%i"
   set "DeveloperCommandPrompt=%VsInstallRoot%\Common7\Tools\VsDevCmd.bat"

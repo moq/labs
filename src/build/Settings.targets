@@ -1,0 +1,33 @@
+<Project InitialTargets="FixupProjectReferences">
+  <Import Project="PackageReferences.targets" />
+  <Import Project="Version.targets" />
+  <Import Project="Packaging.targets" />
+
+  <ItemGroup>
+    <PackageReference Update="NETStandard.Library" PrivateAssets="all" />
+  </ItemGroup>
+
+  <!-- For some reason, SDK-style P2P references are being resolved *after* ResolveAssemblyReferences and failing the build -->
+	<Target Name="FixupProjectReferences">
+		<PropertyGroup>
+			<ResolveAssemblyReferencesDependsOn>
+				$(ResolveAssemblyReferencesDependsOn);
+				ResolveProjectReferences
+			</ResolveAssemblyReferencesDependsOn>
+		</PropertyGroup>
+	</Target>
+
+  <!-- We get the 1.1.0 Microsoft.CodeAnalyis.Analyzers automatically, and those slow down and sometimes fail, so turn off. -->
+  <Target Name="RemoveResolvedAnalyzers" BeforeTargets="ResolveLockFileAnalyzers">
+    <ItemGroup>
+      <ResolvedAnalyzers Remove="@(ResolvedAnalyzers)" />
+    </ItemGroup>
+  </Target>
+
+  <!-- IsTestProject is set by xunit  -->
+  <Import Project="Settings.Tests.targets" Condition="'$(IsTestProject)' == 'true'" />
+
+  <!-- Import [project].targets if it exists -->
+	<Import Project="$(MSBuildProjectDirectory)\$(MSBuildProjectName).targets"
+          Condition="'$(MSBuildProjectExtension)' != '.targets' And Exists('$(MSBuildProjectDirectory)\$(MSBuildProjectName).targets')" />
+</Project>

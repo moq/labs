@@ -1,0 +1,30 @@
+<Project>
+
+  <PropertyGroup>
+    <!-- The Sdks\NuGet.Build.Tasks.Pack\build\NuGet.Build.Tasks.Pack.targets unconditionally sets 
+        PackageId=AssemblyName if no PackageId is provided, and then defaults IsPackable=true if 
+        a PackageId is set (?!), meaning that by default everything is packable in Sdk-style 
+        projects. 
+        NuGetizer is more conservative, never defaulting PackageId and therefore making IsPackable 
+        only true when the former is explicitly set by the user. 
+
+        The Directory.Build.targets are imported after the user's project properties have been 
+        read, and therefore gives us a chance to inspect if an explicit PackageId was provided, 
+        before the NuGet SDK target is imported and defaults it. At this point, we can give 
+        IsPackable a more sensible default, making it false if no PackageId was provided at this 
+        point. -->
+    <IsPackable Condition="'$(PackageId)' == ''">false</IsPackable>    
+  </PropertyGroup>
+
+  <Target Name="FixupPackaging" AfterTargets="_CollectPrimaryOutputRelatedFiles" BeforeTargets="InferPrimaryOutputDependencies" Returns="@(_PrimaryOutputRelatedFile)">
+    <ItemGroup>
+      <_PrimaryOutputRelatedFile Update="@(_PrimaryOutputRelatedFile)" 
+                                 Condition="
+           $([MSBuild]::ValueOrDefault('%(_PrimaryOutputRelatedFile.PackageName)', '').StartsWith('Microsoft.CodeAnalysis')) or 
+           $([MSBuild]::ValueOrDefault('%(_PrimaryOutputRelatedFile.PackageName)', '').StartsWith('Microsoft.Build'))">
+        <PrivateAssets>all</PrivateAssets>
+      </_PrimaryOutputRelatedFile>
+    </ItemGroup>
+  </Target>
+
+</Project>

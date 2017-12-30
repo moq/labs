@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net471</TargetFramework>
+    <IncludeXunit>true</IncludeXunit>
+
+    <!-- Don't include this assembly in the generated ReferencePaths.g.cs because we confuse Roslyn with NS2 + net471 refs -->
+    <IncludeTargetPath>false</IncludeTargetPath>
+    <!-- We declare the Analyzer to be a dependency for IDE build order -->
+    <AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Moq\contentFiles\cs\netstandard1.3\*.cs" Visible="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- TODO: since we can't get Roslyn to compile code during test run, we must generate mocks at design-time  -->
+    <Analyzer Include="$(BaseOutputPath)$(Configuration)\Stunts.dll" />
+    <Analyzer Include="$(BaseOutputPath)$(Configuration)\Stunts.Sdk.dll" />
+    <Analyzer Include="$(BaseOutputPath)$(Configuration)\Roslyn.Services.Test.Utilities.dll" />
+    <Analyzer Include="$(BaseOutputPath)$(Configuration)\Stunts.Analyzer.dll" />
+    <Analyzer Include="$(BaseOutputPath)$(Configuration)\Moq.Sdk.dll" />
+    <Analyzer Include="$(BaseOutputPath)$(Configuration)\Moq.Analyzer.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <IncludeReferenceFilter Include="Moq" />
+    <ExcludeReferenceFilter Include="Moq.Analyzer" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Moq.Sdk\Moq.Sdk.csproj" />
+    <ProjectReference Include="..\Moq\Moq.csproj" />
+    <ProjectReference Include="..\..\Stunts\Stunts\Stunts.csproj" />
+    <ProjectReference Include="..\..\Stunts\Stunts.Sdk\Stunts.Sdk.csproj" />
+    <ProjectReference Include="..\..\Samples\Sample\Sample.csproj" />
+  </ItemGroup>
+
+</Project>

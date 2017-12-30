@@ -1,0 +1,7 @@
+<Project>
+  <!-- Prevent importing the shared props -->
+  <PropertyGroup>
+    <RootPath>$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), .gitignore))\</RootPath>
+    <BinPath>$(RootPath)bin\$(Configuration)\</BinPath>
+  </PropertyGroup>
+</Project>

@@ -1,34 +1,43 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<!-- Import NuGet.targets for Restore -->
-	<PropertyGroup>
-		<NuGetRestoreTargets Condition="'$(NuGetRestoreTargets)'==''">$(VsInstallRoot)\Common7\IDE\CommonExtensions\Microsoft\NuGet\NuGet.targets</NuGetRestoreTargets>
-	</PropertyGroup>
-	<Import Condition="Exists('$(NuGetRestoreTargets)')" Project="$(NuGetRestoreTargets)" />
-	<Import Condition="'$(CoreBuildPropsImported)' == ''" Project="corebuild.props" />
+  <!-- Import NuGet.targets for Restore -->
+  <PropertyGroup>
+    <NuGetRestoreTargets Condition="'$(NuGetRestoreTargets)'=='' and Exists('$(VsInstallRoot)\Common7\IDE\CommonExtensions\Microsoft\NuGet\NuGet.targets')">$(VsInstallRoot)\Common7\IDE\CommonExtensions\Microsoft\NuGet\NuGet.targets</NuGetRestoreTargets>
+    <NuGetRestoreTargets Condition="'$(NuGetRestoreTargets)'=='' and Exists('$(MSBuildBinPath)\NuGet.targets')">$(MSBuildBinPath)\NuGet.targets</NuGetRestoreTargets>
+    <NuGetRestoreTargets Condition="'$(NuGetRestoreTargets)'=='' and Exists('$(MSBuildExtensionsPath)\NuGet.targets')">$(MSBuildExtensionsPath)\NuGet.targets</NuGetRestoreTargets>
+  </PropertyGroup>
+  <Import Condition="Exists('$(NuGetRestoreTargets)')" Project="$(NuGetRestoreTargets)" />
+  <Import Condition="'$(CoreBuildPropsImported)' == ''" Project="corebuild.props" />
 
-	<Import Project="$(RestoreOutputPath)\$(MSBuildProjectFile).nuget.g.targets" Condition="Exists('$(RestoreOutputPath)\$(MSBuildProjectFile).nuget.g.targets')" />
+  <Import Project="$(RestoreOutputPath)\$(MSBuildProjectFile).nuget.g.targets" Condition="Exists('$(RestoreOutputPath)\$(MSBuildProjectFile).nuget.g.targets')" />
 
-	<!-- Unfortunately, NuGet restore depends on this target for its _GenerateRestoreProjectReferencePaths target -->
-	<Target Name="_SplitProjectReferencesByFileExistence" />
-	
-	<Target Name="GetVsInstallRoot" Returns="$(VsInstallRoot)">
-		<Message Importance="high" Text="$(VsInstallRoot)" />
-	</Target>
-	
-	<ItemGroup>
-		<PackageReference Include="CoreBuild.Updater" Version="*">
-			<PrivateAssets>All</PrivateAssets>
-		</PackageReference>
-		<PackageReference Include="MSBuilder.XmlPoke" Version="*">
-			<PrivateAssets>All</PrivateAssets>
-		</PackageReference>
-	</ItemGroup>
+  <!-- Unfortunately, NuGet restore depends on this target for its _GenerateRestoreProjectReferencePaths target -->
+  <Target Name="_SplitProjectReferencesByFileExistence" />
 
-	<PropertyGroup>
-		<ETag>cdac7d6eaa07b64767e32bcb207a7dbdce1caf07</ETag>
-	</PropertyGroup>
+  <Target Name="_GetVsInstallRoot" Returns="$(VsInstallRoot)">
+    <Message Importance="high" Text="$(VsInstallRoot)" />
+  </Target>
 
-	<!-- If we're being imported from another project, import the update-all version of Update -->
-	<Import Project="update.targets" Condition="'$(MSBuildProjectFullPath)' != '(MSBuildThisFileFullPath)' And '$(IsUpdating)' != 'true'" />	
+  <ItemGroup>
+    <PackageReference Include="CoreBuild.Help" Version="*">
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="CoreBuild.Updater" Version="*">
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="MSBuilder.XmlPoke" Version="*">
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectCapability Remove="PackagingProject;ProjectReferences;ProjectConfigurationsInferredFromUsage;DependenciesTree;AssemblyReferences;OutputGroups;AllTargetOutputGroups;VisualStudioWellKnownOutputGroups;SingleFileGenerators;DeclaredSourceItems;UserSourceItems;ReferenceManagerAssemblies;ReferenceManagerBrowse;ReferenceManagerProjects" />
+  </ItemGroup>
+  
+  <PropertyGroup>
+    <ETag>174aa442b751bc29c9dbc053adcef7cea01c5328</ETag>
+  </PropertyGroup>
+
+  <!-- If we're being imported from another project, import the update-all version of Update -->
+  <Import Project="update.targets" Condition="'$(MSBuildProjectFullPath)' != '(MSBuildThisFileFullPath)' And '$(IsUpdating)' != 'true'" />
 </Project>

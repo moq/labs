@@ -1,16 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<PropertyGroup>
-		<!-- Instruct NuGet to perform a NETCore-like restore -->
-		<TargetFramework>netcore50</TargetFramework>
-		<!-- Instruct NuGet that we use PackageReference, rather than project.json -->
-		<RestoreProjectStyle>PackageReference</RestoreProjectStyle>
-		<!-- Specify a well-known usually ignored directory for the generated targets -->
-		<RestoreOutputPath>$(MSBuildThisFileDirectory).nuget</RestoreOutputPath>
-		<ETag>9f31d2c2a2dcddd79bfc28ddb5217663b761a17c</ETag>
-		<CoreBuildPropsImported>true</CoreBuildPropsImported>
-	</PropertyGroup>
+  <PropertyGroup>
+    <!-- Instruct NuGet to perform a NETCore-like restore -->
+    <TargetFramework>netstandard1.0</TargetFramework>
+    <DotnetCliToolTargetFramework>netcoreapp2.0</DotnetCliToolTargetFramework>
+    <!-- Instruct NuGet that we use PackageReference, rather than project.json -->
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <!-- Specify a well-known usually ignored directory for the generated targets -->
+    <RestoreOutputPath>$(MSBuildProjectDirectory).nuget</RestoreOutputPath>
+    <!-- Allow restoring any packages. Copied from NuGetizer -->
+    <PackageTargetFallback>net11;net20;net35;net40;net403;net45;net451;net452;net46;net461;net462;net47;net471;netcore;netcore45;netcore451;netcore50;netcoreapp;netcoreapp1.0;netcoreapp2.0;win8;win81;win10;sl4;sl5;wp;wp7;wp75;wp8;wp81;wpa81;uap;uap10;netstandard1.0;netstandard1.1;netstandard1.2;netstandard1.3;netstandard1.4;netstandard1.5;netstandard1.6;netstandard2.0;netcoreapp1.0;netcoreapp2.0;monoandroid;monotouch;monomac;xamarinios;xamarinmac;xamarinpsthree;xamarinpsfour;xamarinpsvita;xamarinwatchos;xamarintvos;xamarinxboxthreesixty;xamarinxboxone</PackageTargetFallback>
 
-	<!-- NuGet generated targets -->
-	<Import Project="$(RestoreOutputPath)\$(MSBuildProjectFile).nuget.g.props" Condition="Exists('$(RestoreOutputPath)\$(MSBuildProjectFile).nuget.g.props')" />
+    <ETag>10a80da2089f8e311064fc94d05ab186289e255d</ETag>
+    <CoreBuildPropsImported>true</CoreBuildPropsImported>
+  </PropertyGroup>
+
+  <!-- NuGet generated targets -->
+  <Import Project="$(RestoreOutputPath)\$(MSBuildProjectFile).nuget.g.props" Condition="Exists('$(RestoreOutputPath)\$(MSBuildProjectFile).nuget.g.props')" />
 </Project>
