@@ -36,6 +36,18 @@ namespace Stunts
             true,
             new ResourceString(nameof(Resources.OutdatedStuntAnalyzer_Description)));
 
+        static readonly HashSet<string> outdatedDiagnosticIds = new HashSet<string>
+        {
+            // C# non-implemented abstract member
+            "CS0534",
+            // C# non-implemented interface member
+            "CS0535",
+            // VB non-implemented abstract member
+            "BC30610",
+            // VB non-implemented interface member
+            "BC30149",
+        };
+
         readonly NamingConvention naming;
         Type generatorAttribute;
 
@@ -116,7 +128,9 @@ namespace Stunts
                     else
                     {
                         // See if the symbol has any compilation error diagnostics associated
-                        var diag = context.Compilation.GetDiagnostics().Where(d => d.Id == "CS0534" || d.Id == "CS0535").ToArray();
+                        var diag = context.Compilation.GetDiagnostics()
+                            .Where(d => outdatedDiagnosticIds.Contains(d.Id)).ToArray();
+
                         if (HasDiagnostic(stunt, diag))
                         {
                             // If there are compilation errors, we should update the proxy.
