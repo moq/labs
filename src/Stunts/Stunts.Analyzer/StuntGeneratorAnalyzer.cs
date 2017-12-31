@@ -50,6 +50,7 @@ namespace Stunts
 
         readonly NamingConvention naming;
         Type generatorAttribute;
+        bool recursive;
 
         /// <summary>
         /// Instantiates the analyzer with the default <see cref="NamingConvention"/> and 
@@ -61,10 +62,11 @@ namespace Stunts
         /// Customizes the analyzer by specifying a custom <see cref="NamingConvention"/> and 
         /// <see cref="generatorAttribute"/> to lookup in method invocations.
         /// </summary>
-        protected StuntGeneratorAnalyzer(NamingConvention naming, Type generatorAttribute)
+        protected StuntGeneratorAnalyzer(NamingConvention naming, Type generatorAttribute, bool recursive = true)
         {
             this.naming = naming;
             this.generatorAttribute = generatorAttribute;
+            this.recursive = true;
         }
 
         /// <summary>

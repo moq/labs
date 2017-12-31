@@ -5,5 +5,8 @@
 
         Dim result1 As String = stunt1.Format("Hello {0}", "World", Nothing)
         Dim result2 As String = stunt2.Format("Hello {0}", "World", Nothing)
+
+        Dim calculator As ICalculator = CType(Stunt.Of(Of CalculatorBase), ICalculator)
+
     End Sub
 End Class

@@ -19,26 +19,31 @@ Public Partial Class ICustomFormatterStunt
 
         ReadOnly pipeline As BehaviorPipeline = New BehaviorPipeline()
 
+        <CompilerGenerated>
         ReadOnly Property Behaviors As ObservableCollection(Of IStuntBehavior) Implements IStunt.Behaviors
             Get
                 Return pipeline.Behaviors
             End Get
         End Property
 
+        <CompilerGenerated>
         Public Function Format(_format As String, arg As Object, formatProvider As IFormatProvider) As String Implements ICustomFormatter.Format
             Return pipeline.Execute(Of String)(New MethodInvocation(Me, MethodBase.GetCurrentMethod(), _format, arg, formatProvider))
         End Function
 
+        <CompilerGenerated>
         Public Overrides Function ToString() As String
             Return pipeline.Execute(Of String
             )(New MethodInvocation(Me, MethodBase.GetCurrentMethod()))
         End Function
 
+        <CompilerGenerated>
         Public Overrides Function Equals(obj As Object) As Boolean
             Return pipeline.Execute(Of Boolean
             )(New MethodInvocation(Me, MethodBase.GetCurrentMethod(), obj))
         End Function
 
+        <CompilerGenerated>
         Public Overrides Function GetHashCode() As Integer
             Return pipeline.Execute(Of Integer
             )(New MethodInvocation(Me, MethodBase.GetCurrentMethod()))
