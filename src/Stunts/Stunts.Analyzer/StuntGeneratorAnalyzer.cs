@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -98,10 +99,6 @@ namespace Stunts
                 if (method.GetAttributes().Any(x => x.AttributeClass == generator) && 
                     // We don't generate anything if generator is applied to a non-generic method.
                     !method.TypeArguments.IsDefaultOrEmpty)
-                    // Skip generic method definitions since they are typically usability overloads 
-                    // like Mock.Of<T>(...)
-                    // TODO: doesn't seem like this would be needed?
-                    //!method.TypeArguments.Any(x => x.Kind == SymbolKind.TypeParameter))
                 {
                     var name = naming.GetFullName(method.TypeArguments.OfType<INamedTypeSymbol>());
 
@@ -118,15 +115,9 @@ namespace Stunts
                     }
                     else
                     {
-                        // See if the symbol has any diagnostics associated
-                        var diag = context.Compilation.GetDiagnostics().Where(d => d.Id == "CS0535");
-                        var stuntPath = stunt.Locations[0].GetLineSpan().Path;
-
-                        bool IsStuntLoc(Location loc) => loc.IsInSource && loc.GetLineSpan().Path == stuntPath;
-                        var stuntDiag = diag
-                            .Where(d => IsStuntLoc(d.Location) || d.AdditionalLocations.Any(IsStuntLoc));
-
-                        if (stuntDiag.Any())
+                        // See if the symbol has any compilation error diagnostics associated
+                        var diag = context.Compilation.GetDiagnostics().Where(d => d.Id == "CS0534" || d.Id == "CS0535").ToArray();
+                        if (HasDiagnostic(stunt, diag))
                         {
                             // If there are compilation errors, we should update the proxy.
                             var diagnostic = Diagnostic.Create(
@@ -139,6 +130,18 @@ namespace Stunts
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Checks if any of the diagnostics provided applies to the given symbol.
+        /// </summary>
+        bool HasDiagnostic(INamedTypeSymbol symbol, Diagnostic[] diagnostics)
+        {
+            var symbolPath = symbol.Locations[0].GetLineSpan().Path;
+            bool isSymbolLoc(Location loc) => loc.IsInSource && loc.GetLineSpan().Path == symbolPath;
+
+            return diagnostics
+                .Any(d => isSymbolLoc(d.Location) || d.AdditionalLocations.Any(isSymbolLoc));
         }
     }
 }

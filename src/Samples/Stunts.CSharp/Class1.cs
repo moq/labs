@@ -5,6 +5,11 @@ using Stunts;
 
 public class Tests
 {
+    public void WhenFakingCalculatorBase()
+    {
+        var fake = Stunt.Of<CalculatorBase>();
+    }
+
     public void WhenFakingFormatterThenCanInvokeIt()
     {
         var stunt1 = Stunt.Of<ICustomFormatter, IDisposable>();
