@@ -21,7 +21,10 @@ namespace Stunts
         public override async Task RegisterCodeFixesAsync(CodeFixContext context)
         {
             var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
-            var diagnostic = context.Diagnostics.First();
+            var diagnostic = context.Diagnostics.FirstOrDefault(d => FixableDiagnosticIds.Contains(d.Id));
+            if (diagnostic == null)
+                return;
+
             var sourceToken = root.FindToken(diagnostic.Location.SourceSpan.Start);
 
             // Find the invocation identified by the diagnostic.
@@ -46,7 +49,10 @@ namespace Stunts
 
             var overridables = symbol.GetOverridableMembers(cancellationToken);
             if (type.Language == LanguageNames.VisualBasic)
-                overridables = overridables.Where(x => x.MetadataName != "Finalize").ToImmutableArray();
+                overridables = overridables.Where(x => x.MetadataName != "Finalize")
+                    // VB doesn't support overriding events (yet). See https://github.com/dotnet/vblang/issues/63
+                    .Where(x => x.Kind != SymbolKind.Event)
+                    .ToImmutableArray();            
 
             var generator = SyntaxGenerator.GetGenerator(document);
             var memberTasks = overridables.SelectAsArray(

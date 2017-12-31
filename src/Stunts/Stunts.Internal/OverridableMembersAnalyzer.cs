@@ -35,7 +35,10 @@ namespace Stunts
 
             var overridable = symbol.GetOverridableMembers(context.CancellationToken);
             if (context.Node.Language == LanguageNames.VisualBasic)
-                overridable = overridable.Where(x => x.MetadataName != "Finalize").ToImmutableArray();
+                overridable = overridable.Where(x => x.MetadataName != "Finalize")
+                    // VB doesn't support overriding events (yet). See https://github.com/dotnet/vblang/issues/63
+                    .Where(x => x.Kind != SymbolKind.Event)
+                    .ToImmutableArray();
 
             if (overridable.Length != 0)
             {
