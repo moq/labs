@@ -7,6 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq", "Moq\Moq\Moq.csproj",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2093478C-CEA6-4034-BCDE-EDC7A5DD4532}"
 	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
+		GitInfo.txt = GitInfo.txt
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stunts", "Stunts\Stunts\Stunts.csproj", "{AE46AE30-8002-4F2C-B368-44546B1D71D8}"
@@ -30,6 +33,19 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Tests", "Moq\Moq.Tests\Moq.Tests.csproj", "{9A09225F-E0BC-4890-BED4-D9F6F5DAC146}"
 	ProjectSection(ProjectDependencies) = postProject
 		{6496C171-32F2-47DD-A8EE-B99E9E26B6C6} = {6496C171-32F2-47DD-A8EE-B99E9E26B6C6}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{1DBDFC27-21EC-4EAC-B51B-84EDC8DBB9D5}"
+	ProjectSection(SolutionItems) = preProject
+		build\CI.props = build\CI.props
+		build\PackageReferences.targets = build\PackageReferences.targets
+		build\Packaging.props = build\Packaging.props
+		build\Packaging.targets = build\Packaging.targets
+		build\Settings.props = build\Settings.props
+		build\Settings.targets = build\Settings.targets
+		build\Settings.Tests.props = build\Settings.Tests.props
+		build\Settings.Tests.targets = build\Settings.Tests.targets
+		build\Version.targets = build\Version.targets
 	EndProjectSection
 EndProject
 Global
@@ -87,6 +103,7 @@ Global
 		{493E8F90-2663-47EC-A2AE-E2440E6AE180} = {EEC3EC48-ACB2-4D25-B592-F360F676BE45}
 		{9ACA3490-778C-4C58-914C-87B9E7C15AC7} = {EEC3EC48-ACB2-4D25-B592-F360F676BE45}
 		{0271D7C1-1A51-4148-944C-1DB4D1946B9C} = {EEC3EC48-ACB2-4D25-B592-F360F676BE45}
+		{1DBDFC27-21EC-4EAC-B51B-84EDC8DBB9D5} = {2093478C-CEA6-4034-BCDE-EDC7A5DD4532}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DA4CFD03-827D-482B-9304-83456D2A8115}

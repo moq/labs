@@ -12,6 +12,7 @@ using System.Collections.ObjectModel;
 using System.Reflection;
 using Stunts;
 using System.Runtime.CompilerServices;
+using Sample;
 
 namespace Stunts
 {
@@ -30,6 +31,9 @@ namespace Stunts
 
         [CompilerGenerated]
         public override CalculatorMode Mode { get => pipeline.Execute<CalculatorMode>(new MethodInvocation(this, MethodBase.GetCurrentMethod())); set => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value)); }
+
+        [CompilerGenerated]
+        public override ICalculatorMemory Memory => pipeline.Execute<ICalculatorMemory>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
 
         [CompilerGenerated]
         public override int Add(int x, int y) => pipeline.Execute<int>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), x, y));

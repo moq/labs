@@ -1,4 +1,4 @@
-﻿using System.Collections.Immutable;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -14,7 +14,7 @@ namespace Stunts
     public class StuntCodeAction : CodeAction
     {
         string title;
-        readonly Document document;
+        Document document;
         readonly Diagnostic diagnostic;
         readonly SyntaxNode invocation;
         readonly NamingConvention naming;
@@ -32,7 +32,6 @@ namespace Stunts
 
         protected virtual StuntGenerator CreateGenerator(NamingConvention naming) => new StuntGenerator(naming);
 
-
         protected override async Task<Solution> GetChangedSolutionAsync(CancellationToken cancellationToken)
         {
             var root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
@@ -49,40 +48,68 @@ namespace Stunts
                 var method = (IMethodSymbol)symbol.Symbol;
                 var generator = SyntaxGenerator.GetGenerator(document.Project);
                 var stunts = CreateGenerator(naming);
+                var symbols = method.TypeArguments.OfType<INamedTypeSymbol>();
+                var solution = document.Project.Solution;
 
-                var (name, syntax) = stunts.CreateStunt(method.TypeArguments.OfType<INamedTypeSymbol>(), generator);
+                var compilation = await document.Project.GetCompilationAsync(cancellationToken);
+                var name = naming.GetFullName(method.TypeArguments.OfType<INamedTypeSymbol>());
+                var stunt = compilation.GetTypeByMetadataName(name);
 
-                // TODO: F#
-                var extension = document.Project.Language == LanguageNames.CSharp ? ".cs" : ".vb";
-                var file = Path.Combine(Path.GetDirectoryName(document.Project.FilePath), naming.Namespace, name + extension);
-                var folders = naming.Namespace.Split('.');
+                solution = await CreateStunt(symbols, generator, stunts, cancellationToken);
+                // Update the document for the changed solution.
+                document = solution.GetDocument(document.Id);
 
-                var stuntDoc = document.Project.Documents.FirstOrDefault(d => d.Name == Path.GetFileName(file) && d.Folders.SequenceEqual(folders));
-                if (stuntDoc == null)
+                var recursiveSymbols = diagnostic.Properties["RecursiveSymbols"]
+                    .Split('|')
+                    .Select(compilation.GetTypeByMetadataName)
+                    .Where(x => x != null)
+                    .ToArray();
+
+                foreach (var recursive in recursiveSymbols)
                 {
-                    stuntDoc = document.Project.AddDocument(Path.GetFileName(file),
-                        syntax,
-                        folders,
-                        file);
-                }
-                else
-                {
-                    stuntDoc = stuntDoc.WithSyntaxRoot(syntax);
+                    solution = await CreateStunt(new[] { recursive }, generator, stunts, cancellationToken);
+                    // Update the document for the changed solution.
+                    document = solution.GetDocument(document.Id);
                 }
 
-                stuntDoc = await stunts.ApplyVisitors(stuntDoc, cancellationToken).ConfigureAwait(false);
-                // This is somewhat expensive, but since we're adding it to the user' solution, we might 
-                // as well make it look great ;)
-                stuntDoc = await Simplifier.ReduceAsync(stuntDoc).ConfigureAwait(false);
-                if (document.Project.Language != LanguageNames.VisualBasic)
-                    stuntDoc = await Formatter.FormatAsync(stuntDoc).ConfigureAwait(false);
-
-                syntax = await stuntDoc.GetSyntaxRootAsync().ConfigureAwait(false);
-
-                return stuntDoc.WithSyntaxRoot(syntax).Project.Solution;
+                return solution;
             }
 
             return document.Project.Solution;
+        }
+
+        async Task<Solution> CreateStunt(IEnumerable<INamedTypeSymbol> symbols, SyntaxGenerator generator, StuntGenerator stunts, CancellationToken cancellationToken)
+        {
+            var (name, syntax) = stunts.CreateStunt(symbols, generator);
+
+            // TODO: F#
+            var extension = document.Project.Language == LanguageNames.CSharp ? ".cs" : ".vb";
+            var file = Path.Combine(Path.GetDirectoryName(document.Project.FilePath), naming.Namespace, name + extension);
+            var folders = naming.Namespace.Split('.');
+
+            var stuntDoc = document.Project.Documents.FirstOrDefault(d => d.Name == Path.GetFileName(file) && d.Folders.SequenceEqual(folders));
+            if (stuntDoc == null)
+            {
+                stuntDoc = document.Project.AddDocument(Path.GetFileName(file),
+                    syntax,
+                    folders,
+                    file);
+            }
+            else
+            {
+                stuntDoc = stuntDoc.WithSyntaxRoot(syntax);
+            }
+
+            stuntDoc = await stunts.ApplyProcessors(stuntDoc, cancellationToken).ConfigureAwait(false);
+            // This is somewhat expensive, but since we're adding it to the user' solution, we might 
+            // as well make it look great ;)
+            stuntDoc = await Simplifier.ReduceAsync(stuntDoc).ConfigureAwait(false);
+            if (document.Project.Language != LanguageNames.VisualBasic)
+                stuntDoc = await Formatter.FormatAsync(stuntDoc).ConfigureAwait(false);
+
+            syntax = await stuntDoc.GetSyntaxRootAsync().ConfigureAwait(false);
+
+            return stuntDoc.WithSyntaxRoot(syntax).Project.Solution;
         }
     }
 }

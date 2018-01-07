@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Stunts
+namespace Sample
 {
     public class Calculator : ICalculator, IDisposable
     {
-        Dictionary<string, int> memory = new Dictionary<string, int>();
+        CalculatorMemory memory = new CalculatorMemory();
+        Dictionary<string, int> namedMemory = new Dictionary<string, int>();
 
         public virtual event EventHandler TurnedOn;
 
@@ -29,17 +30,17 @@ namespace Stunts
             set
             {
                 if (value == null)
-                    memory.Remove(name);
+                    namedMemory.Remove(name);
                 else
                     Store(name, value.Value);
             }
         }
 
-        public virtual void Clear(string name) => memory.Remove(name ?? "null");
+        public virtual void Clear(string name) => namedMemory.Remove(name ?? "null");
 
-        public virtual int? Recall(string name) => (memory.TryGetValue(name ?? "null", out int i)) ? i : default(int?);
+        public virtual int? Recall(string name) => (namedMemory.TryGetValue(name ?? "null", out int i)) ? i : default(int?);
 
-        public virtual void Store(string name, int value) => memory[name ?? "null"] = value;
+        public virtual void Store(string name, int value) => namedMemory[name ?? "null"] = value;
 
         public virtual bool TryAdd(ref int x, ref int y, out int z)
         {
@@ -47,6 +48,8 @@ namespace Stunts
             return true;
         }
 
-        public void Dispose() => memory.Clear();
+        public virtual void Dispose() => namedMemory.Clear();
+
+        public virtual ICalculatorMemory Memory { get => memory; }
     }
 }

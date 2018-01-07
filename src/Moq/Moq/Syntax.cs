@@ -5,7 +5,7 @@ namespace Moq
     /// <summary>
     /// Static class intended to be imported statically, like 
     /// <c>using static Moq.Syntax;</c>. Groups functionality 
-    /// in <see cref="Mock"/>, <see cref="Arg"/> and <see cref="Raise"/> 
+    /// <see cref="Arg"/> and <see cref="Moq.Raise"/> 
     /// so it makes more sense in a statically imported context.
     /// </summary>
     public static class Syntax

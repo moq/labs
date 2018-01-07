@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using Sample;
 using Xunit;
 using Xunit.Abstractions;
 

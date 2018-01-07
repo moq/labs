@@ -36,18 +36,6 @@ namespace Stunts
             true,
             new ResourceString(nameof(Resources.OutdatedStuntAnalyzer_Description)));
 
-        static readonly HashSet<string> outdatedDiagnosticIds = new HashSet<string>
-        {
-            // C# non-implemented abstract member
-            "CS0534",
-            // C# non-implemented interface member
-            "CS0535",
-            // VB non-implemented abstract member
-            "BC30610",
-            // VB non-implemented interface member
-            "BC30149",
-        };
-
         readonly NamingConvention naming;
         Type generatorAttribute;
         bool recursive;
@@ -62,11 +50,11 @@ namespace Stunts
         /// Customizes the analyzer by specifying a custom <see cref="NamingConvention"/> and 
         /// <see cref="generatorAttribute"/> to lookup in method invocations.
         /// </summary>
-        protected StuntGeneratorAnalyzer(NamingConvention naming, Type generatorAttribute, bool recursive = true)
+        protected StuntGeneratorAnalyzer(NamingConvention naming, Type generatorAttribute, bool recursive = false)
         {
             this.naming = naming;
             this.generatorAttribute = generatorAttribute;
-            this.recursive = true;
+            this.recursive = recursive;
         }
 
         /// <summary>
@@ -115,6 +103,24 @@ namespace Stunts
                     !method.TypeArguments.IsDefaultOrEmpty)
                 {
                     var name = naming.GetFullName(method.TypeArguments.OfType<INamedTypeSymbol>());
+                    var compilationErrors = new Lazy<Diagnostic[]>(() => context.Compilation.GetCompilationErrors());
+                    HashSet<string> recursiveSymbols;
+
+                    if (recursive)
+                    {
+                        // Collect recursive symbols to generate/update as needed.
+                        recursiveSymbols = new HashSet<string>(method.TypeArguments.OfType<INamedTypeSymbol>().InterceptableRecursively()
+                            .Where(x =>
+                            {
+                                var candidate = context.Compilation.GetTypeByMetadataName(naming.GetFullName(new[] { x }));
+                                return candidate == null || candidate.HasDiagnostic(compilationErrors.Value);
+                            })
+                            .Select(x => x.ToFullMetadataName()));                        
+                    }
+                    else
+                    {
+                        recursiveSymbols = new HashSet<string>();
+                    }
 
                     // See if the stunt already exists
                     var stunt = context.Compilation.GetTypeByMetadataName(name);
@@ -123,6 +129,14 @@ namespace Stunts
                         var diagnostic = Diagnostic.Create(
                             MissingDescriptor,
                             context.Node.GetLocation(),
+                            new Dictionary<string, string>
+                            {
+                                // By passing the detected recursive symbols to update/generate, 
+                                // we avoid doing all the work we already did during analysis. 
+                                // The code action can therefore simply act on them, without 
+                                // further inquiries to the compilation.
+                                { "RecursiveSymbols", string.Join("|", recursiveSymbols) },
+                            }.ToImmutableDictionary(),
                             name);
 
                         context.ReportDiagnostic(diagnostic);
@@ -130,15 +144,20 @@ namespace Stunts
                     else
                     {
                         // See if the symbol has any compilation error diagnostics associated
-                        var diag = context.Compilation.GetDiagnostics()
-                            .Where(d => outdatedDiagnosticIds.Contains(d.Id)).ToArray();
-
-                        if (HasDiagnostic(stunt, diag))
+                        if (stunt.HasDiagnostic(compilationErrors.Value) ||
+                           (recursive && recursiveSymbols.Any()))
                         {
                             // If there are compilation errors, we should update the proxy.
                             var diagnostic = Diagnostic.Create(
                                 OutdatedDescriptor,
                                 context.Node.GetLocation(),
+                                new Dictionary<string, string>
+                                {
+                                    // We pass the same recursive symbols in either case. The 
+                                    // Different diagnostics exist only to customize the message 
+                                    // displayed to the user.
+                                    { "RecursiveSymbols", string.Join("|", recursiveSymbols) },
+                                }.ToImmutableDictionary(),
                                 name);
 
                             context.ReportDiagnostic(diagnostic);
@@ -146,18 +165,6 @@ namespace Stunts
                     }
                 }
             }
-        }
-
-        /// <summary>
-        /// Checks if any of the diagnostics provided applies to the given symbol.
-        /// </summary>
-        bool HasDiagnostic(INamedTypeSymbol symbol, Diagnostic[] diagnostics)
-        {
-            var symbolPath = symbol.Locations[0].GetLineSpan().Path;
-            bool isSymbolLoc(Location loc) => loc.IsInSource && loc.GetLineSpan().Path == symbolPath;
-
-            return diagnostics
-                .Any(d => isSymbolLoc(d.Location) || d.AdditionalLocations.Any(isSymbolLoc));
         }
     }
 }

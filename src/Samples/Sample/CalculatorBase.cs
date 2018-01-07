@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Stunts
+namespace Sample
 {
     public abstract class CalculatorBase
     {
@@ -27,5 +27,7 @@ namespace Stunts
         public abstract int? Recall(string name);
 
         public abstract void Clear(string name);
+
+        public abstract ICalculatorMemory Memory { get; }
     }
 }

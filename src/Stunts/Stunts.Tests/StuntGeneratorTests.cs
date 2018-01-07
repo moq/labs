@@ -12,6 +12,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Simplification;
+using Sample;
 using Xunit;
 using Xunit.Abstractions;
 using static TestHelpers;
@@ -96,8 +97,8 @@ namespace Stunts.Tests.GeneratorTests
                 $"Generated stunt should contain the additional type {nameof(IDisposable)} in its name.");
         }
 
-        [InlineData(LanguageNames.CSharp, true)]
-        [InlineData(LanguageNames.VisualBasic, true)]
+        [InlineData(LanguageNames.CSharp)]
+        [InlineData(LanguageNames.VisualBasic)]
         [Theory]
         public async Task GeneratedInterfaceHasCompilerGeneratedAttribute(string language, bool trace = false)
         {
@@ -262,22 +263,10 @@ namespace Stunts.Tests.GeneratorTests
             var doc = await new TestGenerator().GenerateDocumentAsync(project, types, TimeoutToken(5));
             var syntax = await doc.GetSyntaxRootAsync();
             var decl = syntax.DescendantNodes().OfType<ClassDeclarationSyntax>().First();
-
             var trivia = decl.GetLeadingTrivia();
-            // If we do this only once, it randomly fails :\
-            // TODO: figure out why!
-            //if (trivia.Count == 0)
-            //{
-            //    doc = await new ProxyGenerator().GenerateProxyAsync(workspace, project, TimeoutToken(5), types);
-            //    syntax = await doc.GetSyntaxRootAsync();
-            //    decl = syntax.DescendantNodes().OfType<ClassDeclarationSyntax>().First();
-
-            //    trivia = decl.GetLeadingTrivia();
-            //}
 
             Assert.True(trivia.Any(SyntaxKind.SingleLineCommentTrivia));
         }
-
 
         [InlineData(LanguageNames.CSharp, @"public class Foo { }")]
         [InlineData(LanguageNames.VisualBasic, @"Public Class Foo 

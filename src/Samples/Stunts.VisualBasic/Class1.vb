@@ -1,4 +1,6 @@
-﻿Public Class Class1
+﻿Imports Sample
+
+Public Class Class1
     Public Sub New()
         Dim stunt1 As ICustomFormatter = Stunt.Of(Of ICustomFormatter)
         Dim stunt2 As ICustomFormatter = Stunt.Of(Of ICustomFormatter)

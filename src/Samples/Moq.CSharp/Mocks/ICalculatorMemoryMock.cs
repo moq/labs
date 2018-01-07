@@ -12,13 +12,13 @@ using System.Collections.ObjectModel;
 using System.Reflection;
 using Stunts;
 using System.Runtime.CompilerServices;
-using Moq.Tests.Recursive;
+using Sample;
 using System.Threading;
 using Moq.Sdk;
 
 namespace Mocks
 {
-    public partial class IRecursiveRootMock : IRecursiveRoot, IStunt, IMocked
+    public partial class ICalculatorMemoryMock : ICalculatorMemory, IStunt, IMocked
     {
         readonly BehaviorPipeline pipeline = new BehaviorPipeline();
 
@@ -26,12 +26,17 @@ namespace Mocks
         ObservableCollection<IStuntBehavior> IStunt.Behaviors => pipeline.Behaviors;
 
         [CompilerGenerated]
-        public IRecursiveBranch Branch => pipeline.Execute<IRecursiveBranch>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
-
+        public void Add(int value) => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value));
+        [CompilerGenerated]
+        public void Clear() => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
         [CompilerGenerated]
         public override bool Equals(object obj) => pipeline.Execute<bool>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), obj));
         [CompilerGenerated]
         public override int GetHashCode() => pipeline.Execute<int>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
+        [CompilerGenerated]
+        public int Recall() => pipeline.Execute<int>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
+        [CompilerGenerated]
+        public void Subtract(int value) => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value));
         [CompilerGenerated]
         public override string ToString() => pipeline.Execute<string>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
 

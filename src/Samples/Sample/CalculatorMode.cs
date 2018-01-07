@@ -1,4 +1,4 @@
-﻿namespace Stunts
+﻿namespace Sample
 {
     public enum CalculatorMode
     {

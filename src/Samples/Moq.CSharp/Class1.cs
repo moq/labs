@@ -8,6 +8,9 @@ namespace Sample.CSharp
     {
         public void Test()
         {
+            var fake = Mock.Of<ICalculator>();
+
+
             var mock = Mock.Of<ICustomFormatter, IDisposable>();
             var foo = Mock.Of<IFoo>();
             var bar = Mock.Of<IBar>();

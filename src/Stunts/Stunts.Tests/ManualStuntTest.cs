@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using Sample;
+using Xunit;
 using Xunit.Abstractions;
 
 namespace Stunts.Tests

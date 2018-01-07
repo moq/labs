@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Reflection;
+using Stunts;
 
-namespace Stunts
+namespace Sample
 {
     public class CalculatorClassStunt : Calculator, IStunt
     {
@@ -63,6 +64,11 @@ namespace Stunts
 
         public override void Clear(string name) =>
             pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), name), (m, n) => { base.Clear(name); return m.CreateValueReturn(null, name); });
-        
+
+
+        public override ICalculatorMemory Memory
+        {
+            get => pipeline.Execute<ICalculatorMemory>(new MethodInvocation(this, MethodBase.GetCurrentMethod()), (m, n) => m.CreateValueReturn(base.Memory));
+        }
     }
 }

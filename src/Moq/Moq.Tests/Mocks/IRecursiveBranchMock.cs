@@ -18,7 +18,7 @@ using Moq.Sdk;
 
 namespace Mocks
 {
-    public partial class IRecursiveRootMock : IRecursiveRoot, IStunt, IMocked
+    public partial class IRecursiveBranchMock : IRecursiveBranch, IStunt, IMocked
     {
         readonly BehaviorPipeline pipeline = new BehaviorPipeline();
 
@@ -26,7 +26,7 @@ namespace Mocks
         ObservableCollection<IStuntBehavior> IStunt.Behaviors => pipeline.Behaviors;
 
         [CompilerGenerated]
-        public IRecursiveBranch Branch => pipeline.Execute<IRecursiveBranch>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
+        public IRecursiveLeaf Leaf => pipeline.Execute<IRecursiveLeaf>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
 
         [CompilerGenerated]
         public override bool Equals(object obj) => pipeline.Execute<bool>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), obj));

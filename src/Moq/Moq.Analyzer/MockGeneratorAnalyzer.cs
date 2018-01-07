@@ -31,6 +31,6 @@ namespace Moq
 
         public override DiagnosticDescriptor OutdatedDescriptor => outdated;
 
-        public MockGeneratorAnalyzer() : base(new MockNamingConvention(), typeof(MockGeneratorAttribute)) { }
+        public MockGeneratorAnalyzer() : base(new MockNamingConvention(), typeof(MockGeneratorAttribute), true) { }
     }
 }

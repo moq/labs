@@ -28,11 +28,12 @@ namespace Stunts
             // There should be another analyzer that forces the first T to be the one with 
             // a class type, if any.
             => string.Join("", symbols
-                .Where(x => x.TypeKind == TypeKind.Class)
+                .Where(x => x?.TypeKind == TypeKind.Class)
                 .Concat(symbols
-                    .Where(x => x.TypeKind == TypeKind.Interface)
+                    .Where(x => x?.TypeKind == TypeKind.Interface)
                     .OrderBy(x => x.Name))
-                .Select(x => x.Name)) + 
+                .Select(x => x?.Name)
+                .Where(x => x != null)) + 
                 NameSuffix;
 
         /// <summary>

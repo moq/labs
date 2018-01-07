@@ -17,8 +17,12 @@ using Stunts.Properties;
 
 namespace Stunts
 {
+    /// <summary>
+    /// Main code generator.
+    /// </summary>
     public class StuntGenerator
     {
+        // The naming conventions to use for determining class and namespace names.
         NamingConvention naming;
 
         // Configured processors, by language, then phase.
@@ -42,10 +46,22 @@ namespace Stunts
             new VisualBasicCompilerGenerated(),
         };
 
+        /// <summary>
+        /// Initializes the generator with the default <see cref="NamingConvention"/> 
+        /// and the <see cref="GetDefaultProcessors"/> default processors.
+        /// </summary>
         public StuntGenerator() : this(new NamingConvention(), GetDefaultProcessors()) { }
 
+        /// <summary>
+        /// Initializes the generator with a custom <see cref="NamingConvention"/> and 
+        /// the <see cref="GetDefaultProcessors"/> default processors.
+        /// </summary>
         public StuntGenerator(NamingConvention naming) : this(naming, GetDefaultProcessors()) { }
 
+        /// <summary>
+        /// Initializes the generator with a custom <see cref="NamingConvention"/> and 
+        /// the given set of <see cref="IDocumentProcessor"/>s.
+        /// </summary>
         protected StuntGenerator(NamingConvention naming, IDocumentProcessor[] processors)
         {
             this.naming = naming;
@@ -58,6 +74,13 @@ namespace Stunts
                         .ToDictionary(byphase => byphase.Key, byphase => byphase.ToArray()));
         }
 
+        /// <summary>
+        /// Generates a stunt document that implements the given types.
+        /// </summary>
+        /// <remarks>
+        /// This aggregating method basically invokes <see cref="CreateStunt(IEnumerable{INamedTypeSymbol}, SyntaxGenerator)"/> 
+        /// followed by <see cref="ApplyProcessors(Document, CancellationToken)"/>.
+        /// </remarks>
         public async Task<Document> GenerateDocumentAsync(Project project, ITypeSymbol[] types, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -68,6 +91,8 @@ namespace Stunts
 
             var filePath = Path.GetTempFileName();
 #if DEBUG
+            // In debug builds, we persist the file so we can inspect the generated code
+            // for troubleshooting.
             File.WriteAllText(filePath, code);
 #endif
 
@@ -91,18 +116,26 @@ namespace Stunts
                     filePath: filePath);
             }
 
-            document = await ApplyVisitors(document, cancellationToken).ConfigureAwait(false);
+            document = await ApplyProcessors(document, cancellationToken).ConfigureAwait(false);
 
 #if DEBUG
+            // Update the persisted temp file in debug builds.
             File.WriteAllText(filePath, code);
 #endif
 
             return document;
         }
 
+        /// <summary>
+        /// Generates the empty stunt code as a <see cref="SyntaxNode"/>, also returning 
+        /// the resulting class name. It contains just the main compilation unit, namespace 
+        /// imports, namespace declaration and class declaration with the given base type and 
+        /// interfaces, with no class members at all.
+        /// </summary>
         public (string name, SyntaxNode syntax) CreateStunt(IEnumerable<INamedTypeSymbol> symbols, SyntaxGenerator generator)
         {
             var name = naming.GetName(symbols);
+            // These namespaces are used by the default stunt code and are always imported.
             var imports = new HashSet<string>
             {
                 typeof(EventArgs).Namespace,
@@ -143,9 +176,14 @@ namespace Stunts
             return (name, syntax);
         }
 
-        public async Task<Document> ApplyVisitors(Document document, CancellationToken cancellationToken)
+        /// <summary>
+        /// Applies all received <see cref="IDocumentProcessor"/>s received in the generator constructor.
+        /// </summary>
+        public async Task<Document> ApplyProcessors(Document document, CancellationToken cancellationToken)
         {
 #if DEBUG
+            // While debugging the geneneration itself, don't let the cancellation timeouts 
+            // from tests to cause this to fail.
             if (Debugger.IsAttached)
                 cancellationToken = CancellationToken.None;
 #endif
@@ -189,6 +227,10 @@ namespace Stunts
             return document;
         }
 
+        /// <summary>
+        /// Sorts and validates types so that the base class is the first and the remaining 
+        /// interface implementations are the rest.
+        /// </summary>
         static (INamedTypeSymbol baseType, ImmutableArray<INamedTypeSymbol> additionalInterfaces) ValidateTypes(INamedTypeSymbol[] types)
         {
             if (types.Length == 0)

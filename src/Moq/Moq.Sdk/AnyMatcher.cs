@@ -12,9 +12,12 @@ namespace Moq.Sdk
     /// <typeparam name="T">Type of argument to match.</typeparam>
     public class AnyMatcher<T> : IArgumentMatcher, IEquatable<AnyMatcher<T>>, IStructuralEquatable
     {
+        // Disable warning since we only use this member from this class
+#pragma warning disable RECS0108 // Warns about static fields in generic types
         static bool IsValueType = typeof(T).GetTypeInfo().IsValueType;
         static bool IsNullable = typeof(T).GetTypeInfo().IsGenericType &&
             typeof(T).GetGenericTypeDefinition() == typeof(Nullable<>);
+#pragma warning restore RECS0108 // Warns about static fields in generic types
 
         /// <summary>
         /// Gets the singleton instance of this matcher.

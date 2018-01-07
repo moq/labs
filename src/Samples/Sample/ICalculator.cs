@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Stunts
+namespace Sample
 {
     public interface ICalculator
     {
@@ -25,5 +25,7 @@ namespace Stunts
         int? Recall(string name);
 
         void Clear(string name);
+
+        ICalculatorMemory Memory { get; }
     }
 }

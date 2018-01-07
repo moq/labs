@@ -4,6 +4,7 @@ using Xunit;
 using Moq.Sdk;
 using static Moq.Syntax;
 using Stunts;
+using Sample;
 
 namespace Moq.Tests
 {

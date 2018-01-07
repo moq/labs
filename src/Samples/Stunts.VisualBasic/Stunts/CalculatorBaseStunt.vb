@@ -12,6 +12,7 @@ Imports System.Collections.ObjectModel
 Imports System.Reflection
 Imports Stunts
 Imports System.Runtime.CompilerServices
+Imports Sample
 
 Namespace Global.Stunts
 Public Partial Class CalculatorBaseStunt
@@ -56,6 +57,14 @@ Public Partial Class CalculatorBaseStunt
             Set(value As Integer?)
                 pipeline.Execute(New MethodInvocation(Me, MethodBase.GetCurrentMethod(), name, value))
             End Set
+        End Property
+
+        <CompilerGenerated>
+        Public Overrides ReadOnly Property Memory As ICalculatorMemory
+            Get
+                Return pipeline.Execute(Of ICalculatorMemory
+            )(New MethodInvocation(Me, MethodBase.GetCurrentMethod()))
+            End Get
         End Property
 
         <CompilerGenerated>

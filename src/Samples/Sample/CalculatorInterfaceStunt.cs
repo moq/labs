@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Reflection;
+using Stunts;
 
-namespace Stunts
+namespace Sample
 {
     public class CalculatorInterfaceStunt : ICalculator, IDisposable, IStunt
     {
@@ -58,5 +59,10 @@ namespace Stunts
         public void Clear(string name) => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), name));
 
         public void Dispose() => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
+
+        public ICalculatorMemory Memory
+        {
+            get => pipeline.Execute<ICalculatorMemory>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
+        }
     }
 }
