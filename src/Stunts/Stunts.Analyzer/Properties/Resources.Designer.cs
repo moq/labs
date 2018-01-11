@@ -79,6 +79,15 @@ namespace Stunts.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Generate {0}.
+        /// </summary>
+        internal static string GenerateStuntCodeFix_TitleFormat {
+            get {
+                return ResourceManager.GetString("GenerateStuntCodeFix_TitleFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Only classes and interfaces can be used in stunts. Invalid set of symbols: {0}..
         /// </summary>
         internal static string InvalidStuntTypes {
@@ -97,7 +106,7 @@ namespace Stunts.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A corresponding stunt was not found in the current compilation..
+        ///   Looks up a localized string similar to Expected stunt &apos;{0}&apos; was not found in the current compilation..
         /// </summary>
         internal static string MissingStuntAnalyzer_Message {
             get {
@@ -124,7 +133,7 @@ namespace Stunts.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Stunt  must be updated..
+        ///   Looks up a localized string similar to Stunt &apos;{0}&apos; is outdated..
         /// </summary>
         internal static string OutdatedStuntAnalyzer_Message {
             get {
@@ -183,6 +192,15 @@ namespace Stunts.Properties {
         internal static string UpdateStuntCodeFix_Title {
             get {
                 return ResourceManager.GetString("UpdateStuntCodeFix_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update {0}.
+        /// </summary>
+        internal static string UpdateStuntCodeFix_TitleFormat {
+            get {
+                return ResourceManager.GetString("UpdateStuntCodeFix_TitleFormat", resourceCulture);
             }
         }
     }

@@ -113,4 +113,8 @@ public static class AssertCode
                     Environment.NewLine);
         }
     }
+
+    public static void NoErrors(this Compilation compilation)
+        => Assert.False(compilation.GetDiagnostics().Any(d => d.Severity == DiagnosticSeverity.Error),
+            string.Join(Environment.NewLine, compilation.GetDiagnostics().Select(d => d.GetMessage())));
 }

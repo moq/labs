@@ -99,7 +99,7 @@ namespace Stunts
                     {
                         var diagnostic = diag.First();
                         var document = project.GetDocument(diagnostic.Location.SourceTree);
-                        var codeAction = new StuntCodeAction(Title, document, diagnostic, null, new NamingConvention());
+                        var codeAction = new StuntCodeAction(Title, document, diagnostic, new NamingConvention());
 
                         var operations = await codeAction.GetOperationsAsync(cancellationToken).ConfigureAwait(false);
                         ApplyChangesOperation operation;

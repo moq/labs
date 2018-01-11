@@ -117,14 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="GenerateMockCodeFix_Title" xml:space="preserve">
-    <value>Generate Mock</value>
+  <data name="GenerateMockCodeFix_TitleFormat" xml:space="preserve">
+    <value>Generate {0}</value>
   </data>
   <data name="MissingMockAnalyzer_Description" xml:space="preserve">
     <value>Invoked method requires a mock to be generated at design-time or compile-time.</value>
   </data>
   <data name="MissingMockAnalyzer_Message" xml:space="preserve">
-    <value>A corresponding mock was not found in the current compilation.</value>
+    <value>Expected mock '{0}' was not found in the current compilation.</value>
   </data>
   <data name="MissingMockAnalyzer_Title" xml:space="preserve">
     <value>Mock not found</value>
@@ -133,7 +133,7 @@
     <value>Project '{0}' does not reference the required Moq assembly.</value>
   </data>
   <data name="OutdatedMockAnalyzer_Description" xml:space="preserve">
-    <value>Existing generated mock is no longer up-to-date.</value>
+    <value>Existing generated mock '{0}' is outdated.</value>
   </data>
   <data name="OutdatedMockAnalyzer_Message" xml:space="preserve">
     <value>Mock  must be updated.</value>
@@ -141,7 +141,7 @@
   <data name="OutdatedMockAnalyzer_Title" xml:space="preserve">
     <value>Mock must be updated</value>
   </data>
-  <data name="UpdateMockCodeFix_Title" xml:space="preserve">
-    <value>Update Mock</value>
+  <data name="UpdateMockCodeFix_TitleFormat" xml:space="preserve">
+    <value>Update {0}</value>
   </data>
 </root>

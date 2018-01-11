@@ -61,11 +61,11 @@ namespace Moq.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Generate Mock.
+        ///   Looks up a localized string similar to Generate {0}.
         /// </summary>
-        internal static string GenerateMockCodeFix_Title {
+        internal static string GenerateMockCodeFix_TitleFormat {
             get {
-                return ResourceManager.GetString("GenerateMockCodeFix_Title", resourceCulture);
+                return ResourceManager.GetString("GenerateMockCodeFix_TitleFormat", resourceCulture);
             }
         }
         
@@ -79,7 +79,7 @@ namespace Moq.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A corresponding mock was not found in the current compilation..
+        ///   Looks up a localized string similar to Expected mock &apos;{0}&apos; was not found in the current compilation..
         /// </summary>
         internal static string MissingMockAnalyzer_Message {
             get {
@@ -106,7 +106,7 @@ namespace Moq.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Existing generated mock is no longer up-to-date..
+        ///   Looks up a localized string similar to Existing generated mock &apos;{0}&apos; is outdated..
         /// </summary>
         internal static string OutdatedMockAnalyzer_Description {
             get {
@@ -133,11 +133,11 @@ namespace Moq.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update Mock.
+        ///   Looks up a localized string similar to Update {0}.
         /// </summary>
-        internal static string UpdateMockCodeFix_Title {
+        internal static string UpdateMockCodeFix_TitleFormat {
             get {
-                return ResourceManager.GetString("UpdateMockCodeFix_Title", resourceCulture);
+                return ResourceManager.GetString("UpdateMockCodeFix_TitleFormat", resourceCulture);
             }
         }
     }

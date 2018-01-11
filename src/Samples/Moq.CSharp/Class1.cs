@@ -10,6 +10,7 @@ namespace Sample.CSharp
         {
             var fake = Mock.Of<ICalculator>();
 
+            fake.Memory.Recall().Returns(5);
 
             var mock = Mock.Of<ICustomFormatter, IDisposable>();
             var foo = Mock.Of<IFoo>();
@@ -25,6 +26,20 @@ namespace Sample.CSharp
 
             Console.WriteLine(foo.Id);
             Console.WriteLine(foo.Id);
+        }
+
+        public void Test1()
+        {
+            var fake = Mock.Of<ICalculator>();
+
+            fake.Memory.Recall().Returns(5);
+        }
+
+        public void Test2()
+        {
+            var fake = Mock.Of<ICalculator>();
+
+            fake.Memory.Recall().Returns(5);
         }
     }
 }

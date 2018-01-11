@@ -10,6 +10,8 @@ namespace Moq.Tests.Recursive
         {
             var mock = Mock.Of<IRecursiveRoot>();
 
+            mock.Branch.Leaf.Name = "foo";
+
             mock.Setup(m => m.Branch.Leaf.Name).Returns("foo");
 
             Assert.Equal("foo", mock.Branch.Leaf.Name);

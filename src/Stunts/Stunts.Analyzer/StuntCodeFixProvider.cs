@@ -15,25 +15,31 @@ namespace Stunts
     [ExportCodeFixProvider(LanguageNames.CSharp, new[] { LanguageNames.VisualBasic }, Name = nameof(GenerateStuntCodeFix))]
     public class GenerateStuntCodeFix : StuntCodeFixProvider
     {
-        public GenerateStuntCodeFix() : base(Strings.GenerateStuntCodeFix.Title) { }
-
         public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create("ST001");
+
+        /// <summary>
+        /// Creates the code action that will implement the fix.
+        /// </summary>
+        protected override CodeAction CreateCodeAction(Document document, Diagnostic diagnostic)
+            => new StuntCodeAction(Strings.GenerateStuntCodeFix.TitleFormat(
+                diagnostic.Properties["TargetFullName"]), document, diagnostic, new NamingConvention());
     }
 
     [ExportCodeFixProvider(LanguageNames.CSharp, new[] { LanguageNames.VisualBasic }, Name = nameof(UpdateStuntCodeFix))]
     public class UpdateStuntCodeFix : StuntCodeFixProvider
     {
-        public UpdateStuntCodeFix() : base(Strings.UpdateStuntCodeFix.Title) { }
-
         public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create("ST002");
+
+        /// <summary>
+        /// Creates the code action that will implement the fix.
+        /// </summary>
+        protected override CodeAction CreateCodeAction(Document document, Diagnostic diagnostic)
+            => new StuntCodeAction(Strings.UpdateStuntCodeFix.TitleFormat(
+                diagnostic.Properties["TargetFullName"]), document, diagnostic, new NamingConvention());
     }
 
     public abstract class StuntCodeFixProvider : CodeFixProvider
     {
-        protected StuntCodeFixProvider(string title) => Title = title;
-
-        public string Title { get; }
-
         public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context)
         {
             var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
@@ -41,28 +47,16 @@ namespace Stunts
             if (diagnostic == null)
                 return;
 
-            var token = root.FindToken(diagnostic.Location.SourceSpan.Start);
-
-            // Find the invocation identified by the diagnostic.
-            var invocation =
-                // TODO: F#
-                (SyntaxNode)token.Parent.AncestorsAndSelf().OfType<Microsoft.CodeAnalysis.CSharp.Syntax.InvocationExpressionSyntax>().FirstOrDefault() ??
-                (SyntaxNode)token.Parent.AncestorsAndSelf().OfType<Microsoft.CodeAnalysis.VisualBasic.Syntax.MemberAccessExpressionSyntax>().FirstOrDefault();
-
-            if (invocation == null)
-                return;
-
             // Register a code action that will invoke the fix.
             context.RegisterCodeFix(
-                CreateCodeAction(context.Document, diagnostic, invocation),
+                CreateCodeAction(context.Document, diagnostic),
                 diagnostic);
         }
 
         /// <summary>
         /// Creates the code action that will implement the fix.
         /// </summary>
-        protected virtual CodeAction CreateCodeAction(Document document, Diagnostic diagnostic, SyntaxNode invocation)
-            => new StuntCodeAction(Title, document, diagnostic, invocation, new NamingConvention());
+        protected abstract CodeAction CreateCodeAction(Document document, Diagnostic diagnostic);
 
         // See https://github.com/dotnet/roslyn/blob/master/docs/analyzers/FixAllProvider.md for more information on Fix All Providers
         public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;

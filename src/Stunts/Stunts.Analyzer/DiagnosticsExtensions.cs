@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Stunts
 {
-    static class DiagnosticsExtensions
+    public static class DiagnosticsExtensions
     {
         static readonly HashSet<string> compilationErrorIds = new HashSet<string>
         {

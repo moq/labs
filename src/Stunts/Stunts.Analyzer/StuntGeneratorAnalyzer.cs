@@ -72,6 +72,8 @@ namespace Stunts
         /// </summary>
         public sealed override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         {
+            // NOTE: this creates the return value at this point because both Missing and Outdated 
+            // descriptors can be overriden as a customization point.
             get { return ImmutableArray.Create(MissingDescriptor, OutdatedDescriptor); }
         }
 
@@ -131,6 +133,9 @@ namespace Stunts
                             context.Node.GetLocation(),
                             new Dictionary<string, string>
                             {
+                                { "TargetFullName", name },
+                                { "Symbols", string.Join("|", method.TypeArguments
+                                    .OfType<INamedTypeSymbol>().Select(x => x.ToFullMetadataName())) },
                                 // By passing the detected recursive symbols to update/generate, 
                                 // we avoid doing all the work we already did during analysis. 
                                 // The code action can therefore simply act on them, without 
@@ -153,6 +158,9 @@ namespace Stunts
                                 context.Node.GetLocation(),
                                 new Dictionary<string, string>
                                 {
+                                    { "TargetFullName", name },
+                                    { "Symbols", string.Join("|", method.TypeArguments
+                                        .OfType<INamedTypeSymbol>().Select(x => x.ToFullMetadataName())) },
                                     // We pass the same recursive symbols in either case. The 
                                     // Different diagnostics exist only to customize the message 
                                     // displayed to the user.

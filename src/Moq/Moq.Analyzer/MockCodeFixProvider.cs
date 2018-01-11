@@ -11,24 +11,20 @@ namespace Moq
     [ExportCodeFixProvider(LanguageNames.CSharp, new[] { LanguageNames.VisualBasic }, Name = nameof(GenerateMockCodeFix))]
     public class GenerateMockCodeFix : StuntCodeFixProvider
     {
-        public GenerateMockCodeFix()
-            : base(Strings.GenerateMockCodeFix.Title) { }
-
         public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create("MOQ001");
 
-        protected override CodeAction CreateCodeAction(Document document, Diagnostic diagnostic, SyntaxNode invocation)
-            => new MockCodeAction(Title, document, diagnostic, invocation);
+        protected override CodeAction CreateCodeAction(Document document, Diagnostic diagnostic)
+            => new MockCodeAction(Strings.GenerateMockCodeFix.TitleFormat(
+                diagnostic.Properties["TargetFullName"]), document, diagnostic);
     }
 
     [ExportCodeFixProvider(LanguageNames.CSharp, new[] { LanguageNames.VisualBasic }, Name = nameof(UpdateMockCodeFix))]
     public class UpdateMockCodeFix : StuntCodeFixProvider
     {
-        public UpdateMockCodeFix()
-            : base(Strings.UpdateMockCodeFix.Title) { }
-
         public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create("MOQ002");
 
-        protected override CodeAction CreateCodeAction(Document document, Diagnostic diagnostic, SyntaxNode invocation)
-            => new MockCodeAction(Title, document, diagnostic, invocation);
+        protected override CodeAction CreateCodeAction(Document document, Diagnostic diagnostic)
+            => new MockCodeAction(Strings.UpdateMockCodeFix.TitleFormat(
+                diagnostic.Properties["TargetFullName"]), document, diagnostic);
     }
 }

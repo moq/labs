@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net471</TargetFramework>
     <IncludeXunit>true</IncludeXunit>
+    <IncludeMSBuild>true</IncludeMSBuild>
 
     <!-- Don't include this assembly in the generated ReferencePaths.g.cs because we confuse Roslyn with NS2 + net471 refs -->
     <IncludeTargetPath>false</IncludeTargetPath>
@@ -12,6 +13,14 @@
 
   <ItemGroup>
     <Compile Include="..\Moq\contentFiles\cs\netstandard1.3\*.cs" Visible="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\Testing\AssertCode.cs" Link="Helpers\AssertCode.cs" />
+    <Compile Include="..\..\Testing\MockBuildEngine.cs" Link="Helpers\MockBuildEngine.cs" />
+    <Compile Include="..\..\Testing\RecordingBehavior.cs" Link="Helpers\RecordingBehavior.cs" />
+    <Compile Include="..\..\Testing\TestHelpers.cs" Link="Helpers\TestHelpers.cs" />
+    <Compile Include="..\..\Testing\TestOutputLogger.cs" Link="Helpers\TestOutputLogger.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,6 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Moq.Analyzer\Moq.Analyzer.csproj" />
     <ProjectReference Include="..\Moq.Sdk\Moq.Sdk.csproj" />
     <ProjectReference Include="..\Moq\Moq.csproj" />
     <ProjectReference Include="..\..\Stunts\Stunts\Stunts.csproj" />

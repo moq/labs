@@ -123,6 +123,9 @@
   <data name="GenerateStuntCodeFix_Title" xml:space="preserve">
     <value>Generate Stunt</value>
   </data>
+  <data name="GenerateStuntCodeFix_TitleFormat" xml:space="preserve">
+    <value>Generate {0}</value>
+  </data>
   <data name="InvalidStuntTypes" xml:space="preserve">
     <value>Only classes and interfaces can be used in stunts. Invalid set of symbols: {0}.</value>
   </data>
@@ -130,7 +133,7 @@
     <value>Invoked method requires a stunt to be generated at design-time or compile-time.</value>
   </data>
   <data name="MissingStuntAnalyzer_Message" xml:space="preserve">
-    <value>A corresponding stunt was not found in the current compilation.</value>
+    <value>Expected stunt '{0}' was not found in the current compilation.</value>
   </data>
   <data name="MissingStuntAnalyzer_Title" xml:space="preserve">
     <value>Stunt not found</value>
@@ -139,7 +142,7 @@
     <value>Existing generated stunt is no longer up-to-date.</value>
   </data>
   <data name="OutdatedStuntAnalyzer_Message" xml:space="preserve">
-    <value>Stunt  must be updated.</value>
+    <value>Stunt '{0}' is outdated.</value>
   </data>
   <data name="OutdatedStuntAnalyzer_Title" xml:space="preserve">
     <value>Stunt must be updated</value>
@@ -158,5 +161,8 @@
   </data>
   <data name="UpdateStuntCodeFix_Title" xml:space="preserve">
     <value>Update Stunt</value>
+  </data>
+  <data name="UpdateStuntCodeFix_TitleFormat" xml:space="preserve">
+    <value>Update {0}</value>
   </data>
 </root>

@@ -16,17 +16,17 @@ namespace Stunts
         string title;
         Document document;
         readonly Diagnostic diagnostic;
-        readonly SyntaxNode invocation;
         readonly NamingConvention naming;
 
-        public StuntCodeAction(string title, Document document, Diagnostic diagnostic, SyntaxNode invocation, NamingConvention naming)
+        public StuntCodeAction(string title, Document document, Diagnostic diagnostic, NamingConvention naming)
         {
             this.title = title;
             this.document = document;
             this.diagnostic = diagnostic;
-            this.invocation = invocation;
             this.naming = naming;
         }
+
+        public override string EquivalenceKey => diagnostic.Id + ":" + diagnostic.Properties["TargetFullName"];
 
         public override string Title => title;
 
@@ -42,40 +42,48 @@ namespace Stunts
             if (semanticModel == null)
                 return document.Project.Solution;
 
-            var symbol = semanticModel.GetSymbolInfo(invocation);
-            if (symbol.Symbol?.Kind == SymbolKind.Method)
-            {
-                var method = (IMethodSymbol)symbol.Symbol;
-                var generator = SyntaxGenerator.GetGenerator(document.Project);
-                var stunts = CreateGenerator(naming);
-                var symbols = method.TypeArguments.OfType<INamedTypeSymbol>();
-                var solution = document.Project.Solution;
+            var compilation = await document.Project.GetCompilationAsync(cancellationToken);
+            var symbols = diagnostic.Properties["Symbols"]
+                .Split('|')
+                .Select(compilation.GetTypeByMetadataName)
+                .Where(t => t != null)
+                .ToArray();
 
-                var compilation = await document.Project.GetCompilationAsync(cancellationToken);
-                var name = naming.GetFullName(method.TypeArguments.OfType<INamedTypeSymbol>());
-                var stunt = compilation.GetTypeByMetadataName(name);
+            var generator = SyntaxGenerator.GetGenerator(document.Project);
+            var stunt = await CreateGenerator(naming).GenerateDocumentAsync(document.Project, symbols, cancellationToken);
 
-                solution = await CreateStunt(symbols, generator, stunts, cancellationToken);
-                // Update the document for the changed solution.
-                document = solution.GetDocument(document.Id);
+            // This is somewhat expensive, but since we're adding it to the user' solution, we might 
+            // as well make it look great ;)
+            stunt = await Simplifier.ReduceAsync(stunt).ConfigureAwait(false);
+            if (document.Project.Language != LanguageNames.VisualBasic)
+                stunt = await Formatter.FormatAsync(stunt, Formatter.Annotation).ConfigureAwait(false);
 
-                var recursiveSymbols = diagnostic.Properties["RecursiveSymbols"]
-                    .Split('|')
-                    .Select(compilation.GetTypeByMetadataName)
-                    .Where(x => x != null)
-                    .ToArray();
+            return stunt.Project.Solution;
 
-                foreach (var recursive in recursiveSymbols)
-                {
-                    solution = await CreateStunt(new[] { recursive }, generator, stunts, cancellationToken);
-                    // Update the document for the changed solution.
-                    document = solution.GetDocument(document.Id);
-                }
+            //var stunts = CreateGenerator(naming);
+            //var solution = document.Project.Solution;
 
-                return solution;
-            }
+            //var name = diagnostic.Properties["TargetFullName"];
+            //var stunt = compilation.GetTypeByMetadataName(name);
 
-            return document.Project.Solution;
+            //solution = await CreateStunt(symbols, generator, stunts, cancellationToken);
+            //// Update the document for the changed solution.
+            //document = solution.GetDocument(document.Id);
+
+            //var recursiveSymbols = diagnostic.Properties["RecursiveSymbols"]
+            //    .Split('|')
+            //    .Select(compilation.GetTypeByMetadataName)
+            //    .Where(x => x != null)
+            //    .ToArray();
+
+            //foreach (var recursive in recursiveSymbols)
+            //{
+            //    solution = await CreateStunt(new[] { recursive }, generator, stunts, cancellationToken);
+            //    // Update the document for the changed solution.
+            //    document = solution.GetDocument(document.Id);
+            //}
+
+            //return solution;
         }
 
         async Task<Solution> CreateStunt(IEnumerable<INamedTypeSymbol> symbols, SyntaxGenerator generator, StuntGenerator stunts, CancellationToken cancellationToken)
@@ -90,10 +98,24 @@ namespace Stunts
             var stuntDoc = document.Project.Documents.FirstOrDefault(d => d.Name == Path.GetFileName(file) && d.Folders.SequenceEqual(folders));
             if (stuntDoc == null)
             {
-                stuntDoc = document.Project.AddDocument(Path.GetFileName(file),
-                    syntax,
-                    folders,
-                    file);
+                if (document.Project.Solution.Workspace is AdhocWorkspace workspace)
+                {
+                    stuntDoc = workspace.AddDocument(DocumentInfo
+                        .Create(
+                            DocumentId.CreateNewId(document.Project.Id),
+                            Path.GetFileName(file),
+                            folders: naming.Namespace.Split('.'),
+                            filePath: file))
+                        .WithSyntaxRoot(syntax);
+                }
+                else
+                {
+                    stuntDoc = document.Project.AddDocument(
+                        Path.GetFileName(file),
+                        syntax,
+                        folders,
+                        file);
+                }
             }
             else
             {
@@ -105,7 +127,7 @@ namespace Stunts
             // as well make it look great ;)
             stuntDoc = await Simplifier.ReduceAsync(stuntDoc).ConfigureAwait(false);
             if (document.Project.Language != LanguageNames.VisualBasic)
-                stuntDoc = await Formatter.FormatAsync(stuntDoc).ConfigureAwait(false);
+                stuntDoc = await Formatter.FormatAsync(stuntDoc, Formatter.Annotation).ConfigureAwait(false);
 
             syntax = await stuntDoc.GetSyntaxRootAsync().ConfigureAwait(false);
 

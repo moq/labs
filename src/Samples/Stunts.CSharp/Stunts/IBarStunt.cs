@@ -20,10 +20,14 @@ namespace Stunts
     {
         readonly BehaviorPipeline pipeline = new BehaviorPipeline();
 
+        [CompilerGenerated]
         ObservableCollection<IStuntBehavior> IStunt.Behaviors => pipeline.Behaviors;
 
+        [CompilerGenerated]
         public override bool Equals(object obj) => pipeline.Execute<bool>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), obj));
+        [CompilerGenerated]
         public override int GetHashCode() => pipeline.Execute<int>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
+        [CompilerGenerated]
         public override string ToString() => pipeline.Execute<string>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
     }
 }

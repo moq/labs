@@ -44,35 +44,14 @@ static partial class TestHelpers
         if (!Directory.Exists(netstandardPath))
             throw new InvalidOperationException("Failed to find location of .NETStandard 2.0 reference assemblies");
 
-        //var referencePaths = new[]
-        //{
-        //    //typeof(object).Assembly.Location,
-        //    //typeof(Enumerable).Assembly.Location,
-        //    typeof(Stunts.IStunt).Assembly.Location,
-        //    //typeof(Moq.Sdk.IMock).Assembly.Location,
-        //    Assembly.GetExecutingAssembly().Location,
-        //    //typeof(LazyInitializer).Assembly.Location,
-
-        //    typeof(System.Object).Assembly.Location,                                     //mscorlib
-        //    typeof(System.Composition.ExportAttribute).Assembly.Location,                //System.Composition.AttributeModel
-        //    typeof(System.Composition.Convention.ConventionBuilder).Assembly.Location,   //System.Composition.Convention
-        //    typeof(System.Composition.Hosting.CompositionHost).Assembly.Location,        //System.Composition.Hosting
-        //    typeof(System.Composition.CompositionContext).Assembly.Location,             //System.Composition.Runtime
-        //    typeof(System.Composition.CompositionContextExtensions).Assembly.Location,   //System.Composition.TypedParts
-        //    typeof(System.CodeDom.Compiler.CodeCompiler).Assembly.Location,              //System.CodeDom.Compiler
-
-        //    Path.Combine(frameworkPath, "System.dll"),
-        //    Path.Combine(frameworkPath, "System.Core.dll"),
-        //    Path.Combine(frameworkPath, "System.Runtime.dll"),
-
-        //    @"C:\Program Files\dotnet\sdk\NuGetFallbackFolder\netstandard.library\2.0.0\build\netstandard2.0\ref\netstandard.dll",
-        //    @"C:\Program Files\dotnet\sdk\NuGetFallbackFolder\netstandard.library\2.0.0\build\netstandard2.0\ref\System.Runtime.dll",
-        //    @"C:\Program Files\dotnet\sdk\NuGetFallbackFolder\netstandard.library\2.0.0\build\netstandard2.0\ref\System.Reflection.dll",
-        //    //@"C:\Program Files\dotnet\sdk\NuGetFallbackFolder\netstandard.library\2.0.0\build\netstandard2.0\ref\System.Threading.dll",
-        //    //@"C:\Program Files\dotnet\sdk\NuGetFallbackFolder\netstandard.library\2.0.0\build\netstandard2.0\ref\System.Threading.Tasks.dll",
-        //};
-
         var referencePaths =
+            //new[]
+            //{
+            //    typeof(object).Assembly.Location,
+            //    typeof(Enumerable).Assembly.Location,
+            //    typeof(CSharpCompilation).Assembly.Location,
+            //    typeof(Compilation).Assembly.Location,
+            //}
             Directory.EnumerateFiles(netstandardPath, "*.dll")
             .Concat(ReferencePaths.Paths)
             //ReferencePaths.Paths
@@ -102,21 +81,33 @@ static partial class TestHelpers
             var mockApi = language == LanguageNames.CSharp ?
                 new FileInfo(@"contentFiles\cs\netstandard1.3\Mock.cs").FullName :
                 new FileInfo(@"contentFiles\vb\netstandard1.3\Mock.vb").FullName;
+            var mockApiOverloads = Path.ChangeExtension(mockApi, ".Overloads") + Path.GetExtension(mockApi);
 
             Assert.True(File.Exists(mockApi));
+
             documents.Add(DocumentInfo.Create(
                 DocumentId.CreateNewId(projectId, Path.GetFileName(mockApi)),
                 Path.GetFileName(mockApi),
                 loader: new FileTextLoader(mockApi, Encoding.Default),
                 filePath: mockApi));
+            documents.Add(DocumentInfo.Create(
+                DocumentId.CreateNewId(projectId, Path.GetFileName(mockApiOverloads)),
+                Path.GetFileName(mockApiOverloads),
+                loader: new FileTextLoader(mockApiOverloads, Encoding.Default),
+                filePath: mockApiOverloads));
         }
 
+        var projectDir = Path.Combine(Path.GetTempPath(), "Mock", projectId.Id.ToString());
+
         return ProjectInfo.Create(
-            projectId,
+            projectId, 
             VersionStamp.Create(),  
             assemblyName + "." + suffix,
             assemblyName + "." + suffix,
             language,
+            filePath: language == LanguageNames.CSharp 
+                ? Path.Combine(projectDir, "code.csproj") 
+                : Path.Combine(projectDir, "code.vbproj"),
             compilationOptions: options,
             parseOptions: parse,
             metadataReferences: referencePaths
