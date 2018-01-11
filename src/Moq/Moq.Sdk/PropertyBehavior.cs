@@ -32,7 +32,7 @@ namespace Moq.Sdk
         /// </summary>
         public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior getNext)
         {
-            var state = (invocation.Target as IMocked ?? throw new ArgumentException(Strings.TargetNotMocked, nameof(invocation)))
+            var state = (invocation.Target as IMocked ?? throw new ArgumentException(Strings.TargetNotMock, nameof(invocation)))
                 .Mock.State;
 
             if (invocation.MethodBase.Name.StartsWith("get_", StringComparison.Ordinal) &&

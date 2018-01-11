@@ -62,11 +62,11 @@ namespace Moq.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The target does not implement IMocked..
+        ///   Looks up a localized string similar to The target is not a mock..
         /// </summary>
-        internal static string TargetNotMocked {
+        internal static string TargetNotMock {
             get {
-                return ResourceManager.GetString("TargetNotMocked", resourceCulture);
+                return ResourceManager.GetString("TargetNotMock", resourceCulture);
             }
         }
     }

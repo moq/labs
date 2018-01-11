@@ -23,7 +23,7 @@ namespace Moq.Sdk
         public static bool InSetup(object mock)
         {
             var target = mock is IMocked mocked ?
-                mocked.Mock : throw new ArgumentException(Resources.TargetNotMocked, nameof(mock));
+                mocked.Mock : throw new ArgumentException(Resources.TargetNotMock, nameof(mock));
 
             return target.State.TryGetValue<bool?>(Setup, out var state) && state.GetValueOrDefault();
         }

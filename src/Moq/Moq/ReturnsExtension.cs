@@ -17,7 +17,7 @@ namespace Moq
         /// </summary>
         public static TResult Returns<TResult>(this TResult target, TResult value)
         {
-            var setup = MockSetup.Current;
+            var setup = MockContext.CurrentSetup;
             if (setup != null)
             {
                 var mock = ((IMocked)setup.Invocation.Target).Mock;
@@ -48,7 +48,7 @@ namespace Moq
         /// </summary>
         public static TResult Returns<TResult>(this TResult target, Func<TResult> value)
         {
-            var setup = MockSetup.Current;
+            var setup = MockContext.CurrentSetup;
             if (setup != null)
             {
                 var mock = ((IMocked)setup.Invocation.Target).Mock;
@@ -76,7 +76,7 @@ namespace Moq
 
         static TResult Returns<TResult>(Delegate value, InvokeBehavior behavior)
         {
-            var setup = MockSetup.Current;
+            var setup = MockContext.CurrentSetup;
             if (setup != null)
             {
                 setup.Invocation.EnsureCompatible(value);

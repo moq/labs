@@ -6,7 +6,8 @@ namespace Moq.Sdk
     /// <summary>
     /// An <see cref="IStuntBehavior"/> that applies a set of behaviors 
     /// selectively when the current invocation satisfies the 
-    /// <see cref="IMockSetup.AppliesTo(IMethodInvocation)"/> method.
+    /// <see cref="IMockSetup.AppliesTo(IMethodInvocation)"/> method for 
+    /// the current <see cref="Setup"/>.
     /// </summary>
     public interface IMockBehavior : IStuntBehavior
     {

@@ -71,11 +71,20 @@ namespace Moq.Sdk.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The target of the invocation does not implement IMocked..
+        ///   Looks up a localized string similar to No setup is currently being performed on the mock..
         /// </summary>
-        internal static string TargetNotMocked {
+        internal static string NoCurrentSetup {
             get {
-                return ResourceManager.GetString("TargetNotMocked", resourceCulture);
+                return ResourceManager.GetString("NoCurrentSetup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The target of the invocation is not a mock..
+        /// </summary>
+        internal static string TargetNotMock {
+            get {
+                return ResourceManager.GetString("TargetNotMock", resourceCulture);
             }
         }
     }

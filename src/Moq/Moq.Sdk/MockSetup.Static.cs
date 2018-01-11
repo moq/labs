@@ -8,10 +8,6 @@ namespace Moq.Sdk
 {
     public partial class MockSetup
     {
-        static AsyncLocal<IMockSetup> lastSetup = new AsyncLocal<IMockSetup>();
-
-        public static IMockSetup Current => lastSetup.Value;
-
         /// <summary>
         /// Pushes an argument matcher in the current <see cref="CallContext{Queue{IArgumentMatcher}}"/>.
         /// </summary>
@@ -25,9 +21,6 @@ namespace Moq.Sdk
         {
             CallContext<Queue<IArgumentMatcher>>.GetData(() => new Queue<IArgumentMatcher>())
                .Enqueue(matcher);
-
-            // Pushing new matchers clears the last known setup.
-            lastSetup.Value = null;
 
             return default(T);
         }
@@ -61,7 +54,7 @@ namespace Moq.Sdk
                 }
             }
 
-            return lastSetup.Value = new MockSetup(invocation, finalMatchers.ToArray());
+            return new MockSetup(invocation, finalMatchers.ToArray());
         }
     }
 }

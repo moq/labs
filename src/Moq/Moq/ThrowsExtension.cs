@@ -15,7 +15,7 @@ namespace Moq
         /// </summary>
         public static void Throws(this object target, Exception exception)
         {
-            var setup = MockSetup.Current;
+            var setup = MockContext.CurrentSetup;
             if (setup != null)
             {
                 var mock = ((IMocked)setup.Invocation.Target).Mock;
@@ -36,7 +36,7 @@ namespace Moq
         public static void Throws<TException>(this object target)
             where TException: Exception, new()
         {
-            var setup = MockSetup.Current;
+            var setup = MockContext.CurrentSetup;
             if (setup != null)
             {
                 var mock = ((IMocked)setup.Invocation.Target).Mock;

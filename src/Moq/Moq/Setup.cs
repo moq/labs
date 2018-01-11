@@ -25,7 +25,7 @@ namespace Moq
         public static IDisposable Setup(this object mock)
         {
             var target = mock is IMocked mocked ?
-                mocked.Mock : throw new ArgumentException(Strings.TargetNotMocked, nameof(mock));
+                mocked.Mock : throw new ArgumentException(Strings.TargetNotMock, nameof(mock));
 
             return new SetupDisposable(target);
         }
@@ -35,7 +35,8 @@ namespace Moq
             using (Setup(mock))
             {
                 action(mock);
-                return new SetupAdapter(MockSetup.Current);
+                // TODO: what if the extension method 
+                return new SetupAdapter(MockContext.CurrentSetup);
             }
         }
 
@@ -43,7 +44,7 @@ namespace Moq
         {
             using (Setup(mock))
             {
-                var stunt = mock as IStunt ?? throw new ArgumentException(Strings.TargetNotMocked, nameof(mock));
+                var stunt = mock as IStunt ?? throw new ArgumentException(Strings.TargetNotMock, nameof(mock));
                 return function(mock);
             }
         }

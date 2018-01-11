@@ -1,4 +1,5 @@
 ﻿using System;
+using Moq.Sdk.Properties;
 using Stunts;
 
 namespace Moq.Sdk
@@ -13,7 +14,11 @@ namespace Moq.Sdk
         /// </summary>
 		public static IMocked AddBehavior(this IMocked mock, InvokeBehavior behavior, string name = null)
         {
-            mock.Mock.BehaviorFor(MockSetup.Current).Behaviors.Add(new InvocationBehavior(behavior, name));
+            mock.Mock
+                .BehaviorFor(MockContext.CurrentSetup ?? throw new InvalidOperationException(Strings.NoCurrentSetup))
+                .Behaviors
+                .Add(new InvocationBehavior(behavior, name));
+
             return mock;
         }
 
@@ -23,7 +28,11 @@ namespace Moq.Sdk
         /// </summary>
         public static IMocked InsertBehavior(this IMocked mock, int index, InvokeBehavior behavior, string name = null)
         {
-            mock.Mock.BehaviorFor(MockSetup.Current).Behaviors.Insert(index, new InvocationBehavior(behavior, name));
+            mock.Mock
+                .BehaviorFor(MockContext.CurrentSetup ?? throw new InvalidOperationException(Strings.NoCurrentSetup))
+                .Behaviors
+                .Insert(index, new InvocationBehavior(behavior, name));
+
             return mock;
         }
 
@@ -32,7 +41,11 @@ namespace Moq.Sdk
         /// </summary>
         public static IMock AddBehavior(this IMock mock, InvokeBehavior behavior, string name = null)
         {
-            mock.BehaviorFor(MockSetup.Current).Behaviors.Add(new InvocationBehavior(behavior, name));
+            mock
+                .BehaviorFor(MockContext.CurrentSetup ?? throw new InvalidOperationException(Strings.NoCurrentSetup))
+                .Behaviors
+                .Add(new InvocationBehavior(behavior, name));
+
             return mock;
         }
 
@@ -42,7 +55,11 @@ namespace Moq.Sdk
         /// </summary>
         public static IMock InsertBehavior(this IMock mock, int index, InvokeBehavior behavior, string name = null)
         {
-            mock.BehaviorFor(MockSetup.Current).Behaviors.Insert(index, new InvocationBehavior(behavior, name));
+            mock
+                .BehaviorFor(MockContext.CurrentSetup ?? throw new InvalidOperationException(Strings.NoCurrentSetup))
+                .Behaviors
+                .Insert(index, new InvocationBehavior(behavior, name));
+
             return mock;
         }
 
@@ -56,7 +73,7 @@ namespace Moq.Sdk
             else if (mock is IMock m)
                 m.Behaviors.Add(behavior);
             else
-                throw new ArgumentException(nameof(mock));
+                throw new ArgumentException(Strings.TargetNotMock, nameof(mock));
 
             return mock;
         }
@@ -71,7 +88,7 @@ namespace Moq.Sdk
             else if (mock is IMock m)
                 m.Behaviors.Insert(index, behavior);
             else
-                throw new ArgumentException(nameof(mock));
+                throw new ArgumentException(Strings.TargetNotMock, nameof(mock));
 
             return mock;
         }

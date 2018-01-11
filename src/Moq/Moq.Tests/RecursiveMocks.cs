@@ -8,9 +8,7 @@ namespace Moq.Tests.Recursive
         [Fact(Skip = "Pending support for recursive mocks")]
         public void CanSetupRecursiveMock()
         {
-            var mock = Mock.Of<IRecursiveRoot>();
-
-            mock.Branch.Leaf.Name = "foo";
+            var mock = Mock.Of<IRecursiveRoot>(MockBehavior.Loose);
 
             mock.Setup(m => m.Branch.Leaf.Name).Returns("foo");
 

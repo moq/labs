@@ -13,7 +13,7 @@ namespace Moq
     {
         static TResult Callback<TResult>(this TResult target, Action<IArgumentCollection> callback)
         {
-            var setup = MockSetup.Current;
+            var setup = MockContext.CurrentSetup;
             if (setup != null)
             {
                 var mock = ((IMocked)setup.Invocation.Target).Mock;

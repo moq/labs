@@ -20,15 +20,6 @@ namespace Moq.Sdk
         IList<IMethodInvocation> Invocations { get; }
 
         /// <summary>
-        /// The last invocation to the mock, turned into a 
-        /// <see cref="IMockSetup"/> ready for use together with the 
-        /// <see cref="BehaviorFor(IMockSetup)"/> method to locate 
-        /// the maching <see cref="IMockBehavior"/> to add new behaviors 
-        /// to when a matching invocation is performed.
-        /// </summary>
-        IMockSetup LastSetup { get; }
-
-        /// <summary>
         /// Arbitrary state associated with a mock instance.
         /// </summary>
         MockState State { get; }

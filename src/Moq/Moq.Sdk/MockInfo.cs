@@ -28,8 +28,6 @@ namespace Moq.Sdk
         /// <inheritdoc />
         public IList<IMethodInvocation> Invocations { get; } = new List<IMethodInvocation>();
 
-        public IMockSetup LastSetup { get; internal set; }
-
         /// <inheritdoc />
         public MockState State { get; } = new MockState();
 

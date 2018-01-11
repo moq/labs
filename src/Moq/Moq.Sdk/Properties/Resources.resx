@@ -120,7 +120,10 @@
   <data name="EventNotFound" xml:space="preserve">
     <value>Could not locate event for attach or detach method {0}.</value>
   </data>
-  <data name="TargetNotMocked" xml:space="preserve">
-    <value>The target of the invocation does not implement IMocked.</value>
+  <data name="NoCurrentSetup" xml:space="preserve">
+    <value>No setup is currently being performed on the mock.</value>
+  </data>
+  <data name="TargetNotMock" xml:space="preserve">
+    <value>The target of the invocation is not a mock.</value>
   </data>
 </root>
