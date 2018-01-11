@@ -36,6 +36,11 @@ namespace Moq
                 ((IMethodSymbol)symbol.Symbol).IsExtensionMethod)
                 return;
 
+            var generator = context.Compilation.GetTypeByMetadataName(generatorAttribute.FullName);
+            // If we can't know what's attribute that annotates mock generators, we can't do anything.
+            if (generator == null)
+                return;
+
             var type = symbol.Symbol?.ContainingType;
             var owner = memberAccess.Expression;
 
@@ -49,47 +54,76 @@ namespace Moq
             }
 
             var variable = semantic.GetSymbolInfo(owner).Symbol?.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax(context.CancellationToken);
-            var initializer = ((variable as VariableDeclaratorSyntax)?.Initializer?.Value as InvocationExpressionSyntax)?.Expression;
-            var generator = context.Compilation.GetTypeByMetadataName(generatorAttribute.FullName);
 
-            if (initializer != null && generator != null && 
-                semantic.GetSymbolInfo(initializer).Symbol?.Kind == SymbolKind.Method &&
-                semantic.GetSymbolInfo(initializer).Symbol.GetAttributes().Any(x => x.AttributeClass == generator))
+            if (variable.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.Parameter) &&
+                (variable.Parent.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.SimpleLambdaExpression) ||
+                 variable.Parent.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.ParenthesizedLambdaExpression)))
             {
-                // The member access is from a Mock.
-                var name = naming.GetFullName(new[] { type });
-                // See if the stunt already exists
-                var mock = context.Compilation.GetTypeByMetadataName(name);
-                if (mock == null)
+                // the member access is inside a lambda (i.e. Setup(m => ...)) invocation on the mock
+                var lambda = (LambdaExpressionSyntax)variable.Parent;
+                // the lambda is likely an argument to an invocation
+                if (lambda.Parent.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.Argument) &&
+                    lambda.Parent.Parent.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.ArgumentList) &&
+                    lambda.Parent.Parent.Parent.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.InvocationExpression))
                 {
-                    context.ReportDiagnostic(Diagnostic.Create(
-                        MockDiagnostics.Missing,
-                        context.Node.GetLocation(),
-                        new Dictionary<string, string>
-                        {
+                    // locate the variable the invocation is performed on.
+                    var invocation = (InvocationExpressionSyntax)lambda.Parent.Parent.Parent;
+                    if (invocation.Expression.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.SimpleMemberAccessExpression))
+                    {
+                        memberAccess = (MemberAccessExpressionSyntax)invocation.Expression;
+                        symbol = semantic.GetSymbolInfo(memberAccess);
+                        owner = memberAccess.Expression;
+                        variable = semantic.GetSymbolInfo(owner).Symbol?.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax(context.CancellationToken);
+                    }
+                }
+            }
+
+            if (variable.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.VariableDeclarator))
+            {
+                // the member access is direct on the Mock.Of variable
+                var initializer = (((VariableDeclaratorSyntax)variable).Initializer?.Value as InvocationExpressionSyntax)?.Expression;
+                if (semantic.GetSymbolInfo(initializer).Symbol?.Kind == SymbolKind.Method &&
+                    semantic.GetSymbolInfo(initializer).Symbol.GetAttributes().Any(x => x.AttributeClass == generator))
+                {
+                    ReportDiagnostics(context, type);
+                }
+            }
+        }
+
+        static void ReportDiagnostics(SyntaxNodeAnalysisContext context, INamedTypeSymbol type)
+        {
+            var name = naming.GetFullName(new[] { type });
+            // See if the mock already exists
+            var mock = context.Compilation.GetTypeByMetadataName(name);
+            if (mock == null)
+            {
+                context.ReportDiagnostic(Diagnostic.Create(
+                    MockDiagnostics.Missing,
+                    context.Node.GetLocation(),
+                    new Dictionary<string, string>
+                    {
                             { "TargetFullName", name },
                             { "Symbols", type.ToFullMetadataName() },
                             { "RecursiveSymbols", "" },
-                        }.ToImmutableDictionary(),
-                        name));
-                }
-                else
+                    }.ToImmutableDictionary(),
+                    name));
+            }
+            else
+            {
+                var compilationErrors = context.Compilation.GetCompilationErrors();
+                // See if the symbol has any compilation error diagnostics associated
+                if (mock.HasDiagnostic(compilationErrors))
                 {
-                    var compilationErrors = context.Compilation.GetCompilationErrors();
-                    // See if the symbol has any compilation error diagnostics associated
-                    if (mock.HasDiagnostic(compilationErrors))
-                    {
-                        context.ReportDiagnostic(Diagnostic.Create(
-                            MockDiagnostics.Outdated,
-                            context.Node.GetLocation(),
-                            new Dictionary<string, string>
-                            {
+                    context.ReportDiagnostic(Diagnostic.Create(
+                        MockDiagnostics.Outdated,
+                        context.Node.GetLocation(),
+                        new Dictionary<string, string>
+                        {
                                 { "TargetFullName", name },
                                 { "Symbols", type.ToFullMetadataName() },
                                 { "RecursiveSymbols", "" },
-                            }.ToImmutableDictionary(),
-                            name));
-                    }
+                        }.ToImmutableDictionary(),
+                        name));
                 }
             }
         }
