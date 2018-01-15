@@ -5,6 +5,9 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Stunts.Processors
 {
+    /// <summary>
+    /// Usability overloads for the C# syntax.
+    /// </summary>
     static class CSharpSyntaxExtensions
     {
         public static bool IsVoid(this TypeSyntax typeSyntax)

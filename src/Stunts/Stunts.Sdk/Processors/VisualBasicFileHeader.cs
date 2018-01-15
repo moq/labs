@@ -1,10 +1,14 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using static Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory;
 
 namespace Stunts.Processors
 {
+    /// <summary>
+    /// Adds the <c>auto-generated</c> file header that flags the 
+    /// document as a generated one.
+    /// </summary>
     public class VisualBasicFileHeader : IDocumentProcessor
     {
         const string header = @"'------------------------------------------------------------------------------
@@ -18,15 +22,24 @@ namespace Stunts.Processors
 
 ";
 
-        public string Language => LanguageNames.VisualBasic;
+        /// <summary>
+        /// Applies to <see cref="LanguageNames.CSharp"/> only.
+        /// </summary>
+        public string[] Languages { get; } = new[] { LanguageNames.VisualBasic };
 
-        public ProcessorPhase Phase => ProcessorPhase.Scaffold;
+        /// <summary>
+        /// Runs in the final phase of codegen, <see cref="ProcessorPhase.Fixup"/>.
+        /// </summary>
+        public ProcessorPhase Phase => ProcessorPhase.Fixup;
 
+        /// <summary>
+        /// Adds the <c>auto-generated</c> file header to the document.
+        /// </summary>
         public async Task<Document> ProcessAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
         {
             var syntax = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
 
-            return document.WithSyntaxRoot(syntax.WithLeadingTrivia(Comment(header)));
+            return document.WithSyntaxRoot(syntax.WithLeadingTrivia(CommentTrivia(header)));
         }
     }
 }

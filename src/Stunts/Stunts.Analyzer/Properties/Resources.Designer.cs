@@ -61,6 +61,78 @@ namespace Stunts.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to When a base type is specified, it must be the first type in the type arguments list..
+        /// </summary>
+        internal static string BaseTypeNotFirst_Description {
+            get {
+                return ResourceManager.GetString("BaseTypeNotFirst_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Base type &apos;{0}&apos; must be the first in the type arguments list..
+        /// </summary>
+        internal static string BaseTypeNotFirst_Message {
+            get {
+                return ResourceManager.GetString("BaseTypeNotFirst_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Base type must be first.
+        /// </summary>
+        internal static string BaseTypeNotFirst_Title {
+            get {
+                return ResourceManager.GetString("BaseTypeNotFirst_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Implement stunt.
+        /// </summary>
+        internal static string CustomStuntCodeFix_ImplementStunt {
+            get {
+                return ResourceManager.GetString("CustomStuntCodeFix_ImplementStunt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Implement though behavior pipeline.
+        /// </summary>
+        internal static string CustomStuntCodeFix_ImplementThroughBehavior {
+            get {
+                return ResourceManager.GetString("CustomStuntCodeFix_ImplementThroughBehavior", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot specify more than one base type..
+        /// </summary>
+        internal static string DuplicateBaseType_Description {
+            get {
+                return ResourceManager.GetString("DuplicateBaseType_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot specify more than one base type..
+        /// </summary>
+        internal static string DuplicateBaseType_Message {
+            get {
+                return ResourceManager.GetString("DuplicateBaseType_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multiple base types specified.
+        /// </summary>
+        internal static string DuplicateBaseType_Title {
+            get {
+                return ResourceManager.GetString("DuplicateBaseType_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Generate all stunts in {0} {1}.
         /// </summary>
         internal static string GenerateStuntCodeFix_FixAllTitle {
@@ -99,54 +171,90 @@ namespace Stunts.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Invoked method requires a stunt to be generated at design-time or compile-time..
         /// </summary>
-        internal static string MissingStuntAnalyzer_Description {
+        internal static string MissingStunt_Description {
             get {
-                return ResourceManager.GetString("MissingStuntAnalyzer_Description", resourceCulture);
+                return ResourceManager.GetString("MissingStunt_Description", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Expected stunt &apos;{0}&apos; was not found in the current compilation..
         /// </summary>
-        internal static string MissingStuntAnalyzer_Message {
+        internal static string MissingStunt_Message {
             get {
-                return ResourceManager.GetString("MissingStuntAnalyzer_Message", resourceCulture);
+                return ResourceManager.GetString("MissingStunt_Message", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Stunt not found.
         /// </summary>
-        internal static string MissingStuntAnalyzer_Title {
+        internal static string MissingStunt_Title {
             get {
-                return ResourceManager.GetString("MissingStuntAnalyzer_Title", resourceCulture);
+                return ResourceManager.GetString("MissingStunt_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move base type first.
+        /// </summary>
+        internal static string MoveBaseTypeFirst_Title {
+            get {
+                return ResourceManager.GetString("MoveBaseTypeFirst_Title", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Existing generated stunt is no longer up-to-date..
         /// </summary>
-        internal static string OutdatedStuntAnalyzer_Description {
+        internal static string OutdatedStunt_Description {
             get {
-                return ResourceManager.GetString("OutdatedStuntAnalyzer_Description", resourceCulture);
+                return ResourceManager.GetString("OutdatedStunt_Description", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Stunt &apos;{0}&apos; is outdated..
         /// </summary>
-        internal static string OutdatedStuntAnalyzer_Message {
+        internal static string OutdatedStunt_Message {
             get {
-                return ResourceManager.GetString("OutdatedStuntAnalyzer_Message", resourceCulture);
+                return ResourceManager.GetString("OutdatedStunt_Message", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Stunt must be updated.
         /// </summary>
-        internal static string OutdatedStuntAnalyzer_Title {
+        internal static string OutdatedStunt_Title {
             get {
-                return ResourceManager.GetString("OutdatedStuntAnalyzer_Title", resourceCulture);
+                return ResourceManager.GetString("OutdatedStunt_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot specify sealed base type..
+        /// </summary>
+        internal static string SealedBaseType_Description {
+            get {
+                return ResourceManager.GetString("SealedBaseType_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot specify sealed base type &apos;{0}&apos;...
+        /// </summary>
+        internal static string SealedBaseType_Message {
+            get {
+                return ResourceManager.GetString("SealedBaseType_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid sealed base type.
+        /// </summary>
+        internal static string SealedBaseType_Title {
+            get {
+                return ResourceManager.GetString("SealedBaseType_Title", resourceCulture);
             }
         }
         

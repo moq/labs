@@ -61,6 +61,15 @@ namespace Stunts.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot intercept sealed types..
+        /// </summary>
+        internal static string InvalidSealedBaseType {
+            get {
+                return ResourceManager.GetString("InvalidSealedBaseType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Only classes and interfaces can be used. Invalid set of symbols: {0}..
         /// </summary>
         internal static string InvalidStuntTypes {

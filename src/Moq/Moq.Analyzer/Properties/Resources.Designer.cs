@@ -61,6 +61,15 @@ namespace Moq.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Implement mock.
+        /// </summary>
+        internal static string CustomMockCodeFix_Implement {
+            get {
+                return ResourceManager.GetString("CustomMockCodeFix_Implement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Generate {0}.
         /// </summary>
         internal static string GenerateMockCodeFix_TitleFormat {

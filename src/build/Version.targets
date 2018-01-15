@@ -18,7 +18,7 @@ AssemblyVersion=$(AssemblyVersion)" />
   </Target>
 
   <!-- $(ExcludeRestorePackageImports)==true when invoking /t:Restore -->
-  <Target Name="SetVersion" BeforeTargets="Build;GetPackageVersion" DependsOnTargets="GitVersion" Condition="'$(ExcludeRestorePackageImports)' != 'true'">
+  <Target Name="SetVersion" BeforeTargets="Build;GetPackageVersion;_IntrospectProjectProperties" DependsOnTargets="GitVersion" Condition="'$(ExcludeRestorePackageImports)' != 'true'">
     <PropertyGroup>
       <!-- PR builds are *always* prerelease -->
       <!-- TFS case: BUILD_REASON=PullRequest and BUILD_SOURCEBRANCH=refs/pull/#/merge -->

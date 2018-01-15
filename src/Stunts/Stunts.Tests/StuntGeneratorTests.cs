@@ -347,7 +347,7 @@ End Class")]
 
         class TestProcessor : CSharpSyntaxRewriter, IDocumentProcessor
         {
-            public string Language => LanguageNames.CSharp;
+            public string[] Languages => new[] { LanguageNames.CSharp };
 
             public ProcessorPhase Phase => ProcessorPhase.Scaffold;
 

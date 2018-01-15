@@ -18,27 +18,9 @@ namespace Stunts
     [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public class StuntGeneratorAnalyzer : DiagnosticAnalyzer
     {
-        static readonly DiagnosticDescriptor missing = new DiagnosticDescriptor(
-            "ST001",
-            new ResourceString(nameof(Resources.MissingStuntAnalyzer_Title)),
-            new ResourceString(nameof(Resources.MissingStuntAnalyzer_Message)), 
-            "Build", 
-            DiagnosticSeverity.Error, 
-            true,
-            new ResourceString(nameof(Resources.MissingStuntAnalyzer_Description)));
-
-        static readonly DiagnosticDescriptor outdated = new DiagnosticDescriptor(
-            "ST002",
-            new ResourceString(nameof(Resources.OutdatedStuntAnalyzer_Title)),
-            new ResourceString(nameof(Resources.OutdatedStuntAnalyzer_Message)),
-            "Build",
-            DiagnosticSeverity.Error,
-            true,
-            new ResourceString(nameof(Resources.OutdatedStuntAnalyzer_Description)));
-
         readonly NamingConvention naming;
+        readonly bool recursive;
         Type generatorAttribute;
-        bool recursive;
 
         /// <summary>
         /// Instantiates the analyzer with the default <see cref="NamingConvention"/> and 
@@ -60,21 +42,21 @@ namespace Stunts
         /// <summary>
         /// Provides metadata about the missing generated type diagnostic.
         /// </summary>
-        public virtual DiagnosticDescriptor MissingDescriptor => missing;
+        public virtual DiagnosticDescriptor MissingDiagnostic => StuntDiagnostics.MissingStunt;
 
         /// <summary>
         /// Provides metadata about the outdated generated type diagnostic.
         /// </summary>
-        public virtual DiagnosticDescriptor OutdatedDescriptor => outdated;
+        public virtual DiagnosticDescriptor OutdatedDiagnostic => StuntDiagnostics.OutdatedStunt;
 
         /// <summary>
-        /// Returns the single <see cref="MissingDescriptor"/> this analyer supports.
+        /// Returns the single <see cref="MissingDiagnostic"/> this analyer supports.
         /// </summary>
         public sealed override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         {
             // NOTE: this creates the return value at this point because both Missing and Outdated 
             // descriptors can be overriden as a customization point.
-            get { return ImmutableArray.Create(MissingDescriptor, OutdatedDescriptor); }
+            get { return ImmutableArray.Create(MissingDiagnostic, OutdatedDiagnostic); }
         }
 
         /// <summary>
@@ -102,7 +84,8 @@ namespace Stunts
                 var method = (IMethodSymbol)symbol.Symbol;
                 if (method.GetAttributes().Any(x => x.AttributeClass == generator) && 
                     // We don't generate anything if generator is applied to a non-generic method.
-                    !method.TypeArguments.IsDefaultOrEmpty)
+                    !method.TypeArguments.IsDefaultOrEmpty && 
+                    method.TypeArguments.TryValidateGeneratorTypes(out _))
                 {
                     var name = naming.GetFullName(method.TypeArguments.OfType<INamedTypeSymbol>());
                     var compilationErrors = new Lazy<Diagnostic[]>(() => context.Compilation.GetCompilationErrors());
@@ -129,7 +112,7 @@ namespace Stunts
                     if (stunt == null)
                     {
                         var diagnostic = Diagnostic.Create(
-                            MissingDescriptor,
+                            MissingDiagnostic,
                             context.Node.GetLocation(),
                             new Dictionary<string, string>
                             {
@@ -154,7 +137,7 @@ namespace Stunts
                         {
                             // If there are compilation errors, we should update the proxy.
                             var diagnostic = Diagnostic.Create(
-                                OutdatedDescriptor,
+                                OutdatedDiagnostic,
                                 context.Node.GetLocation(),
                                 new Dictionary<string, string>
                                 {

@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Editing;
 using Microsoft.CodeAnalysis.Text;
 using Stunts.Processors;
-using Stunts.Properties;
 
 namespace Stunts
 {
@@ -35,13 +30,16 @@ namespace Stunts
         public static IDocumentProcessor[] GetDefaultProcessors() => new IDocumentProcessor[]
         {
             new EnsureStuntsReference(),
-            new CSharpScaffold(),
+            new DefaultImports(),
             new CSharpFileHeader(),
+            new CSharpScaffold(),
             new CSharpRewrite(),
+            new CSharpStunt(),
             new CSharpCompilerGenerated(),
-            new VisualBasicScaffold(),
             new VisualBasicFileHeader(),
+            new VisualBasicScaffold(),
             new VisualBasicRewrite(),
+            new VisualBasicStunt(),
             new VisualBasicParameterFixup(),
             new VisualBasicCompilerGenerated(),
         };
@@ -59,19 +57,35 @@ namespace Stunts
         public StuntGenerator(NamingConvention naming) : this(naming, GetDefaultProcessors()) { }
 
         /// <summary>
+        /// Initializes the generator with the default <see cref="NamingConvention"/> 
+        /// and the given set of <see cref="IDocumentProcessor"/>s.
+        /// </summary>
+        public StuntGenerator(params IDocumentProcessor[] processors) : this(new NamingConvention(), (IEnumerable<IDocumentProcessor>)processors) { }
+
+        /// <summary>
+        /// Initializes the generator with the default <see cref="NamingConvention"/> 
+        /// and the given set of <see cref="IDocumentProcessor"/>s.
+        /// </summary>
+        public StuntGenerator(IEnumerable<IDocumentProcessor> processors) : this(new NamingConvention(), processors) { }
+
+        /// <summary>
         /// Initializes the generator with a custom <see cref="NamingConvention"/> and 
         /// the given set of <see cref="IDocumentProcessor"/>s.
         /// </summary>
-        protected StuntGenerator(NamingConvention naming, IDocumentProcessor[] processors)
+        public StuntGenerator(NamingConvention naming, IEnumerable<IDocumentProcessor> processors)
         {
             this.naming = naming;
+            // Splits the processors by supported language and then by phase.
             this.processors = processors
-                .GroupBy(processor => processor.Language)
+                .SelectMany(processor => processor.Languages.Select(lang => new { Processor = processor, Language = lang }))
+                .GroupBy(proclang => proclang.Language)
                 .ToDictionary(
                     bylang => bylang.Key,
                     bylang => bylang
-                        .GroupBy(processor => processor.Phase)
-                        .ToDictionary(byphase => byphase.Key, byphase => byphase.ToArray()));
+                        .GroupBy(proclang => proclang.Processor.Phase)
+                        .ToDictionary(
+                            byphase => byphase.Key, 
+                            byphase => byphase.Select(proclang => proclang.Processor).ToArray()));
         }
 
         /// <summary>
@@ -135,17 +149,9 @@ namespace Stunts
         public (string name, SyntaxNode syntax) CreateStunt(IEnumerable<INamedTypeSymbol> symbols, SyntaxGenerator generator)
         {
             var name = naming.GetName(symbols);
-            // These namespaces are used by the default stunt code and are always imported.
-            var imports = new HashSet<string>
-            {
-                typeof(EventArgs).Namespace,
-                typeof(ObservableCollection<>).Namespace,
-                typeof(MethodBase).Namespace,
-                typeof(IStunt).Namespace,
-                typeof(CompilerGeneratedAttribute).Namespace,
-            };
+            var imports = new HashSet<string>();
+            var (baseType, implementedInterfaces) = symbols.ValidateGeneratorTypes();
 
-            var (baseType, implementedInterfaces) = ValidateTypes(symbols.ToArray());
             if (baseType != null && baseType.ContainingNamespace != null && baseType.ContainingNamespace.CanBeReferencedByName)
                 imports.Add(baseType.ContainingNamespace.ToDisplayString());
 
@@ -225,40 +231,6 @@ namespace Stunts
             }
 
             return document;
-        }
-
-        /// <summary>
-        /// Sorts and validates types so that the base class is the first and the remaining 
-        /// interface implementations are the rest.
-        /// </summary>
-        static (INamedTypeSymbol baseType, ImmutableArray<INamedTypeSymbol> additionalInterfaces) ValidateTypes(INamedTypeSymbol[] types)
-        {
-            if (types.Length == 0)
-                throw new ArgumentException(Strings.SymbolRequired);
-
-            var baseType = default(INamedTypeSymbol);
-            var additionalInterfaces = default(IEnumerable<INamedTypeSymbol>);
-            if (types[0].TypeKind == TypeKind.Class)
-            {
-                baseType = types[0];
-                if (types.Skip(1).Any(x => x.TypeKind == TypeKind.Class))
-                    throw new ArgumentException(Strings.WrongBaseType(string.Join(",", types.Select(x => x.Name))));
-                if (types.Skip(1).Any(x => x.TypeKind != TypeKind.Interface))
-                    throw new ArgumentException(Strings.InvalidStuntTypes(string.Join(",", types.Select(x => x.Name))));
-
-                additionalInterfaces = types.Skip(1);
-            }
-            else
-            {
-                if (types.Any(x => x.TypeKind == TypeKind.Class))
-                    throw new ArgumentException(Strings.WrongBaseType(string.Join(",", types.Select(x => x.Name))));
-                if (types.Any(x => x.TypeKind != TypeKind.Interface))
-                    throw new ArgumentException(Strings.InvalidStuntTypes(string.Join(",", types.Select(x => x.Name))));
-
-                additionalInterfaces = types;
-            }
-
-            return (baseType, additionalInterfaces.OrderBy(x => x.Name).ToImmutableArray());
         }
     }
 }

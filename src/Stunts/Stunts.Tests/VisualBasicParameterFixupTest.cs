@@ -10,7 +10,6 @@ namespace Stunts.Tests
 {
     public class VisualBasicParameterFixupTest
     {
-
         [Fact]
         public async Task WhenParameterNameMatchesMethodNameParameterIsRenamed()
         {

@@ -10,16 +10,30 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Stunts.Processors
 {
+    /// <summary>
+    /// Rewrites all members so they are implemented through 
+    /// the <see cref="BehaviorPipeline"/> field added to the 
+    /// class by the <see cref="CSharpStunt"/>.
+    /// </summary>
     public class CSharpRewrite : IDocumentProcessor
     {
-        public string Language => LanguageNames.CSharp;
+        /// <summary>
+        /// Applies to <see cref="LanguageNames.CSharp"/> only.
+        /// </summary>
+        public string[] Languages { get; } = new[] { LanguageNames.CSharp };
 
+        /// <summary>
+        /// Runs in the third phase of codegen, <see cref="ProcessorPhase.Rewrite"/>.
+        /// </summary>
         public ProcessorPhase Phase => ProcessorPhase.Rewrite;
 
+        /// <summary>
+        /// Rewrites all members in the document.
+        /// </summary>
         public async Task<Document> ProcessAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
         {
             var syntax = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
-            syntax = new CSharpRewriteVisitor(SyntaxGenerator.GetGenerator(document)).Visit(syntax);
+            syntax = new CSharpRewriteVisitor(document).Visit(syntax);
 
             return document.WithSyntaxRoot(syntax);
         }
@@ -27,8 +41,13 @@ namespace Stunts.Processors
         class CSharpRewriteVisitor : CSharpSyntaxRewriter
         {
             SyntaxGenerator generator;
+            Document document;
 
-            public CSharpRewriteVisitor(SyntaxGenerator generator) => this.generator = generator;
+            public CSharpRewriteVisitor(Document document)
+            {
+                this.document = document;
+                generator = SyntaxGenerator.GetGenerator(document);
+            }
 
             public override SyntaxNode VisitClassDeclaration(ClassDeclarationSyntax node)
             {
@@ -41,41 +60,14 @@ namespace Stunts.Processors
                         .WithModifiers(x.Modifiers))
                     .ToArray());
 
-                node = (ClassDeclarationSyntax)base.VisitClassDeclaration(node);
-                node = node.AddBaseListTypes(SimpleBaseType(IdentifierName(nameof(IStunt))));
-                node = (ClassDeclarationSyntax)generator.InsertMembers(node, 0,
-                    FieldDeclaration(
-                        VariableDeclaration(IdentifierName(Identifier(nameof(BehaviorPipeline))))
-                        .WithVariables(
-                            SingletonSeparatedList(
-                                VariableDeclarator(Identifier("pipeline"))
-                                .WithInitializer(
-                                    EqualsValueClause(
-                                        ObjectCreationExpression(IdentifierName(nameof(BehaviorPipeline)))
-                                        .WithArgumentList(ArgumentList())))))
-                        .NormalizeWhitespace()
-                    ).WithModifiers(TokenList(Token(SyntaxKind.ReadOnlyKeyword))),
-                    PropertyDeclaration(
-                        GenericName(
-                            Identifier("ObservableCollection"),
-                            TypeArgumentList(SingletonSeparatedList<TypeSyntax>(IdentifierName(nameof(IStuntBehavior))))),
-                        Identifier(nameof(IStunt.Behaviors)))
-                        .WithExplicitInterfaceSpecifier(ExplicitInterfaceSpecifier(IdentifierName(nameof(IStunt))))
-                        .WithExpressionBody(ArrowExpressionClause(
-                            MemberAccessExpression(
-                                SyntaxKind.SimpleMemberAccessExpression,
-                                IdentifierName("pipeline"),
-                                IdentifierName("Behaviors"))))
-                         .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
-                        .NormalizeWhitespace()
-                        .WithTrailingTrivia(CarriageReturnLineFeed, CarriageReturnLineFeed)
-                    );
-
-                return node;
+                return node = (ClassDeclarationSyntax)base.VisitClassDeclaration(node);
             }
 
             public override SyntaxNode VisitMethodDeclaration(MethodDeclarationSyntax node)
             {
+                if (generator.GetAttributes(node).Any(attr => generator.GetName(attr) == "CompilerGenerated"))
+                    return base.VisitMethodDeclaration(node);
+
                 var outParams = node.ParameterList.Parameters.Where(x => x.Modifiers.Any(SyntaxKind.OutKeyword)).ToArray();
                 var refOutParams = node.ParameterList.Parameters.Where(x => x.Modifiers.Any(SyntaxKind.RefKeyword) || x.Modifiers.Any(SyntaxKind.OutKeyword)).ToArray();
 
@@ -96,6 +88,9 @@ namespace Stunts.Processors
 
             public override SyntaxNode VisitPropertyDeclaration(PropertyDeclarationSyntax node)
             {
+                if (generator.GetAttributes(node).Any(attr => generator.GetName(attr) == "CompilerGenerated"))
+                    return base.VisitPropertyDeclaration(node);
+
                 (var canRead, var canWrite) = generator.InspectProperty(node);
                 canRead = canRead || node.ExpressionBody != null;
 
@@ -133,6 +128,9 @@ namespace Stunts.Processors
 
             public override SyntaxNode VisitIndexerDeclaration(IndexerDeclarationSyntax node)
             {
+                if (generator.GetAttributes(node).Any(attr => generator.GetName(attr) == "CompilerGenerated"))
+                    return base.VisitIndexerDeclaration(node);
+
                 var trivia = node.GetTrailingTrivia();
 
                 // NOTE: Most of this code could be shared with VisitPropertyDeclaration but the mutating With* 
@@ -171,6 +169,9 @@ namespace Stunts.Processors
 
             public override SyntaxNode VisitEventDeclaration(EventDeclarationSyntax node)
             {
+                if (generator.GetAttributes(node).Any(attr => generator.GetName(attr) == "CompilerGenerated"))
+                    return base.VisitEventDeclaration(node);
+
                 var parameters = new[] { Parameter(Identifier("value")).WithType(node.Type) };
                 node = node.WithAccessorList(
                     AccessorList(
