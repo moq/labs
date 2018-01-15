@@ -18,12 +18,14 @@
 
   <ItemGroup>
     <Compile Remove="StuntDiscovererTests.Compile.cs" />
+    <Compile Remove="StuntDiscovererTests.cs" />
   </ItemGroup>
 
   <ItemGroup>
 	  <None Include="StuntDiscovererTests.Compile.cs">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
+	  <None Include="StuntDiscovererTests.cs" />
     <None Update="StuntDiscovererTests.Compile.vb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

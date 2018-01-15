@@ -6,8 +6,14 @@ using Microsoft.CodeAnalysis.Editing;
 
 namespace Stunts.Processors
 {
+    /// <summary>
+    /// Language angnosti helper methods for code generation.
+    /// </summary>
     static class SyntaxGeneratorExtensions
     {
+        /// <summary>
+        /// Inspects a property to determine if supports read/write.
+        /// </summary>
         public static (bool canRead, bool canWrite) InspectProperty(this SyntaxGenerator generator, SyntaxNode property)
         {
             return (
@@ -16,6 +22,9 @@ namespace Stunts.Processors
                 );
         }
 
+        /// <summary>
+        /// Replaces a method's body by invoking the behavior pipeline.
+        /// </summary>
         public static SyntaxNode ImplementMethod(this SyntaxGenerator generator, SyntaxNode method, SyntaxNode returnType)
         {
             if (returnType != null)
@@ -25,16 +34,17 @@ namespace Stunts.Processors
                     generator.ReturnStatement(generator.ExecutePipeline(returnType, generator.GetParameters(method)))
                 });
             }
-            else
+
+            return generator.WithStatements(method, new[]
             {
-                return generator.WithStatements(method, new[]
-                {
-                    generator.ExecutePipeline(returnType, generator.GetParameters(method))
-                });
-            }
+                generator.ExecutePipeline(returnType, generator.GetParameters(method))
+            });
         }
 
-        public static SyntaxNode ImplementMethod(this SyntaxGenerator generator, 
+        /// <summary>
+        /// Replaces the implementation of a method with ref/out parameters by invoking the behavior pipeline.
+        /// </summary>
+        public static SyntaxNode ImplementMethod(this SyntaxGenerator generator,
             SyntaxNode method, SyntaxNode returnType, SyntaxNode[] outParams, SyntaxNode[] refOutParams)
         {
             var statements = outParams.Select(x => generator.AssignmentStatement(
@@ -75,6 +85,9 @@ namespace Stunts.Processors
             return generator.WithStatements(method, statements);
         }
 
+        /// <summary>
+        /// Creates the <c>pipeline.Execute</c> method invocation.
+        /// </summary>
         public static SyntaxNode ExecutePipeline(this SyntaxGenerator generator, SyntaxNode returnType, IEnumerable<SyntaxNode> parameters)
         {
             var execute = (returnType == null) ?
@@ -89,6 +102,9 @@ namespace Stunts.Processors
                 );
         }
 
+        /// <summary>
+        /// Creates the instance of the <see cref="MethodInvocation"/> passed to the behavior pipeline.
+        /// </summary>
         static SyntaxNode CreateMethodInvocation(SyntaxGenerator generator, IEnumerable<SyntaxNode> parameters) =>
             generator.ObjectCreationExpression(
                 generator.IdentifierName(nameof(MethodInvocation)),

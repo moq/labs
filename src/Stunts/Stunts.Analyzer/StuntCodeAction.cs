@@ -32,15 +32,15 @@ namespace Stunts
 
         protected virtual StuntGenerator CreateGenerator(NamingConvention naming) => new StuntGenerator(naming);
 
-        protected override async Task<Solution> GetChangedSolutionAsync(CancellationToken cancellationToken)
+        protected override async Task<Document> GetChangedDocumentAsync(CancellationToken cancellationToken)
         {
             var root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
             if (root == null)
-                return document.Project.Solution;
+                return document;
 
             var semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
             if (semanticModel == null)
-                return document.Project.Solution;
+                return document;
 
             var compilation = await document.Project.GetCompilationAsync(cancellationToken);
             var symbols = diagnostic.Properties["Symbols"]
@@ -58,32 +58,7 @@ namespace Stunts
             if (document.Project.Language != LanguageNames.VisualBasic)
                 stunt = await Formatter.FormatAsync(stunt, Formatter.Annotation).ConfigureAwait(false);
 
-            return stunt.Project.Solution;
-
-            //var stunts = CreateGenerator(naming);
-            //var solution = document.Project.Solution;
-
-            //var name = diagnostic.Properties["TargetFullName"];
-            //var stunt = compilation.GetTypeByMetadataName(name);
-
-            //solution = await CreateStunt(symbols, generator, stunts, cancellationToken);
-            //// Update the document for the changed solution.
-            //document = solution.GetDocument(document.Id);
-
-            //var recursiveSymbols = diagnostic.Properties["RecursiveSymbols"]
-            //    .Split('|')
-            //    .Select(compilation.GetTypeByMetadataName)
-            //    .Where(x => x != null)
-            //    .ToArray();
-
-            //foreach (var recursive in recursiveSymbols)
-            //{
-            //    solution = await CreateStunt(new[] { recursive }, generator, stunts, cancellationToken);
-            //    // Update the document for the changed solution.
-            //    document = solution.GetDocument(document.Id);
-            //}
-
-            //return solution;
+            return stunt;
         }
 
         async Task<Solution> CreateStunt(IEnumerable<INamedTypeSymbol> symbols, SyntaxGenerator generator, StuntGenerator stunts, CancellationToken cancellationToken)

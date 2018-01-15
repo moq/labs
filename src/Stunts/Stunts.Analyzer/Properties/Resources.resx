@@ -117,6 +117,30 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="BaseTypeNotFirst_Description" xml:space="preserve">
+    <value>When a base type is specified, it must be the first type in the type arguments list.</value>
+  </data>
+  <data name="BaseTypeNotFirst_Message" xml:space="preserve">
+    <value>Base type '{0}' must be the first in the type arguments list.</value>
+  </data>
+  <data name="BaseTypeNotFirst_Title" xml:space="preserve">
+    <value>Base type must be first</value>
+  </data>
+  <data name="CustomStuntCodeFix_ImplementStunt" xml:space="preserve">
+    <value>Implement stunt</value>
+  </data>
+  <data name="CustomStuntCodeFix_ImplementThroughBehavior" xml:space="preserve">
+    <value>Implement though behavior pipeline</value>
+  </data>
+  <data name="DuplicateBaseType_Description" xml:space="preserve">
+    <value>Cannot specify more than one base type.</value>
+  </data>
+  <data name="DuplicateBaseType_Message" xml:space="preserve">
+    <value>Cannot specify more than one base type.</value>
+  </data>
+  <data name="DuplicateBaseType_Title" xml:space="preserve">
+    <value>Multiple base types specified</value>
+  </data>
   <data name="GenerateStuntCodeFix_FixAllTitle" xml:space="preserve">
     <value>Generate all stunts in {0} {1}</value>
   </data>
@@ -129,23 +153,35 @@
   <data name="InvalidStuntTypes" xml:space="preserve">
     <value>Only classes and interfaces can be used in stunts. Invalid set of symbols: {0}.</value>
   </data>
-  <data name="MissingStuntAnalyzer_Description" xml:space="preserve">
+  <data name="MissingStunt_Description" xml:space="preserve">
     <value>Invoked method requires a stunt to be generated at design-time or compile-time.</value>
   </data>
-  <data name="MissingStuntAnalyzer_Message" xml:space="preserve">
+  <data name="MissingStunt_Message" xml:space="preserve">
     <value>Expected stunt '{0}' was not found in the current compilation.</value>
   </data>
-  <data name="MissingStuntAnalyzer_Title" xml:space="preserve">
+  <data name="MissingStunt_Title" xml:space="preserve">
     <value>Stunt not found</value>
   </data>
-  <data name="OutdatedStuntAnalyzer_Description" xml:space="preserve">
+  <data name="MoveBaseTypeFirst_Title" xml:space="preserve">
+    <value>Move base type first</value>
+  </data>
+  <data name="OutdatedStunt_Description" xml:space="preserve">
     <value>Existing generated stunt is no longer up-to-date.</value>
   </data>
-  <data name="OutdatedStuntAnalyzer_Message" xml:space="preserve">
+  <data name="OutdatedStunt_Message" xml:space="preserve">
     <value>Stunt '{0}' is outdated.</value>
   </data>
-  <data name="OutdatedStuntAnalyzer_Title" xml:space="preserve">
+  <data name="OutdatedStunt_Title" xml:space="preserve">
     <value>Stunt must be updated</value>
+  </data>
+  <data name="SealedBaseType_Description" xml:space="preserve">
+    <value>Cannot specify sealed base type.</value>
+  </data>
+  <data name="SealedBaseType_Message" xml:space="preserve">
+    <value>Cannot specify sealed base type '{0}'..</value>
+  </data>
+  <data name="SealedBaseType_Title" xml:space="preserve">
+    <value>Invalid sealed base type</value>
   </data>
   <data name="UnsupportedNestedTypeAnalyzer_Description" xml:space="preserve">
     <value>Generating code for nested types is not supported yet.</value>

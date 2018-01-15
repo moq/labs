@@ -15,7 +15,7 @@ namespace Moq.Processors
         static readonly string MoqSdkAssembly = typeof(IMock).Assembly.GetName().Name;
         static readonly string MoqSdkFile = Path.GetFileName(typeof(IMock).Assembly.ManifestModule.FullyQualifiedName);
 
-        public string Language => LanguageNames.CSharp;
+        public string[] Languages { get; } = new[] { LanguageNames.CSharp, LanguageNames.VisualBasic };
 
         public ProcessorPhase Phase => ProcessorPhase.Prepare;
 

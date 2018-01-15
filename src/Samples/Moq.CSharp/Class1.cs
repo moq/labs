@@ -1,6 +1,5 @@
 ﻿using System;
 using Moq;
-using Moq.Sdk;
 
 namespace Sample.CSharp
 {

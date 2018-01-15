@@ -17,7 +17,8 @@ namespace Microsoft.CodeAnalysis
         static Lazy<ImmutableArray<DiagnosticAnalyzer>> builtInAnalyzers = new Lazy<ImmutableArray<DiagnosticAnalyzer>>(() =>
             MefHostServices
                 .DefaultAssemblies
-                .SelectMany(x => x.GetTypes().Where(t => typeof(DiagnosticAnalyzer).IsAssignableFrom(t)))
+                .SelectMany(x => x.GetTypes()
+                .Where(t => !t.IsAbstract && typeof(DiagnosticAnalyzer).IsAssignableFrom(t)))
                 .Where(t => t.GetConstructor(Type.EmptyTypes) != null)
                 .Select(t => (DiagnosticAnalyzer)Activator.CreateInstance(t))
                 // Add our own.

@@ -7,23 +7,25 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using Sample;
+using System.Threading;
+using Moq.Sdk;
 using System;
 using System.Collections.ObjectModel;
 using System.Reflection;
 using Stunts;
 using System.Runtime.CompilerServices;
-using Sample;
-using System.Threading;
-using Moq.Sdk;
 
 namespace Mocks
 {
-    public partial class ICalculatorMock : ICalculator, IStunt, IMocked
+    public partial class ICalculatorMock : ICalculator, IMocked, IStunt
     {
         readonly BehaviorPipeline pipeline = new BehaviorPipeline();
 
         [CompilerGenerated]
         ObservableCollection<IStuntBehavior> IStunt.Behaviors => pipeline.Behaviors;
+
+        IMock mock;
 
         [CompilerGenerated]
         public int? this[string name] { get => pipeline.Execute<int?>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), name)); set => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), name, value)); }
@@ -71,11 +73,7 @@ namespace Mocks
         [CompilerGenerated]
         public event EventHandler TurnedOn { add => pipeline.Execute<EventHandler>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value)); remove => pipeline.Execute<EventHandler>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value)); }
 
-        #region IMocked
-        IMock mock;
-
         [CompilerGenerated]
         IMock IMocked.Mock => LazyInitializer.EnsureInitialized(ref mock, () => new MockInfo(this));
-        #endregion
     }
 }

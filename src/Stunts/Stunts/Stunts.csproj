@@ -12,4 +12,12 @@
     <None Remove="contentFiles\**\*.*" />
     <None Include="contentFiles\**\*.*" Pack="true" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="GeneratedCodeAttribute.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="GeneratedCodeAttribute.cs" />
+  </ItemGroup>
 </Project>

@@ -14,7 +14,8 @@ Imports Stunts
 Imports System.Runtime.CompilerServices
 
 Namespace Global.Stunts
-Public Partial Class ICustomFormatterStunt
+
+    Public Partial Class ICustomFormatterStunt
         Implements ICustomFormatter, IStunt
 
         ReadOnly pipeline As BehaviorPipeline = New BehaviorPipeline()

@@ -10,9 +10,9 @@ namespace Stunts
     public interface IDocumentProcessor
     {
         /// <summary>
-        /// Gets the language the visitor supports.
+        /// Gets the languages the document processor supports.
         /// </summary>
-        string Language { get; }
+        string[] Languages { get; }
 
         /// <summary>
         /// Gets the phase at which an <see cref="IDocumentProcessor"/> acts.

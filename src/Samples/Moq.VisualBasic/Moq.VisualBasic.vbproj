@@ -16,6 +16,7 @@
     <ProjectReference Include="..\..\..\src\Stunts\Stunts\Stunts.csproj" />
     <ProjectReference Include="..\..\..\src\Moq\Moq\Moq.csproj" />
     <ProjectReference Include="..\..\..\src\Moq\Moq.Sdk\Moq.Sdk.csproj" />
+    <ProjectReference Include="..\Sample\Sample.csproj" />
 
     <Analyzer Include="$(BinPath)\Stunts.dll" />
     <Analyzer Include="$(BinPath)\Stunts.Sdk.dll" />

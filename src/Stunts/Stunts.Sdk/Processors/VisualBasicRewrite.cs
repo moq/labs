@@ -10,12 +10,26 @@ using static Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory;
 
 namespace Stunts.Processors
 {
+    /// <summary>
+    /// Rewrites all members so they are implemented through 
+    /// the <see cref="BehaviorPipeline"/> field added to the 
+    /// class by the <see cref="CSharpStunt"/>.
+    /// </summary>
     public class VisualBasicRewrite : IDocumentProcessor
     {
-        public string Language => LanguageNames.VisualBasic;
+        /// <summary>
+        /// Applies to <see cref="LanguageNames.VisualBasic"/> only.
+        /// </summary>
+        public string[] Languages { get; } = new[] { LanguageNames.VisualBasic };
 
+        /// <summary>
+        /// Runs in the third phase of codegen, <see cref="ProcessorPhase.Rewrite"/>.
+        /// </summary>
         public ProcessorPhase Phase => ProcessorPhase.Rewrite;
 
+        /// <summary>
+        /// Rewrites all members in the document.
+        /// </summary>
         public async Task<Document> ProcessAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
         {
             var syntax = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
@@ -32,7 +46,9 @@ namespace Stunts.Processors
 
             // The namespace for the proxy should be global, just like C#
             public override SyntaxNode VisitNamespaceStatement(NamespaceStatementSyntax node)
-                => base.VisitNamespaceStatement(node.WithName(ParseName("Global." + node.Name)))
+                => node.Name.ToString().StartsWith("Global.", StringComparison.Ordinal) 
+                    ? base.VisitNamespaceStatement(node)
+                    : base.VisitNamespaceStatement(node.WithName(ParseName("Global." + node.Name)))
                         .WithTrailingTrivia(CarriageReturnLineFeed);
 
             public override SyntaxNode VisitClassBlock(ClassBlockSyntax node)
@@ -70,37 +86,14 @@ namespace Stunts.Processors
                     });
                 }
 
-                node = (ClassBlockSyntax)generator.AddInterfaceType(
-                    base.VisitClassBlock(node),
-                    generator.IdentifierName(nameof(IStunt)));
-
-                var field = generator.FieldDeclaration(
-                    "pipeline",
-                    generator.IdentifierName(nameof(BehaviorPipeline)),
-                    modifiers: DeclarationModifiers.ReadOnly,
-                    initializer: generator.ObjectCreationExpression(generator.IdentifierName(nameof(BehaviorPipeline))));
-
-                var property = (PropertyBlockSyntax)generator.PropertyDeclaration(
-                    nameof(IStunt.Behaviors),
-                    GenericName("ObservableCollection", TypeArgumentList(IdentifierName(nameof(IStuntBehavior)))),
-                    modifiers: DeclarationModifiers.ReadOnly,
-                    getAccessorStatements: new[]
-                    {
-                        generator.ReturnStatement(
-                            generator.MemberAccessExpression(
-                                IdentifierName("pipeline"),
-                                nameof(BehaviorPipeline.Behaviors)))
-                    });
-
-                property = property.WithPropertyStatement(
-                    property.PropertyStatement.WithImplementsClause(
-                        ImplementsClause(QualifiedName(IdentifierName(nameof(IStunt)), IdentifierName(nameof(IStunt.Behaviors))))));
-
-                return generator.InsertMembers(node, 0, field, property);
+                return base.VisitClassBlock(node);
             }
 
             public override SyntaxNode VisitMethodBlock(MethodBlockSyntax node)
             {
+                if (generator.GetAttributes(node).Any(attr => generator.GetName(attr) == "CompilerGenerated"))
+                    return base.VisitMethodBlock(node);
+
                 var outParams = node.BlockStatement.ParameterList.Parameters.Where(x => x.Modifiers.Any(SyntaxKind.OutKeyword)).ToArray();
                 var refParams = node.BlockStatement.ParameterList.Parameters.Where(x => x.Modifiers.Any(SyntaxKind.ByRefKeyword)).ToArray();
 
@@ -114,6 +107,9 @@ namespace Stunts.Processors
 
             public override SyntaxNode VisitPropertyBlock(PropertyBlockSyntax node)
             {
+                if (generator.GetAttributes(node).Any(attr => generator.GetName(attr) == "CompilerGenerated"))
+                    return base.VisitPropertyBlock(node);
+
                 var implements = node.PropertyStatement?.ImplementsClause?.InterfaceMembers.FirstOrDefault();
                 (var canRead, var canWrite) = generator.InspectProperty(node);
                 var type = (TypeSyntax)generator.GetType(node);

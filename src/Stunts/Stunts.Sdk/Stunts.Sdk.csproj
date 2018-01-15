@@ -4,7 +4,16 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>Stunts</RootNamespace>
     <IncludeRoslyn>true</IncludeRoslyn>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="DiscoveryExtensions.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="DiscoveryExtensions.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Stunts.Internal\Stunts.Internal.csproj" />

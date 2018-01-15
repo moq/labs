@@ -8,21 +8,23 @@
 //------------------------------------------------------------------------------
 
 using System;
+using System.Threading;
+using Moq.Sdk;
 using System.Collections.ObjectModel;
 using System.Reflection;
 using Stunts;
 using System.Runtime.CompilerServices;
-using System.Threading;
-using Moq.Sdk;
 
 namespace Mocks
 {
-    public partial class ICustomFormatterIDisposableMock : ICustomFormatter, IDisposable, IStunt, IMocked
+    public partial class ICustomFormatterIDisposableMock : ICustomFormatter, IDisposable, IMocked, IStunt
     {
         readonly BehaviorPipeline pipeline = new BehaviorPipeline();
 
         [CompilerGenerated]
         ObservableCollection<IStuntBehavior> IStunt.Behaviors => pipeline.Behaviors;
+
+        IMock mock;
 
         [CompilerGenerated]
         public void Dispose() => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
@@ -35,11 +37,7 @@ namespace Mocks
         [CompilerGenerated]
         public override string ToString() => pipeline.Execute<string>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
 
-        #region IMocked
-        IMock mock;
-
         [CompilerGenerated]
         IMock IMocked.Mock => LazyInitializer.EnsureInitialized(ref mock, () => new MockInfo(this));
-        #endregion
     }
 }

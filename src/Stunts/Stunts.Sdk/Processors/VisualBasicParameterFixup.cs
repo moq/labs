@@ -14,13 +14,22 @@ namespace Stunts.Processors
     /// Fixup for: 
     /// https://developercommunity.visualstudio.com/content/problem/40204/running-implement-interface-code-action-results-in.html
     /// </summary>
-    class VisualBasicParameterFixup : IDocumentProcessor
+    public class VisualBasicParameterFixup : IDocumentProcessor
     {
+        /// <summary>
+        /// Applies to <see cref="LanguageNames.VisualBasic"/>.
+        /// </summary>
+        public string[] Languages { get; } = new[] { LanguageNames.VisualBasic };
 
-        public string Language => LanguageNames.VisualBasic;
-
+        /// <summary>
+        /// Runs in the final phase of codegen, <see cref="ProcessorPhase.Fixup"/>.
+        /// </summary>
         public ProcessorPhase Phase => ProcessorPhase.Fixup;
 
+        /// <summary>
+        /// Applies the fixup for https://developercommunity.visualstudio.com/content/problem/40204/running-implement-interface-code-action-results-in.html
+        /// to the given document.
+        /// </summary>
         public async Task<Document> ProcessAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
         {
             var syntax = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);

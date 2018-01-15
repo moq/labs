@@ -7,26 +7,33 @@
 ' </auto-generated>
 '------------------------------------------------------------------------------
 
+Imports Moq.VisualBasic
+Imports System.Threading
+Imports Moq.Sdk
 Imports System
 Imports System.Collections.ObjectModel
 Imports System.Reflection
 Imports Stunts
 Imports System.Runtime.CompilerServices
-Imports Moq.VisualBasic
-
-Imports System.Threading
-Imports Moq.Sdk
 
 Namespace Global.Mocks
-Public Partial Class IFooMock
+
+    Public Partial Class IFooMock
         Implements IFoo, IStunt, IMocked
 
         ReadOnly pipeline As BehaviorPipeline = New BehaviorPipeline()
+        Dim _mock As IMock
 
         <CompilerGenerated>
         ReadOnly Property Behaviors As ObservableCollection(Of IStuntBehavior) Implements IStunt.Behaviors
             Get
                 Return pipeline.Behaviors
+            End Get
+        End Property
+
+        ReadOnly Property Mock As IMock Implements IMocked.Mock
+            Get
+                Return LazyInitializer.EnsureInitialized(_mock, (Function() New MockInfo(Me)))
             End Get
         End Property
 
@@ -72,13 +79,5 @@ Public Partial Class IFooMock
             Return pipeline.Execute(Of Integer
             )(New MethodInvocation(Me, MethodBase.GetCurrentMethod()))
         End Function
-        Dim _mock As IMock
-
-        <CompilerGenerated>
-        ReadOnly Property Mock As IMock Implements IMocked.Mock
-            Get
-                Return LazyInitializer.EnsureInitialized(_mock, (Function() New MockInfo(Me)))
-            End Get
-        End Property
     End Class
 End Namespace

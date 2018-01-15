@@ -7,15 +7,16 @@
 ' </auto-generated>
 '------------------------------------------------------------------------------
 
+Imports Sample
 Imports System
 Imports System.Collections.ObjectModel
 Imports System.Reflection
 Imports Stunts
 Imports System.Runtime.CompilerServices
-Imports Sample
 
 Namespace Global.Stunts
-Public Partial Class CalculatorBaseStunt
+
+    Public Partial Class CalculatorBaseStunt
         Inherits CalculatorBase
 
         Implements IStunt
