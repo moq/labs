@@ -10,61 +10,34 @@ namespace Moq.Sdk
     public static class MockExtensions
     {
         /// <summary>
-        /// Adds a behavior to a mock.
+        /// Adds a behavior to a mock for the current <see cref="MockContext.CurrentSetup"/> setup.
         /// </summary>
-		public static IMocked AddBehavior(this IMocked mock, InvokeBehavior behavior, string name = null)
+        public static IMock AddBehavior(this IMock mock, InvokeBehavior behavior, Lazy<string> displayName)
         {
-            mock.Mock
+            mock
                 .BehaviorFor(MockContext.CurrentSetup ?? throw new InvalidOperationException(Strings.NoCurrentSetup))
                 .Behaviors
-                .Add(new InvocationBehavior(behavior, name));
-
+                .Add(new InvocationInfo(behavior, displayName));
+            
             return mock;
         }
 
         /// <summary>
         /// Inserts a behavior into the mock behavior pipeline at the specified 
-        /// index.
+        /// index for the current <see cref="MockContext.CurrentSetup"/> setup.
         /// </summary>
-        public static IMocked InsertBehavior(this IMocked mock, int index, InvokeBehavior behavior, string name = null)
-        {
-            mock.Mock
-                .BehaviorFor(MockContext.CurrentSetup ?? throw new InvalidOperationException(Strings.NoCurrentSetup))
-                .Behaviors
-                .Insert(index, new InvocationBehavior(behavior, name));
-
-            return mock;
-        }
-
-        /// <summary>
-        /// Adds a behavior to a mock.
-        /// </summary>
-        public static IMock AddBehavior(this IMock mock, InvokeBehavior behavior, string name = null)
+        public static IMock InsertBehavior(this IMock mock, int index, InvokeBehavior behavior, Lazy<string> displayName)
         {
             mock
                 .BehaviorFor(MockContext.CurrentSetup ?? throw new InvalidOperationException(Strings.NoCurrentSetup))
                 .Behaviors
-                .Add(new InvocationBehavior(behavior, name));
+                .Insert(index, new InvocationInfo(behavior, displayName));
 
             return mock;
         }
 
         /// <summary>
-        /// Inserts a behavior into the mock behavior pipeline at the specified 
-        /// index.
-        /// </summary>
-        public static IMock InsertBehavior(this IMock mock, int index, InvokeBehavior behavior, string name = null)
-        {
-            mock
-                .BehaviorFor(MockContext.CurrentSetup ?? throw new InvalidOperationException(Strings.NoCurrentSetup))
-                .Behaviors
-                .Insert(index, new InvocationBehavior(behavior, name));
-
-            return mock;
-        }
-
-        /// <summary>
-        /// Adds a behavior to a mock.
+        /// Adds a mock behavior to a mock.
         /// </summary>
         public static TMock AddBehavior<TMock>(this TMock mock, IMockBehavior behavior)
         {
@@ -79,7 +52,7 @@ namespace Moq.Sdk
         }
 
         /// <summary>
-        /// Inserts a behavior into the mock behasvior pipeline at the specified index.
+        /// Inserts a mock behavior into the mock behavior pipeline at the specified index.
         /// </summary>
         public static TMock InsertBehavior<TMock>(this TMock mock, int index, IMockBehavior behavior)
         {
