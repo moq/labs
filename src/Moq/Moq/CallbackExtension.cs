@@ -27,7 +27,7 @@ namespace Moq
                 if (behavior.Behaviors.Count > 0)
                 {
                     var wrapped = behavior.Behaviors.Pop();
-                    behavior.Behaviors.Add(new InvocationBehavior(
+                    behavior.Behaviors.Add(new Behavior(
                         (mi, next) =>
                         {
                             // If the wrapped target does not invoke the next 
@@ -50,20 +50,17 @@ namespace Moq
                                 callback(mi.Arguments);
 
                             return result;
-                        }
-                        ,
-                        "Callback", "Callback.After")
+                        }, "Callback")
                    );
                 }
                 else
                 {
-                    behavior.Behaviors.Add(new InvocationBehavior(
+                    behavior.Behaviors.Add(new Behavior(
                         (mi, next) =>
                         {
                             callback(mi.Arguments);
                             return next()(mi, next);
-                        },
-                        "Callback", "Callback")
+                        }, "Callback")
                    );
                 }
             }

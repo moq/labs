@@ -1,10 +1,6 @@
 ﻿using System;
-using System.ComponentModel;
-using Mocks;
 using Moq;
-using static Moq.Syntax;
 using Moq.Sdk;
-using Stunts;
 
 namespace Sample.CSharp
 {
@@ -16,12 +12,10 @@ namespace Sample.CSharp
 
             fake.Memory.Recall().Returns(5);
 
-            //var m = new FooMock();
-            //m.AddBehavior(new MockTrackingBehavior());
-            //m.AddBehavior(new EventBehavior());
-            //m.AddBehavior(new PropertyBehavior());
-            //m.AddBehavior(new DefaultValueBehavior());
-            //m.AddBehavior(new DefaultEqualityBehavior());
+            var m = new FooMock();
+            m.SetBehavior(MockBehavior.Loose);
+
+            //((IMocked)m).
 
             //var name = "";
 

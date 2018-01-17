@@ -5,12 +5,21 @@ using Stunts;
 
 namespace Moq.Sdk
 {
-    /// <inheritdoc />
-    public class MockBehavior : IMockBehavior
+    /// <summary>
+    /// Default implementation of <see cref="IMockBehavior"/>, which implements 
+    /// effectively a sub-pipeline of behaviors within the <see cref="IStunt"/>'s 
+    /// <see cref="BehaviorPipeline"/>, using the <see cref="IMockSetup.AppliesTo(IMethodInvocation)"/> 
+    /// abstraction over the <see cref="IStuntBehavior.AppliesTo(IMethodInvocation)"/> member 
+    /// to determine which ones to apply.
+    /// </summary>
+    /// <devdoc>
+    /// 
+    /// </devdoc>
+    public class DefaultMockBehavior : IMockBehavior
     {
-        public MockBehavior(IMockSetup setup) => Setup = setup;
+        public DefaultMockBehavior(IMockSetup setup) => Setup = setup;
 
-        public ObservableCollection<InvocationBehavior> Behaviors { get; } = new ObservableCollection<InvocationBehavior>();
+        public ObservableCollection<IBehavior> Behaviors { get; } = new ObservableCollection<IBehavior>();
 
         public IMockSetup Setup { get; }
 

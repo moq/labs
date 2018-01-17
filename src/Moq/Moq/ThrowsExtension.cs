@@ -23,10 +23,10 @@ namespace Moq
                 mock.Invocations.Remove(setup.Invocation);
                 var behavior = mock.BehaviorFor(setup);
 
-                behavior.Behaviors.Add(new InvocationBehavior(
+                behavior.Behaviors.Add(new Behavior(
                     (mi, next) => mi.CreateExceptionReturn(exception),
-                    "Exception", "Exception")
-               );
+                    new Lazy<string>(() => $"Throws<{exception.GetType().Name}>(\"{exception.Message}\")")
+               ));
             }
         }
 
@@ -44,10 +44,10 @@ namespace Moq
                 mock.Invocations.Remove(setup.Invocation);
                 var behavior = mock.BehaviorFor(setup);
 
-                behavior.Behaviors.Add(new InvocationBehavior(
+                behavior.Behaviors.Add(new Behavior(
                     (mi, next) => mi.CreateExceptionReturn(new TException()),
-                    "Exception", "Exception")
-               );
+                    new Lazy<string>(() => $"Throws<{typeof(TException).Name}>()")
+               ));
             }
         }
     }

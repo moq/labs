@@ -1,9 +1,6 @@
 ﻿using Stunts;
-using Moq.Sdk;
 using System.Reflection;
-using System.ComponentModel;
 using System;
-using System.Linq;
 
 namespace Moq
 {

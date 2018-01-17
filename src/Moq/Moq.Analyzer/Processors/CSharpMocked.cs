@@ -86,7 +86,7 @@ namespace Moq.Processors
                             Argument(RefExpression(IdentifierName("mock"))),
                             Argument(ParenthesizedLambdaExpression(
                                 ObjectCreationExpression(
-                                    IdentifierName(nameof(MockInfo)))
+                                    IdentifierName(nameof(DefaultMock)))
                                 .WithArgumentList(ArgumentList(SingletonSeparatedList(Argument(
                                     ThisExpression()
                                 ))))

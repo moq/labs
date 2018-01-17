@@ -23,18 +23,14 @@ namespace Moq
                 var mock = ((IMocked)setup.Invocation.Target).Mock;
                 mock.Invocations.Remove(setup.Invocation);
                 var behavior = mock.BehaviorFor(setup);
-                var returnBehavior = behavior.Behaviors.OfType<ReturnsInvocationBehavior>().FirstOrDefault();
+                var returnBehavior = behavior.Behaviors.OfType<ReturnsBehavior>().FirstOrDefault();
                 if (returnBehavior != null)
                 {
-                    returnBehavior.ReturnValue.ValueGetter = () => value;
+                    returnBehavior.ValueGetter = () => value;
                 }
                 else
                 {
-                    var returnValue = new ReturnValue(() => value);
-                    behavior.Behaviors.Add(new ReturnsInvocationBehavior(
-                        (mi, next) => mi.CreateValueReturn(returnValue.ValueGetter(), mi.Arguments),
-                        returnValue)
-                    );
+                    behavior.Behaviors.Add(new ReturnsBehavior(() => value));
                 }
             }
 
@@ -54,19 +50,14 @@ namespace Moq
                 var mock = ((IMocked)setup.Invocation.Target).Mock;
                 mock.Invocations.Remove(setup.Invocation);
                 var behavior = mock.BehaviorFor(setup);
-                var returnBehavior = behavior.Behaviors.OfType<ReturnsInvocationBehavior>().FirstOrDefault();
+                var returnBehavior = behavior.Behaviors.OfType<ReturnsBehavior>().FirstOrDefault();
                 if (returnBehavior != null)
                 {
-                    returnBehavior.ReturnValue.ValueGetter = () => value();
+                    returnBehavior.ValueGetter = () => value();
                 }
                 else
                 {
-                    var returnValue = new ReturnValue(() => value());
-                    behavior.Behaviors.Add(new ReturnsInvocationBehavior(
-                        (mi, next) => mi.CreateValueReturn(returnValue.ValueGetter(), mi.Arguments),
-                        returnValue,
-                        "Returns")
-                    );
+                    behavior.Behaviors.Add(new ReturnsBehavior(() => value()));
                 }
             }
 
@@ -79,13 +70,16 @@ namespace Moq
             var setup = MockContext.CurrentSetup;
             if (setup != null)
             {
+                // TODO: Is this even necessary given that intellisense gives us 
+                // the rigth compiler safety already?
                 setup.Invocation.EnsureCompatible(value);
+
                 var mock = ((IMocked)setup.Invocation.Target).Mock;
 
                 mock.Invocations.Remove(setup.Invocation);
                 var mockBehavior = mock.BehaviorFor(setup);
 
-                mockBehavior.Behaviors.Add(new InvocationBehavior(behavior, "Returns", "Returns"));
+                mockBehavior.Behaviors.Add(new Behavior(behavior, "Returns(() => ...)"));
             }
 
             return default(TResult);

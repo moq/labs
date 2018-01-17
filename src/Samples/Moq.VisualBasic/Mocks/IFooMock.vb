@@ -33,7 +33,7 @@ Namespace Global.Mocks
 
         ReadOnly Property Mock As IMock Implements IMocked.Mock
             Get
-                Return LazyInitializer.EnsureInitialized(_mock, (Function() New MockInfo(Me)))
+                Return LazyInitializer.EnsureInitialized(_mock, (Function() New DefaultMock(Me)))
             End Get
         End Property
 

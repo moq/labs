@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Linq;
 using Moq.Properties;
 using Moq.Sdk;
 using Stunts;

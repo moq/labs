@@ -25,7 +25,7 @@ namespace Mocks
         [CompilerGenerated]
         ObservableCollection<IStuntBehavior> IStunt.Behaviors => pipeline.Behaviors;
 
-        IMock IMocked.Mock => LazyInitializer.EnsureInitialized(ref mock, () => new MockInfo(this));
+        IMock IMocked.Mock => LazyInitializer.EnsureInitialized(ref mock, () => new DefaultMock(this));
 
         [CompilerGenerated]
         public string Id => pipeline.Execute<string>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));

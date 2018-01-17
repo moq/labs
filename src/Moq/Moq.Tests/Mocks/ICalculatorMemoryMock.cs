@@ -44,7 +44,7 @@ namespace Mocks
         IMock mock;
 
         [CompilerGenerated]
-        IMock IMocked.Mock => LazyInitializer.EnsureInitialized(ref mock, () => new MockInfo(this));
+        IMock IMocked.Mock => LazyInitializer.EnsureInitialized(ref mock, () => new DefaultMock(this));
         #endregion
     }
 }
