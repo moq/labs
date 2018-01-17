@@ -17,14 +17,15 @@ using System.Runtime.CompilerServices;
 
 namespace Mocks
 {
-    public partial class ICustomFormatterIDisposableMock : ICustomFormatter, IDisposable, IMocked, IStunt
+    public partial class ICustomFormatterIDisposableMock : ICustomFormatter, IDisposable, IStunt, IMocked
     {
         readonly BehaviorPipeline pipeline = new BehaviorPipeline();
+        IMock mock;
 
         [CompilerGenerated]
         ObservableCollection<IStuntBehavior> IStunt.Behaviors => pipeline.Behaviors;
 
-        IMock mock;
+        IMock IMocked.Mock => LazyInitializer.EnsureInitialized(ref mock, () => new MockInfo(this));
 
         [CompilerGenerated]
         public void Dispose() => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
@@ -36,8 +37,5 @@ namespace Mocks
         public override int GetHashCode() => pipeline.Execute<int>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
         [CompilerGenerated]
         public override string ToString() => pipeline.Execute<string>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
-
-        [CompilerGenerated]
-        IMock IMocked.Mock => LazyInitializer.EnsureInitialized(ref mock, () => new MockInfo(this));
     }
 }

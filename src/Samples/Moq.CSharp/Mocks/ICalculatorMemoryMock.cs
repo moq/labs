@@ -18,14 +18,15 @@ using System.Runtime.CompilerServices;
 
 namespace Mocks
 {
-    public partial class ICalculatorMemoryMock : ICalculatorMemory, IMocked, IStunt
+    public partial class ICalculatorMemoryMock : ICalculatorMemory, IStunt, IMocked
     {
         readonly BehaviorPipeline pipeline = new BehaviorPipeline();
+        IMock mock;
 
         [CompilerGenerated]
         ObservableCollection<IStuntBehavior> IStunt.Behaviors => pipeline.Behaviors;
 
-        IMock mock;
+        IMock IMocked.Mock => LazyInitializer.EnsureInitialized(ref mock, () => new MockInfo(this));
 
         [CompilerGenerated]
         public void Add(int value) => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value));
@@ -41,8 +42,5 @@ namespace Mocks
         public void Subtract(int value) => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value));
         [CompilerGenerated]
         public override string ToString() => pipeline.Execute<string>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
-
-        [CompilerGenerated]
-        IMock IMocked.Mock => LazyInitializer.EnsureInitialized(ref mock, () => new MockInfo(this));
     }
 }

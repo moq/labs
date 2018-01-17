@@ -18,14 +18,15 @@ using System.Runtime.CompilerServices;
 
 namespace Mocks
 {
-    public partial class ICalculatorMock : ICalculator, IMocked, IStunt
+    public partial class ICalculatorMock : ICalculator, IStunt, IMocked
     {
         readonly BehaviorPipeline pipeline = new BehaviorPipeline();
+        IMock mock;
 
         [CompilerGenerated]
         ObservableCollection<IStuntBehavior> IStunt.Behaviors => pipeline.Behaviors;
 
-        IMock mock;
+        IMock IMocked.Mock => LazyInitializer.EnsureInitialized(ref mock, () => new MockInfo(this));
 
         [CompilerGenerated]
         public int? this[string name] { get => pipeline.Execute<int?>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), name)); set => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), name, value)); }
@@ -72,8 +73,5 @@ namespace Mocks
 
         [CompilerGenerated]
         public event EventHandler TurnedOn { add => pipeline.Execute<EventHandler>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value)); remove => pipeline.Execute<EventHandler>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value)); }
-
-        [CompilerGenerated]
-        IMock IMocked.Mock => LazyInitializer.EnsureInitialized(ref mock, () => new MockInfo(this));
     }
 }

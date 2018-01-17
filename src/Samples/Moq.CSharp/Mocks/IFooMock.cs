@@ -17,14 +17,15 @@ using System.Runtime.CompilerServices;
 
 namespace Mocks
 {
-    public partial class IFooMock : IFoo, IMocked, IStunt
+    public partial class IFooMock : IFoo, IStunt, IMocked
     {
         readonly BehaviorPipeline pipeline = new BehaviorPipeline();
+        IMock mock;
 
         [CompilerGenerated]
         ObservableCollection<IStuntBehavior> IStunt.Behaviors => pipeline.Behaviors;
 
-        IMock mock;
+        IMock IMocked.Mock => LazyInitializer.EnsureInitialized(ref mock, () => new MockInfo(this));
 
         [CompilerGenerated]
         public string Id => pipeline.Execute<string>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
@@ -33,15 +34,12 @@ namespace Mocks
         public string Title { get => pipeline.Execute<string>(new MethodInvocation(this, MethodBase.GetCurrentMethod())); set => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value)); }
 
         [CompilerGenerated]
-        public void Do() => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
+        public void Do(bool donow) => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), donow));
         [CompilerGenerated]
         public override bool Equals(object obj) => pipeline.Execute<bool>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), obj));
         [CompilerGenerated]
         public override int GetHashCode() => pipeline.Execute<int>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
         [CompilerGenerated]
         public override string ToString() => pipeline.Execute<string>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
-
-        [CompilerGenerated]
-        IMock IMocked.Mock => LazyInitializer.EnsureInitialized(ref mock, () => new MockInfo(this));
     }
 }

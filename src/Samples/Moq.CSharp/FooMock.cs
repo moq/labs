@@ -7,78 +7,42 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using Moq.Sdk;
 using Stunts;
+using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using Moq.Sdk;
 using System.Threading;
-using System;
-using Sample;
 
-namespace Moq.CSharp
+public class FooMock : IStunt, IMocked, IDisposable, IFormatProvider, INotifyPropertyChanged
 {
-    class FooMock : CalculatorBase, IStunt, IMocked, IDisposable, IFormatProvider
+    readonly BehaviorPipeline pipeline = new BehaviorPipeline();
+    IMock mock;
+
+    [CompilerGenerated]
+    ObservableCollection<IStuntBehavior> IStunt.Behaviors => pipeline.Behaviors;
+
+    [CompilerGenerated]
+    IMock IMocked.Mock => LazyInitializer.EnsureInitialized(ref mock, () => new MockInfo(this));
+
+    [CompilerGenerated]
+    public void Dispose() => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
+    [CompilerGenerated]
+    public override bool Equals(object obj) => pipeline.Execute<bool>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), obj));
+
+    [CompilerGenerated]
+    public object GetFormat(Type formatType) => pipeline.Execute<object>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), formatType));
+    [CompilerGenerated]
+    public override int GetHashCode() => pipeline.Execute<int>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
+    [CompilerGenerated]
+    public override string ToString() => pipeline.Execute<string>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
+
+    [CompilerGenerated]
+    public event PropertyChangedEventHandler PropertyChanged
     {
-        readonly BehaviorPipeline pipeline = new BehaviorPipeline();
-        IMock mock;
-
-        [CompilerGenerated]
-        public override int? this[string name] { get => pipeline.Execute<int?>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), name)); set => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), name, value)); }
-
-        [CompilerGenerated]
-        public override bool IsOn => pipeline.Execute<bool>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
-
-        [CompilerGenerated]
-        public override CalculatorMode Mode { get => pipeline.Execute<CalculatorMode>(new MethodInvocation(this, MethodBase.GetCurrentMethod())); set => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value)); }
-
-        [CompilerGenerated]
-        public override ICalculatorMemory Memory => pipeline.Execute<ICalculatorMemory>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
-
-        [CompilerGenerated]
-        ObservableCollection<IStuntBehavior> IStunt.Behaviors => pipeline.Behaviors;
-
-        [CompilerGenerated]
-        IMock IMocked.Mock => LazyInitializer.EnsureInitialized(ref mock, () => new MockInfo(this));
-
-        [CompilerGenerated]
-        public override int Add(int x, int y) => pipeline.Execute<int>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), x, y));
-        [CompilerGenerated]
-        public override int Add(int x, int y, int z) => pipeline.Execute<int>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), x, y, z));
-        [CompilerGenerated]
-        public override void Clear(string name) => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), name));
-        [CompilerGenerated]
-        public void Dispose() => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
-        [CompilerGenerated]
-        public override bool Equals(object obj) => pipeline.Execute<bool>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), obj));
-
-        [CompilerGenerated]
-        public object GetFormat(Type formatType) => pipeline.Execute<object>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), formatType));
-        [CompilerGenerated]
-        public override int GetHashCode() => pipeline.Execute<int>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
-
-        [CompilerGenerated]
-        public override int? Recall(string name) => pipeline.Execute<int?>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), name));
-        [CompilerGenerated]
-        public override void Store(string name, int value) => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), name, value));
-        [CompilerGenerated]
-        public override string ToString() => pipeline.Execute<string>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
-
-        [CompilerGenerated]
-        public override bool TryAdd(ref int x, ref int y, out int z)
-        {
-            z = default(int);
-            IMethodReturn returns = pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), x, y, z));
-            x = (int)returns.Outputs["x"];
-            y = (int)returns.Outputs["y"];
-            z = (int)returns.Outputs["z"];
-            return (bool)returns.ReturnValue;
-        }
-
-        [CompilerGenerated]
-        public override void TurnOn() => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
-
-        [CompilerGenerated]
-        public override event EventHandler TurnedOn { add => pipeline.Execute<EventHandler>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value)); remove => pipeline.Execute<EventHandler>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value)); }
+        add => pipeline.Execute<PropertyChangedEventHandler>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value));
+        remove => pipeline.Execute<PropertyChangedEventHandler>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value));
     }
 }

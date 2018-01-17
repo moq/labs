@@ -19,7 +19,7 @@ namespace Moq.Sdk
         private MockFactory() { }
 
         /// <summary>
-        /// See <see cref="IMockFactory.CreateMock(Assembly, Type, IEnumerable{Type}, object[])"/>
+        /// See <see cref="IMockFactory.CreateMock(Assembly, Type, Type[], object[])"/>
         /// </summary>
         public object CreateMock(Assembly mocksAssembly, Type baseType, Type[] implementedInterfaces, object[] construtorArguments)
         {

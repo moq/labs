@@ -1,5 +1,10 @@
 ﻿using System;
+using System.ComponentModel;
+using Mocks;
 using Moq;
+using static Moq.Syntax;
+using Moq.Sdk;
+using Stunts;
 
 namespace Sample.CSharp
 {
@@ -11,7 +16,23 @@ namespace Sample.CSharp
 
             fake.Memory.Recall().Returns(5);
 
-            var mock = Mock.Of<ICustomFormatter, IDisposable>();
+            //var m = new FooMock();
+            //m.AddBehavior(new MockTrackingBehavior());
+            //m.AddBehavior(new EventBehavior());
+            //m.AddBehavior(new PropertyBehavior());
+            //m.AddBehavior(new DefaultValueBehavior());
+            //m.AddBehavior(new DefaultEqualityBehavior());
+
+            //var name = "";
+
+            //m.PropertyChanged += (sender, args) => name = args.PropertyName;
+
+            //m.PropertyChanged += Raise<PropertyChangedEventHandler>(new PropertyChangedEventArgs("Foo"));
+
+            //m.GetFormat(Any<Type>()).Returns(new object());
+
+            var mock = Mock.Of<CalculatorBase, ICustomFormatter, IDisposable>();
+
             var foo = Mock.Of<IFoo>();
             var bar = Mock.Of<IBar>();
 
@@ -50,7 +71,7 @@ public interface IBar
 
 public interface IFoo
 {
-    void Do();
+    void Do(bool donow);
 
     string Id { get; }
     string Title { get; set; }
