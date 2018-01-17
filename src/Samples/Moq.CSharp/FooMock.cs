@@ -25,7 +25,7 @@ public class FooMock : IStunt, IMocked, IDisposable, IFormatProvider, INotifyPro
     ObservableCollection<IStuntBehavior> IStunt.Behaviors => pipeline.Behaviors;
 
     [CompilerGenerated]
-    IMock IMocked.Mock => LazyInitializer.EnsureInitialized(ref mock, () => new MockInfo(this));
+    IMock IMocked.Mock => LazyInitializer.EnsureInitialized(ref mock, () => new DefaultMock(this));
 
     [CompilerGenerated]
     public void Dispose() => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod()));

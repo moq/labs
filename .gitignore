@@ -13,3 +13,4 @@ obj
 *.log
 *.binlog
 *.rsp
+/src/Usage

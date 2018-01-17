@@ -17,7 +17,7 @@ namespace Moq.Sdk
             mock
                 .BehaviorFor(MockContext.CurrentSetup ?? throw new InvalidOperationException(Strings.NoCurrentSetup))
                 .Behaviors
-                .Add(new InvocationInfo(behavior, displayName));
+                .Add(new Behavior(behavior, displayName));
             
             return mock;
         }
@@ -31,7 +31,7 @@ namespace Moq.Sdk
             mock
                 .BehaviorFor(MockContext.CurrentSetup ?? throw new InvalidOperationException(Strings.NoCurrentSetup))
                 .Behaviors
-                .Insert(index, new InvocationInfo(behavior, displayName));
+                .Insert(index, new Behavior(behavior, displayName));
 
             return mock;
         }

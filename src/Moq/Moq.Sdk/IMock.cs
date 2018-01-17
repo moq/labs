@@ -11,13 +11,18 @@ namespace Moq.Sdk
         /// <summary>
         /// Returns a <see cref="IMockBehavior"/> for the given <see cref="IMockSetup"/>.
         /// </summary>
-        /// <param name="setup">The setup that matches the returned <see cref="IMockBehavior.Setup"/>.</param>
+        /// <param name="setup">The setup that equals the returned <see cref="IMockBehavior.Setup"/>.</param>
         IMockBehavior BehaviorFor(IMockSetup setup);
 
         /// <summary>
         /// Invocations performed on the mock so far.
         /// </summary>
         IList<IMethodInvocation> Invocations { get; }
+
+        /// <summary>
+        /// The mock object this introspection data belongs to.
+        /// </summary>
+        object Object { get; }
 
         /// <summary>
         /// Arbitrary state associated with a mock instance.

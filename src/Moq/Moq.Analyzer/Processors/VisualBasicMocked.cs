@@ -83,7 +83,7 @@ namespace Moq.Processors
                                         FunctionLambdaHeader(List<AttributeListSyntax>(), TokenList(), ParameterList(), null),
                                         ObjectCreationExpression(
                                             List<AttributeListSyntax>(),
-                                            IdentifierName(nameof(MockInfo)),
+                                            IdentifierName(nameof(DefaultMock)),
                                             ArgumentList(SingletonSeparatedList<ArgumentSyntax>(
                                                 SimpleArgument(MeExpression())
                                             )),

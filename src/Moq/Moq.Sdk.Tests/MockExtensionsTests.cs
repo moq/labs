@@ -118,7 +118,7 @@ namespace Moq.Sdk.Tests
         {
             public IMockSetup Setup { get; set; } = new MockSetup(new FakeInvocation(), new IArgumentMatcher[0]);
 
-            public ObservableCollection<InvocationBehavior> Behaviors => null;
+            public ObservableCollection<IBehavior> Behaviors => null;
 
             public bool AppliesTo(IMethodInvocation invocation) => false;
 
@@ -130,6 +130,8 @@ namespace Moq.Sdk.Tests
             public ObservableCollection<IStuntBehavior> Behaviors { get; } = new ObservableCollection<IStuntBehavior>();
 
             public IList<IMethodInvocation> Invocations { get; } = new List<IMethodInvocation>();
+
+            public object Object { get; set; }
 
             public MockState State => new MockState();
 

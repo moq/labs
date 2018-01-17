@@ -11,12 +11,12 @@ namespace Moq.Sdk
     /// <summary>
     /// Default implementation of the mock introspection API <see cref="IMock"/>
     /// </summary>
-    public class MockInfo : IMock
+    public class DefaultMock : IMock
     {
-        IStunt stunt;
-        ConcurrentDictionary<IMockSetup, IMockBehavior> setupBehaviorMap = new ConcurrentDictionary<IMockSetup, IMockBehavior>();
+        readonly IStunt stunt;
+        readonly ConcurrentDictionary<IMockSetup, IMockBehavior> setupBehaviorMap = new ConcurrentDictionary<IMockSetup, IMockBehavior>();
 
-        public MockInfo(IStunt stunt)
+        public DefaultMock(IStunt stunt)
         {
             this.stunt = stunt ?? throw new ArgumentNullException(nameof(stunt));
             stunt.Behaviors.CollectionChanged += OnBehaviorsChanged;
@@ -29,14 +29,18 @@ namespace Moq.Sdk
         public IList<IMethodInvocation> Invocations { get; } = new List<IMethodInvocation>();
 
         /// <inheritdoc />
+        public object Object => stunt;
+
+        /// <inheritdoc />
         public MockState State { get; } = new MockState();
 
         public IMockBehavior BehaviorFor(IMockSetup setup)
             => setupBehaviorMap.GetOrAdd(setup, x =>
             {
-                var behavior = new MockBehavior(x);
+                var behavior = new DefaultMockBehavior(x);
                 // The tracking behavior must appear before the mock behaviors.
                 var tracking = Behaviors.OfType<MockTrackingBehavior>().FirstOrDefault();
+                // NOTE: latest setup wins, since it goes to the top of the list.
                 var index = tracking == null ? 0 : (Behaviors.IndexOf(tracking) + 1);
                 Behaviors.Insert(index, behavior);
                 return behavior;
@@ -64,8 +68,6 @@ namespace Moq.Sdk
                     setupBehaviorMap.Clear();
                     foreach (var behavior in Behaviors.OfType<IMockBehavior>())
                         setupBehaviorMap.TryAdd(behavior.Setup, behavior);
-                    break;
-                default:
                     break;
             }
         }
