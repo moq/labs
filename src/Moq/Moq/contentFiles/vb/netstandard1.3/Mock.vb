@@ -1,6 +1,5 @@
 ﻿Imports System.Reflection
 Imports Moq.Sdk
-Imports Stunts
 
 Namespace Global.Moq
 
@@ -9,17 +8,7 @@ Namespace Global.Moq
         Private Shared Function Create(Of T)(ByVal behavior As MockBehavior, ByVal constructorArgs As Object(), ParamArray interfaces As Type()) As T
             Dim mocked = DirectCast(MockFactory.[Default].CreateMock(GetType(Mock).GetTypeInfo().Assembly, GetType(T), interfaces, constructorArgs), IMocked)
 
-            mocked.Mock.Behaviors.Add(New MockTrackingBehavior())
-
-            If behavior = MockBehavior.Strict Then
-                mocked.Mock.Behaviors.Add(New PropertyBehavior() With {.SetterRequiresSetup = True})
-                mocked.Mock.Behaviors.Add(New StrictMockBehavior())
-            Else
-                mocked.Mock.Behaviors.Add(New PropertyBehavior())
-                mocked.Mock.Behaviors.Add(New DefaultValueBehavior())
-            End If
-
-            mocked.Mock.Behaviors.Add(New DefaultEqualityBehavior())
+            mocked.SetBehavior(behavior)
 
             Return DirectCast(mocked, T)
         End Function
