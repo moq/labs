@@ -36,11 +36,11 @@ namespace Stunts
             new CSharpRewrite(),
             new CSharpStunt(),
             new CSharpCompilerGenerated(),
-            new VisualBasicFileHeader(),
             new VisualBasicScaffold(),
             new VisualBasicRewrite(),
             new VisualBasicStunt(),
             new VisualBasicParameterFixup(),
+            new VisualBasicFileHeader(),
             new VisualBasicCompilerGenerated(),
         };
 

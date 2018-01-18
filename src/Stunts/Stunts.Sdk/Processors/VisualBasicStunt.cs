@@ -30,6 +30,7 @@ namespace Stunts.Processors
         public async Task<Document> ProcessAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
         {
             var syntax = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
+            
             syntax = new VisualBasicStuntVisitor(SyntaxGenerator.GetGenerator(document)).Visit(syntax);
 
             return document.WithSyntaxRoot(syntax);
@@ -40,6 +41,14 @@ namespace Stunts.Processors
             SyntaxGenerator generator;
 
             public VisualBasicStuntVisitor(SyntaxGenerator generator) => this.generator = generator;
+
+            public override SyntaxNode VisitCompilationUnit(CompilationUnitSyntax node)
+            {
+                if (!node.Options.Any(opt => !opt.ChildTokens().Any(t => t.Kind() == SyntaxKind.StrictKeyword)))
+                    node = node.AddOptions(OptionStatement(Token(SyntaxKind.StrictKeyword), Token(SyntaxKind.OnKeyword)));
+
+                return base.VisitCompilationUnit(node);
+            }
 
             public override SyntaxNode VisitClassBlock(ClassBlockSyntax node)
             {

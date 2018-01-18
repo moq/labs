@@ -7,19 +7,22 @@
 ' </auto-generated>
 '------------------------------------------------------------------------------
 
+Option Strict On
 Imports Moq.Sdk
+Imports Sample
 Imports Stunts
-Imports System.Threading
+Imports System
 Imports System.Collections.ObjectModel
 Imports System.Reflection
 Imports System.Runtime.CompilerServices
-Imports Sample
+Imports System.Threading
 
 Public Class FooMock
     Inherits CalculatorBase
     Implements IStunt, IMocked
 
     ReadOnly pipeline As BehaviorPipeline = New BehaviorPipeline()
+    Dim _mock As IMock
 
     <CompilerGenerated>
     ReadOnly Property Behaviors As ObservableCollection(Of IStuntBehavior) Implements IStunt.Behaviors
@@ -27,8 +30,6 @@ Public Class FooMock
             Return pipeline.Behaviors
         End Get
     End Property
-
-    Dim _mock As IMock
 
     <CompilerGenerated>
     ReadOnly Property Mock As IMock Implements IMocked.Mock
@@ -76,22 +77,19 @@ Public Class FooMock
     End Property
 
     <CompilerGenerated>
-    Public Overrides Function ToString() As String
-        Return pipeline.Execute(Of String
-        )(New MethodInvocation(Me, MethodBase.GetCurrentMethod()))
-    End Function
+    Public Overrides Sub TurnOn()
+        pipeline.Execute(New MethodInvocation(Me, MethodBase.GetCurrentMethod()))
+    End Sub
 
     <CompilerGenerated>
-    Public Overrides Function Equals(obj As Object) As Boolean
-        Return pipeline.Execute(Of Boolean
-        )(New MethodInvocation(Me, MethodBase.GetCurrentMethod(), obj))
-    End Function
+    Public Overrides Sub Store(name As String, value As Integer)
+        pipeline.Execute(New MethodInvocation(Me, MethodBase.GetCurrentMethod(), name, value))
+    End Sub
 
     <CompilerGenerated>
-    Public Overrides Function GetHashCode() As Integer
-        Return pipeline.Execute(Of Integer
-        )(New MethodInvocation(Me, MethodBase.GetCurrentMethod()))
-    End Function
+    Public Overrides Sub Clear(name As String)
+        pipeline.Execute(New MethodInvocation(Me, MethodBase.GetCurrentMethod(), name))
+    End Sub
 
     <CompilerGenerated>
     Public Overrides Function Add(x As Integer, y As Integer) As Integer
@@ -111,18 +109,9 @@ Public Class FooMock
         x = DirectCast(returns.Outputs("x"), Integer)
         y = DirectCast(returns.Outputs("y"), Integer)
         z = DirectCast(returns.Outputs("z"), Integer)
-        Return returns.ReturnValue
+        Return DirectCast(returns.ReturnValue, Boolean
+)
     End Function
-
-    <CompilerGenerated>
-    Public Overrides Sub TurnOn()
-        pipeline.Execute(New MethodInvocation(Me, MethodBase.GetCurrentMethod()))
-    End Sub
-
-    <CompilerGenerated>
-    Public Overrides Sub Store(name As String, value As Integer)
-        pipeline.Execute(New MethodInvocation(Me, MethodBase.GetCurrentMethod(), name, value))
-    End Sub
 
     <CompilerGenerated>
     Public Overrides Function Recall(name As String) As Integer?
@@ -131,7 +120,20 @@ Public Class FooMock
     End Function
 
     <CompilerGenerated>
-    Public Overrides Sub Clear(name As String)
-        pipeline.Execute(New MethodInvocation(Me, MethodBase.GetCurrentMethod(), name))
-    End Sub
+    Public Overrides Function ToString() As String
+        Return pipeline.Execute(Of String
+        )(New MethodInvocation(Me, MethodBase.GetCurrentMethod()))
+    End Function
+
+    <CompilerGenerated>
+    Public Overrides Function Equals(obj As Object) As Boolean
+        Return pipeline.Execute(Of Boolean
+        )(New MethodInvocation(Me, MethodBase.GetCurrentMethod(), obj))
+    End Function
+
+    <CompilerGenerated>
+    Public Overrides Function GetHashCode() As Integer
+        Return pipeline.Execute(Of Integer
+        )(New MethodInvocation(Me, MethodBase.GetCurrentMethod()))
+    End Function
 End Class

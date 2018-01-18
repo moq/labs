@@ -1,4 +1,6 @@
-﻿Imports System.Reflection
+﻿Option Strict On
+
+Imports System.Reflection
 Imports Moq.Sdk
 
 Namespace Global.Moq

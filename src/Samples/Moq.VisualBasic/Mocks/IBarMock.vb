@@ -7,6 +7,7 @@
 ' </auto-generated>
 '------------------------------------------------------------------------------
 
+Option Strict On
 Imports Moq.VisualBasic
 Imports System.Threading
 Imports Moq.Sdk
@@ -19,14 +20,21 @@ Imports System.Runtime.CompilerServices
 Namespace Global.Mocks
 
     Public Partial Class IBarMock
-        Implements IBar, IMocked, IStunt
+        Implements IBar, IStunt, IMocked
 
         ReadOnly pipeline As BehaviorPipeline = New BehaviorPipeline()
+        Dim _mock As IMock
 
         <CompilerGenerated>
         ReadOnly Property Behaviors As ObservableCollection(Of IStuntBehavior) Implements IStunt.Behaviors
             Get
                 Return pipeline.Behaviors
+            End Get
+        End Property
+
+        ReadOnly Property Mock As IMock Implements IMocked.Mock
+            Get
+                Return LazyInitializer.EnsureInitialized(_mock, (Function() New DefaultMock(Me)))
             End Get
         End Property
 
@@ -52,14 +60,5 @@ Namespace Global.Mocks
             Return pipeline.Execute(Of Integer
             )(New MethodInvocation(Me, MethodBase.GetCurrentMethod()))
         End Function
-
-        Dim _mock As IMock
-
-        <CompilerGenerated>
-        ReadOnly Property Mock As IMock Implements IMocked.Mock
-            Get
-                Return LazyInitializer.EnsureInitialized(_mock, (Function() New DefaultMock(Me)))
-            End Get
-        End Property
     End Class
 End Namespace

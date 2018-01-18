@@ -103,10 +103,10 @@ namespace Stunts
                     new CSharpRewrite(),
                     new CSharpStunt(),
                     new CSharpCompilerGenerated(),
-                    new VisualBasicFileHeader(),
                     new VisualBasicScaffold("OverrideAllMembersCodeFix"),
                     new VisualBasicRewrite(),
                     new VisualBasicStunt(),
+                    new VisualBasicFileHeader(),
                     new VisualBasicCompilerGenerated())
                 .ApplyProcessors(document, cancellationToken);
         }
@@ -125,10 +125,10 @@ namespace Stunts
                     new CSharpScaffold(),
                     new CSharpRewrite(),
                     new CSharpCompilerGenerated(),
-                    new VisualBasicFileHeader(),
                     new VisualBasicScaffold(),
                     new VisualBasicRewrite(),
                     new VisualBasicParameterFixup(),
+                    new VisualBasicFileHeader(),
                     new VisualBasicCompilerGenerated())
                 .ApplyProcessors(document, cancellationToken);
         }
