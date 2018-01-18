@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 
 namespace Moq.Sdk
 {
     /// <summary>
     /// A typed state bag for holding arbitrary mock state. All members are thread-safe.
     /// </summary>
+    [DebuggerDisplay("Count = {state.Count}", Name = "State", Type = nameof(MockState))]
     public class MockState
     {
+        [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
         ConcurrentDictionary<object, object> state = new ConcurrentDictionary<object, object>();
 
         /// <summary>
@@ -39,6 +42,13 @@ namespace Moq.Sdk
         /// </summary>
         public T GetOrAdd<T>(object key, Func<T> valueFactory)
             => (T)state.GetOrAdd(Key<T>(key), _ => valueFactory());
+
+        /// <summary>
+        /// Sets the state of the given type <typeparamref name="T"/>,
+        /// regardless of whether there is an existing value assigned.
+        /// </summary>
+        public void Set<T>(T value)
+            => state[typeof(T)] = value;
 
         /// <summary>
         /// Sets the state of the given type <typeparamref name="T"/> and <paramref name="key"/>, 

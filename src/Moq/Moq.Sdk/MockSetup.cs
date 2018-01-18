@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -11,8 +11,11 @@ namespace Moq.Sdk
 {
     public partial class MockSetup : IMockSetup, IEquatable<MockSetup>
     {
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         readonly IMethodInvocation invocation;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         readonly IArgumentMatcher[] matchers;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         readonly Lazy<IStructuralEquatable> equatable;
 
         public MockSetup(IMethodInvocation invocation, IArgumentMatcher[] matchers)
@@ -57,7 +60,27 @@ namespace Moq.Sdk
                     result.Append("void ");
             }
 
-            result.Append(invocation.MethodBase.Name);
+            if (invocation.MethodBase.IsSpecialName)
+            {
+                if (invocation.MethodBase.Name.StartsWith("get_", StringComparison.Ordinal) ||
+                    invocation.MethodBase.Name.StartsWith("set_", StringComparison.Ordinal))
+                {
+                    result.Append(invocation.MethodBase.Name.Substring(4));
+                }
+                else if (invocation.MethodBase.Name.StartsWith("add_", StringComparison.Ordinal))
+                {
+                    result.Append(invocation.MethodBase.Name.Substring(4) + " += ");
+                }
+                else if (invocation.MethodBase.Name.StartsWith("remove_", StringComparison.Ordinal))
+                {
+                    result.Append(invocation.MethodBase.Name.Substring(7) + " -= ");
+                }
+            }
+            else
+            {
+                result.Append(invocation.MethodBase.Name);
+            }
+
             if (invocation.MethodBase.IsGenericMethod)
             {
                 var generic = ((MethodInfo)invocation.MethodBase).GetGenericMethodDefinition();
@@ -68,16 +91,21 @@ namespace Moq.Sdk
             }
 
             var parameters = invocation.MethodBase.GetParameters();
+            // TODO: render indexer arguments?
+            if (!invocation.MethodBase.IsSpecialName)
+            {
+                return result
+                    .Append("(")
+                    .Append(string.Join(", ", parameters.Select((p, i) =>
+                        Stringly.ToTypeName(p.ParameterType) + " " +
+                        p.Name + " = " +
+                        matchers[i]
+                    )))
+                    .Append(")")
+                    .ToString();
+            }
 
-            return result
-                .Append("(")
-                .Append(string.Join(", ", parameters.Select((p, i) =>
-                    Stringly.ToTypeName(p.ParameterType) + " " +
-                    p.Name + " = " +
-                    matchers[i]
-                )))
-                .Append(")")
-                .ToString();
+            return result.ToString();
         }
 
         IStructuralEquatable CreateEquatable()

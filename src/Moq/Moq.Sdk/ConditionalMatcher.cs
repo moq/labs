@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace Moq.Sdk
@@ -16,8 +17,11 @@ namespace Moq.Sdk
         static bool IsNullable = typeof(T).GetTypeInfo().IsGenericType &&
             typeof(T).GetGenericTypeDefinition() == typeof(Nullable<>);
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         string name;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         Func<T, bool> condition;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         Lazy<IStructuralEquatable> equatable;
 
         public ConditionalMatcher(Func<T, bool> condition, string name = "condition")

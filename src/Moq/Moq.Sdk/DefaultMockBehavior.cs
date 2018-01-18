@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using Stunts;
 
@@ -12,13 +13,12 @@ namespace Moq.Sdk
     /// abstraction over the <see cref="IStuntBehavior.AppliesTo(IMethodInvocation)"/> member 
     /// to determine which ones to apply.
     /// </summary>
-    /// <devdoc>
-    /// 
-    /// </devdoc>
+    [DebuggerDisplay("{Setup}")]
     public class DefaultMockBehavior : IMockBehavior
     {
         public DefaultMockBehavior(IMockSetup setup) => Setup = setup;
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Collapsed)]
         public ObservableCollection<IBehavior> Behaviors { get; } = new ObservableCollection<IBehavior>();
 
         public IMockSetup Setup { get; }
@@ -50,9 +50,5 @@ namespace Moq.Sdk
 
             return result;
         }
-
-        // TODO: render all behaviors too?
-        public override string ToString()
-            => Setup + string.Join(Environment.NewLine, Behaviors.Select(x => "\t" + x));
     }
 }

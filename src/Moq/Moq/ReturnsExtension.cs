@@ -25,13 +25,9 @@ namespace Moq
                 var behavior = mock.BehaviorFor(setup);
                 var returnBehavior = behavior.Behaviors.OfType<ReturnsBehavior>().FirstOrDefault();
                 if (returnBehavior != null)
-                {
                     returnBehavior.ValueGetter = () => value;
-                }
                 else
-                {
                     behavior.Behaviors.Add(new ReturnsBehavior(() => value));
-                }
             }
 
             return default(TResult);

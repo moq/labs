@@ -28,5 +28,11 @@ namespace Moq.Sdk
         /// Arbitrary state associated with a mock instance.
         /// </summary>
         MockState State { get; }
+
+        /// <summary>
+        /// The filtered list of behaviors that apply selectively according to 
+        /// corresponding mock setups.
+        /// </summary>
+        IEnumerable<IMockBehavior> Setups { get; }
     }
 }

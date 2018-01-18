@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Linq;
 using Stunts;
 
@@ -11,9 +12,12 @@ namespace Moq.Sdk
     /// <summary>
     /// Default implementation of the mock introspection API <see cref="IMock"/>
     /// </summary>
+    [DebuggerDisplay("Invocations = {Invocations.Count}", Name = nameof(IMocked) + "." + nameof(IMocked.Mock))]
     public class DefaultMock : IMock
     {
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         readonly IStunt stunt;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         readonly ConcurrentDictionary<IMockSetup, IMockBehavior> setupBehaviorMap = new ConcurrentDictionary<IMockSetup, IMockBehavior>();
 
         public DefaultMock(IStunt stunt)
@@ -31,8 +35,12 @@ namespace Moq.Sdk
         /// <inheritdoc />
         public object Object => stunt;
 
+        //[DebuggerDisplay("", Name = "State", Type = nameof(MockState))]
         /// <inheritdoc />
         public MockState State { get; } = new MockState();
+
+        /// <inheritdoc />
+        public IEnumerable<IMockBehavior> Setups => setupBehaviorMap.Values;
 
         public IMockBehavior BehaviorFor(IMockSetup setup)
             => setupBehaviorMap.GetOrAdd(setup, x =>

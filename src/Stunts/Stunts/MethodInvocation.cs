@@ -48,7 +48,27 @@ namespace Stunts
                     result.Append("void ");
             }
 
-            result.Append(MethodBase.Name);
+            if (MethodBase.IsSpecialName)
+            {
+                if (MethodBase.Name.StartsWith("get_", StringComparison.Ordinal) ||
+                    MethodBase.Name.StartsWith("set_", StringComparison.Ordinal))
+                {
+                    result.Append(MethodBase.Name.Substring(4));
+                }
+                else if (MethodBase.Name.StartsWith("add_", StringComparison.Ordinal))
+                {
+                    result.Append(MethodBase.Name.Substring(4) + " += ");
+                }
+                else if (MethodBase.Name.StartsWith("remove_", StringComparison.Ordinal))
+                {
+                    result.Append(MethodBase.Name.Substring(7) + " -= ");
+                }
+            }
+            else
+            {
+                result.Append(MethodBase.Name);
+            }
+
             if (MethodBase.IsGenericMethod)
             {
                 var generic = ((MethodInfo)MethodBase).GetGenericMethodDefinition();
@@ -58,10 +78,15 @@ namespace Stunts
                     .Append(">");
             }
 
-            result
-                .Append("(")
-                .Append(Arguments.ToString())
-                .Append(")");
+            // TODO: render indexer arguments?
+            if (!MethodBase.IsSpecialName)
+            {
+                return result
+                    .Append("(")
+                    .Append(Arguments.ToString())
+                    .Append(")")
+                    .ToString();
+            }
 
             return result.ToString();
         }

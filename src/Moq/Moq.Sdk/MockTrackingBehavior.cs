@@ -1,6 +1,7 @@
 ﻿using System;
 using Stunts;
 using Moq.Sdk.Properties;
+using System.Diagnostics;
 
 namespace Moq.Sdk
 {
@@ -33,6 +34,11 @@ namespace Moq.Sdk
             CallContext<IMockSetup>.SetData(MockSetup.Freeze(invocation));
 
             mock.Invocations.Add(invocation);
+
+            // While debugging, capture invocation stack traces for easier 
+            // troubleshooting
+            if (Debugger.IsAttached)
+                invocation.Context["StackTrace"] = Environment.StackTrace;
 
             return getNext().Invoke(invocation, getNext);
         }

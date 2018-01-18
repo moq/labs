@@ -13,8 +13,7 @@ namespace Moq.Tests
         [Fact]
         public void CanRaiseEvents()
         {
-            var calculator = Mock.Of<ICalculator>();
-            calculator.InsertBehavior(0, new EventBehavior());
+            var calculator = Mock.Of<ICalculator>().Named("calculator");
 
             var raised = false;
 
@@ -108,7 +107,7 @@ namespace Moq.Tests
             calculator.Add(10, Any<int>()).Returns(10);
 
             calculator.Add(Any<int>(i => i > 20), Any<int>()).Returns(20);
-
+            
             Assert.Equal(5, calculator.Add(2, 3));
             Assert.Equal(4, calculator.Add(2, 2));
             Assert.Equal(10, calculator.Add(10, 2));
