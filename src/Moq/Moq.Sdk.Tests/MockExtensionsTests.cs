@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Stunts;
 using Xunit;
 
@@ -136,6 +137,8 @@ namespace Moq.Sdk.Tests
             public MockState State => new MockState();
 
             public IMockSetup LastSetup { get; set; }
+
+            public IEnumerable<IMockBehavior> Setups => Behaviors.OfType<IMockBehavior>();
 
             public IMockBehavior BehaviorFor(IMockSetup setup) => throw new NotImplementedException();
         }

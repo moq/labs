@@ -16,8 +16,4 @@
   <ItemGroup>
     <Compile Remove="GeneratedCodeAttribute.cs" />
   </ItemGroup>
-
-  <ItemGroup>
-    <None Include="GeneratedCodeAttribute.cs" />
-  </ItemGroup>
 </Project>

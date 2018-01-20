@@ -24,7 +24,7 @@ namespace Moq.Sdk
         {
             if (invocation == null) throw new ArgumentNullException(nameof(invocation));
 
-            if (!KnownStates.InSetup(invocation?.Target))
+            if (!SetupScope.IsActive)
                 throw new StrictMockException();
 
             // Otherwise, fallback to returning default values so that 

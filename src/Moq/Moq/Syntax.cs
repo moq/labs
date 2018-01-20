@@ -1,4 +1,5 @@
 ﻿using System;
+using Moq.Sdk;
 
 namespace Moq
 {
@@ -55,5 +56,10 @@ namespace Moq
         /// <paramref name="args"/> as the event arguments.
         /// </summary>
         public static TEventHandler Raise<TEventHandler>(params object[] args) => Moq.Raise.Event<TEventHandler>(args);
+
+        /// <summary>
+        /// Marks a code block as being setup for mocks. Usage: <c>using (Setup()) { ... }</c>.
+        /// </summary>
+        public static IDisposable Setup() => new SetupScope();
     }
 }

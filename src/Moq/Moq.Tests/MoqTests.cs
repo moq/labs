@@ -213,7 +213,7 @@ namespace Moq.Tests
             var calculator = Mock.Of<ICalculator>(MockBehavior.Strict);
 
             // NOTE: since the mock is strict, we need to tell we're going to set it up
-            using (calculator.Setup())
+            using (Setup())
             {
                 calculator.Mode.Returns(CalculatorMode.Scientific);
             }

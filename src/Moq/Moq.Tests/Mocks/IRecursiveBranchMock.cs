@@ -7,23 +7,26 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using Moq.Tests.Recursive;
+using System.Threading;
+using Moq.Sdk;
 using System;
 using System.Collections.ObjectModel;
 using System.Reflection;
 using Stunts;
 using System.Runtime.CompilerServices;
-using Moq.Tests.Recursive;
-using System.Threading;
-using Moq.Sdk;
 
 namespace Mocks
 {
     public partial class IRecursiveBranchMock : IRecursiveBranch, IStunt, IMocked
     {
         readonly BehaviorPipeline pipeline = new BehaviorPipeline();
+        IMock mock;
 
         [CompilerGenerated]
         ObservableCollection<IStuntBehavior> IStunt.Behaviors => pipeline.Behaviors;
+
+        IMock IMocked.Mock => LazyInitializer.EnsureInitialized(ref mock, () => new DefaultMock(this));
 
         [CompilerGenerated]
         public IRecursiveLeaf Leaf => pipeline.Execute<IRecursiveLeaf>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
@@ -33,13 +36,8 @@ namespace Mocks
         [CompilerGenerated]
         public override int GetHashCode() => pipeline.Execute<int>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
         [CompilerGenerated]
-        public override string ToString() => pipeline.Execute<string>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
-
-        #region IMocked
-        IMock mock;
-
+        public IRecursiveLeaf GetLeaf(int index) => pipeline.Execute<IRecursiveLeaf>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), index));
         [CompilerGenerated]
-        IMock IMocked.Mock => LazyInitializer.EnsureInitialized(ref mock, () => new DefaultMock(this));
-        #endregion
+        public override string ToString() => pipeline.Execute<string>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
     }
 }

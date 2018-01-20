@@ -13,7 +13,6 @@ namespace Stunts
     public static class SymbolExtensions
     {
         const string TaskFullName = "System.Threading.Tasks.Task";
-        const string ValueTupleFullName = "System.ValueTuple";
 
         /// <summary>
         /// Retrieves the distinct set of symbols that can be intercepted from the 
@@ -136,7 +135,6 @@ namespace Stunts
         public static bool CanBeIntercepted(this ITypeSymbol symbol)
             => symbol.CanBeReferencedByName &&
               !symbol.ToString().StartsWith(TaskFullName, StringComparison.Ordinal) &&
-              !symbol.ToString().StartsWith(ValueTupleFullName, StringComparison.Ordinal) &&
               (symbol.TypeKind == TypeKind.Interface ||
               (symbol?.TypeKind == TypeKind.Class && symbol?.IsSealed == false));
 

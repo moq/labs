@@ -48,14 +48,24 @@ namespace Moq.Sdk
         /// regardless of whether there is an existing value assigned.
         /// </summary>
         public void Set<T>(T value)
-            => state[typeof(T)] = value;
+        {
+            if (value == null)
+                state.TryRemove(typeof(T), out _);
+            else
+                state[typeof(T)] = value;
+        }
 
         /// <summary>
         /// Sets the state of the given type <typeparamref name="T"/> and <paramref name="key"/>, 
         /// regardless of whether there is an existing value assigned.
         /// </summary>
         public void Set<T>(object key, T value)
-            => state[Key<T>(key)] = value;
+        {
+            if (value == null)
+                state.TryRemove(Key<T>(key), out _);
+            else
+                state[Key<T>(key)] = value;
+        }
 
         /// <summary>
         /// Attempts to add the specified value to the mock state.
@@ -135,7 +145,7 @@ namespace Moq.Sdk
             value = (T)_value;
             return result;
         }
-        
+
         /// <summary>
         /// Compares the existing value for of the specified <typeparamref name="T"/> with a specified value, 
         /// and if they are equal, updates it with a third value.

@@ -50,18 +50,12 @@ namespace Stunts
                 .ToArray();
 
             var generator = SyntaxGenerator.GetGenerator(document.Project);
-            var stunt = await CreateGenerator(naming).GenerateDocumentAsync(document.Project, symbols, cancellationToken);
+            var stunts = CreateGenerator(naming);
 
-            // This is somewhat expensive, but since we're adding it to the user' solution, we might 
-            // as well make it look great ;)
-            stunt = await Simplifier.ReduceAsync(stunt).ConfigureAwait(false);
-            if (document.Project.Language != LanguageNames.VisualBasic)
-                stunt = await Formatter.FormatAsync(stunt, Formatter.Annotation).ConfigureAwait(false);
-
-            return stunt;
+            return await CreateStunt(symbols, generator, stunts, cancellationToken);
         }
 
-        async Task<Solution> CreateStunt(IEnumerable<INamedTypeSymbol> symbols, SyntaxGenerator generator, StuntGenerator stunts, CancellationToken cancellationToken)
+        async Task<Document> CreateStunt(IEnumerable<INamedTypeSymbol> symbols, SyntaxGenerator generator, StuntGenerator stunts, CancellationToken cancellationToken)
         {
             var (name, syntax) = stunts.CreateStunt(symbols, generator);
 
@@ -106,7 +100,7 @@ namespace Stunts
 
             syntax = await stuntDoc.GetSyntaxRootAsync().ConfigureAwait(false);
 
-            return stuntDoc.WithSyntaxRoot(syntax).Project.Solution;
+            return stuntDoc.WithSyntaxRoot(syntax);
         }
     }
 }
