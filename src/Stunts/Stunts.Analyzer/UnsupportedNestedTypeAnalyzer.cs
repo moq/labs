@@ -12,7 +12,7 @@ namespace Stunts
     /// the <see cref="StuntGeneratorAttribute"/> and reports unsupported nested types for 
     /// codegen.
     /// </summary>
-    // TODO: this is a stop-gap meassure until we can figure out why the ImplementInterfaces codefix 
+    // TODO: this is a stop-gap measure until we can figure out why the ImplementInterfaces codefix
     // is not returning any code actions for the CSharpScaffold (maybe VB too?) when the type to 
     // be implemented is a nested interface :(. In the IDE, the code action is properly available after 
     // generating the (non-working, since the interface isn't implemented) mock class. 
@@ -58,7 +58,7 @@ namespace Stunts
         }
 
         /// <summary>
-        /// Returns the single descriptor this analyer supports.
+        /// Returns the single descriptor this analyzer supports.
         /// </summary>
         public sealed override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(descriptor);
 
@@ -77,7 +77,7 @@ namespace Stunts
             var generator = context.Compilation.GetTypeByMetadataName(generatorAttribute.FullName);
             if (generator == null)
                 // This may be an extender authoring error, but another analyzer should ensure proper 
-                // metadata references exist. Typically, the same nuget package that adds this analyzer 
+                // metadata references exist. Typically, the same NuGet package that adds this analyzer
                 // also adds the required assembly references, so this should never happen anyway.
                 return;
 

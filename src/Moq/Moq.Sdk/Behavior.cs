@@ -28,7 +28,7 @@ namespace Moq.Sdk
         /// delegate and friendly display name.
         /// </summary>
         /// <remarks>
-        /// Use this constructor overload whenver constructing the display 
+        /// Use this constructor overload whenever constructing the display
         /// name is somewhat expensive.
         /// </remarks>
         public Behavior(InvokeBehavior invoke, Lazy<string> displayName)

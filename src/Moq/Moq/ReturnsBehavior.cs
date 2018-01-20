@@ -8,7 +8,7 @@ namespace Moq
 {
     /// <summary>
     /// A custom behavior for returning values, so that 
-    /// the actual value to return can be replaced on succesive 
+    /// the actual value to return can be replaced on successive
     /// <see cref="ReturnsExtension"/> method calls.
     /// </summary>
     [DebuggerDisplay("{DebuggerValue}", Name = "Returns", Type = nameof(ReturnsBehavior))]

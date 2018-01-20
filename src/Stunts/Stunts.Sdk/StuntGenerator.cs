@@ -188,8 +188,8 @@ namespace Stunts
         public async Task<Document> ApplyProcessors(Document document, CancellationToken cancellationToken)
         {
 #if DEBUG
-            // While debugging the geneneration itself, don't let the cancellation timeouts 
-            // from tests to cause this to fail.
+            // While debugging the generation itself, don't let the cancellation timeouts
+            // from tests cause this to fail.
             if (Debugger.IsAttached)
                 cancellationToken = CancellationToken.None;
 #endif
