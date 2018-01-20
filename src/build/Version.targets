@@ -20,7 +20,7 @@ AssemblyVersion=$(AssemblyVersion)" />
   <!-- $(ExcludeRestorePackageImports)==true when invoking /t:Restore -->
   <Target Name="SetVersion" BeforeTargets="Build;GetPackageVersion;_IntrospectProjectProperties" DependsOnTargets="GitVersion" Condition="'$(ExcludeRestorePackageImports)' != 'true'">
     <PropertyGroup>
-      <!-- PR builds are *always* prerelease -->
+      <!-- PR builds are *always* pre-release -->
       <!-- TFS case: BUILD_REASON=PullRequest and BUILD_SOURCEBRANCH=refs/pull/#/merge -->
       <GitSemVerDashLabel Condition="'$(TF_BUILD)' == 'true' and '$(BUILD_REASON)' == 'PullRequest'">$(GitSemVerDashLabel)-pr$(BUILD_SOURCEBRANCH.Substring(10).TrimEnd('/merge'))</GitSemVerDashLabel>
       <GitSemVerDashLabel Condition="'$(APPVEYOR_PULL_REQUEST_NUMBER)' != ''">$(GitSemVerDashLabel)-pr$(APPVEYOR_PULL_REQUEST_NUMBER)</GitSemVerDashLabel>

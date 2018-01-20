@@ -21,7 +21,7 @@ namespace Stunts
         };
 
         /// <summary>
-        /// Gets the diangostics that represent build errors that happen when generated 
+        /// Gets the diagnostics that represent build errors that happen when generated
         /// code is out of date.
         /// </summary>
         public static Diagnostic[] GetCompilationErrors(this Compilation compilation) 

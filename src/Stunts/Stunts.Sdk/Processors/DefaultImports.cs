@@ -34,7 +34,7 @@ namespace Stunts.Processors
         public DefaultImports() : this(DefaultNamespaces) { }
 
         /// <summary>
-        /// Initializes the default imports a specific set of namespaces to add.
+        /// Initializes the default imports with a specific set of namespaces to add.
         /// </summary>
         public DefaultImports(params string[] namespaces) => this.namespaces = namespaces;
 

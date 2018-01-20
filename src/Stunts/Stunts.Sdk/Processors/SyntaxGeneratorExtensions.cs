@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.Editing;
 namespace Stunts.Processors
 {
     /// <summary>
-    /// Language angnosti helper methods for code generation.
+    /// Language agnostic helper methods for code generation.
     /// </summary>
     static class SyntaxGeneratorExtensions
     {

@@ -23,7 +23,7 @@ namespace Moq
 
                 // If there is already a behavior wrap it instead, 
                 // so we can do a callback after even if it's a 
-                // shortcircuiting one like Returns.
+                // short-circuiting one like Returns.
                 if (behavior.Behaviors.Count > 0)
                 {
                     var wrapped = behavior.Behaviors.Pop();

@@ -67,7 +67,7 @@ namespace Stunts
         /// <param name="invocation">Input to the method call.</param>
         /// <param name="target">The ultimate target of the call.</param>
         /// <param name="throwOnException">Whether to throw the <see cref="IMethodReturn.Exception"/> if it has a value after running 
-        /// the beaviors.</param>
+        /// the behaviors.</param>
         /// <returns>Return value from the pipeline.</returns>
         public IMethodReturn Invoke(IMethodInvocation invocation, InvokeBehavior target, bool throwOnException = false)
         {

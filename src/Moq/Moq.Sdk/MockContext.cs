@@ -17,7 +17,7 @@ namespace Moq.Sdk
         /// <summary>
         /// The last invocation on the mock, turned into an <see cref="IMockSetup"/> 
         /// ready for use together with the <see cref="IMock.BehaviorFor(IMockSetup)"/> 
-        /// method to locate the maching <see cref="IMockBehavior"/> to add new behaviors 
+        /// method to locate the matching <see cref="IMockBehavior"/> to add new behaviors
         /// when a matching invocation is performed.
         /// </summary>
         /// <remarks>

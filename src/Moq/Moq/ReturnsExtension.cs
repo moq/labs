@@ -66,8 +66,8 @@ namespace Moq
             var setup = MockContext.CurrentSetup;
             if (setup != null)
             {
-                // TODO: Is this even necessary given that intellisense gives us 
-                // the rigth compiler safety already?
+                // TODO: Is this even necessary given that IntelliSense gives us
+                // the right compiler safety already?
                 setup.Invocation.EnsureCompatible(value);
 
                 var mock = ((IMocked)setup.Invocation.Target).Mock;

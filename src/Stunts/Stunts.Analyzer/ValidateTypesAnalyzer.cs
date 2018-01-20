@@ -33,7 +33,7 @@ namespace Stunts
 
         /// <summary>
         /// Returns the single <see cref="StuntDiagnostics.BaseTypeNotFirst"/> 
-        /// diagnostic this analyer supports.
+        /// diagnostic this analyzer supports.
         /// </summary>
         public sealed override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; }
             = ImmutableArray.Create(

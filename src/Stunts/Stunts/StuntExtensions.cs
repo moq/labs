@@ -31,7 +31,7 @@ namespace Stunts
 		public static TStunt AddBehavior<TStunt>(this TStunt stunt, InvokeBehavior behavior, AppliesTo appliesTo = null, string name = null)
         {
             // We can't just add a constraint to the method signature, because 
-            // proxies are typically geneated and don't expose the IProxy interface directly.
+            // proxies are typically generated and don't expose the IProxy interface directly.
             if (stunt is IStunt target)
                 target.Behaviors.Add(StuntBehavior.Create(behavior, appliesTo, name));
             else
@@ -74,7 +74,7 @@ namespace Stunts
         }
 
         /// <summary>
-        /// Inserts a behavior into the stunt behasvior pipeline at the specified 
+        /// Inserts a behavior into the stunt behavior pipeline at the specified
         /// index.
         /// </summary>
         public static TStunt InsertBehavior<TStunt>(this TStunt stunt, int index, InvokeBehavior behavior, AppliesTo appliesTo = null, string name = null)
@@ -88,7 +88,7 @@ namespace Stunts
         }
 
         /// <summary>
-        /// Inserts a behavior into the stunt behasvior pipeline at the specified 
+        /// Inserts a behavior into the stunt behavior pipeline at the specified
         /// index.
         /// </summary>
         public static TStunt InsertBehavior<TStunt>(this TStunt stunt, int index, IStuntBehavior behavior)

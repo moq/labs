@@ -33,7 +33,7 @@
 
         /// <summary>
         /// Final phase that allows generators to perform additional generation beyond scaffold 
-        /// and inital stunt rewriting. Members generated in this phase are not rewritten at all 
+        /// and initial stunt rewriting. Members generated in this phase are not rewritten at all
         /// to use the <see cref="BehaviorPipeline"/> and can consist of language-specific fixups 
         /// or cleanups to make the generated code more idiomatic than the default code fixes may 
         /// provide.

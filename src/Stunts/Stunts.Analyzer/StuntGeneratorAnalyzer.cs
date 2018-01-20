@@ -50,12 +50,12 @@ namespace Stunts
         public virtual DiagnosticDescriptor OutdatedDiagnostic => StuntDiagnostics.OutdatedStunt;
 
         /// <summary>
-        /// Returns the single <see cref="MissingDiagnostic"/> this analyer supports.
+        /// Returns the single <see cref="MissingDiagnostic"/> this analyzer supports.
         /// </summary>
         public sealed override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         {
             // NOTE: this creates the return value at this point because both Missing and Outdated 
-            // descriptors can be overriden as a customization point.
+            // descriptors can be overridden as a customization point.
             get { return ImmutableArray.Create(MissingDiagnostic, OutdatedDiagnostic); }
         }
 
@@ -74,7 +74,7 @@ namespace Stunts
             var generator = context.Compilation.GetTypeByMetadataName(generatorAttribute.FullName);
             if (generator == null)
                 // This may be an extender authoring error, but another analyzer should ensure proper 
-                // metadata references exist. Typically, the same nuget package that adds this analyzer 
+                // metadata references exist. Typically, the same NuGet package that adds this analyzer
                 // also adds the required assembly references, so this should never happen anyway.
                 return;
 
