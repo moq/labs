@@ -1,6 +1,5 @@
 ﻿using System;
 using Moq;
-using Moq.Sdk;
 
 namespace Sample.CSharp
 {
@@ -8,24 +7,9 @@ namespace Sample.CSharp
     {
         public void Test()
         {
-            var fake = Mock.Of<ICalculator>();
-
-            fake.Memory.Recall().Returns(5);
-
-            var m = new FooMock();
-            m.SetBehavior(MockBehavior.Loose);
-
-            //((IMocked)m).
-
-            //var name = "";
-
-            //m.PropertyChanged += (sender, args) => name = args.PropertyName;
-
-            //m.PropertyChanged += Raise<PropertyChangedEventHandler>(new PropertyChangedEventArgs("Foo"));
-
-            //m.GetFormat(Any<Type>()).Returns(new object());
-
             var mock = Mock.Of<CalculatorBase, ICustomFormatter, IDisposable>();
+
+            mock.Setup(m => m.Memory.Recall()).Returns(1);
 
             var foo = Mock.Of<IFoo>();
             var bar = Mock.Of<IBar>();

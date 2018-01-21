@@ -6,10 +6,15 @@ using Stunts;
 namespace Moq.Sdk
 {
     /// <summary>
-    /// 
+    /// Adds support for recursive mocks invoked during a setup, 
+    /// so that types that can be intercepted (see <see cref="Extensions.CanBeIntercepted(Type)"/>)
+    /// are turned into mocks automatically.
     /// </summary>
     public class RecursiveMockBehavior : IStuntBehavior
     {
+        /// <summary>
+        /// Only applies if there is an active setup.
+        /// </summary>
         public bool AppliesTo(IMethodInvocation invocation)
             => SetupScope.IsActive;
 
@@ -24,6 +29,12 @@ namespace Moq.Sdk
                 {
                     // Turn the null value into a mock for the current invocation setup
                     var currentMock = ((IMocked)invocation.Target).Mock;
+                    // NOTE: this invocation will throw if there isn't a matching 
+                    // mock for the given return type in the same assembly as the 
+                    // current mock. It might be tricky to diagnose at run-time, 
+                    // but at design-time our recursive mock analyzer should catch 
+                    // this with a diagnostic that the type hasn't been generated 
+                    // yet.
                     var recursiveMock = ((IMocked)MockFactory.Default.CreateMock(
                         // Use the same assembly as the current target
                         invocation.Target.GetType().GetTypeInfo().Assembly, 

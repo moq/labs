@@ -18,7 +18,8 @@ namespace Moq
         }
 
         public static bool CanBeIntercepted(this Type type)
-            => !type.FullName.StartsWith(TaskFullName, StringComparison.Ordinal) &&
+            => !type.GetTypeInfo().IsValueType && 
+               !type.FullName.StartsWith(TaskFullName, StringComparison.Ordinal) &&
                (type.GetTypeInfo().IsInterface ||
                (type.GetTypeInfo().IsClass && !type.GetTypeInfo().IsSealed));
     }

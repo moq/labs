@@ -3,12 +3,18 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+using CSharp = Microsoft.CodeAnalysis.CSharp.Syntax;
+using VisualBasic = Microsoft.CodeAnalysis.VisualBasic.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Stunts;
 
 namespace Moq
 {
+    /// <summary>
+    /// Generates diagnostics for recursive mock invocations, so that 
+    /// the <c>RecursiveMockBehavior</c> can properly locate the runtime 
+    /// type for the recursive members accessed during a set up.
+    /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public class RecursiveMockAnalyzer : DiagnosticAnalyzer
     {
@@ -21,74 +27,58 @@ namespace Moq
         public override void Initialize(AnalysisContext context)
         {
             context.RegisterSyntaxNodeAction(AnalyzeSyntaxNode, Microsoft.CodeAnalysis.CSharp.SyntaxKind.SimpleMemberAccessExpression);
+            context.RegisterSyntaxNodeAction(AnalyzeSyntaxNode, Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.SimpleMemberAccessExpression);
         }
 
         void AnalyzeSyntaxNode(SyntaxNodeAnalysisContext context)
         {
             var semantic = context.Compilation.GetSemanticModel(context.Node.SyntaxTree);
-            var memberAccess = (MemberAccessExpressionSyntax)context.Node;
             var symbol = semantic.GetSymbolInfo(context.Node);
-            if (symbol.Symbol?.Kind == SymbolKind.Method &&
-                // Extension methods are the primary Moq syntax mechanism, we 
-                // shouldn't be checking to generate code for the extension method 
-                // classes themselves.
-                ((IMethodSymbol)symbol.Symbol).IsExtensionMethod)
+            // TODO: see if we need to consider symbol.CandidateSymbols too
+            if (symbol.Symbol == null)
+                return;
+
+            // We only process recursive property and method accesses
+            if (symbol.Symbol?.Kind != SymbolKind.Property &&
+                symbol.Symbol?.Kind != SymbolKind.Method)
+                return;
+
+            var methodSymbol = symbol.Symbol as IMethodSymbol;
+            var propertySymbol = symbol.Symbol as IPropertySymbol;
+
+            // Extension methods are not considered for mocking
+            if (methodSymbol?.IsExtensionMethod == true ||
+                // void methods can't result in a recursive mock either
+                methodSymbol?.ReturnsVoid == true)
                 return;
 
             var generator = context.Compilation.GetTypeByMetadataName(generatorAttribute.FullName);
-            // If we can't know what's attribute that annotates mock generators, we can't do anything.
-            if (generator == null)
+            var scope = context.Compilation.GetTypeByMetadataName(typeof(SetupScopeAttribute).FullName);
+
+            // If we can't know what's the attribute that annotates mock generators, we can't do anything.
+            if (generator == null || scope == null)
                 return;
 
-            var type = symbol.Symbol?.ContainingType;
-            var owner = memberAccess.Expression;
+            var type = (methodSymbol?.ReturnType ?? propertySymbol.Type) as INamedTypeSymbol;
+            if (type?.CanBeIntercepted() == false)
+                return;
 
-            // Find variable declaration for this member access, to see if it's a 
-            // mock we should check for.
-            while (owner.Kind() == Microsoft.CodeAnalysis.CSharp.SyntaxKind.SimpleMemberAccessExpression)
-            {
-                memberAccess = (MemberAccessExpressionSyntax)owner;
-                symbol = semantic.GetSymbolInfo(memberAccess);
-                owner = memberAccess.Expression;
-            }
+            var lambda = context.Node.Ancestors().OfType<CSharp.LambdaExpressionSyntax>().Cast<SyntaxNode>().FirstOrDefault() ??
+                context.Node.Ancestors().OfType<VisualBasic.LambdaExpressionSyntax>().Cast<SyntaxNode>().FirstOrDefault();
+            if (lambda == null)
+                return;
 
-            var variable = semantic.GetSymbolInfo(owner).Symbol?.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax(context.CancellationToken);
+            var member = lambda.Ancestors().OfType<CSharp.InvocationExpressionSyntax>().Cast<SyntaxNode>().FirstOrDefault() ??
+                lambda.Ancestors().OfType<VisualBasic.InvocationExpressionSyntax>().Cast<SyntaxNode>().FirstOrDefault();
+            if (member == null)
+                return;
 
-            if (variable?.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.Parameter) == true &&
-                (variable?.Parent?.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.SimpleLambdaExpression) == true ||
-                 variable?.Parent?.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.ParenthesizedLambdaExpression) == true))
-            {
-                // the member access is inside a lambda (i.e. Setup(m => ...)) invocation on the mock
-                var lambda = (LambdaExpressionSyntax)variable.Parent;
-                // the lambda is likely an argument to an invocation
-                if (lambda.Parent?.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.Argument) == true &&
-                    lambda.Parent?.Parent?.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.ArgumentList) == true &&
-                    lambda.Parent?.Parent?.Parent?.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.InvocationExpression) == true)
-                {
-                    // locate the variable the invocation is performed on.
-                    var invocation = (InvocationExpressionSyntax)lambda.Parent.Parent.Parent;
-                    if (invocation.Expression?.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.SimpleMemberAccessExpression) == true)
-                    {
-                        memberAccess = (MemberAccessExpressionSyntax)invocation.Expression;
-                        symbol = semantic.GetSymbolInfo(memberAccess);
-                        owner = memberAccess.Expression;
-                        variable = semantic.GetSymbolInfo(owner).Symbol?.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax(context.CancellationToken);
-                    }
-                }
-            }
+            var method = semantic.GetSymbolInfo(member);
+            if (method.Symbol == null ||
+                !method.Symbol.GetAttributes().Any(x => x.AttributeClass == scope))
+                return;
 
-            if (variable.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.VariableDeclarator))
-            {
-                // the member access is direct on the Mock.Of variable
-                var initializer = (((VariableDeclaratorSyntax)variable).Initializer?.Value as InvocationExpressionSyntax)?.Expression;
-                if (initializer != null &&
-                    semantic.GetSymbolInfo(initializer).Symbol?.Kind == SymbolKind.Method &&
-                    // given the previous comparison, .Symbol can't be null next
-                    semantic.GetSymbolInfo(initializer).Symbol.GetAttributes().Any(x => x.AttributeClass == generator))
-                {
-                    ReportDiagnostics(context, type);
-                }
-            }
+            ReportDiagnostics(context, type);
         }
 
         static void ReportDiagnostics(SyntaxNodeAnalysisContext context, INamedTypeSymbol type)

@@ -133,10 +133,12 @@ namespace Stunts
         /// Whether the given type symbol is either an interface or a non-sealed class.
         /// </summary>
         public static bool CanBeIntercepted(this ITypeSymbol symbol)
-            => symbol.CanBeReferencedByName &&
+            => symbol != null &&
+               symbol.CanBeReferencedByName &&
+              !symbol.IsValueType &&
               !symbol.ToString().StartsWith(TaskFullName, StringComparison.Ordinal) &&
               (symbol.TypeKind == TypeKind.Interface ||
-              (symbol?.TypeKind == TypeKind.Class && symbol?.IsSealed == false));
+              (symbol.TypeKind == TypeKind.Class && symbol.IsSealed == false));
 
         /// <summary>
         /// Gets the full metadata name of the given symbol.

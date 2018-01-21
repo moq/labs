@@ -17,6 +17,7 @@ namespace Moq
         /// <summary>
         /// Sets up the mock with the given void method call.
         /// </summary>
+        [SetupScope]
         public static ISetup Setup<T>(this T mock, Action<T> action)
         {
             using (new SetupScope())
@@ -29,6 +30,7 @@ namespace Moq
         /// <summary>
         /// Sets up the mock with the given function.
         /// </summary>
+        [SetupScope]
         public static TResult Setup<T, TResult>(this T mock, Func<T, TResult> function)
         {
             using (new SetupScope())
