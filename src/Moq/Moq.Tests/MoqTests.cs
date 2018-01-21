@@ -261,5 +261,30 @@ namespace Moq.Tests
             Assert.Throws<InvalidOperationException>(() => calculator.TurnOn());
         }
 
+        [Fact]
+        public void CanAccessMockInfoFromInstance()
+        {
+            var calculator = Mock.Of<ICalculator>();
+
+            calculator.Add(Any<int>(), Any<int>()).Returns((int x, int y) => x + y);
+
+            Assert.Equal(4, calculator.Add(2, 2));
+
+            Assert.Equal(1, calculator.GetMock().Invocations.Count);
+        }
+
+        [Fact]
+        public void CanAssertInvocations()
+        {
+            //Assert.Collection()
+            var calculator = Mock.Of<ICalculator>(MockBehavior.Strict);
+
+            calculator.Setup(c => c.TurnOn())
+                .Throws<InvalidOperationException>();
+
+            Assert.Throws<InvalidOperationException>(() => calculator.TurnOn());
+        }
+
+
     }
 }
