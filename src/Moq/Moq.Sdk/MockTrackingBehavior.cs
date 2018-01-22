@@ -1,6 +1,5 @@
 ﻿using System;
 using Stunts;
-using Moq.Sdk.Properties;
 using System.Diagnostics;
 
 namespace Moq.Sdk
@@ -20,8 +19,7 @@ namespace Moq.Sdk
 
         public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior getNext)
         {
-            var mock = invocation.Target is IMocked mocked ?
-                mocked.Mock : throw new ArgumentException(Resources.TargetNotMock);
+            var mock = invocation.Target.GetMock();
 
             // Allows subsequent extension methods on the fluent API to retrieve the 
             // current invocation being performed via the MockContext.
