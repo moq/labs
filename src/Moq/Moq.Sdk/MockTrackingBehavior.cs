@@ -33,7 +33,9 @@ namespace Moq.Sdk
             // current setup being performed via the MockContext.
             CallContext<IMockSetup>.SetData(MockSetup.Freeze(invocation));
 
-            mock.Invocations.Add(invocation);
+            // Don't record the invocation if it's performed within a setup scope.
+            if (!SetupScope.IsActive)
+                mock.Invocations.Add(invocation);
 
             // While debugging, capture invocation stack traces for easier 
             // troubleshooting

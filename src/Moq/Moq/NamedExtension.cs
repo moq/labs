@@ -18,10 +18,7 @@ namespace Moq
         /// </summary>
         public static T Named<T>(this T target, string name)
         {
-            var mock = (target is IMocked mocked) ?
-                mocked.Mock : throw new ArgumentException(Resources.TargetNotMock);
-
-            mock.State.Set("Name", name);
+            target.GetMock().State.Set("Name", name);
             return target;
         }
     }

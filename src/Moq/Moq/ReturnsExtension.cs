@@ -20,7 +20,7 @@ namespace Moq
             var setup = MockContext.CurrentSetup;
             if (setup != null)
             {
-                var mock = ((IMocked)setup.Invocation.Target).Mock;
+                var mock = setup.Invocation.Target.GetMock();
                 mock.Invocations.Remove(setup.Invocation);
                 var behavior = mock.BehaviorFor(setup);
                 var returnBehavior = behavior.Behaviors.OfType<ReturnsBehavior>().FirstOrDefault();
@@ -43,7 +43,7 @@ namespace Moq
             var setup = MockContext.CurrentSetup;
             if (setup != null)
             {
-                var mock = ((IMocked)setup.Invocation.Target).Mock;
+                var mock = setup.Invocation.Target.GetMock();
                 mock.Invocations.Remove(setup.Invocation);
                 var behavior = mock.BehaviorFor(setup);
                 var returnBehavior = behavior.Behaviors.OfType<ReturnsBehavior>().FirstOrDefault();

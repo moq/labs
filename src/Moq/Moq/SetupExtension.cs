@@ -35,7 +35,6 @@ namespace Moq
         {
             using (new SetupScope())
             {
-                var stunt = mock as IStunt ?? throw new ArgumentException(Strings.TargetNotMock, nameof(mock));
                 return function(mock);
             }
         }
