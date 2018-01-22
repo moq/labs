@@ -20,6 +20,12 @@ namespace Moq
         /// <typeparam name="T">The type of the argument.</typeparam>
         /// <param name="condition">The condition to check against actual invocation values.</param>
         public static T Any<T>(Func<T, bool> condition) => MockSetup.Push<T>(new ConditionalMatcher<T>(condition));
+
+        /// <summary>
+        /// Matches any value that is not equal to the provided constant value.
+        /// </summary>
+        /// <typeparam name="T">The type of the argument.</typeparam>
+        public static T Not<T>(T value) => MockSetup.Push<T>(new NotMatcher<T>(value));
     }
 
     /// <summary>
@@ -32,5 +38,11 @@ namespace Moq
         /// Matches any argument value with a matching type.
         /// </summary>
         public static T Any => MockSetup.Push<T>(AnyMatcher<T>.Default);
+
+        /// <summary>
+        /// Matches any value that is not equal to the provided constant value.
+        /// </summary>
+        /// <typeparam name="T">The type of the argument.</typeparam>
+        public static T Not(T value) => MockSetup.Push<T>(new NotMatcher<T>(value));
     }
 }

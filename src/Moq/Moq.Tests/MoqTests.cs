@@ -5,6 +5,7 @@ using Moq.Sdk;
 using static Moq.Syntax;
 using Stunts;
 using Sample;
+using System.Linq;
 
 namespace Moq.Tests
 {
@@ -276,15 +277,16 @@ namespace Moq.Tests
         [Fact]
         public void CanAssertInvocations()
         {
-            //Assert.Collection()
-            var calculator = Mock.Of<ICalculator>(MockBehavior.Strict);
+            var calculator = Mock.Of<ICalculator>();
 
-            calculator.Setup(c => c.TurnOn())
-                .Throws<InvalidOperationException>();
+            calculator.TurnOn();
+            calculator.Add(2, 3);
 
-            Assert.Throws<InvalidOperationException>(() => calculator.TurnOn());
+            calculator.Verify(c => c.TurnOn());
+            calculator.Verify(c => c.Add(Any<int>(), Any<int>()));
+
+            Assert.Equal(1, calculator.GetMock().InvocationsFor(c => c.Add(2, 3)).Count());
+            Assert.Equal(0, calculator.GetMock().InvocationsFor(c => c.Add(Not(2), Not(3))).Count());
         }
-
-
     }
 }

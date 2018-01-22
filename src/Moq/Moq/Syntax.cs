@@ -25,6 +25,11 @@ namespace Moq
         public static T Any<T>(Func<T, bool> condition) => Arg.Any(condition);
 
         /// <summary>
+        /// Matches all values that do not equal the specified value.
+        /// </summary>
+        public static T Not<T>(T value) => Arg.Not(value);
+
+        /// <summary>
         /// Raises the event being attached to, passing the target mock 
         /// as the sender, and <see cref="EventArgs.Empty"/> args.
         /// </summary>
