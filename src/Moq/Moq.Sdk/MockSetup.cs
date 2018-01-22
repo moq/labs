@@ -97,9 +97,10 @@ namespace Moq.Sdk
                 return result
                     .Append("(")
                     .Append(string.Join(", ", parameters.Select((p, i) =>
+                        (p.IsOut ? "out " : (p.ParameterType.IsByRef ? "ref " : "")) +
                         Stringly.ToTypeName(p.ParameterType) + " " +
-                        p.Name + " = " +
-                        matchers[i]
+                        p.Name +
+                        (p.IsOut ? "" : (" = " + matchers[i]))
                     )))
                     .Append(")")
                     .ToString();
@@ -107,6 +108,9 @@ namespace Moq.Sdk
 
             return result.ToString();
         }
+
+        static bool IsString(Type type) => type == typeof(string) ||
+            (type.IsByRef && type.HasElementType && type.GetElementType() == typeof(string));
 
         IStructuralEquatable CreateEquatable()
         {

@@ -33,9 +33,11 @@ namespace Stunts
 
         public object Target { get; }
 
-        public IMethodReturn CreateExceptionReturn(Exception exception) => new MethodReturn(this, exception);
+        public IMethodReturn CreateExceptionReturn(Exception exception) 
+            => new MethodReturn(this, exception);
 
-        public IMethodReturn CreateValueReturn(object returnValue, params object[] allArguments) => new MethodReturn(this, returnValue, allArguments);
+        public IMethodReturn CreateValueReturn(object returnValue, params object[] allArguments) 
+            => new MethodReturn(this, returnValue, allArguments);
 
         public override string ToString()
         {

@@ -69,12 +69,15 @@ namespace Stunts
                     p.Name +
                     (p.IsOut ? "" :
                         (" = " +
-                            ((p.ParameterType == typeof(string) && values[i] != null) ? "\"" + values[i] + "\"" :
+                            ((IsString(p.ParameterType) && values[i] != null) ? "\"" + values[i] + "\"" :
                                 (values[i] ?? "null"))
                         )
                     )
                 )
             );
+
+        static bool IsString(Type type) => type == typeof(string) ||
+            (type.IsByRef && type.HasElementType && type.GetElementType() == typeof(string));
 
         IEnumerator IEnumerable.GetEnumerator() => values.GetEnumerator();
 

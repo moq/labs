@@ -34,10 +34,12 @@ namespace Moq.Sdk
         public bool Matches(object value) => object.Equals(value, MatchValue);
 
         public override string ToString()
-            => (ArgumentType == typeof(string) && MatchValue != null)
+            => (IsString(ArgumentType) && MatchValue != null)
                 ? "\"" + MatchValue + "\""
                 : (MatchValue?.ToString() ?? "null");
 
+        static bool IsString(Type type) => type == typeof(string) ||
+            (type.IsByRef && type.HasElementType && type.GetElementType() == typeof(string));
 
         #region Equality
 

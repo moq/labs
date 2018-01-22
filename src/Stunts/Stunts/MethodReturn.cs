@@ -25,7 +25,7 @@ namespace Stunts
 			var outputInfos = new List<ParameterInfo>();
 			var allInfos = invocation.MethodBase.GetParameters();
 
-			for (int i = 0; i < allInfos.Length; i++)
+			for (var i = 0; i < allInfos.Length; i++)
 			{
 				var info = allInfos[i];
 				if (info.ParameterType.IsByRef)
