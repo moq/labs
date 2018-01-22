@@ -9,29 +9,31 @@ namespace Stunts.Tests
     public class DefaultValueBehaviorTests
     {
         [Fact]
-        public void SetsRefValue()
+        public void DoesNotSetRefValue()
         {
             var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.VoidWithRef));
             IStuntBehavior behavior = new DefaultValueBehavior();
+            var value = new object();
 
-            var result = behavior.Invoke(new MethodInvocation(new object(), method, new object[1]), () => null);
+            var result = behavior.Invoke(new MethodInvocation(new object(), method, value), () => null);
 
             Assert.Equal(1, result.Outputs.Count);
             Assert.NotNull(result.Outputs[0]);
-            Assert.True(result.Outputs[0] is object[]);
+            Assert.Same(result.Outputs[0], value);
         }
 
         [Fact]
-        public void SetsRefEnumValue()
+        public void DoesNotSetsRefEnumValue()
         {
             var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.VoidWithRefEnum));
             IStuntBehavior behavior = new DefaultValueBehavior();
+            var platform = PlatformID.Xbox;
 
-            var result = behavior.Invoke(new MethodInvocation(new object(), method, new object[1]), () => null);
+            var result = behavior.Invoke(new MethodInvocation(new object(), method, platform), () => null);
 
             Assert.Equal(1, result.Outputs.Count);
             Assert.NotNull(result.Outputs[0]);
-            Assert.Equal(default(PlatformID), result.Outputs[0]);
+            Assert.Equal(platform, result.Outputs[0]);
         }
 
         [Fact]

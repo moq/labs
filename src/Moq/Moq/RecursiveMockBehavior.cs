@@ -50,9 +50,9 @@ namespace Moq.Sdk
                     var setup = currentMock.BehaviorFor(MockContext.CurrentSetup);
                     var returnBehavior = setup.Behaviors.OfType<ReturnsBehavior>().FirstOrDefault();
                     if (returnBehavior != null)
-                        returnBehavior.ValueGetter = () => recursiveMock.Object;
+                        returnBehavior.Value = recursiveMock.Object;
                     else
-                        setup.Behaviors.Add(new ReturnsBehavior(() => recursiveMock.Object));
+                        setup.Behaviors.Add(new ReturnsBehavior(recursiveMock.Object));
 
                     // Copy over values from the result, so that outputs contain the default values.
                     var arguments = invocation.Arguments.ToArray();
@@ -60,8 +60,7 @@ namespace Moq.Sdk
                     for (var i = 0; i < parameters.Length; i++)
                     {
                         var parameter = parameters[i];
-                        // This covers both out & ref
-                        if (parameter.ParameterType.IsByRef)
+                        if (parameter.IsOut)
                             arguments[i] = result.Outputs[parameter.Name];
                     }
 

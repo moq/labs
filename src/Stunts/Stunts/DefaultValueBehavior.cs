@@ -31,11 +31,10 @@ namespace Stunts
             for (var i = 0; i < parameters.Length; i++)
             {
                 var parameter = parameters[i];
-                // This covers both out & ref
-                if (parameter.ParameterType.IsByRef)
-                {
+                // Only provide default values for out parameters. 
+                // NOTE: does not touch ByRef values.
+                if (parameter.IsOut)
                     arguments[i] = Provider.For(parameter.ParameterType);
-                }
             }
 
             var returnValue = default(object);

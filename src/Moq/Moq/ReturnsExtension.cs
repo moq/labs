@@ -25,9 +25,9 @@ namespace Moq
                 var behavior = mock.BehaviorFor(setup);
                 var returnBehavior = behavior.Behaviors.OfType<ReturnsBehavior>().FirstOrDefault();
                 if (returnBehavior != null)
-                    returnBehavior.ValueGetter = () => value;
+                    returnBehavior.Value = value;
                 else
-                    behavior.Behaviors.Add(new ReturnsBehavior(() => value));
+                    behavior.Behaviors.Add(new ReturnsBehavior(value));
             }
 
             return default(TResult);
@@ -48,18 +48,37 @@ namespace Moq
                 var behavior = mock.BehaviorFor(setup);
                 var returnBehavior = behavior.Behaviors.OfType<ReturnsBehavior>().FirstOrDefault();
                 if (returnBehavior != null)
-                {
-                    returnBehavior.ValueGetter = () => value();
-                }
+                    returnBehavior.ValueGetter = _ => value();
                 else
-                {
-                    behavior.Behaviors.Add(new ReturnsBehavior(() => value()));
-                }
+                    behavior.Behaviors.Add(new ReturnsBehavior(_ => value()));
             }
 
             return default(TResult);
         }
 
+        /// <summary>
+        /// Sets the return value for a property or non-void method to 
+        /// be evaluated dynamically using the given function on every 
+        /// call, while allowing access to all arguments of the invocation, 
+        /// including ref/out arguments.
+        /// </summary>
+        public static TResult Returns<TResult>(this TResult target, Func<IArgumentCollection, TResult> value)
+        {
+            var setup = MockContext.CurrentSetup;
+            if (setup != null)
+            {
+                var mock = setup.Invocation.Target.GetMock();
+                mock.Invocations.Remove(setup.Invocation);
+                var behavior = mock.BehaviorFor(setup);
+                var returnBehavior = behavior.Behaviors.OfType<ReturnsBehavior>().FirstOrDefault();
+                if (returnBehavior != null)
+                    returnBehavior.ValueGetter = x => value(x);
+                else
+                    behavior.Behaviors.Add(new ReturnsBehavior(x => value(x)));
+            }
+
+            return default(TResult);
+        }
 
         static TResult Returns<TResult>(Delegate value, InvokeBehavior behavior)
         {
@@ -70,8 +89,7 @@ namespace Moq
                 // the rigth compiler safety already?
                 setup.Invocation.EnsureCompatible(value);
 
-                var mock = ((IMocked)setup.Invocation.Target).Mock;
-
+                var mock = setup.Invocation.Target.GetMock();
                 mock.Invocations.Remove(setup.Invocation);
                 var mockBehavior = mock.BehaviorFor(setup);
 
