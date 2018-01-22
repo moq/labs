@@ -6,8 +6,8 @@ namespace Stunts
     /// <summary>
     /// Represents the arguments of a method invocation.
     /// </summary>
-	public interface IArgumentCollection : IEnumerable<object>
-	{
+	public interface IArgumentCollection : IEnumerable<object>, IFluentInterface
+    {
         /// <summary>
         /// Whether the collection contains a parameter with the 
         /// given name (based on the <see cref="ParameterInfo"/>s

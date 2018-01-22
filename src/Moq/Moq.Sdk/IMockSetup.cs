@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Reflection;
 using Stunts;
 
 namespace Moq.Sdk
@@ -7,7 +6,7 @@ namespace Moq.Sdk
     /// <summary>
     /// The configuration used to set up a <see cref="IMockBehavior" />.
     /// </summary>
-    public interface IMockSetup : IStructuralEquatable
+    public interface IMockSetup : IStructuralEquatable, IFluentInterface
     {
         /// <summary>
         /// The mock invocation that was intercepted for this setup.

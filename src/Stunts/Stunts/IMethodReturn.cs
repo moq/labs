@@ -6,8 +6,8 @@ namespace Stunts
     /// <summary>
     /// Represents the result of invoking a method.
     /// </summary>
-	public interface IMethodReturn
-	{
+	public interface IMethodReturn : IFluentInterface
+    {
         /// <summary>
         /// An arbitrary property bag used during the invocation.
         /// </summary>
