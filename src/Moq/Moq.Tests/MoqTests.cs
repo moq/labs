@@ -137,6 +137,20 @@ namespace Moq.Tests
         }
 
         [Fact]
+        public void CanSetupMethodWithDifferentArgumentsViaTypedReturns()
+        {
+            var calculator = Mock.Of<ICalculator>();
+
+            calculator
+                .Add(Any<int>(), Any<int>())
+                .Returns<int, int, int>((x, y) => x + y);
+
+            Assert.Equal(5, calculator.Add(2, 3));
+            Assert.Equal(4, calculator.Add(2, 2));
+            Assert.Equal(12, calculator.Add(10, 2));
+        }
+
+        [Fact]
         public void CanInvokeCallback()
         {
             var calculator = Mock.Of<ICalculator>();
