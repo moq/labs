@@ -284,9 +284,10 @@ namespace Moq.Tests
 
             calculator.Verify(c => c.TurnOn());
             calculator.Verify(c => c.Add(Any<int>(), Any<int>()));
+            
+            var ex = Record.Exception(() => calculator.Verify(c => c.Store(Any<string>(), Any<int>())));
 
-            var ex = Assert.Throws<VerifyException>(() => calculator.Verify(c => c.Store(Any<string>(), Any<int>())));
-
+            Assert.IsAssignableFrom<VerifyException>(ex);
             Assert.Equal(1, calculator.GetMock().InvocationsFor(c => c.Add(2, 3)).Count());
             Assert.Equal(0, calculator.GetMock().InvocationsFor(c => c.Add(Not(2), Not(3))).Count());
         }
