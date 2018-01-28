@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using Moq.Tests.RefOut;
+using Moq.CSharp;
 using System.Threading;
 using Moq.Sdk;
 using System;
@@ -18,7 +18,7 @@ using System.Runtime.CompilerServices;
 
 namespace Mocks
 {
-    public partial class IRefOutMock : IRefOut, IStunt, IMocked
+    public partial class IParserMock : IParser, IStunt, IMocked
     {
         readonly BehaviorPipeline pipeline = new BehaviorPipeline();
         IMock mock;
@@ -36,12 +36,11 @@ namespace Mocks
         public override string ToString() => pipeline.Execute<string>(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
 
         [CompilerGenerated]
-        public bool Try(string input, ref string refstring, out string outstring)
+        public bool TryParse(string input, out DateTimeOffset date)
         {
-            outstring = default(string);
-            IMethodReturn returns = pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), input, refstring, outstring));
-            refstring = (string)returns.Outputs["refstring"];
-            outstring = (string)returns.Outputs["outstring"];
+            date = default(DateTimeOffset);
+            IMethodReturn returns = pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), input, date));
+            date = (DateTimeOffset)returns.Outputs["date"];
             return (bool)returns.ReturnValue;
         }
     }

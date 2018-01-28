@@ -1,5 +1,4 @@
 ﻿using System.Collections.Immutable;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -9,9 +8,10 @@ using Microsoft.CodeAnalysis.Editing;
 using Moq.Processors;
 using Moq.Properties;
 using Moq.Sdk;
+using Stunts;
 using Stunts.Processors;
 
-namespace Stunts
+namespace Moq
 {
     [ExportCodeFixProvider(LanguageNames.CSharp, LanguageNames.VisualBasic, Name = "CustomMock")]
     [ExtensionOrder(Before = "ImplementInterface")]

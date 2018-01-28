@@ -1,8 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using Moq.Properties;
-using Moq.Sdk;
-using Stunts;
 
 namespace Moq
 {
@@ -37,6 +34,22 @@ namespace Moq
             {
                 return function(mock);
             }
+        }
+
+        /// <summary>
+        /// Sets up the mock with the given method reference, typically used to 
+        /// access and set ref/out arguments. A code fix will automatically 
+        /// generate a delegate with the right signature when using this overload.
+        /// </summary>
+        [SetupScope]
+        public static ISetup<TDelegate> Setup<TDelegate>(this object mock, TDelegate member)
+            => new DefaultSetup<TDelegate>(member as Delegate);
+
+        class DefaultSetup<TDelegate> : ISetup<TDelegate>
+        {
+            public DefaultSetup(Delegate @delegate) => Delegate = @delegate;
+
+            public Delegate Delegate { get; }
         }
 
         class DefaultSetup : ISetup

@@ -80,6 +80,46 @@ namespace Moq
             return default(TResult);
         }
 
+        /// <summary>
+        /// Invokes the given delegate when the setup method is invoked, typically used 
+        /// to access and set ref/out arguments in a typed fashion. Used in combination 
+        /// with <see cref="SetupExtension.Setup{TDelegate}(object, TDelegate)"/>.
+        /// </summary>
+        /// <typeparam name="TDelegate">The lambda to invoke when the setup method runs.</typeparam>
+        /// <param name="target">The setup being performed.</param>
+        /// <param name="handler">The lambda to invoke when the setup is matched.</param>
+        public static void Returns<TDelegate>(this ISetup<TDelegate> target, TDelegate handler)
+        {
+            using (new SetupScope())
+            {
+                var @delegate = handler as Delegate;
+                // Simulate Any<T> matchers for each member parameter
+                var parameters = @delegate.Method.GetParameters();
+                var arguments = new object[parameters.Length];
+                var defaultValue = new DefaultValue(false);
+                for (var i = 0; i < arguments.Length; i++)
+                {
+                    var parameter = parameters[i];
+
+                    MockSetup.Push(new AnyMatcher(parameter.IsOut ? parameter.ParameterType.GetElementType() : parameter.ParameterType));
+                    if (!parameter.IsOut)
+                        arguments[i] = defaultValue.For(parameter.ParameterType);
+                }
+
+                target.Delegate.DynamicInvoke(arguments);
+
+                // Now we'd have a setup in place and an actual invocation.
+                var setup = MockContext.CurrentSetup;
+                if (setup != null)
+                {
+                    setup.Invocation.Target
+                        .GetMock()
+                        .BehaviorFor(setup)
+                        .Behaviors.Add(new ReturnsDelegateBehavior(@delegate));
+                }
+            }
+        }
+
         static TResult Returns<TResult>(Delegate value, InvokeBehavior behavior)
         {
             var setup = MockContext.CurrentSetup;
