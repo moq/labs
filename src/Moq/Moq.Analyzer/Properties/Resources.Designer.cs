@@ -61,6 +61,15 @@ namespace Moq.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Setup mock with typed delegate for {0}.
+        /// </summary>
+        internal static string CustomDelegateCodeFix_TitleFormat {
+            get {
+                return ResourceManager.GetString("CustomDelegateCodeFix_TitleFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Implement mock.
         /// </summary>
         internal static string CustomMockCodeFix_Implement {

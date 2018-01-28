@@ -12,6 +12,7 @@ using CSFactory = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using VBFactory = Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory;
 using Microsoft.CodeAnalysis.Simplification;
 using System;
+using Moq.Properties;
 
 namespace Moq
 {
@@ -19,8 +20,10 @@ namespace Moq
     public class CustomDelegateCodeFix : CodeFixProvider
     {
         public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
-            "CS1503", // cannot convert from 'method group' to 'Action<...>'
-            "BC31143" // Method '..' does not have a signature compatible with delegate '...'.
+            "CS1503",  // cannot convert from 'method group' to 'Action<...>'
+            "CS1593",  // Delegate 'Action<...>' does not take 0 arguments
+            "BC31143", // Method '..' does not have a signature compatible with delegate '...'.
+            "BC30581"  //'AddressOf' expression cannot be converted to 'Object' because 'Object' is not a delegate type.
             );
 
         public override async Task RegisterCodeFixesAsync(CodeFixContext context)
@@ -67,12 +70,47 @@ namespace Moq
             if (!setupSymbol.CandidateSymbols.Any(c => c.GetAttributes().Any(a => a.AttributeClass == scope)))
                 return;
 
-            var memberSymbol = semantic.GetSymbolInfo(node);
-            if (memberSymbol.CandidateSymbols.IsDefaultOrEmpty ||
-                memberSymbol.CandidateSymbols.First().Kind != SymbolKind.Method)
-                return;
+            IMethodSymbol targetMethod = null;
 
-            context.RegisterCodeFix(new SetupDelegateCodeAction(document, setup, (IMethodSymbol)memberSymbol.CandidateSymbols.First()), context.Diagnostics);
+            // CS1593 case
+            if (node is CS.LambdaExpressionSyntax)
+            {
+                var memberNode = node.ChildNodes().OfType<CS.MemberAccessExpressionSyntax>()
+                    .Cast<SyntaxNode>()
+                    .FirstOrDefault();
+
+                if (memberNode == null)
+                    return;
+
+                targetMethod = semantic.GetSymbolInfo(memberNode)
+                    .CandidateSymbols.OfType<IMethodSymbol>().FirstOrDefault();
+            }
+            // "BC30581" case
+            else if (node is VB.UnaryExpressionSyntax && node.IsKind(Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.AddressOfExpression))
+            {
+                var memberNode = node.ChildNodes().OfType<VB.MemberAccessExpressionSyntax>()
+                    .Cast<SyntaxNode>()
+                    .FirstOrDefault();
+
+                if (memberNode == null)
+                    return;
+
+                targetMethod = semantic.GetSymbolInfo(memberNode)
+                    .CandidateSymbols.OfType<IMethodSymbol>().FirstOrDefault();
+            }
+            else
+            {
+                // CS1503 and BC31143 of direct method group
+                var memberSymbol = semantic.GetSymbolInfo(node);
+                if (memberSymbol.CandidateSymbols.IsDefaultOrEmpty ||
+                    memberSymbol.CandidateSymbols.First().Kind != SymbolKind.Method)
+                    return;
+
+                targetMethod = (IMethodSymbol)memberSymbol.CandidateSymbols.First();
+            }
+
+            if (targetMethod != null)
+                context.RegisterCodeFix(new SetupDelegateCodeAction(document, setup, targetMethod), context.Diagnostics);
         }
 
         public sealed override FixAllProvider GetFixAllProvider() => null;
@@ -90,7 +128,7 @@ namespace Moq
                 this.symbol = symbol;
             }
 
-            public override string Title => $"Generate delegate for {symbol.Name}";
+            public override string Title => Strings.CustomDelegateCodeFix.TitleFormat(symbol.Name);
 
             protected override async Task<Document> GetChangedDocumentAsync(CancellationToken cancellationToken)
             {
@@ -156,6 +194,33 @@ namespace Moq
                 root = generator.ReplaceNode(root, node, generator.WithTypeArguments(node, generator.IdentifierName(delegateName)));
                 // Find the updated setup
                 node = FindSetup(root);
+
+                // Detect recursive mock access and wrap in a Func<TDelegate>
+                if (
+                    node.Parent.ChildNodes()
+                        .OfType<CS.ArgumentListSyntax>()
+                        .Where(list => !list.Arguments.Select(arg => arg.Expression).OfType<CS.LambdaExpressionSyntax>().Any())
+                        .SelectMany(list => list.DescendantNodes().OfType<CS.MemberAccessExpressionSyntax>())
+                        .Count() > 1 ||
+                    node.Parent.ChildNodes()
+                        .OfType<VB.ArgumentListSyntax>()
+                        .Where(list => !list.Arguments.Select(arg => arg.GetExpression()).OfType<VB.LambdaExpressionSyntax>().Any())
+                        .SelectMany(list => list.DescendantNodes().OfType<VB.MemberAccessExpressionSyntax>())
+                        .Count() > 1)
+                {
+                    var expression = node.Parent.ChildNodes().Last()
+                        .DescendantNodes()
+                        .Where(x =>
+                            x.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.SimpleMemberAccessExpression) ||
+                            // For VB, we actually wrap the AddressOf
+                            x.IsKind(Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.AddressOfExpression))
+                        .First();
+
+                    root = generator.ReplaceNode(root, expression,
+                        generator.ValueReturningLambdaExpression(expression));
+                    // Find the updated setup
+                    node = FindSetup(root);
+                }
 
                 // If there is no Returns, generate one
                 if (node.Parent.Parent.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.ExpressionStatement))

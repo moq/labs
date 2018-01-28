@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
-using CSharp = Microsoft.CodeAnalysis.CSharp.Syntax;
-using VisualBasic = Microsoft.CodeAnalysis.VisualBasic.Syntax;
+using CS = Microsoft.CodeAnalysis.CSharp.Syntax;
+using VB = Microsoft.CodeAnalysis.VisualBasic.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Stunts;
 
@@ -52,6 +52,7 @@ namespace Moq
                 methodSymbol?.ReturnsVoid == true)
                 return;
 
+
             var generator = context.Compilation.GetTypeByMetadataName(generatorAttribute.FullName);
             var scope = context.Compilation.GetTypeByMetadataName(typeof(SetupScopeAttribute).FullName);
 
@@ -63,19 +64,38 @@ namespace Moq
             if (type?.CanBeIntercepted() == false)
                 return;
 
-            var lambda = context.Node.Ancestors().OfType<CSharp.LambdaExpressionSyntax>().Cast<SyntaxNode>().FirstOrDefault() ??
-                context.Node.Ancestors().OfType<VisualBasic.LambdaExpressionSyntax>().Cast<SyntaxNode>().FirstOrDefault();
-            if (lambda == null)
-                return;
+            var lambda = context.Node.Ancestors().OfType<CS.LambdaExpressionSyntax>().Cast<SyntaxNode>().FirstOrDefault() ??
+                context.Node.Ancestors().OfType<VB.LambdaExpressionSyntax>().Cast<SyntaxNode>().FirstOrDefault();
 
-            var member = lambda.Ancestors().OfType<CSharp.InvocationExpressionSyntax>().Cast<SyntaxNode>().FirstOrDefault() ??
-                lambda.Ancestors().OfType<VisualBasic.InvocationExpressionSyntax>().Cast<SyntaxNode>().FirstOrDefault();
-            if (member == null)
-                return;
+            SymbolInfo setupInfo = default(SymbolInfo);
 
-            var method = semantic.GetSymbolInfo(member);
-            if (method.Symbol == null ||
-                !method.Symbol.GetAttributes().Any(x => x.AttributeClass == scope))
+            // This could be one of two setup scenarios: Setup(x => ...) or a typed ref/out Setup(x.TryFoo).
+            // If we cannot find a lambda, find the setup invocation where the node is just an argument
+            if (lambda != null)
+            {
+                var member = lambda.Ancestors().FirstOrDefault(node =>
+                    node.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.InvocationExpression) ||
+                    node.IsKind(Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.InvocationExpression));
+                if (member == null)
+                    return;
+
+                setupInfo = semantic.GetSymbolInfo(member);
+            }
+            else
+            {
+                var argumentsNode = context.Node.Ancestors().FirstOrDefault(node =>
+                    node.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.ArgumentList) ||
+                    node.IsKind(Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.ArgumentList));
+
+                if (argumentsNode == null)
+                    return;
+
+                // The arguments parent is the InvocationExpression
+                setupInfo = semantic.GetSymbolInfo(argumentsNode.Parent);
+            }
+
+            if (setupInfo.Symbol == null ||
+                !setupInfo.Symbol.GetAttributes().Any(x => x.AttributeClass == scope))
                 return;
 
             ReportDiagnostics(context, type);

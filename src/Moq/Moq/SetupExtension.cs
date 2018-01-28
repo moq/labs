@@ -45,6 +45,23 @@ namespace Moq
         public static ISetup<TDelegate> Setup<TDelegate>(this object mock, TDelegate member)
             => new DefaultSetup<TDelegate>(member as Delegate);
 
+        /// <summary>
+        /// Sets up the mock with the given method reference, typically used to 
+        /// access and set ref/out arguments. Use this overload when there is 
+        /// a recursive mock involved. For a direct method of the mock, you can 
+        /// use the <see cref="Setup{TDelegate}(object, TDelegate)"/> overload 
+        /// and pass in the method group directly instead. A code fix will automatically 
+        /// generate a delegate with the right signature when using this overload.
+        /// </summary>
+        [SetupScope]
+        public static ISetup<TDelegate> Setup<TDelegate>(this object mock, Func<TDelegate> memberFunction)
+        {
+            using (new SetupScope())
+            {
+                return new DefaultSetup<TDelegate>(memberFunction() as Delegate);
+            }
+        }
+
         class DefaultSetup<TDelegate> : ISetup<TDelegate>
         {
             public DefaultSetup(Delegate @delegate) => Delegate = @delegate;

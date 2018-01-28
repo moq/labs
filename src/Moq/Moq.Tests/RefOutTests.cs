@@ -73,6 +73,22 @@ namespace Moq.Tests.RefOut
             Assert.Equal(30, z1);
         }
 
+        [Fact]
+        public void CanSetTypedOutInRecursiveMock()
+        {
+            var mock = Mock.Of<IRefOutParent>();
+            var expected = DateTimeOffset.Now;
+            var value = expected.ToString("O");
+
+            mock.Setup<TryParse>(() => mock.RefOut.TryParse)
+                .Returns((string input, out DateTimeOffset date) => DateTimeOffset.TryParse(value, out date));
+
+            Debug.Assert(mock.RefOut.TryParse(value, out var actual));
+            Debug.Assert(actual == expected);
+        }
+
+        delegate bool TryParse(string input, out DateTimeOffset date);
+
         delegate bool TryAdd(ref int x, ref int y, out int z);
 
         [Fact]
@@ -251,7 +267,7 @@ namespace Moq.Tests.RefOut
             var mock = Mock.Of<IParser>();
 
             mock.Setup(mock.TryParse)
-                .Returns(false);
+                .Returns((Func<ISetup<TryParse>>)null);
         }
     }
 }";
@@ -272,7 +288,127 @@ namespace Moq.Tests.RefOut
             var mock = Mock.Of<IParser>();
 
             mock.Setup<TryParse>(mock.TryParse)
-                .Returns(false);
+                .Returns((Func<ISetup<TryParse>>)null);
+        }
+
+        delegate bool TryParse(string input, out DateTimeOffset date);
+    }
+}";
+
+            await ApplyCodeFixAsync(LanguageNames.CSharp, initial, expected);
+        }
+
+        [Fact]
+        public async Task AddsCSharpDelegateForRecursiveMock()
+        {
+            var initial = @"namespace Test
+{
+    using System;
+    using Moq;
+
+    public interface IEnvironment
+    {
+        IParser Parser { get; }
+    }
+
+    public interface IParser
+    {
+        bool TryParse(string input, out DateTimeOffset date);
+    }
+
+    public class Foo 
+    {
+        public void Test()
+        {
+            var mock = Mock.Of<IEnvironment>();
+
+            mock.Setup(mock.Parser.TryParse);
+        }
+    }
+}";
+            var expected = @"namespace Test
+{
+    using System;
+    using Moq;
+
+    public interface IEnvironment
+    {
+        IParser Parser { get; }
+    }
+
+    public interface IParser
+    {
+        bool TryParse(string input, out DateTimeOffset date);
+    }
+
+    public class Foo 
+    {
+        public void Test()
+        {
+            var mock = Mock.Of<IEnvironment>();
+
+            mock.Setup<TryParse>(() => mock.Parser.TryParse)
+                .Returns((string input, out DateTimeOffset date) => throw null);
+        }
+
+        delegate bool TryParse(string input, out DateTimeOffset date);
+    }
+}";
+
+            await ApplyCodeFixAsync(LanguageNames.CSharp, initial, expected);
+        }
+
+        [Fact]
+        public async Task AddsCSharpDelegateForRecursiveMockLambda()
+        {
+            var initial = @"namespace Test
+{
+    using System;
+    using Moq;
+
+    public interface IEnvironment
+    {
+        IParser Parser { get; }
+    }
+
+    public interface IParser
+    {
+        bool TryParse(string input, out DateTimeOffset date);
+    }
+
+    public class Foo 
+    {
+        public void Test()
+        {
+            var mock = Mock.Of<IEnvironment>();
+
+            mock.Setup(() => mock.Parser.TryParse);
+        }
+    }
+}";
+            var expected = @"namespace Test
+{
+    using System;
+    using Moq;
+
+    public interface IEnvironment
+    {
+        IParser Parser { get; }
+    }
+
+    public interface IParser
+    {
+        bool TryParse(string input, out DateTimeOffset date);
+    }
+
+    public class Foo 
+    {
+        public void Test()
+        {
+            var mock = Mock.Of<IEnvironment>();
+
+            mock.Setup<TryParse>(() => mock.Parser.TryParse)
+                .Returns((string input, out DateTimeOffset date) => throw null);
         }
 
         delegate bool TryParse(string input, out DateTimeOffset date);
@@ -334,6 +470,118 @@ Namespace Test
         Delegate Function TryParse(input As String, ByRef result As DateTimeOffset) As Boolean
     End Class
 
+End Namespace
+";
+
+            await ApplyCodeFixAsync(LanguageNames.VisualBasic, initial, expected);
+        }
+
+        [Fact]
+        public async Task AddsVisualBasicDelegateForRecursiveMock()
+        {
+            var initial = @"Imports System
+Imports System.Runtime.InteropServices
+Imports Moq
+
+Namespace Test
+    Public Interface IEnvironment
+        ReadOnly Property Parser As IParser
+    End Interface
+
+    Interface IParser
+        Function TryParse(ByVal input As String, <Out> ByRef result As DateTimeOffset) As Boolean
+    End Interface
+
+    Public Class Foo
+        Public Sub Test()
+            Dim target = Mock.Of(Of IEnvironment)()
+
+            target.Setup(AddressOf target.Parser.TryParse)
+        End Sub
+    End Class
+End Namespace
+";
+            var expected = @"Imports System
+Imports System.Runtime.InteropServices
+Imports Moq
+
+Namespace Test
+    Public Interface IEnvironment
+        ReadOnly Property Parser As IParser
+    End Interface
+
+    Interface IParser
+        Function TryParse(ByVal input As String, <Out> ByRef result As DateTimeOffset) As Boolean
+    End Interface
+
+    Public Class Foo
+        Public Sub Test()
+            Dim target = Mock.Of(Of IEnvironment)()
+
+            target.Setup(Of TryParse)(Function() AddressOf target.Parser.TryParse) _
+                .Returns(Function(input As String, ByRef result As DateTimeOffset)
+                             Throw New NotImplementedException
+                         End Function)
+        End Sub
+
+        Delegate Function TryParse(input As String, ByRef result As DateTimeOffset) As Boolean
+    End Class
+End Namespace
+";
+
+            await ApplyCodeFixAsync(LanguageNames.VisualBasic, initial, expected);
+        }
+
+        [Fact]
+        public async Task AddsVisualBasicDelegateForRecursiveMockFunction()
+        {
+            var initial = @"Imports System
+Imports System.Runtime.InteropServices
+Imports Moq
+
+Namespace Test
+    Public Interface IEnvironment
+        ReadOnly Property Parser As IParser
+    End Interface
+
+    Interface IParser
+        Function TryParse(ByVal input As String, <Out> ByRef result As DateTimeOffset) As Boolean
+    End Interface
+
+    Public Class Foo
+        Public Sub Test()
+            Dim target = Mock.Of(Of IEnvironment)()
+
+            target.Setup(Function() AddressOf target.Parser.TryParse)
+        End Sub
+    End Class
+End Namespace
+";
+            var expected = @"Imports System
+Imports System.Runtime.InteropServices
+Imports Moq
+
+Namespace Test
+    Public Interface IEnvironment
+        ReadOnly Property Parser As IParser
+    End Interface
+
+    Interface IParser
+        Function TryParse(ByVal input As String, <Out> ByRef result As DateTimeOffset) As Boolean
+    End Interface
+
+    Public Class Foo
+        Public Sub Test()
+            Dim target = Mock.Of(Of IEnvironment)()
+
+            target.Setup(Of TryParse)(Function() AddressOf target.Parser.TryParse) _
+                .Returns(Function(input As String, ByRef result As DateTimeOffset)
+                             Throw New NotImplementedException
+                         End Function)
+        End Sub
+
+        Delegate Function TryParse(input As String, ByRef result As DateTimeOffset) As Boolean
+    End Class
 End Namespace
 ";
 
@@ -463,14 +711,14 @@ End Namespace
 
         async Task ApplyCodeFixAsync(string language, string initial, string expected, bool trace = false)
         {
+            var provider = new CustomDelegateCodeFix();
             var (workspace, project) = CreateWorkspaceAndProject(language, includeMockApi: true);
             var code = initial;
             var doc = project.AddDocument("code.cs", SourceText.From(code));
             var compilation = await doc.Project.GetCompilationAsync(TimeoutToken(4));
             var diagnostic = compilation.GetDiagnostics(TimeoutToken(5))
-                .First(d => d.Id == "CS1503" || d.Id == "BC31143");
+                .First(d => provider.FixableDiagnosticIds.Any(fixable => d.Id == fixable));
 
-            var provider = new CustomDelegateCodeFix();
             var actions = new List<CodeAction>();
             var context = new CodeFixContext(doc, diagnostic, (a, d) => actions.Add(a), TimeoutToken(5));
             await provider.RegisterCodeFixesAsync(context);
@@ -492,9 +740,20 @@ End Namespace
 
             compilation = await changed.Project.GetCompilationAsync(TimeoutToken(4));
             var diagnostics = compilation.GetDiagnostics(TimeoutToken(5))
-                .Where(d => d.Id != "CS1503" && d.Id == "BC31143").ToArray();
+                .Where(d => provider.FixableDiagnosticIds.Any(fixable => d.Id == fixable)).ToArray();
 
-            Assert.Equal(0, diagnostics.Length);
+            Assert.True(diagnostics.Length == 0, 
+                string.Join(Environment.NewLine, diagnostics.Select(d => d.GetMessage())));
         }
+    }
+
+    public interface IRefOutParent
+    {
+        IRefOut RefOut { get; }
+    }
+
+    public interface IRefOut
+    {
+        bool TryParse(string input, out DateTimeOffset date);
     }
 }
