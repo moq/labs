@@ -5,7 +5,7 @@ init:
 
 build_script:
   - cmd: echo /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" >> msbuild.rsp
-  - cmd: build.cmd /release /restore
+  - cmd: build.cmd /release /configure
   - cmd: build.cmd /release /build
 
 nuget:

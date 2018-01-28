@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <UpdateBaseUrl>https://raw.githubusercontent.com/kzu/corebuild/master/src/build</UpdateBaseUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <_Updatable Include="$(MSBuildThisFileDirectory)corebuild.props" />
+    <_Updatable Include="$(MSBuildThisFileDirectory)corebuild.targets" />
+  </ItemGroup>
+
+  <Target Name="Update" Returns="@(_Updated)">
+    <MSBuild Projects="$(MSBuildProjectFullPath)"
+		 		 Targets="Update"
+		 		 Properties="UpdateTarget=%(_Updatable.FullPath);UpdateUrl=$(UpdateBaseUrl)/%(_Updatable.Filename)%(_Updatable.Extension);IsUpdating=true">
+      <Output TaskParameter="TargetOutputs" ItemName="_Updated" />
+    </MSBuild>
+  </Target>
+</Project>
