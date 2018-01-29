@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.CodeAnalysis.Text;
 using Sample;
 using Xunit;
@@ -730,7 +731,14 @@ End Namespace
                 .ChangedSolution
                 .GetDocument(doc.Id);
 
-            var actual = await changed.GetTextAsync(TimeoutToken(1));
+            var expectedDoc = project.AddDocument("expected.cs", SourceText.From(expected));
+            var expectedRoot = await expectedDoc.GetSyntaxRootAsync();
+            var expectedNode = Formatter.Format(expectedRoot, expectedDoc.Project.Solution.Workspace);
+            expected = expectedNode.GetText().ToString();
+
+            var actualRoot = await changed.GetSyntaxRootAsync();
+            var actual = Formatter.Format(actualRoot, changed.Project.Solution.Workspace).GetText();
+
             if (trace)
                 output.WriteLine(actual.ToString());
             else if (Debugger.IsAttached)
