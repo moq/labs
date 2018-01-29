@@ -744,7 +744,25 @@ End Namespace
             else if (Debugger.IsAttached)
                 output.WriteLine(actual.ToString());
 
-            Assert.Equal(expected, actual.ToString());
+            SyntaxTree actualTree;
+            SyntaxTree expectedTree;
+
+            if (language == LanguageNames.CSharp)
+            {
+                actualTree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(actual);
+                expectedTree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(expected);
+            }
+            else
+            {
+                actualTree = Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxTree.ParseText(actual);
+                expectedTree = Microsoft.CodeAnalysis.VisualBasic.VisualBasicSyntaxTree.ParseText(expected);
+            }
+
+            Assert.True(actualTree.IsEquivalentTo(expectedTree, true), $@"Expected: 
+{expected}
+---------------------------------------------------------------------------------
+Actual:
+{actual}");
 
             compilation = await changed.Project.GetCompilationAsync(TimeoutToken(4));
             var diagnostics = compilation.GetDiagnostics(TimeoutToken(5))
