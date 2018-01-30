@@ -11,6 +11,7 @@
     <PackageReference Include="MSBuilder.ThisAssembly.Project" Version="0.3.4" PrivateAssets="all" />
     <PackageReference Include="NuGet.Build.Packaging" Version="0.2.2" PrivateAssets="all" />
     <PackageReference Include="netfx-System.StringResources" Version="3.1.8" PrivateAssets="all" />
+    <PackageReference Include="IFluentInterface" Version="2.0.4" Condition="'$(Language)' == 'C#'" />
   </ItemGroup>
 
   <ItemGroup Label="MSBuild" Condition="'$(IncludeMSBuild)' == 'true'">
