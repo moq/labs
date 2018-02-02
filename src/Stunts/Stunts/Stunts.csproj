@@ -11,11 +11,11 @@
   <ItemGroup>
     <Compile Remove="contentFiles\**\*.cs" />
     <None Remove="contentFiles\**\*.*" />
-    <None Include="contentFiles\**\*.*" Pack="true" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="contentFiles\**\*.*" Pack="true" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="IFluentInterface" Version="2.0.4" />
+    <PackageReference Include="IFluentInterface" Version="2.0.4" Pack="false" />
   </ItemGroup>
   
 </Project>

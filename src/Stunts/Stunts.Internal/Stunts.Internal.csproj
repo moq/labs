@@ -12,7 +12,7 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(MSBuildProjectDirectory)\RoslynInternalKey.Private.snk</AssemblyOriginatorKeyFile>
 
-    <PrimaryOutputKind>Analyzers</PrimaryOutputKind>
+    <PrimaryOutputKind Condition="'$(PrimaryOutputKind)' == ''">Analyzers</PrimaryOutputKind>
   </PropertyGroup>
 
 </Project>

@@ -1,7 +1,7 @@
 <Project>
 
   <PropertyGroup>
-    <MSBuildVersion>15.*</MSBuildVersion>
+    <MicrosoftBuildVersion>15.*</MicrosoftBuildVersion>
     <RoslynVersion>2.3.1</RoslynVersion>
     <XunitVersion>2.3.1</XunitVersion>
   </PropertyGroup>
@@ -9,19 +9,19 @@
   <ItemGroup Label="Common">
     <PackageReference Include="GitInfo" Version="2.0.7" PrivateAssets="all" />
     <PackageReference Include="MSBuilder.ThisAssembly.Project" Version="0.3.4" PrivateAssets="all" />
-    <PackageReference Include="NuGet.Build.Packaging" Version="0.2.2" PrivateAssets="all" />
+    <PackageReference Include="NuGet.Build.Packaging" Version="0.2.5-dev.*" PrivateAssets="all" />
     <PackageReference Include="netfx-System.StringResources" Version="3.1.8" PrivateAssets="all" />
-    <PackageReference Include="IFluentInterface" Version="2.0.4" Condition="'$(Language)' == 'C#'" />
+    <PackageReference Include="IFluentInterface" Version="2.0.4" Condition="'$(Language)' == 'C#'" Pack="false" />
   </ItemGroup>
 
   <ItemGroup Label="MSBuild" Condition="'$(IncludeMSBuild)' == 'true'">
-    <PackageReference Include="Microsoft.Build" Version="$(MSBuildVersion)" />
-    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="$(MSBuildVersion)" />
+    <PackageReference Include="Microsoft.Build" Version="$(MicrosoftBuildVersion)" />
+    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="$(MicrosoftBuildVersion)" />
   </ItemGroup>
 
   <ItemGroup Label="Roslyn" Condition="'$(IncludeRoslyn)' == 'true'">
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="$(RoslynVersion)" />
-    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Features" Version="$(RoslynVersion)" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="$(RoslynVersion)" Pack="false" />
+    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Features" Version="$(RoslynVersion)" Pack="false" />
   </ItemGroup>
 
   <ItemGroup Label="Test" Condition="'$(IncludeXunit)' == 'true'">

@@ -2,17 +2,18 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>Moq.Core</PackageId>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Stunts\Stunts\Stunts.csproj" />
     <ProjectReference Include="..\Moq.Sdk\Moq.Sdk.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="contentFiles\**\*.cs" />
     <None Remove="contentFiles\**\*.*" />
-    <None Include="contentFiles\**\*.*" Pack="true" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="contentFiles\**\*.*" Pack="true" />
   </ItemGroup>
 
   <ItemGroup>

@@ -4,9 +4,16 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>Stunts</RootNamespace>
     <IncludeRoslyn>true</IncludeRoslyn>
-    <PrimaryOutputKind>Analyzers</PrimaryOutputKind>
+    <PrimaryOutputKind Condition="'$(PrimaryOutputKind)' == ''">Analyzers</PrimaryOutputKind>
   </PropertyGroup>
 
+  <ItemDefinitionGroup>
+    <ProjectReference>
+      <!-- This causes the output of the referenced projects to be packaged into the analyzer folder too -->
+      <AdditionalProperties>PrimaryOutputKind=$(PrimaryOutputKind)</AdditionalProperties>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  
   <ItemGroup>
     <ProjectReference Include="..\Stunts\Stunts.csproj" />
     <ProjectReference Include="..\Stunts.Internal\Stunts.Internal.csproj" />
