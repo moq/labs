@@ -5,8 +5,24 @@
     <RootNamespace>Stunts</RootNamespace>
     <IncludeRoslyn>true</IncludeRoslyn>
     <LangVersion>7.1</LangVersion>
+    <PrimaryOutputKind Condition="'$(PrimaryOutputKind)' == ''">Lib</PrimaryOutputKind>
+    <IsPackable Condition="'$(PrimaryOutputKind)' != 'Lib'">false</IsPackable>
   </PropertyGroup>
 
+  <PropertyGroup Label="Package">
+    <PackageId>Stunts.Sdk</PackageId>
+    <PackageVersion Condition="'$(PackageVersion)' == ''">1.0.0</PackageVersion>
+    <Title>Stunts.Sdk</Title>
+    <Authors>kzu</Authors>
+    <Owners>kzu</Owners>
+    <Summary>Allows extending Stunts code analyzers and code fixes to generate custom "Dynamic proxies" that can run everywhere, including mobile!</Summary>
+    <Description>$(Summary)</Description>
+    <PackageProjectUrl>https://github.com/moq/moq/</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/moq/moq/blob/master/LICENSE</PackageLicenseUrl>
+    <Copyright>Copyright © 2017 Moq Team</Copyright>
+    <PackageTags>netstandard proxy runtime dynamic</PackageTags>
+  </PropertyGroup>
+  
   <ItemGroup>
     <Compile Remove="DiscoveryExtensions.cs" />
   </ItemGroup>
@@ -14,6 +30,13 @@
   <ItemGroup>
     <None Include="DiscoveryExtensions.cs" />
   </ItemGroup>
+
+  <ItemDefinitionGroup>
+    <ProjectReference>
+      <!-- This causes the output of the referenced projects to be packaged as a lib -->
+      <AdditionalProperties>PrimaryOutputKind=$(PrimaryOutputKind)</AdditionalProperties>
+    </ProjectReference>
+  </ItemDefinitionGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Stunts.Internal\Stunts.Internal.csproj" />
@@ -35,4 +58,17 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemDefinitionGroup>
+    <PackageFile>
+      <ReferenceSourceTarget />
+    </PackageFile>
+  </ItemDefinitionGroup>
+  
+  <Target Name="_RemoveContentFiles" AfterTargets="_GetReferencedPackageContents" Returns="@(PackageFile)">
+    <ItemGroup>
+      <_NonePackageFile Include="@(PackageFile)" Condition="'%(Kind)' == 'None' and '%(ReferenceSourceTarget)' == 'ProjectReference'" />
+      <PackageFile Remove="@(_NonePackageFile)" />
+    </ItemGroup>
+  </Target>
+  
 </Project>

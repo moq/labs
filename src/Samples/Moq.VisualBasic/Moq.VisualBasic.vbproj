@@ -18,12 +18,12 @@
     <ProjectReference Include="..\..\..\src\Moq\Moq.Sdk\Moq.Sdk.csproj" />
     <ProjectReference Include="..\Sample\Sample.csproj" />
 
-    <Analyzer Include="$(BinPath)\Stunts.dll" />
-    <Analyzer Include="$(BinPath)\Stunts.Sdk.dll" />
-    <Analyzer Include="$(BinPath)\Stunts.Analyzer.dll" />
-    <Analyzer Include="$(BinPath)\Roslyn.Services.Test.Utilities.dll" />
-    <Analyzer Include="$(BinPath)\Moq.Sdk.dll" />
-    <Analyzer Include="$(BinPath)\Moq.Analyzer.dll" />
+    <Analyzer Include="..\..\..\src\Stunts\Stunts\bin\$(Configuration)\Stunts.dll" />
+    <Analyzer Include="..\..\..\src\Stunts\Stunts.Sdk\bin\$(Configuration)\Stunts.Sdk.dll" />
+    <Analyzer Include="..\..\..\src\Stunts\Stunts.Analyzer\bin\$(Configuration)\Stunts.Analyzer.dll" />
+    <Analyzer Include="..\..\..\src\Stunts\Stunts.Internal\bin\$(Configuration)\Roslyn.Services.Test.Utilities.dll" />
+    <Analyzer Include="..\..\..\src\Moq\Moq.Sdk\bin\$(Configuration)\Moq.Sdk.dll" />
+    <Analyzer Include="..\..\..\src\Moq\Moq.Analyzer\bin\$(Configuration)\Moq.Analyzer.dll" />
   </ItemGroup>
 
 </Project>

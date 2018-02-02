@@ -1,7 +1,26 @@
 <Project>
 
-  <PropertyGroup>
-    <IncludeFrameworkReferencesInPackage>false</IncludeFrameworkReferencesInPackage>    
+  <PropertyGroup Label="Metadata">
+    <Authors>kzu</Authors>
+    <Owners>kzu</Owners>
+
+    <PackageVersion>1.0.0</PackageVersion>
+    <PackageProjectUrl>https://github.com/moq/moq/</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/moq/moq/blob/master/LICENSE</PackageLicenseUrl>    
+    <Copyright>Copyright © 2017 Daniel Cazzulino</Copyright>
   </PropertyGroup>
+  
+  <PropertyGroup Label="Build">
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Package">
+    <IncludeFrameworkReferencesInPackage>false</IncludeFrameworkReferencesInPackage>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" />
 
 </Project>

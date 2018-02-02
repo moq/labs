@@ -1,6 +1,6 @@
 <Project>
   <Import Project="CI.props" />
-  <Import Project="Packaging.props" />
+  <Import Project="Packaging.props" Condition="'$(MSBuildProjectExtension)' == '.nuproj'" />
 
   <PropertyGroup>
     <!-- We always target a single framework, so we don't need the added subdir -->
@@ -11,14 +11,6 @@
     <UseSharedCompilation>true</UseSharedCompilation>
 
     <RootPath>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\'))</RootPath>
-    <BaseOutputPath Condition="'$(BaseOutputPath)' == ''">$(RootPath)bin\</BaseOutputPath>
-    <OutputPath>$(BaseOutputPath)$(Configuration)\</OutputPath>
-    <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)' == ''">$(BaseOutputPath)obj\</BaseIntermediateOutputPath>
-    <BaseIntermediateOutputPath>$(BaseIntermediateOutputPath)$(MSBuildProjectName)\</BaseIntermediateOutputPath>
-    <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)</IntermediateOutputPath>
-
-    <!-- We explicitly write all assemblies to a single bin directory for performance reasons -->
-    <GenerateProjectSpecificOutputFolder>false</GenerateProjectSpecificOutputFolder>
 
     <!-- Don't allow NuGet to fallback to the implicit folder since that generates CI warnings -->
     <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
@@ -26,6 +18,8 @@
     <!-- Generate satellite assemblies using Roslyn to avoid some al.exe issues 
         (see https://github.com/dotnet/roslyn/issues/23190 and https://github.com/dotnet/roslyn/issues/23191) -->
     <GenerateSatelliteAssembliesForCore>true</GenerateSatelliteAssembliesForCore>
+
+    <PackOnBuild>true</PackOnBuild>
   </PropertyGroup>
   
   <ItemGroup>

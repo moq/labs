@@ -2,14 +2,14 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <Import Project="$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.props" Condition="Exists('$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.props')" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>91f9a526-e62c-491b-8774-88a61bdf1e1a</ProjectGuid>
+    <ProjectGuid>dcf0dc23-917d-4615-969a-6faa863034c3</ProjectGuid>
   </PropertyGroup>
   <PropertyGroup>
-    <PackageId>Stunts</PackageId>
-    <Title>Stunts</Title>
-    <Summary>"Dynamic proxies" that can run everywhere, including mobile!</Summary>
-    <Description>Design-time generated classes whose behavior can be configured dynamically at run-time with arbitrary behaviors (a.k.a. "proxies").</Description>
-    <PackageTags>netstandard proxy runtime dynamic</PackageTags>
+    <PackageId>Moq</PackageId>
+    <Title>Moq</Title>
+    <Summary>The most popular and friendly mocking framework for .NET</Summary>
+    <Description>The most popular and friendly mocking framework for .NET</Description>
+    <PackageTags>moq mocking mock</PackageTags>
   </PropertyGroup>
   <PropertyGroup>
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
@@ -17,12 +17,12 @@
     <PackageTargetFallback>net11;net20;net35;net40;net403;net45;net451;net452;net46;net461;net462;net47;net471;net472;netcore;netcore45;netcore451;netcore50;win8;win81;win10;sl4;sl5;wp;wp7;wp75;wp8;wp81;wpa81;uap;uap10;netstandard1.0;netstandard1.1;netstandard1.2;netstandard1.3;netstandard1.4;netstandard1.5;netstandard1.6;netstandard2.0;netcoreapp1.0;netcoreapp2.0;monoandroid;monotouch;monomac;xamarinios;xamarinmac;xamarinpsthree;xamarinpsfour;xamarinpsvita;xamarinwatchos;xamarintvos;xamarinxboxthreesixty;xamarinxboxone</PackageTargetFallback>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Stunts.Analyzer\Stunts.Analyzer.csproj" />
-    <ProjectReference Include="..\Stunts.Sdk\Stunts.Sdk.csproj">
+    <ProjectReference Include="..\Moq.Analyzer\Moq.Analyzer.csproj" />
+    <ProjectReference Include="..\Moq.Sdk\Moq.Sdk.csproj">
       <!-- This causes the output of the Sdk project to be packaged into the analyzer folder too -->
       <AdditionalProperties>PrimaryOutputKind=Analyzers</AdditionalProperties>
     </ProjectReference>
-    <ProjectReference Include="..\Stunts\Stunts.csproj" />
+    <ProjectReference Include="..\Moq\Moq.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
   <Import Project="$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.targets" Condition="Exists('$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.targets')" />
