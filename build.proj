@@ -76,7 +76,12 @@
   <!-- Performs a Clean, followed by Restore and Build. -->
 	<Target Name="Rebuild" DependsOnTargets="Clean;Restore;Build" />
 
-	<Target Name="_Restore" AfterTargets="Restore">
+  <Target Name="_BeforeRestore" BeforeTargets="Restore">
+    <!-- Since our NuGet.config declares this as a source, the folder must exist before restore -->
+    <MakeDir Directories="$(TEMP)\packages" Condition="!Exists('$(TEMP)\packages')" />
+  </Target>
+
+  <Target Name="_AfterRestore" AfterTargets="Restore">
 		<MSBuild Projects="@(Solution)" Targets="Restore" />
 	</Target>
 
