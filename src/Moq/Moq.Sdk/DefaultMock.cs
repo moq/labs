@@ -33,9 +33,9 @@ namespace Moq.Sdk
         public IList<IMethodInvocation> Invocations { get; } = new List<IMethodInvocation>();
 
         /// <inheritdoc />
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public object Object => stunt;
 
-        //[DebuggerDisplay("", Name = "State", Type = nameof(MockState))]
         /// <inheritdoc />
         public MockState State { get; } = new MockState();
 
