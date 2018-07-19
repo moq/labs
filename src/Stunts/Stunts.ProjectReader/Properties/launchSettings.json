@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "Stunts.ProjectReader": {
+      "commandName": "Project",
+      "commandLineArgs": "-d -w -p=\"C:\\Code\\Personal\\moq\\src\\Stunts\\Stunts.Tests\\Stunts.Tests.csproj\" -i=\"$(VsInstallRoot)\" -c=Debug -t=AnyCpu",
+      "workingDirectory": "$(TargetDir)"
+    }
+  }
+}
