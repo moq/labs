@@ -1,0 +1,97 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+    <RootNamespace>Stunts</RootNamespace>
+    <OutputType>Exe</OutputType>
+    <LangVersion>Latest</LangVersion>
+
+    <ImportDirectoryBuildProps>false</ImportDirectoryBuildProps>
+    <ImportDirectoryBuildTargets>false</ImportDirectoryBuildTargets>
+
+    <!-- We always target a single framework, so we don't need the added subdir -->
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <!-- We never emit runtime-specific assemblies, so opt-out of this. -->
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+
+    <RoslynVersion>2.9.0-beta*</RoslynVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Build.Locator" Version="1.0.*" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="$(RoslynVersion)" />
+    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Features" Version="$(RoslynVersion)" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="$(RoslynVersion)" />
+    <PackageReference Include="Mono.Options" Version="5.3.0.1" />
+  </ItemGroup>
+
+  <Target Name="_RemoveLocalizedResources" AfterTargets="ResolvePackageAssets">
+    <ItemGroup>
+      <ResourceCopyLocalItems Remove="@(ResourceCopyLocalItems)" />
+    </ItemGroup>
+  </Target>
+
+
+  <!--<Target Name="EnsureCopyLocalAssemblies" Condition="'' != ''" BeforeTargets="GetCopyToOutputDirectoryItems" AfterTargets="ResolvePackageAssets" DependsOnTargets="_CollectCopyLocalPackageIds;_AnnotateCopyLocalItems;_CollectRoslynRuntimeDependencies;_RemoveNonCopyLocalItems" />
+
+  <Target Name="_CollectCopyLocalPackageIds">
+    <ItemGroup>
+      <CopyLocalPackageId Include="@(PackageReference -&gt; WithMetadataValue('CopyLocal', 'true'))" KeepMetadata="true" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="_AnnotateCopyLocalItems" Inputs="@(CopyLocalPackageId)" Outputs="%(CopyLocalPackageId.Identity)-BATCH">
+    <PropertyGroup>
+      <_CopyLocalPackageId>@(CopyLocalPackageId)</_CopyLocalPackageId>
+    </PropertyGroup>
+    <ItemGroup>
+      <RuntimeCopyLocalItems Condition="$([MSBuild]::ValueOrDefault('%(RuntimeCopyLocalItems.NuGetPackageId)', '').StartsWith('$(_CopyLocalPackageId)'))">
+        <CopyLocal>true</CopyLocal>
+      </RuntimeCopyLocalItems>
+      <NativeCopyLocalItems Condition="$([MSBuild]::ValueOrDefault('%(NativeCopyLocalItems.NuGetPackageId)', '').StartsWith('$(_CopyLocalPackageId)'))">
+        <CopyLocal>true</CopyLocal>
+      </NativeCopyLocalItems>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="_CollectRoslynRuntimeDependencies">
+    <ItemGroup>
+      <ContentWithTargetPath Include="@(RuntimeCopyLocalItems)" Condition="'%(RuntimeCopyLocalItems.CopyLocal)' != 'true'">
+        <CopyLocal>true</CopyLocal>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <TargetPath>roslyn\%(Filename)%(Extension)</TargetPath>
+      </ContentWithTargetPath>
+      <ContentWithTargetPath Include="@(NativeCopyLocalItems)" Condition="'%(NativeCopyLocalItems.CopyLocal)' != 'true'">
+        <CopyLocal>true</CopyLocal>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <TargetPath>roslyn\%(Filename)%(Extension)</TargetPath>
+      </ContentWithTargetPath>
+      <ContentWithTargetPath Include="@(ResolvedCompileFileDefinitions)" Condition="$([MSBuild]::ValueOrDefault('%(ResolvedCompileFileDefinitions.NuGetPackageId)', '').StartsWith('Microsoft.Build'))">
+        <CopyLocal>true</CopyLocal>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <TargetPath>roslyn\%(Filename)%(Extension)</TargetPath>
+      </ContentWithTargetPath>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="_RemoveNonCopyLocalItems">
+    <ItemGroup>
+      <RuntimeCopyLocalItems Remove="@(RuntimeCopyLocalItems)" Condition="'%(RuntimeCopyLocalItems.CopyLocal)' != 'true'" />
+      <NativeCopyLocalItems Remove="@(NativeCopyLocalItems)" Condition="'%(NativeCopyLocalItems.CopyLocal)' != 'true'" />
+      <ResourceCopyLocalItems Remove="@(ResourceCopyLocalItems)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="_RemoveLocalizedResources" AfterTargets="ResolvePackageAssets">
+    <ItemGroup>
+      <ResourceCopyLocalItems Remove="@(ResourceCopyLocalItems)" />
+    </ItemGroup>
+  </Target>
+  
+  <Target Name="_RemoveNonCopyLocalReferences" Condition="'' != ''" BeforeTargets="_CopyFilesMarkedCopyLocal">
+    <ItemGroup>
+      <ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" Condition="'%(ReferenceCopyLocalPaths.CopyLocal)' != 'true'" />
+    </ItemGroup>
+  </Target>-->
+  
+</Project>
