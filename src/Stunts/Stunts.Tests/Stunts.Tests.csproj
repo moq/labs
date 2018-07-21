@@ -1,20 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFramework>net471</TargetFramework>
-		<IncludeXunit>true</IncludeXunit>
+  <PropertyGroup>
+    <TargetFramework>net471</TargetFramework>
+    <IncludeXunit>true</IncludeXunit>
     <IncludeRoslyn>true</IncludeRoslyn>
     <IncludeMSBuild>true</IncludeMSBuild>
   </PropertyGroup>
 
-	<ItemGroup>
-	  <Compile Include="..\Stunts\contentFiles\cs\netstandard1.3\Stunt.cs" Link="Stunt.cs" />
-	  <Compile Include="..\..\Testing\AssertCode.cs" Link="Helpers\AssertCode.cs" />
-	  <Compile Include="..\..\Testing\MockBuildEngine.cs" Link="Helpers\MockBuildEngine.cs" />
-	  <Compile Include="..\...\Testing\RecordingBehavior.cs" Link="Helpers\RecordingBehavior.cs" />
-	  <Compile Include="..\..\Testing\TestHelpers.cs" Link="Helpers\TestHelpers.cs" />
-	  <Compile Include="..\..\Testing\TestOutputLogger.cs" Link="Helpers\TestOutputLogger.cs" />
-	</ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Stunts\contentFiles\cs\netstandard1.3\Stunt.cs" Link="Stunt.cs" />
+    <Compile Include="..\..\Testing\AssertCode.cs" Link="Helpers\AssertCode.cs" />
+    <Compile Include="..\..\Testing\MockBuildEngine.cs" Link="Helpers\MockBuildEngine.cs" />
+    <Compile Include="..\...\Testing\RecordingBehavior.cs" Link="Helpers\RecordingBehavior.cs" />
+    <Compile Include="..\..\Testing\TestHelpers.cs" Link="Helpers\TestHelpers.cs" />
+    <Compile Include="..\..\Testing\TestOutputLogger.cs" Link="Helpers\TestOutputLogger.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="StuntDiscovererTests.Compile.cs" />
@@ -22,20 +22,36 @@
   </ItemGroup>
 
   <ItemGroup>
-	  <None Include="StuntDiscovererTests.Compile.cs">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Include="StuntDiscovererTests.cs" />
+    <None Include="StuntDiscovererTests.Compile.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="StuntDiscovererTests.cs" />
     <None Update="StuntDiscovererTests.Compile.vb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
-	<ItemGroup>
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadata">
+      <_Parameter1>MSBuildBinPath</_Parameter1>
+      <_Parameter2>$(MSBuildBinPath)</_Parameter2>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Stunts.ProjectReader\Stunts.ProjectReader.csproj" />
     <ProjectReference Include="..\Stunts\Stunts.csproj" />
     <ProjectReference Include="..\Stunts.Internal\Stunts.Internal.csproj" />
     <ProjectReference Include="..\Stunts.Sdk\Stunts.Sdk.csproj" />
     <ProjectReference Include="..\..\Samples\Sample\Sample.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="StreamJsonRpc" Version="1.3.23" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 
 </Project>
