@@ -1,8 +1,8 @@
 <Project>
 
   <PropertyGroup>
-    <MicrosoftBuildVersion>15.*</MicrosoftBuildVersion>
-    <RoslynVersion>2.3.1</RoslynVersion>
+    <MicrosoftBuildVersion>15.7.179</MicrosoftBuildVersion>
+    <RoslynVersion>2.9.0-beta*</RoslynVersion>
     <XunitVersion>2.4.0</XunitVersion>
   </PropertyGroup>
 
@@ -16,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup Label="MSBuild" Condition="'$(IncludeMSBuild)' == 'true'">
-    <PackageReference Include="Microsoft.Build" Version="$(MicrosoftBuildVersion)" />
-    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="$(MicrosoftBuildVersion)" />
+    <PackageReference Include="Microsoft.Build" Version="$(MicrosoftBuildVersion)" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="$(MicrosoftBuildVersion)" ExcludeAssets="runtime" />
   </ItemGroup>
 
   <ItemGroup Label="Roslyn" Condition="'$(IncludeRoslyn)' == 'true'">
@@ -35,6 +35,10 @@
     <PackageReference Include="xunit.runner.console" Version="$(XunitVersion)" />
     <!-- xunit.runner.console is used to implement /t:Test in test projects -->    
     <PackageReference Include="xunit.runner.msbuild" Version="$(XunitVersion)" />
+    
+    <!-- test projects need all of MSBuild assemblies in the output -->
+    <PackageReference Update="Microsoft.Build" ExcludeAssets="none" />
+    <PackageReference Update="Microsoft.Build.Tasks.Core" ExcludeAssets="none" />
   </ItemGroup>
   
 </Project>

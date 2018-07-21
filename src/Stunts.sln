@@ -11,16 +11,38 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stunts.Sdk", "Stunts\Stunts
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stunts.Tests", "Stunts\Stunts.Tests\Stunts.Tests.csproj", "{1320496D-6348-42B0-95F5-BA7891EF0096}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stunts.CodeAnalysis", "Stunts\Stunts.CodeAnalysis\Stunts.CodeAnalysis.csproj", "{3C2F7D4C-D10A-439C-B986-FF51664CD895}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stunts.Analyzer", "Stunts\Stunts.Analyzer\Stunts.Analyzer.csproj", "{3C2F7D4C-D10A-439C-B986-FF51664CD895}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample", "Samples\Sample\Sample.csproj", "{F801B6E7-70DA-46FE-937D-199BB00E7647}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F21FA4AF-78AF-49BA-8D5E-C45C95365326}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
+		..\NuGet.Config = ..\NuGet.Config
+	EndProjectSection
 EndProject
 Project("{5DD5E4FA-CB73-4610-85AB-557B54E96AA9}") = "Stunts.Package", "Stunts\Stunts.Package\Stunts.Package.nuproj", "{91F9A526-E62C-491B-8774-88A61BDF1E1A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stunts.CodeFix", "Stunts\Stunts.CodeFix\Stunts.CodeFix.csproj", "{AE3450C8-CB6E-4DA9-A0F0-977F82FFE6F9}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stunts.Tasks", "Stunts\Stunts.Tasks\Stunts.Tasks.csproj", "{F033B778-A0F8-43E6-85B9-E184DFFCF347}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{21EDC116-63A9-4C77-9BE0-16BACC5FA3AA}"
+	ProjectSection(SolutionItems) = preProject
+		build\CI.props = build\CI.props
+		build\PackageReferences.targets = build\PackageReferences.targets
+		build\Packaging.props = build\Packaging.props
+		build\Packaging.targets = build\Packaging.targets
+		build\Settings.props = build\Settings.props
+		build\Settings.targets = build\Settings.targets
+		build\Settings.Tests.props = build\Settings.Tests.props
+		build\Settings.Tests.targets = build\Settings.Tests.targets
+		build\Version.targets = build\Version.targets
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stunts.ProjectReader", "Stunts\Stunts.ProjectReader\Stunts.ProjectReader.csproj", "{D4BCD0FD-946F-4A43-A6B0-6FE3832C2B10}"
+
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +77,14 @@ Global
 		{91F9A526-E62C-491B-8774-88A61BDF1E1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91F9A526-E62C-491B-8774-88A61BDF1E1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91F9A526-E62C-491B-8774-88A61BDF1E1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F033B778-A0F8-43E6-85B9-E184DFFCF347}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F033B778-A0F8-43E6-85B9-E184DFFCF347}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F033B778-A0F8-43E6-85B9-E184DFFCF347}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F033B778-A0F8-43E6-85B9-E184DFFCF347}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4BCD0FD-946F-4A43-A6B0-6FE3832C2B10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4BCD0FD-946F-4A43-A6B0-6FE3832C2B10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4BCD0FD-946F-4A43-A6B0-6FE3832C2B10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4BCD0FD-946F-4A43-A6B0-6FE3832C2B10}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AE3450C8-CB6E-4DA9-A0F0-977F82FFE6F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AE3450C8-CB6E-4DA9-A0F0-977F82FFE6F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE3450C8-CB6E-4DA9-A0F0-977F82FFE6F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -62,6 +92,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{21EDC116-63A9-4C77-9BE0-16BACC5FA3AA} = {F21FA4AF-78AF-49BA-8D5E-C45C95365326}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BA56F22C-8978-49E8-B6C1-5D28B14D6C1D}
