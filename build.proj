@@ -1,5 +1,4 @@
-<Project DefaultTargets="Help" TreatAsLocalProperty="Configuration">
-	<Import Project="build\corebuild.props" />
+<Project Sdk="CoreBuild/1.0.0-alpha" DefaultTargets="Help" TreatAsLocalProperty="Configuration">
 
 	<PropertyGroup>
     <!-- Configuration to build. Defaults to 'Debug' -->
@@ -86,5 +85,4 @@
 	</Target>
 
 	<Import Project="src\build\Version.targets" />
-	<Import Project="build\corebuild.targets" />
 </Project>

@@ -9,3 +9,18 @@ The most popular and friendly mocking framework for .NET
 [![Follow on Twitter](https://img.shields.io/twitter/follow/moqthis.svg?style=social&label=Follow)](http://twitter.com/intent/user?screen_name=moqthis)
 
 This repository supports [corebuild](http://www.corebuild.io) for configure/build/test from `msbuild`.
+
+## Building the repository
+
+```
+msbuild /t:configure
+msbuild
+```
+
+The default target is `Help`, which will render the documentation for the build itself and what targets are available. Since this is a [corebuild](http://www.corebuild.io) standard repository, you can run:
+
+```
+msbuild /t:configure
+msbuild /t:build
+msbuild /t:test
+```
