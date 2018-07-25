@@ -35,4 +35,13 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="$(NuGetPackageRoot)\netstandard.library\$(NETStandardLibraryPackageVersion)\build\$(TargetFramework)\ref\netstandard.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>true</Pack>
+    </None>
+    <!--<PackageFile Include="$(NuGetPackageRoot)\netstandard.library\$(NETStandardLibraryPackageVersion)\build\$(TargetFramework)\ref\netstandard.dll" 
+                 TargetPath="netstandard.dll" />-->
+  </ItemGroup>
+
 </Project>

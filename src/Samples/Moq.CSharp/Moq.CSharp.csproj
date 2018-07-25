@@ -19,6 +19,7 @@
     <Analyzer Include="..\..\..\src\Stunts\Stunts\bin\$(Configuration)\Stunts.dll" />
     <Analyzer Include="..\..\..\src\Stunts\Stunts.Sdk\bin\$(Configuration)\Stunts.Sdk.dll" />
     <Analyzer Include="..\..\..\src\Stunts\Stunts.Analyzer\bin\$(Configuration)\Stunts.Analyzer.dll" />
+    <Analyzer Include="..\..\..\src\Stunts\Stunts.Analyzer\bin\$(Configuration)\netstandard.dll" />
     <Analyzer Include="..\..\..\src\Stunts\Stunts.Internal\bin\$(Configuration)\Roslyn.Services.Test.Utilities.dll" />
     <Analyzer Include="..\..\..\src\Moq\Moq.Sdk\bin\$(Configuration)\Moq.Sdk.dll" />
     <Analyzer Include="..\..\..\src\Moq\Moq.Analyzer\bin\$(Configuration)\Moq.Analyzer.dll" />
