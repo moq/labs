@@ -23,6 +23,7 @@
       <AdditionalProperties>PrimaryOutputKind=Analyzers</AdditionalProperties>
     </ProjectReference>
     <ProjectReference Include="..\Moq\Moq.csproj" />
+    <ProjectReference Include="..\..\Stunts\Stunts.Package\Stunts.Package.nuproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
   <Import Project="$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.targets" Condition="Exists('$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.targets')" />
