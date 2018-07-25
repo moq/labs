@@ -11,7 +11,7 @@
   <ItemGroup>
     <Compile Remove="contentFiles\**\*.cs" />
     <None Remove="contentFiles\**\*.*" />
-    <None Include="contentFiles\**\*.*" Pack="true" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="contentFiles\**\*.*" Kind="None" Pack="true" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>
