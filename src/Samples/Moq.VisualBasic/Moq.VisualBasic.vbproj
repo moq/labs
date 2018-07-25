@@ -17,7 +17,9 @@
     <ProjectReference Include="..\..\..\src\Moq\Moq\Moq.csproj" />
     <ProjectReference Include="..\..\..\src\Moq\Moq.Sdk\Moq.Sdk.csproj" />
     <ProjectReference Include="..\Sample\Sample.csproj" />
+  </ItemGroup>
 
+  <ItemGroup Condition="'$(DesignTimeBuild)' == 'true'">
     <Analyzer Include="..\..\..\src\Stunts\Stunts\bin\$(Configuration)\Stunts.dll" />
     <Analyzer Include="..\..\..\src\Stunts\Stunts.Sdk\bin\$(Configuration)\Stunts.Sdk.dll" />
     <Analyzer Include="..\..\..\src\Stunts\Stunts.Analyzer\bin\$(Configuration)\Stunts.Analyzer.dll" />

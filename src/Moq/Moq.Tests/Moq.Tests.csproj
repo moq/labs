@@ -18,7 +18,7 @@
     <Compile Include="..\..\Testing\TestHelpers.cs" Link="Helpers\TestHelpers.cs" />
     <Compile Include="..\..\Testing\TestOutputLogger.cs" Link="Helpers\TestOutputLogger.cs" />
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Condition="'$(DesignTimeBuild)' == 'true'">
     <!-- TODO: since we can't get Roslyn to compile code during test run, we must generate mocks at design-time  -->
     <Analyzer Include="$(RootPath)\src\Stunts\Stunts\bin\$(Configuration)\Stunts.dll" />
     <Analyzer Include="$(RootPath)\src\Stunts\Stunts.Sdk\bin\$(Configuration)\Stunts.Sdk.dll" />
