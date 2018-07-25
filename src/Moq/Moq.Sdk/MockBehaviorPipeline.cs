@@ -7,19 +7,18 @@ using Stunts;
 namespace Moq.Sdk
 {
     /// <summary>
-    /// Default implementation of <see cref="IMockBehavior"/>, which implements 
-    /// effectively a sub-pipeline of behaviors within the <see cref="IStunt"/>'s 
-    /// <see cref="BehaviorPipeline"/>, using the <see cref="IMockSetup.AppliesTo(IMethodInvocation)"/> 
-    /// abstraction over the <see cref="IStuntBehavior.AppliesTo(IMethodInvocation)"/> member 
-    /// to determine which ones to apply.
+    /// Default implementation of <see cref="IMockBehaviorPipeline"/>, which 
+    /// provides a sub-pipeline of behaviors within the <see cref="IStunt"/>'s 
+    /// <see cref="BehaviorPipeline"/>, which is only run if the current invocation 
+    /// matches the <see cref="Setup"/>.
     /// </summary>
     [DebuggerDisplay("{Setup}")]
-    public class DefaultMockBehavior : IMockBehavior
+    public class MockBehaviorPipeline : IMockBehaviorPipeline
     {
-        public DefaultMockBehavior(IMockSetup setup) => Setup = setup;
+        public MockBehaviorPipeline(IMockSetup setup) => Setup = setup;
 
         [DebuggerBrowsable(DebuggerBrowsableState.Collapsed)]
-        public ObservableCollection<IBehavior> Behaviors { get; } = new ObservableCollection<IBehavior>();
+        public ObservableCollection<IMockBehavior> Behaviors { get; } = new ObservableCollection<IMockBehavior>();
 
         public IMockSetup Setup { get; }
 
@@ -40,11 +39,11 @@ namespace Moq.Sdk
                 return next().Invoke(invocation, next);
 
             var index = 0;
-            var result = Behaviors[0].Invoke(invocation, () =>
+            var result = Behaviors[0].Execute(invocation, () =>
             {
                 ++index;
                 return (index < Behaviors.Count) ?
-                    Behaviors[index].Invoke :
+                    Behaviors[index].Execute :
                     next();
             });
 

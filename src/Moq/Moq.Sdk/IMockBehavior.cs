@@ -1,25 +1,21 @@
-﻿using System.Collections.ObjectModel;
-using Stunts;
+﻿using Stunts;
 
 namespace Moq.Sdk
 {
     /// <summary>
-    /// An <see cref="IStuntBehavior"/> that applies a set of behaviors 
-    /// selectively when the current invocation satisfies the 
-    /// <see cref="IMockSetup.AppliesTo(IMethodInvocation)"/> method for 
-    /// this instance' <see cref="Setup"/>.
+    /// Represents a unit of behavior (such as returning a value, 
+    /// invoking a callback or throwing an exception) that applies 
+    /// to a mock when a given setup is matched (such as a particular 
+    /// method being called with specific arguments).
     /// </summary>
-    public interface IMockBehavior : IStuntBehavior
+    public interface IMockBehavior
     {
         /// <summary>
-        /// List of behaviors that should be executed whenever the 
-        /// current invocation matches the given setup.
+        /// Executes the behavior for the given invocation.
         /// </summary>
-        ObservableCollection<IBehavior> Behaviors { get; }
-
-        /// <summary>
-        /// The setup corresponding to this behavior.
-        /// </summary>
-        IMockSetup Setup { get; }
+        /// <param name="invocation">The current method invocation.</param>
+        /// <param name="next">Delegate to invoke the next behavior in the pipeline.</param>
+        /// <returns>The result of the method invocation.</returns>
+        IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next);
     }
 }

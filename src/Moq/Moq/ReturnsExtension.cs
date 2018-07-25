@@ -22,7 +22,7 @@ namespace Moq
             {
                 var mock = setup.Invocation.Target.GetMock();
                 mock.Invocations.Remove(setup.Invocation);
-                var behavior = mock.BehaviorFor(setup);
+                var behavior = mock.GetPipeline(setup);
                 var returnBehavior = behavior.Behaviors.OfType<ReturnsBehavior>().FirstOrDefault();
                 if (returnBehavior != null)
                     returnBehavior.Value = value;
@@ -45,7 +45,7 @@ namespace Moq
             {
                 var mock = setup.Invocation.Target.GetMock();
                 mock.Invocations.Remove(setup.Invocation);
-                var behavior = mock.BehaviorFor(setup);
+                var behavior = mock.GetPipeline(setup);
                 var returnBehavior = behavior.Behaviors.OfType<ReturnsBehavior>().FirstOrDefault();
                 if (returnBehavior != null)
                     returnBehavior.ValueGetter = _ => value();
@@ -69,7 +69,7 @@ namespace Moq
             {
                 var mock = setup.Invocation.Target.GetMock();
                 mock.Invocations.Remove(setup.Invocation);
-                var behavior = mock.BehaviorFor(setup);
+                var behavior = mock.GetPipeline(setup);
                 var returnBehavior = behavior.Behaviors.OfType<ReturnsBehavior>().FirstOrDefault();
                 if (returnBehavior != null)
                     returnBehavior.ValueGetter = x => value(x);
@@ -114,7 +114,7 @@ namespace Moq
                 {
                     setup.Invocation.Target
                         .GetMock()
-                        .BehaviorFor(setup)
+                        .GetPipeline(setup)
                         .Behaviors.Add(new ReturnsDelegateBehavior(@delegate));
                 }
             }
@@ -131,9 +131,9 @@ namespace Moq
 
                 var mock = setup.Invocation.Target.GetMock();
                 mock.Invocations.Remove(setup.Invocation);
-                var mockBehavior = mock.BehaviorFor(setup);
+                var mockBehavior = mock.GetPipeline(setup);
 
-                mockBehavior.Behaviors.Add(new Behavior(behavior, "Returns(() => ...)"));
+                mockBehavior.Behaviors.Add(Sdk.MockBehavior.Create(behavior, "Returns(() => ...)"));
             }
 
             return default(TResult);

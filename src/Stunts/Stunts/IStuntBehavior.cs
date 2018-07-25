@@ -14,7 +14,7 @@
         bool AppliesTo(IMethodInvocation invocation);
 
         /// <summary>
-        /// Invocation behavior for the stunt.
+        /// Executes the behavior for the given method invocation.
         /// </summary>
         /// <param name="invocation">The current method invocation.</param>
         /// <param name="next">Delegate to invoke the next behavior in the pipeline.</param>

@@ -115,11 +115,11 @@ namespace Moq.Sdk.Tests
         public void WhenInsertingMockBehaviorToObjectWithInterface_ThenThrowsIfNotMock() =>
             Assert.Throws<ArgumentException>(() => new object().InsertBehavior(0, new TestMockBehavior()));
 
-        class TestMockBehavior : IMockBehavior
+        class TestMockBehavior : IMockBehaviorPipeline
         {
             public IMockSetup Setup { get; set; } = new MockSetup(new FakeInvocation(), new IArgumentMatcher[0]);
 
-            public ObservableCollection<IBehavior> Behaviors => null;
+            public ObservableCollection<IMockBehavior> Behaviors => null;
 
             public bool AppliesTo(IMethodInvocation invocation) => false;
 
@@ -138,9 +138,9 @@ namespace Moq.Sdk.Tests
 
             public IMockSetup LastSetup { get; set; }
 
-            public IEnumerable<IMockBehavior> Setups => Behaviors.OfType<IMockBehavior>();
+            public IEnumerable<IMockBehaviorPipeline> Setups => Behaviors.OfType<IMockBehaviorPipeline>();
 
-            public IMockBehavior BehaviorFor(IMockSetup setup) => throw new NotImplementedException();
+            public IMockBehaviorPipeline GetPipeline(IMockSetup setup) => throw new NotImplementedException();
         }
     }
 }

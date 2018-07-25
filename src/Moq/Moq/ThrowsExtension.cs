@@ -21,9 +21,9 @@ namespace Moq
                 var mock = setup.Invocation.Target.GetMock();
 
                 mock.Invocations.Remove(setup.Invocation);
-                var behavior = mock.BehaviorFor(setup);
+                var behavior = mock.GetPipeline(setup);
 
-                behavior.Behaviors.Add(new Behavior(
+                behavior.Behaviors.Add(Sdk.MockBehavior.Create(
                     (mi, next) => mi.CreateExceptionReturn(exception),
                     new Lazy<string>(() => $"Throws<{exception.GetType().Name}>(\"{exception.Message}\")")
                ));
@@ -42,9 +42,9 @@ namespace Moq
                 var mock = setup.Invocation.Target.GetMock();
 
                 mock.Invocations.Remove(setup.Invocation);
-                var behavior = mock.BehaviorFor(setup);
+                var behavior = mock.GetPipeline(setup);
 
-                behavior.Behaviors.Add(new Behavior(
+                behavior.Behaviors.Add(Sdk.MockBehavior.Create(
                     (mi, next) => mi.CreateExceptionReturn(new TException()),
                     new Lazy<string>(() => $"Throws<{typeof(TException).Name}>()")
                ));

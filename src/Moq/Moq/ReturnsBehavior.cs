@@ -12,7 +12,7 @@ namespace Moq
     /// <see cref="ReturnsExtension"/> method calls.
     /// </summary>
     [DebuggerDisplay("{DebuggerValue}", Name = "Returns", Type = nameof(ReturnsBehavior))]
-    class ReturnsBehavior : IBehavior
+    class ReturnsBehavior : IMockBehavior
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         Func<IArgumentCollection, object> getter;
@@ -46,10 +46,9 @@ namespace Moq
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public InvokeBehavior Invoke => (IMethodInvocation invocation, GetNextBehavior next)
-            => invocation.CreateValueReturn(getter(invocation.Arguments), invocation.Arguments.ToArray());
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         object DebuggerValue => value ?? "<function>";
+
+        public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next)
+            => invocation.CreateValueReturn(getter(invocation.Arguments), invocation.Arguments.ToArray());
     }
 }

@@ -43,11 +43,11 @@ namespace Moq.Sdk
                         new object[0])).Mock;
 
                     // Clone the current mock's behaviors, except for the setups
-                    foreach (var behavior in currentMock.Behaviors.Where(x => !(x is IMockBehavior)))
+                    foreach (var behavior in currentMock.Behaviors.Where(x => !(x is IMockBehaviorPipeline)))
                         recursiveMock.Behaviors.Add(behavior);
 
                     // Set up the current invocation to return the created value
-                    var setup = currentMock.BehaviorFor(MockContext.CurrentSetup);
+                    var setup = currentMock.GetPipeline(MockContext.CurrentSetup);
                     var returnBehavior = setup.Behaviors.OfType<ReturnsBehavior>().FirstOrDefault();
                     if (returnBehavior != null)
                         returnBehavior.Value = recursiveMock.Object;

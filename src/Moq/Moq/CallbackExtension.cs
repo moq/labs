@@ -19,7 +19,7 @@ namespace Moq
                 var mock = setup.Invocation.Target.GetMock();
 
                 mock.Invocations.Remove(setup.Invocation);
-                var behavior = mock.BehaviorFor(setup);
+                var behavior = mock.GetPipeline(setup);
 
                 // If there is already a behavior wrap it instead, 
                 // so we can do a callback after even if it's a 
@@ -27,7 +27,7 @@ namespace Moq
                 if (behavior.Behaviors.Count > 0)
                 {
                     var wrapped = behavior.Behaviors.Pop();
-                    behavior.Behaviors.Add(new Behavior(
+                    behavior.Behaviors.Add(Sdk.MockBehavior.Create(
                         (mi, next) =>
                         {
                             // If the wrapped target does not invoke the next 
@@ -36,7 +36,7 @@ namespace Moq
 
                             // Note we're tweaking the GetNextBehavior to always 
                             // call us, before invoking the actual next behavior.
-                            var result = wrapped.Invoke(mi, () => (_, __) =>
+                            var result = wrapped.Execute(mi, () => (IMethodInvocation _, GetNextBehavior __) =>
                             {
                                 callback(mi.Arguments);
                                 called = true;
@@ -55,7 +55,7 @@ namespace Moq
                 }
                 else
                 {
-                    behavior.Behaviors.Add(new Behavior(
+                    behavior.Behaviors.Add(Sdk.MockBehavior.Create(
                         (mi, next) =>
                         {
                             callback(mi.Arguments);

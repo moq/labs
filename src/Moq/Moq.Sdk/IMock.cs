@@ -9,10 +9,10 @@ namespace Moq.Sdk
     public interface IMock : IStunt
     {
         /// <summary>
-        /// Returns a <see cref="IMockBehavior"/> for the given <see cref="IMockSetup"/>.
+        /// Returns a <see cref="IMockBehaviorPipeline"/> for the given <see cref="IMockSetup"/>.
         /// </summary>
-        /// <param name="setup">The setup that equals the returned <see cref="IMockBehavior.Setup"/>.</param>
-        IMockBehavior BehaviorFor(IMockSetup setup);
+        /// <param name="setup">The setup that equals the returned <see cref="IMockBehaviorPipeline.Setup"/>.</param>
+        IMockBehaviorPipeline GetPipeline(IMockSetup setup);
 
         /// <summary>
         /// Invocations performed on the mock so far.
@@ -30,9 +30,8 @@ namespace Moq.Sdk
         MockState State { get; }
 
         /// <summary>
-        /// The filtered list of behaviors that apply selectively according to 
-        /// corresponding mock setups.
+        /// The list of mock behavior pipelines configured for this mock.
         /// </summary>
-        IEnumerable<IMockBehavior> Setups { get; }
+        IEnumerable<IMockBehaviorPipeline> Setups { get; }
     }
 }

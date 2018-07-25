@@ -26,7 +26,7 @@ public class Tests
         var result1 = stunt1.Format("Hello {0}", "World", null);
         var result2 = stunt2.Format("Hello {0}", "World", null);
 
-        Console.WriteLine(result1);
+        Console.WriteLine(result1); 
         Console.WriteLine(result2);
 
         var foo = Stunt.Of<IBar>();

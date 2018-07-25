@@ -4,7 +4,7 @@ using Stunts;
 namespace Moq.Sdk
 {
     /// <summary>
-    /// The configuration used to set up a <see cref="IMockBehavior" />.
+    /// The configuration used to set up a <see cref="IMockBehaviorPipeline" />.
     /// </summary>
     public interface IMockSetup : IStructuralEquatable, IFluentInterface
     {

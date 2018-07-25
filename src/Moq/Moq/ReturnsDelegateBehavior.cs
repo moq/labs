@@ -7,17 +7,14 @@ using Stunts;
 namespace Moq
 {
     [DebuggerDisplay("{@delegate}", Name = "Returns", Type = nameof(ReturnsDelegateBehavior))]
-    class ReturnsDelegateBehavior : IBehavior
+    class ReturnsDelegateBehavior : IMockBehavior
     {
         [DebuggerDisplay("<function>")]
         Delegate @delegate;
 
         public ReturnsDelegateBehavior(Delegate @delegate) => this.@delegate = @delegate;
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        InvokeBehavior IBehavior.Invoke => Invoke;
-
-        IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior next)
+        public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next)
         {
             var arguments = invocation.Arguments.ToArray();
             var parameters = invocation.MethodBase.GetParameters();

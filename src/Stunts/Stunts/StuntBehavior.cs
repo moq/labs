@@ -1,12 +1,12 @@
 ﻿namespace Stunts
 {
     /// <summary>
-    /// A factory for a <see cref="IStuntBehavior"/> from a lambda.
+    /// A factory for a <see cref="IStuntBehavior"/> from a delegate (a.k.a. anonymous behavior).
     /// </summary>
     public static class StuntBehavior
     {
         /// <summary>
-        /// Creates an <see cref="AnonymousProxyBehavior"/> for the given 
+        /// Creates an <see cref="IStuntBehavior"/> for the given 
         /// <see cref="InvokeBehavior"/> delegate.
         /// </summary>
         /// <param name="behavior">The actual behavior that will be invoked as part of the stunt.</param>

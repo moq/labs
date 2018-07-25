@@ -20,9 +20,9 @@ namespace Moq.Sdk
         public static IMock AddBehavior(this IMock mock, InvokeBehavior behavior, Lazy<string> displayName)
         {
             mock
-                .BehaviorFor(MockContext.CurrentSetup ?? throw new InvalidOperationException(Strings.NoCurrentSetup))
+                .GetPipeline(MockContext.CurrentSetup ?? throw new InvalidOperationException(Strings.NoCurrentSetup))
                 .Behaviors
-                .Add(new Behavior(behavior, displayName));
+                .Add(MockBehavior.Create(behavior, displayName));
             
             return mock;
         }
@@ -34,9 +34,9 @@ namespace Moq.Sdk
         public static IMock InsertBehavior(this IMock mock, int index, InvokeBehavior behavior, Lazy<string> displayName)
         {
             mock
-                .BehaviorFor(MockContext.CurrentSetup ?? throw new InvalidOperationException(Strings.NoCurrentSetup))
+                .GetPipeline(MockContext.CurrentSetup ?? throw new InvalidOperationException(Strings.NoCurrentSetup))
                 .Behaviors
-                .Insert(index, new Behavior(behavior, displayName));
+                .Insert(index, MockBehavior.Create(behavior, displayName));
 
             return mock;
         }
@@ -44,7 +44,7 @@ namespace Moq.Sdk
         /// <summary>
         /// Adds a mock behavior to a mock.
         /// </summary>
-        public static TMock AddBehavior<TMock>(this TMock mock, IMockBehavior behavior)
+        public static TMock AddBehavior<TMock>(this TMock mock, IMockBehaviorPipeline behavior)
         {
             if (mock is IMocked mocked)
                 mocked.Mock.Behaviors.Add(behavior);
@@ -59,7 +59,7 @@ namespace Moq.Sdk
         /// <summary>
         /// Inserts a mock behavior into the mock behavior pipeline at the specified index.
         /// </summary>
-        public static TMock InsertBehavior<TMock>(this TMock mock, int index, IMockBehavior behavior)
+        public static TMock InsertBehavior<TMock>(this TMock mock, int index, IMockBehaviorPipeline behavior)
         {
             if (mock is IMocked mocked)
                 mocked.Mock.Behaviors.Insert(index, behavior);
@@ -125,11 +125,11 @@ namespace Moq.Sdk
 
             public MockState State => mock.State;
 
-            public IEnumerable<IMockBehavior> Setups => mock.Setups;
+            public IEnumerable<IMockBehaviorPipeline> Setups => mock.Setups;
 
             public ObservableCollection<IStuntBehavior> Behaviors => mock.Behaviors;
 
-            public IMockBehavior BehaviorFor(IMockSetup setup) => mock.BehaviorFor(setup);
+            public IMockBehaviorPipeline GetPipeline(IMockSetup setup) => mock.GetPipeline(setup);
         }
     }
 }

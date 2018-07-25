@@ -18,7 +18,7 @@ namespace Moq.Sdk
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         readonly IStunt stunt;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        readonly ConcurrentDictionary<IMockSetup, IMockBehavior> setupBehaviorMap = new ConcurrentDictionary<IMockSetup, IMockBehavior>();
+        readonly ConcurrentDictionary<IMockSetup, IMockBehaviorPipeline> setupBehaviorMap = new ConcurrentDictionary<IMockSetup, IMockBehaviorPipeline>();
 
         public DefaultMock(IStunt stunt)
         {
@@ -40,12 +40,12 @@ namespace Moq.Sdk
         public MockState State { get; } = new MockState();
 
         /// <inheritdoc />
-        public IEnumerable<IMockBehavior> Setups => setupBehaviorMap.Values;
+        public IEnumerable<IMockBehaviorPipeline> Setups => setupBehaviorMap.Values;
 
-        public IMockBehavior BehaviorFor(IMockSetup setup)
+        public IMockBehaviorPipeline GetPipeline(IMockSetup setup)
             => setupBehaviorMap.GetOrAdd(setup, x =>
             {
-                var behavior = new DefaultMockBehavior(x);
+                var behavior = new MockBehaviorPipeline(x);
                 // The tracking behavior must appear before the mock behaviors.
                 var tracking = Behaviors.OfType<MockTrackingBehavior>().FirstOrDefault();
                 // NOTE: latest setup wins, since it goes to the top of the list.
@@ -59,22 +59,22 @@ namespace Moq.Sdk
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    foreach (var behavior in e.NewItems.OfType<IMockBehavior>())
+                    foreach (var behavior in e.NewItems.OfType<IMockBehaviorPipeline>())
                         setupBehaviorMap.TryAdd(behavior.Setup, behavior);
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    foreach (var behavior in e.OldItems.OfType<IMockBehavior>())
+                    foreach (var behavior in e.OldItems.OfType<IMockBehaviorPipeline>())
                         setupBehaviorMap.TryRemove(behavior.Setup, out _);
                     break;
                 case NotifyCollectionChangedAction.Replace:
-                    foreach (var behavior in e.NewItems.OfType<IMockBehavior>())
+                    foreach (var behavior in e.NewItems.OfType<IMockBehaviorPipeline>())
                         setupBehaviorMap.TryAdd(behavior.Setup, behavior);
-                    foreach (var behavior in e.OldItems.OfType<IMockBehavior>())
+                    foreach (var behavior in e.OldItems.OfType<IMockBehaviorPipeline>())
                         setupBehaviorMap.TryRemove(behavior.Setup, out _);
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     setupBehaviorMap.Clear();
-                    foreach (var behavior in Behaviors.OfType<IMockBehavior>())
+                    foreach (var behavior in Behaviors.OfType<IMockBehaviorPipeline>())
                         setupBehaviorMap.TryAdd(behavior.Setup, behavior);
                     break;
             }
