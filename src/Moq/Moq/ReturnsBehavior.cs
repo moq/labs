@@ -46,7 +46,7 @@ namespace Moq
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public InvokeBehavior Invoke => (IMethodInvocation invocation, GetNextBehavior getNext)
+        public InvokeBehavior Invoke => (IMethodInvocation invocation, GetNextBehavior next)
             => invocation.CreateValueReturn(getter(invocation.Arguments), invocation.Arguments.ToArray());
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]

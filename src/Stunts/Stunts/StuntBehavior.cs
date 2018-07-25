@@ -30,8 +30,8 @@
 
             public bool AppliesTo(IMethodInvocation invocation) => appliesTo(invocation);
 
-            public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior getNext) =>
-                behavior(invocation, getNext);
+            public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior next) =>
+                behavior(invocation, next);
 
             public override string ToString() => name ?? "<unnamed>";
         }

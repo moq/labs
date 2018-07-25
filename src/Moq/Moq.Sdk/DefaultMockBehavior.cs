@@ -29,7 +29,7 @@ namespace Moq.Sdk
         /// </summary>
         public bool AppliesTo(IMethodInvocation invocation) => Setup.AppliesTo(invocation);
 
-        public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior getNext)
+        public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior next)
         {
             // NOTE: the mock behavior is like a sub-pipeline within the overall stunt 
             // behavior pipeline, where all the behaviors added automatically apply as 
@@ -37,7 +37,7 @@ namespace Moq.Sdk
             // itself.
 
             if (Behaviors.Count == 0)
-                return getNext().Invoke(invocation, getNext);
+                return next().Invoke(invocation, next);
 
             var index = 0;
             var result = Behaviors[0].Invoke(invocation, () =>
@@ -45,7 +45,7 @@ namespace Moq.Sdk
                 ++index;
                 return (index < Behaviors.Count) ?
                     Behaviors[index].Invoke :
-                    getNext();
+                    next();
             });
 
             return result;

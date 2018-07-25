@@ -23,7 +23,7 @@ namespace Moq.Sdk
                invocation.MethodBase.Name.StartsWith("remove_", StringComparison.Ordinal));
 
         /// <inheritdoc />
-        public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior getNext)
+        public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior next)
         {
             var info = invocation.MethodBase.DeclaringType.GetRuntimeEvent(
                 invocation.MethodBase.Name.Replace("add_", string.Empty).Replace("remove_", string.Empty));
@@ -73,7 +73,7 @@ namespace Moq.Sdk
                 }
             }
 
-            return getNext()(invocation, getNext);
+            return next()(invocation, next);
         }
 
         static void CombineDelegate(EventInfo info, Delegate handler, IMock mock)

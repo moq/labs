@@ -166,7 +166,7 @@ namespace Stunts.Tests
         {
             public bool AppliesTo(IMethodInvocation invocation) => true;
 
-            public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior getNext) => null;
+            public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior next) => null;
         }
 
         class TestStunt : IStunt

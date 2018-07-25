@@ -18,13 +18,13 @@ namespace Moq.Sdk
         public bool AppliesTo(IMethodInvocation invocation)
             => SetupScope.IsActive;
 
-        public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior getNext)
+        public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior next)
         {
             if (invocation.MethodBase is MethodInfo info &&
                 info.ReturnType != typeof(void) && 
                 info.ReturnType.CanBeIntercepted())
             {
-                var result = getNext().Invoke(invocation, getNext);
+                var result = next().Invoke(invocation, next);
                 if (result.ReturnValue == null)
                 {
                     // Turn the null value into a mock for the current invocation setup
@@ -70,7 +70,7 @@ namespace Moq.Sdk
                 return result;
             }
 
-            return getNext().Invoke(invocation, getNext);
+            return next().Invoke(invocation, next);
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Moq.Sdk
     {
         public bool AppliesTo(IMethodInvocation invocation) => true;
 
-        public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior getNext)
+        public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior next)
         {
             var mock = invocation.Target.GetMock();
 
@@ -40,7 +40,7 @@ namespace Moq.Sdk
             if (Debugger.IsAttached)
                 invocation.Context["StackTrace"] = Environment.StackTrace;
 
-            return getNext().Invoke(invocation, getNext);
+            return next().Invoke(invocation, next);
         }
     }
 }

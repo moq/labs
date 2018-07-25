@@ -17,7 +17,7 @@ namespace Moq
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         InvokeBehavior IBehavior.Invoke => Invoke;
 
-        IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior getNext)
+        IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior next)
         {
             var arguments = invocation.Arguments.ToArray();
             var parameters = invocation.MethodBase.GetParameters();
