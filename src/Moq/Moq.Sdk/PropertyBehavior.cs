@@ -30,7 +30,7 @@ namespace Moq.Sdk
         /// <summary>
         /// Gets or sets the value of the given property as an entry in the mock <see cref="IMock.State"/>.
         /// </summary>
-        public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior next)
+        public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next)
         {
             var state = (invocation.Target as IMocked ?? throw new ArgumentException(Strings.TargetNotMock, nameof(invocation)))
                 .Mock.State;

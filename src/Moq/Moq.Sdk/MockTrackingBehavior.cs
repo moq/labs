@@ -17,7 +17,7 @@ namespace Moq.Sdk
     {
         public bool AppliesTo(IMethodInvocation invocation) => true;
 
-        public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior next)
+        public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next)
         {
             var mock = invocation.Target.GetMock();
 

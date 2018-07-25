@@ -20,7 +20,7 @@ namespace Moq.Sdk
         /// <summary>
         /// Throws <see cref="StrictMockException"/>.
         /// </summary>
-        public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior next)
+        public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next)
         {
             if (invocation == null) throw new ArgumentNullException(nameof(invocation));
 
@@ -29,7 +29,7 @@ namespace Moq.Sdk
 
             // Otherwise, fallback to returning default values so that 
             // the fluent setup API can do its work.
-            return fallback.Invoke(invocation, next);
+            return fallback.Execute(invocation, next);
         }
     }
 }

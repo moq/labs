@@ -12,20 +12,20 @@ namespace Stunts
     {
         /// <summary>
         /// Creates a new <see cref="BehaviorPipeline"/> with the given set of 
-        /// <see cref="InvokeBehavior"/> delegates.
+        /// <see cref="ExecuteDelegate"/> delegates.
         /// </summary>
         /// <param name="behaviors">Behaviors to add to the pipeline.</param>
-        public BehaviorPipeline(params InvokeBehavior[] behaviors)
-            : this((IEnumerable<InvokeBehavior>)behaviors)
+        public BehaviorPipeline(params ExecuteDelegate[] behaviors)
+            : this((IEnumerable<ExecuteDelegate>)behaviors)
         {
         }
 
         /// <summary>
         /// Creates a new <see cref="BehaviorPipeline"/> with the given set of 
-        /// <see cref="InvokeBehavior"/> delegates.
+        /// <see cref="ExecuteDelegate"/> delegates.
         /// </summary>
         /// <param name="behaviors">Behaviors to add to the pipeline.</param>
-        public BehaviorPipeline(IEnumerable<InvokeBehavior> behaviors)
+        public BehaviorPipeline(IEnumerable<ExecuteDelegate> behaviors)
             : this(behaviors.Select(behavior => StuntBehavior.Create(behavior)))
         {
         }
@@ -69,7 +69,7 @@ namespace Stunts
         /// <param name="throwOnException">Whether to throw the <see cref="IMethodReturn.Exception"/> if it has a value after running 
         /// the behaviors.</param>
         /// <returns>Return value from the pipeline.</returns>
-        public IMethodReturn Invoke(IMethodInvocation invocation, InvokeBehavior target, bool throwOnException = false)
+        public IMethodReturn Invoke(IMethodInvocation invocation, ExecuteDelegate target, bool throwOnException = false)
         {
             if (Behaviors.Count == 0)
                 return target(invocation, null);
@@ -87,7 +87,7 @@ namespace Stunts
             if (index == -1)
                 return target(invocation, null);
 
-            var result = Behaviors[index].Invoke(invocation, () =>
+            var result = Behaviors[index].Execute(invocation, () =>
             {
                 for (index++; index < Behaviors.Count; index++)
                 {
@@ -96,7 +96,7 @@ namespace Stunts
                 }
 
                 return (index < Behaviors.Count) ?
-                    Behaviors[index].Invoke :
+                    Behaviors[index].Execute :
                     target;
             });
 

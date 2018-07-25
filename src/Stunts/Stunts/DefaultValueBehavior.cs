@@ -24,7 +24,7 @@ namespace Stunts
         /// Fills in the ref, out and return values with the defaults determined 
         /// by the <see cref="DefaultValue"/> utility class.
         /// </summary>
-        IMethodReturn IStuntBehavior.Invoke(IMethodInvocation invocation, GetNextBehavior next)
+        IMethodReturn IStuntBehavior.Execute(IMethodInvocation invocation, GetNextBehavior next)
         {
             var arguments = invocation.Arguments.ToArray();
             var parameters = invocation.MethodBase.GetParameters();

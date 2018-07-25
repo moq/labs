@@ -75,7 +75,7 @@ namespace Stunts.Tests
             stunt.InsertBehavior(0, (m, n) => throw new NotImplementedException());
 
             Assert.Equal(2, stunt.Behaviors.Count);
-            Assert.Throws<NotImplementedException>(() => stunt.Behaviors[0].Invoke(null, null));
+            Assert.Throws<NotImplementedException>(() => stunt.Behaviors[0].Execute(null, null));
         }
 
         [Fact]
@@ -90,7 +90,7 @@ namespace Stunts.Tests
             Assert.Equal(3, stunt.Behaviors.Count);
             Assert.False(stunt.Behaviors[0].AppliesTo(null));
             Assert.True(stunt.Behaviors[1].AppliesTo(null));
-            Assert.Throws<NotImplementedException>(() => stunt.Behaviors[1].Invoke(null, null));
+            Assert.Throws<NotImplementedException>(() => stunt.Behaviors[1].Execute(null, null));
         }
 
         [Fact]
@@ -115,7 +115,7 @@ namespace Stunts.Tests
             stunt.InsertBehavior(0, (m, n) => throw new NotImplementedException());
 
             Assert.Equal(2, ((IStunt)stunt).Behaviors.Count);
-            Assert.Throws<NotImplementedException>(() => ((IStunt)stunt).Behaviors[0].Invoke(null, null));
+            Assert.Throws<NotImplementedException>(() => ((IStunt)stunt).Behaviors[0].Execute(null, null));
         }
 
         [Fact]
@@ -130,7 +130,7 @@ namespace Stunts.Tests
             Assert.Equal(3, ((IStunt)stunt).Behaviors.Count);
             Assert.False(((IStunt)stunt).Behaviors[0].AppliesTo(null));
             Assert.True(((IStunt)stunt).Behaviors[1].AppliesTo(null));
-            Assert.Throws<NotImplementedException>(() => ((IStunt)stunt).Behaviors[1].Invoke(null, null));
+            Assert.Throws<NotImplementedException>(() => ((IStunt)stunt).Behaviors[1].Execute(null, null));
         }
 
         [Fact]
@@ -166,7 +166,7 @@ namespace Stunts.Tests
         {
             public bool AppliesTo(IMethodInvocation invocation) => true;
 
-            public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior next) => null;
+            public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next) => null;
         }
 
         class TestStunt : IStunt

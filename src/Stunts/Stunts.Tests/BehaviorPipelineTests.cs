@@ -14,13 +14,13 @@ namespace Stunts.Tests
             var targetCalled = false;
 
             var pipeline = new BehaviorPipeline(
-                new InvokeBehavior((m, n) => { firstCalled = true; return n().Invoke(m, n); }),
-                new InvokeBehavior((m, n) => { secondCalled = true; return n().Invoke(m, n); }));
+                new ExecuteDelegate((m, n) => { firstCalled = true; return n().Invoke(m, n); }),
+                new ExecuteDelegate((m, n) => { secondCalled = true; return n().Invoke(m, n); }));
 
             Action a = WhenInvokingPipeline_ThenInvokesAllBehaviorsAndTarget;
             
             pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo()),
-                new InvokeBehavior((m, n) => { targetCalled = true; return m.CreateValueReturn(null); }));
+                new ExecuteDelegate((m, n) => { targetCalled = true; return m.CreateValueReturn(null); }));
 
             Assert.True(firstCalled);
             Assert.True(secondCalled);
@@ -41,7 +41,7 @@ namespace Stunts.Tests
             Action a = WhenInvokingPipeline_ThenInvokesAllBehaviorsAndTarget;
 
             pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo()),
-                new InvokeBehavior((m, n) => { targetCalled = true; return m.CreateValueReturn(null); }));
+                new ExecuteDelegate((m, n) => { targetCalled = true; return m.CreateValueReturn(null); }));
 
             Assert.True(firstCalled);
             Assert.False(secondCalled);
@@ -56,13 +56,13 @@ namespace Stunts.Tests
             var targetCalled = false;
 
             var pipeline = new BehaviorPipeline(
-                new InvokeBehavior((m, n) => { firstCalled = true; return m.CreateValueReturn(null); }),
-                new InvokeBehavior((m, n) => { secondCalled = true; return n().Invoke(m, n); }));
+                new ExecuteDelegate((m, n) => { firstCalled = true; return m.CreateValueReturn(null); }),
+                new ExecuteDelegate((m, n) => { secondCalled = true; return n().Invoke(m, n); }));
 
             Action a = WhenInvokingPipeline_ThenBehaviorCanShortcircuitInvocation;
 
             pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo()),
-                new InvokeBehavior((m, n) => { targetCalled = true; return m.CreateValueReturn(null); }));
+                new ExecuteDelegate((m, n) => { targetCalled = true; return m.CreateValueReturn(null); }));
 
             Assert.True(firstCalled);
             Assert.False(secondCalled);
@@ -76,13 +76,13 @@ namespace Stunts.Tests
             var actual = Guid.Empty;
 
             var pipeline = new BehaviorPipeline(
-                new InvokeBehavior((m, n) => { m.Context["guid"] = expected; return n().Invoke(m, n); }),
-                new InvokeBehavior((m, n) => { actual = (Guid)m.Context["guid"]; return n().Invoke(m, n); }));
+                new ExecuteDelegate((m, n) => { m.Context["guid"] = expected; return n().Invoke(m, n); }),
+                new ExecuteDelegate((m, n) => { actual = (Guid)m.Context["guid"]; return n().Invoke(m, n); }));
 
             Action a = WhenInvokingPipeline_ThenBehaviorsCanPassDataWithContext;
 
             var result = pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo()),
-                new InvokeBehavior((m, n) => m.CreateValueReturn(null)));
+                new ExecuteDelegate((m, n) => m.CreateValueReturn(null)));
 
             Assert.Equal(expected, actual);
             Assert.True(result.Context.ContainsKey("guid"));
@@ -95,12 +95,12 @@ namespace Stunts.Tests
             var expected = new object();
 
             var pipeline = new BehaviorPipeline(
-                new InvokeBehavior((m, n) => m.CreateValueReturn(expected)));
+                new ExecuteDelegate((m, n) => m.CreateValueReturn(expected)));
 
             Func<object> a = NonVoidMethod;
 
             var result = pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo()),
-                new InvokeBehavior((m, n) => throw new NotImplementedException()));
+                new ExecuteDelegate((m, n) => throw new NotImplementedException()));
 
             Assert.Equal(expected, result.ReturnValue);
         }
@@ -111,12 +111,12 @@ namespace Stunts.Tests
             var expected = new object();
 
             var pipeline = new BehaviorPipeline(
-                new InvokeBehavior((m, n) => m.CreateValueReturn(expected, new object())));
+                new ExecuteDelegate((m, n) => m.CreateValueReturn(expected, new object())));
 
             Func<object, object> a = NonVoidMethodWithArg;
 
             var result = pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo(), expected),
-                new InvokeBehavior((m, n) => throw new NotImplementedException()));
+                new ExecuteDelegate((m, n) => throw new NotImplementedException()));
 
             Assert.Equal(expected, result.ReturnValue);
         }
@@ -128,12 +128,12 @@ namespace Stunts.Tests
             var output = new object();
 
             var pipeline = new BehaviorPipeline(
-                new InvokeBehavior((m, n) => m.CreateValueReturn(expected, new object(), output)));
+                new ExecuteDelegate((m, n) => m.CreateValueReturn(expected, new object(), output)));
 
             NonVoidMethodWithArgRefDelegate a = NonVoidMethodWithArgRef;
 
             var result = pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo(), expected, output),
-                new InvokeBehavior((m, n) => throw new NotImplementedException()));
+                new ExecuteDelegate((m, n) => throw new NotImplementedException()));
 
             Assert.Equal(expected, result.ReturnValue);
             Assert.Equal(output, result.Outputs[0]);
@@ -146,12 +146,12 @@ namespace Stunts.Tests
             var output = new object();
 
             var pipeline = new BehaviorPipeline(
-                new InvokeBehavior((m, n) => m.CreateValueReturn(expected, new object(), output)));
+                new ExecuteDelegate((m, n) => m.CreateValueReturn(expected, new object(), output)));
 
             NonVoidMethodWithArgOutDelegate a = NonVoidMethodWithArgOut;
 
             var result = pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo(), expected, output),
-                new InvokeBehavior((m, n) => throw new NotImplementedException()));
+                new ExecuteDelegate((m, n) => throw new NotImplementedException()));
 
             Assert.Equal(expected, result.ReturnValue);
             Assert.Equal(output, result.Outputs[0]);
@@ -165,12 +165,12 @@ namespace Stunts.Tests
             var byref = new object();
 
             var pipeline = new BehaviorPipeline(
-                new InvokeBehavior((m, n) => m.CreateValueReturn(expected, new object(), byref, output)));
+                new ExecuteDelegate((m, n) => m.CreateValueReturn(expected, new object(), byref, output)));
 
             NonVoidMethodWithArgRefOutDelegate a = NonVoidMethodWithArgRefOut;
 
             var result = pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo(), expected, byref, output),
-                new InvokeBehavior((m, n) => throw new NotImplementedException()));
+                new ExecuteDelegate((m, n) => throw new NotImplementedException()));
 
             Assert.Equal(expected, result.ReturnValue);
             Assert.Equal(byref, result.Outputs[0]);

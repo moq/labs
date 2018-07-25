@@ -23,7 +23,7 @@ namespace Moq.Sdk
                invocation.MethodBase.Name.StartsWith("remove_", StringComparison.Ordinal));
 
         /// <inheritdoc />
-        public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior next)
+        public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next)
         {
             var info = invocation.MethodBase.DeclaringType.GetRuntimeEvent(
                 invocation.MethodBase.Name.Replace("add_", string.Empty).Replace("remove_", string.Empty));

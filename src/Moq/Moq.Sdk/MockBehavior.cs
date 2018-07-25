@@ -14,7 +14,7 @@ namespace Moq.Sdk
         /// </summary>
         /// <param name="behavior">The behavior to execute.</param>
         /// <param name="displayName">A friendly display name for the behavior.</param>
-        public static IMockBehavior Create(InvokeBehavior behavior, string displayName)
+        public static IMockBehavior Create(ExecuteDelegate behavior, string displayName)
             => new AnonymousMockBehavior(behavior, displayName);
 
         /// <summary>
@@ -22,7 +22,7 @@ namespace Moq.Sdk
         /// </summary>
         /// <param name="behavior">The behavior to execute.</param>
         /// <param name="displayName">A friendly display name for the behavior.</param>
-        public static IMockBehavior Create(InvokeBehavior behavior, Lazy<string> displayName)
+        public static IMockBehavior Create(ExecuteDelegate behavior, Lazy<string> displayName)
             => new AnonymousMockBehavior(behavior, displayName);
 
         /// <summary>
@@ -32,13 +32,13 @@ namespace Moq.Sdk
         class AnonymousMockBehavior : IMockBehavior
         {
             readonly Lazy<string> displayName;
-            readonly InvokeBehavior behavior;
+            readonly ExecuteDelegate behavior;
 
             /// <summary>
             /// Creates an instance of the invokable behavior with the given 
             /// delegate and friendly display name.
             /// </summary>
-            public AnonymousMockBehavior(InvokeBehavior invoke, string displayName)
+            public AnonymousMockBehavior(ExecuteDelegate invoke, string displayName)
                 : this(invoke, new Lazy<string>(() => displayName))
             {
             }
@@ -51,7 +51,7 @@ namespace Moq.Sdk
             /// Use this constructor overload whenever constructing the display
             /// name is somewhat expensive.
             /// </remarks>
-            public AnonymousMockBehavior(InvokeBehavior invoke, Lazy<string> displayName)
+            public AnonymousMockBehavior(ExecuteDelegate invoke, Lazy<string> displayName)
             {
                 behavior = invoke;
                 this.displayName = displayName;

@@ -17,7 +17,7 @@ namespace Moq.Sdk.Tests
             var behavior = new MockTrackingBehavior();
             var mock = new Mocked();
 
-            behavior.Invoke(new MethodInvocation(mock, typeof(object).GetMethod(nameof(object.ToString))),
+            behavior.Execute(new MethodInvocation(mock, typeof(object).GetMethod(nameof(object.ToString))),
                 () => (m, n) => m.CreateValueReturn(null));
 
             Assert.Equal(1, mock.Mock.Invocations.Count);
@@ -28,7 +28,7 @@ namespace Moq.Sdk.Tests
         {
             var behavior = new MockTrackingBehavior();
 
-            Assert.Throws<ArgumentException>(() => behavior.Invoke(new MethodInvocation(
+            Assert.Throws<ArgumentException>(() => behavior.Execute(new MethodInvocation(
                 new object(),
                 typeof(Mocked).GetProperty(nameof(IMocked.Mock)).GetGetMethod()),
                 null));

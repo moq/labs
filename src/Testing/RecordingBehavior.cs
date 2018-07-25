@@ -9,7 +9,7 @@ public class RecordingBehavior : IStuntBehavior
 
     public bool AppliesTo(IMethodInvocation invocation) => true;
 
-    public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior next)
+    public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next)
     {
         var result = next().Invoke(invocation, next);
         if (result != null)

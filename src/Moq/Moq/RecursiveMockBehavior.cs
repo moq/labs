@@ -18,7 +18,7 @@ namespace Moq.Sdk
         public bool AppliesTo(IMethodInvocation invocation)
             => SetupScope.IsActive;
 
-        public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior next)
+        public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next)
         {
             if (invocation.MethodBase is MethodInfo info &&
                 info.ReturnType != typeof(void) && 

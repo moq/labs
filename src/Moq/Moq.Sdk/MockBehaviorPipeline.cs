@@ -28,7 +28,7 @@ namespace Moq.Sdk
         /// </summary>
         public bool AppliesTo(IMethodInvocation invocation) => Setup.AppliesTo(invocation);
 
-        public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior next)
+        public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next)
         {
             // NOTE: the mock behavior is like a sub-pipeline within the overall stunt 
             // behavior pipeline, where all the behaviors added automatically apply as 

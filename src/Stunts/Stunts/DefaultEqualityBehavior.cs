@@ -19,7 +19,7 @@ namespace Stunts
         /// Fills in the ref, out and return values with the defaults determined 
         /// by the <see cref="DefaultValue"/> utility class.
         /// </summary>
-        public IMethodReturn Invoke(IMethodInvocation invocation, GetNextBehavior next)
+        public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next)
         {
             if (invocation.MethodBase.Name == nameof(GetHashCode))
                 return invocation.CreateValueReturn(RuntimeHelpers.GetHashCode(invocation.Target));

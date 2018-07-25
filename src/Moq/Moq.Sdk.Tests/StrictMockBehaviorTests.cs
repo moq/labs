@@ -9,7 +9,7 @@ namespace Moq.Sdk.Tests
         public void ThrowsStrictMockException()
         {
             Assert.Throws<StrictMockException>(() =>
-                new StrictMockBehavior().Invoke(new FakeInvocation(), () => throw new NotImplementedException()));
+                new StrictMockBehavior().Execute(new FakeInvocation(), () => throw new NotImplementedException()));
         }
     }
 }

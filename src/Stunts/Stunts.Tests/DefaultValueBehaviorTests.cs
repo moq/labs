@@ -15,7 +15,7 @@ namespace Stunts.Tests
             IStuntBehavior behavior = new DefaultValueBehavior();
             var value = new object();
 
-            var result = behavior.Invoke(new MethodInvocation(new object(), method, value), () => null);
+            var result = behavior.Execute(new MethodInvocation(new object(), method, value), () => null);
 
             Assert.Equal(1, result.Outputs.Count);
             Assert.NotNull(result.Outputs[0]);
@@ -29,7 +29,7 @@ namespace Stunts.Tests
             IStuntBehavior behavior = new DefaultValueBehavior();
             var platform = PlatformID.Xbox;
 
-            var result = behavior.Invoke(new MethodInvocation(new object(), method, platform), () => null);
+            var result = behavior.Execute(new MethodInvocation(new object(), method, platform), () => null);
 
             Assert.Equal(1, result.Outputs.Count);
             Assert.NotNull(result.Outputs[0]);
@@ -42,7 +42,7 @@ namespace Stunts.Tests
             var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.VoidWithOut));
             IStuntBehavior behavior = new DefaultValueBehavior();
 
-            var result = behavior.Invoke(new MethodInvocation(new object(), method, new object[1]), () => null);
+            var result = behavior.Execute(new MethodInvocation(new object(), method, new object[1]), () => null);
 
             Assert.Equal(1, result.Outputs.Count);
             Assert.NotNull(result.Outputs[0]);
@@ -55,7 +55,7 @@ namespace Stunts.Tests
             var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.ReturnEnum));
             IStuntBehavior behavior = new DefaultValueBehavior();
 
-            var result = behavior.Invoke(new MethodInvocation(new object(), method, new object[0]), () => null);
+            var result = behavior.Execute(new MethodInvocation(new object(), method, new object[0]), () => null);
 
             Assert.Equal(default(PlatformID), result.ReturnValue);
         }
@@ -66,7 +66,7 @@ namespace Stunts.Tests
             var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.ReturnNullableEnum));
             IStuntBehavior behavior = new DefaultValueBehavior();
 
-            var result = behavior.Invoke(new MethodInvocation(new object(), method, new object[0]), () => null);
+            var result = behavior.Execute(new MethodInvocation(new object(), method, new object[0]), () => null);
 
             Assert.Null(result.ReturnValue);
         }
@@ -78,7 +78,7 @@ namespace Stunts.Tests
             var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.ReturnArray));
             IStuntBehavior behavior = new DefaultValueBehavior();
 
-            var result = behavior.Invoke(new MethodInvocation(new object(), method, new object[0]), () => null);
+            var result = behavior.Execute(new MethodInvocation(new object(), method, new object[0]), () => null);
 
             Assert.NotNull(result.ReturnValue);
             Assert.True(result.ReturnValue is object[]);
@@ -91,7 +91,7 @@ namespace Stunts.Tests
             var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.ReturnTask));
             IStuntBehavior behavior = new DefaultValueBehavior();
 
-            var result = behavior.Invoke(new MethodInvocation(new object(), method, new object[0]), () => null);
+            var result = behavior.Execute(new MethodInvocation(new object(), method, new object[0]), () => null);
 
             Assert.NotNull(result.ReturnValue);
             Assert.True(result.ReturnValue is Task);
@@ -104,7 +104,7 @@ namespace Stunts.Tests
             var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.ReturnGenericTask));
             IStuntBehavior behavior = new DefaultValueBehavior();
 
-            var result = behavior.Invoke(new MethodInvocation(new object(), method, new object[0]), () => null);
+            var result = behavior.Execute(new MethodInvocation(new object(), method, new object[0]), () => null);
 
             Assert.NotNull(result.ReturnValue);
             Assert.True(result.ReturnValue is Task<object>);
@@ -117,7 +117,7 @@ namespace Stunts.Tests
             var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.ReturnGenericTaskEnum));
             IStuntBehavior behavior = new DefaultValueBehavior();
 
-            var result = behavior.Invoke(new MethodInvocation(new object(), method, new object[0]), () => null);
+            var result = behavior.Execute(new MethodInvocation(new object(), method, new object[0]), () => null);
 
             Assert.NotNull(result.ReturnValue);
             Assert.True(result.ReturnValue is Task<PlatformID>);
@@ -133,7 +133,7 @@ namespace Stunts.Tests
 
             behavior.Provider.Register(typeof(IEnumerable<object>), _ => new object[] { 5, 10 });
 
-            var result = ((IStuntBehavior)behavior).Invoke(new MethodInvocation(new object(), method, new object[0]), () => null);
+            var result = ((IStuntBehavior)behavior).Execute(new MethodInvocation(new object(), method, new object[0]), () => null);
 
             Assert.NotNull(result.ReturnValue);
             Assert.True(result.ReturnValue is object[]);
@@ -146,7 +146,7 @@ namespace Stunts.Tests
             var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.ReturnEnumerable));
             IStuntBehavior behavior = new DefaultValueBehavior();
 
-            var result = behavior.Invoke(new MethodInvocation(new object(), method, new object[0]), () => null);
+            var result = behavior.Execute(new MethodInvocation(new object(), method, new object[0]), () => null);
 
             Assert.NotNull(result.ReturnValue);
             Assert.True(result.ReturnValue is IEnumerable);
@@ -158,7 +158,7 @@ namespace Stunts.Tests
             var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.ReturnGenericEnumerable));
             IStuntBehavior behavior = new DefaultValueBehavior();
 
-            var result = behavior.Invoke(new MethodInvocation(new object(), method, new object[0]), () => null);
+            var result = behavior.Execute(new MethodInvocation(new object(), method, new object[0]), () => null);
 
             Assert.NotNull(result.ReturnValue);
             Assert.True(result.ReturnValue is IEnumerable<object>);

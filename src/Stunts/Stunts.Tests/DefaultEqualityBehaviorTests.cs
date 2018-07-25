@@ -34,7 +34,7 @@ namespace Stunts.Tests
             var target = new Foo();
 
             var expected = target.GetHashCode();
-            var actual = (int)behavior.Invoke(new MethodInvocation(target, method, new object[0]), () => null).ReturnValue;
+            var actual = (int)behavior.Execute(new MethodInvocation(target, method, new object[0]), () => null).ReturnValue;
 
             Assert.Equal(expected, actual);
         }
@@ -46,7 +46,7 @@ namespace Stunts.Tests
             var behavior = new DefaultEqualityBehavior();
             var target = new Foo();
 
-            var actual = (bool)behavior.Invoke(new MethodInvocation(target, method, new object[] { target }), () => null).ReturnValue;
+            var actual = (bool)behavior.Execute(new MethodInvocation(target, method, new object[] { target }), () => null).ReturnValue;
 
             Assert.True(actual);
         }
@@ -58,7 +58,7 @@ namespace Stunts.Tests
             var behavior = new DefaultEqualityBehavior();
             var target = new Foo();
 
-            var actual = (bool)behavior.Invoke(new MethodInvocation(target, method, new object[] { new Foo() }), () => null).ReturnValue;
+            var actual = (bool)behavior.Execute(new MethodInvocation(target, method, new object[] { new Foo() }), () => null).ReturnValue;
 
             Assert.False(actual);
         }

@@ -17,7 +17,7 @@ namespace Moq.Sdk
         /// <summary>
         /// Adds a behavior to a mock for the current <see cref="MockContext.CurrentSetup"/> setup.
         /// </summary>
-        public static IMock AddBehavior(this IMock mock, InvokeBehavior behavior, Lazy<string> displayName)
+        public static IMock AddBehavior(this IMock mock, ExecuteDelegate behavior, Lazy<string> displayName)
         {
             mock
                 .GetPipeline(MockContext.CurrentSetup ?? throw new InvalidOperationException(Strings.NoCurrentSetup))
@@ -31,7 +31,7 @@ namespace Moq.Sdk
         /// Inserts a behavior into the mock behavior pipeline at the specified 
         /// index for the current <see cref="MockContext.CurrentSetup"/> setup.
         /// </summary>
-        public static IMock InsertBehavior(this IMock mock, int index, InvokeBehavior behavior, Lazy<string> displayName)
+        public static IMock InsertBehavior(this IMock mock, int index, ExecuteDelegate behavior, Lazy<string> displayName)
         {
             mock
                 .GetPipeline(MockContext.CurrentSetup ?? throw new InvalidOperationException(Strings.NoCurrentSetup))
