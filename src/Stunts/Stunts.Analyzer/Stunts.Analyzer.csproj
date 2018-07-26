@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>Stunts</RootNamespace>
     <IncludeRoslyn>true</IncludeRoslyn>
-    <PrimaryOutputKind Condition="'$(PrimaryOutputKind)' == ''">Analyzers</PrimaryOutputKind>
+    <PrimaryOutputKind Condition="'$(PrimaryOutputKind)' == ''">Build</PrimaryOutputKind>
   </PropertyGroup>
 
   <ItemDefinitionGroup>
@@ -39,9 +39,23 @@
     <None Include="$(NuGetPackageRoot)\netstandard.library\$(NETStandardLibraryPackageVersion)\build\$(TargetFramework)\ref\netstandard.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Pack>true</Pack>
+      <Kind>$(PrimaryOutputKind)</Kind>
+      <TargetPath>%(Filename)%(Extension)</TargetPath>
     </None>
-    <!--<PackageFile Include="$(NuGetPackageRoot)\netstandard.library\$(NETStandardLibraryPackageVersion)\build\$(TargetFramework)\ref\netstandard.dll" 
-                 TargetPath="netstandard.dll" />-->
+    <None Update="Stunts.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>true</Pack>
+      <Kind>$(PrimaryOutputKind)</Kind>
+    </None>
   </ItemGroup>
+
+  <Target Name="FixPackageFileFramework" BeforeTargets="GetPackageContents" AfterTargets="$(GetPackageContentsDependsOn)">
+    <ItemGroup>
+      <PackageFile>
+        <TargetFrameworkMoniker>.NETStandard,Version=v1.3</TargetFrameworkMoniker>
+        <FrameworkSpecific>true</FrameworkSpecific>
+      </PackageFile>
+    </ItemGroup>
+  </Target>
 
 </Project>

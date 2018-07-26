@@ -19,12 +19,22 @@
   <ItemGroup>
     <ProjectReference Include="..\Moq.Analyzer\Moq.Analyzer.csproj" />
     <ProjectReference Include="..\Moq.Sdk\Moq.Sdk.csproj">
-      <!-- This causes the output of the Sdk project to be packaged into the analyzer folder too -->
-      <AdditionalProperties>PrimaryOutputKind=Analyzers</AdditionalProperties>
+      <AdditionalProperties>PrimaryOutputKind=Build;PrimaryOutputFrameworkSpecific=true</AdditionalProperties>
     </ProjectReference>
     <ProjectReference Include="..\Moq\Moq.csproj" />
     <ProjectReference Include="..\..\Stunts\Stunts.Package\Stunts.Package.nuproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
   <Import Project="$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.targets" Condition="Exists('$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.targets')" />
+
+  <Target Name="FixPackageFileFramework" BeforeTargets="Pack" AfterTargets="$(GetPackageContents)"
+          Returns="@(_PackageContent)">
+    <ItemGroup>
+      <_PackageContent Condition="'%(Kind)' == 'Dependency'">
+        <TargetFrameworkMoniker>.NETStandard,Version=v2.0</TargetFrameworkMoniker>
+        <Include>all</Include>
+      </_PackageContent>
+    </ItemGroup>
+  </Target>
+
 </Project>

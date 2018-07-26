@@ -70,5 +70,14 @@
       <PackageFile Remove="@(_NonePackageFile)" />
     </ItemGroup>
   </Target>
-  
+
+  <Target Name="FixPackageFileFramework" Condition="'$(IsPackable)' != 'true'" BeforeTargets="GetPackageContents" AfterTargets="$(GetPackageContentsDependsOn)">
+    <ItemGroup>
+      <PackageFile>
+        <TargetFrameworkMoniker>.NETStandard,Version=v1.3</TargetFrameworkMoniker>
+        <FrameworkSpecific>true</FrameworkSpecific>
+      </PackageFile>
+    </ItemGroup>
+  </Target>
+
 </Project>
