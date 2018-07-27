@@ -71,13 +71,14 @@ namespace Stunts
         /// <returns>Return value from the pipeline.</returns>
         public IMethodReturn Invoke(IMethodInvocation invocation, ExecuteDelegate target, bool throwOnException = false)
         {
-            if (Behaviors.Count == 0)
+            var behaviors = Behaviors.ToArray();
+            if (behaviors.Length == 0)
                 return target(invocation, null);
 
             var index = -1;
-            for (var i = 0; i < Behaviors.Count; i++)
+            for (var i = 0; i < behaviors.Length; i++)
             {
-                if (Behaviors[i].AppliesTo(invocation))
+                if (behaviors[i].AppliesTo(invocation))
                 {
                     index = i;
                     break;
@@ -87,16 +88,16 @@ namespace Stunts
             if (index == -1)
                 return target(invocation, null);
 
-            var result = Behaviors[index].Execute(invocation, () =>
+            var result = behaviors[index].Execute(invocation, () =>
             {
-                for (index++; index < Behaviors.Count; index++)
+                for (index++; index < behaviors.Length; index++)
                 {
-                    if (Behaviors[index].AppliesTo(invocation))
+                    if (behaviors[index].AppliesTo(invocation))
                         break;
                 }
 
-                return (index < Behaviors.Count) ?
-                    Behaviors[index].Execute :
+                return (index < behaviors.Length) ?
+                    behaviors[index].Execute :
                     target;
             });
 
