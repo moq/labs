@@ -52,7 +52,7 @@ namespace Moq.Sdk
             if (value == null)
                 state.TryRemove(typeof(T), out _);
             else
-                state[typeof(T)] = value;
+                state.AddOrUpdate(typeof(T), value, (_, __) => value);
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace Moq.Sdk
             if (value == null)
                 state.TryRemove(Key<T>(key), out _);
             else
-                state[Key<T>(key)] = value;
+                state.AddOrUpdate(Key<T>(key), value, (_, __) => value);
         }
 
         /// <summary>
