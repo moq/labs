@@ -79,8 +79,8 @@ static partial class TestHelpers
         if (includeMockApi)
         {
             var mockApi = language == LanguageNames.CSharp ?
-                new FileInfo(@"contentFiles\cs\netstandard1.3\Mock.cs").FullName :
-                new FileInfo(@"contentFiles\vb\netstandard1.3\Mock.vb").FullName;
+                new FileInfo(@"contentFiles\cs\netstandard2.0\Mock.cs").FullName :
+                new FileInfo(@"contentFiles\vb\netstandard2.0\Mock.vb").FullName;
             var mockApiOverloads = Path.ChangeExtension(mockApi, ".Overloads") + Path.GetExtension(mockApi);
 
             Assert.True(File.Exists(mockApi));
