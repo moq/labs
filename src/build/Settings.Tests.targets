@@ -1,20 +1,20 @@
 <Project>
-	<PropertyGroup>
-		<ReferencePathsFile>$(IntermediateOutputPath)ReferencePaths.g.cs</ReferencePathsFile>
+  <PropertyGroup>
+    <ReferencePathsFile>$(IntermediateOutputPath)ReferencePaths.g.cs</ReferencePathsFile>
     <CoreCompileDependsOn Condition="'$(Language)' == 'C#'">
       $(CoreCompileDependsOn);
       GenerateReferencePaths;
     </CoreCompileDependsOn>
   </PropertyGroup>
 
-	<ItemDefinitionGroup>
-		<ReferencePath>
-			<FrameworkFile/>
-			<FusionName/>
-		</ReferencePath>
-	</ItemDefinitionGroup>
+  <ItemDefinitionGroup>
+    <ReferencePath>
+      <FrameworkFile/>
+      <FusionName/>
+    </ReferencePath>
+  </ItemDefinitionGroup>
 
-	<Target Name="Test" DependsOnTargets="Build">
+  <Target Name="Test" DependsOnTargets="Build">
     <xunit Assemblies="@(TargetPathWithTargetPlatformMoniker)" />
   </Target>
 
@@ -23,7 +23,8 @@
     <IncludeReferenceFilter Include="System" />
     <IncludeReferenceFilter Include="Stunts" />
     <IncludeReferenceFilter Include="Sample" />
-    <ExcludeReferenceFilter Include="Stunts\.Analyzer" />
+    <ExcludeReferenceFilter Include="Stunts\.CodeAnalysis" />
+    <ExcludeReferenceFilter Include="Stunts\.CodeFix" />
     <ExcludeReferenceFilter Include="Stunts\.Sdk" />
   </ItemGroup>
 
@@ -75,23 +76,23 @@
   </Target>
 
   <UsingTask TaskName="FilterReferences" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
-		<ParameterGroup>
-			<References ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
-			<Include ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+    <ParameterGroup>
+      <References ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+      <Include ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
       <Exclude ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
       <Filtered ParameterType="Microsoft.Build.Framework.ITaskItem[]" Output="true" />
-		</ParameterGroup>
-		<Task>
-			<Reference Include="Microsoft.Build" />
-			<Reference Include="System" />
-			<Reference Include="System.Core" />
-			<Using Namespace="Microsoft.Build.Framework" />
-			<Using Namespace="Microsoft.Build.Utilities" />
-			<Using Namespace="System" />
-			<Using Namespace="System.Linq" />
-			<Using Namespace="System.Text.RegularExpressions" />
-			<Code Type="Fragment" Language="cs">
-				<![CDATA[
+    </ParameterGroup>
+    <Task>
+      <Reference Include="Microsoft.Build" />
+      <Reference Include="System" />
+      <Reference Include="System.Core" />
+      <Using Namespace="Microsoft.Build.Framework" />
+      <Using Namespace="Microsoft.Build.Utilities" />
+      <Using Namespace="System" />
+      <Using Namespace="System.Linq" />
+      <Using Namespace="System.Text.RegularExpressions" />
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
             Filtered = References
               .Where(i => 
                 Include.Any(x => Regex.IsMatch(i.GetMetadata("FusionName"), x.ItemSpec)) && 
@@ -99,8 +100,8 @@
               .OrderBy(i => i.GetMetadata("Filename"))
               .ToArray();
               ]]>
-			</Code>
-		</Task>
-	</UsingTask>
+      </Code>
+    </Task>
+  </UsingTask>
 
 </Project>

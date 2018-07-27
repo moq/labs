@@ -1,17 +1,17 @@
 <Project>
 
   <PropertyGroup>
-    <OutputPath>$(OutputPath)UnitTests\$(MSBuildProjectName)\</OutputPath>  
+    <OutputPath>$(OutputPath)UnitTests\$(MSBuildProjectName)\</OutputPath>
     <NoWarn>1701;1702;1705;0436</NoWarn>
 
     <CopyNuGetImplementations>true</CopyNuGetImplementations>
 
-	  <IncludeMSBuild>true</IncludeMSBuild>
-	  <IncludeRoslyn>true</IncludeRoslyn>
+    <IncludeMSBuild>true</IncludeMSBuild>
+    <IncludeRoslyn>true</IncludeRoslyn>
 
     <AutoUnifyAssemblyReferences>true</AutoUnifyAssemblyReferences>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
   </PropertyGroup>
-  
+
 </Project>

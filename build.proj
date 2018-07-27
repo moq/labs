@@ -14,7 +14,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="GitInfo" Version="*" />
-		<PackageReference Include="xunit.runner.msbuild" Version="2.3.1" />
+		<PackageReference Include="xunit.runner.msbuild" Version="2.4.0" />
 	</ItemGroup>
 
 	<ItemDefinitionGroup>
@@ -51,7 +51,7 @@
   <!-- Runs all unit tests -->
 	<Target Name="Test">
 		<ItemGroup>
-			<TestAssembly Include="bin\$(Configuration)\*Tests.dll" Exclude="bin\$(Configuration)\*AcceptanceTests.dll" />
+			<TestAssembly Include="src\**\bin\$(Configuration)\**\*Tests.dll" Exclude="src\**\bin\$(Configuration)\**\*AcceptanceTests.dll" />
 		</ItemGroup>
     <xunit Assemblies="@(TestAssembly)" />
 	</Target>

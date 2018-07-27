@@ -3,13 +3,13 @@
   <PropertyGroup>
     <MicrosoftBuildVersion>15.*</MicrosoftBuildVersion>
     <RoslynVersion>2.3.1</RoslynVersion>
-    <XunitVersion>2.3.1</XunitVersion>
+    <XunitVersion>2.4.0</XunitVersion>
   </PropertyGroup>
 
   <ItemGroup Label="Common">
     <PackageReference Include="GitInfo" Version="2.0.7" PrivateAssets="all" />
     <PackageReference Include="MSBuilder.ThisAssembly.Project" Version="0.3.4" PrivateAssets="all" />
-    <PackageReference Include="NuGet.Build.Packaging" Version="0.2.5-dev.*" PrivateAssets="all" />
+    <PackageReference Include="NuGet.Build.Packaging" Version="0.2.5-dev.1" PrivateAssets="all" />
     <PackageReference Include="netfx-System.StringResources" Version="3.1.8" PrivateAssets="all" />
     <PackageReference Include="IFluentInterface" Version="2.0.4" Condition="'$(Language)' == 'C#'" Pack="false" />
   </ItemGroup>
@@ -29,9 +29,9 @@
 
     <PackageReference Include="xunit" Version="$(XunitVersion)" />
     <!-- xunit.runner.visualstudio is needed for VSTest built-in task in VSTS -->
-    <PackageReference Include="xunit.runner.visualstudio" Version="$(XunitVersion)" Condition="'$(CI)' == 'true'" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="$(XunitVersion)" />
     <!-- xunit.runner.desktop is needed for Live Unit Testing support -->
-    <PackageReference Include="xunit.runner.console" Version="$(XunitVersion)"  Condition="'$(CI)' != 'true'" />
+    <PackageReference Include="xunit.runner.console" Version="$(XunitVersion)" />
     <!-- xunit.runner.console is used to implement /t:Test in test projects -->    
     <PackageReference Include="xunit.runner.msbuild" Version="$(XunitVersion)" />
   </ItemGroup>
