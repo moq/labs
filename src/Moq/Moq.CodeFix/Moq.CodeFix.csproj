@@ -2,11 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Moq</RootNamespace>
+    <IncludeRoslyn>true</IncludeRoslyn>
+    <PrimaryOutputKind>Build</PrimaryOutputKind>
     <PrimaryOutputFrameworkSpecific>true</PrimaryOutputFrameworkSpecific>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Stunts\Stunts\Stunts.csproj" Pack="false" />
+    <ProjectReference Include="..\..\Stunts\Stunts.CodeFix\Stunts.CodeFix.csproj" Pack="false" />
+    <ProjectReference Include="..\Moq.CodeAnalysis\Moq.CodeAnalysis.csproj" Pack="false" />
+    <ProjectReference Include="..\Moq.Sdk\Moq.Sdk.csproj" Pack="false" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,6 +28,15 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Moq.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Kind>$(PrimaryOutputKind)</Kind>
+      <Pack>true</Pack>
+      <FrameworkSpecific>true</FrameworkSpecific>
+    </None>
   </ItemGroup>
 
 </Project>

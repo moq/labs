@@ -4,7 +4,6 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>Stunts</RootNamespace>
     <IncludeRoslyn>true</IncludeRoslyn>
-    <LangVersion>7.1</LangVersion>
     <PrimaryOutputKind Condition="'$(PrimaryOutputKind)' == ''">Lib</PrimaryOutputKind>
     <IsPackable Condition="'$(PrimaryOutputKind)' != 'Lib'">false</IsPackable>
   </PropertyGroup>
@@ -39,8 +38,9 @@
   </ItemDefinitionGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Stunts.CodeAnalysis\Stunts.CodeAnalysis.csproj" Pack="$(IsPackable)" />
     <ProjectReference Include="..\Stunts.Internal\Stunts.Internal.csproj" />
-    <ProjectReference Include="..\Stunts\Stunts.csproj" />
+    <ProjectReference Include="..\Stunts\Stunts.csproj" Pack="$(IsPackable)" />
   </ItemGroup>
 
   <ItemGroup>

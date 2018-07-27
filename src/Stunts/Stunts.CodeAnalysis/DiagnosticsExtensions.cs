@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Microsoft.CodeAnalysis;
 
 namespace Stunts
@@ -38,6 +36,5 @@ namespace Stunts
             return diagnostics
                 .Any(d => isSymbolLoc(d.Location) || d.AdditionalLocations.Any(isSymbolLoc));
         }
-
     }
 }

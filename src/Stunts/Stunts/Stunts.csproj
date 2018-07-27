@@ -7,12 +7,14 @@
     <PackageId>Stunts.Core</PackageId>
     <IsPackable>false</IsPackable>
     <PrimaryOutputFrameworkSpecific>true</PrimaryOutputFrameworkSpecific>
+    <IncludeContentInPackage>$(IncludeApi)</IncludeContentInPackage>
+    <ContentKind Condition="'$(IncludeContentInPackage)' != 'false'">None</ContentKind>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Remove="contentFiles\**\*.cs" />
     <None Remove="contentFiles\**\*.*" />
-    <None Include="contentFiles\**\*.*" Kind="None" Pack="true" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="contentFiles\**\*.*" CopyToOutputDirectory="PreserveNewest" Kind="$(ContentKind)" />
   </ItemGroup>
 
   <ItemGroup>

@@ -3,7 +3,7 @@ using Stunts;
 
 namespace Moq
 {
-    class MockNamingConvention : NamingConvention
+    public class MockNamingConvention : NamingConvention
     {
         public override string Namespace => MockNaming.Namespace;
 

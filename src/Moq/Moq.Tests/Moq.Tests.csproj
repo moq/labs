@@ -9,7 +9,7 @@
     <AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\Moq\contentFiles\cs\netstandard1.3\*.cs" Visible="false" />
+    <Compile Include="..\Moq\contentFiles\cs\netstandard2.0\*.cs" Visible="false" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\Testing\AssertCode.cs" Link="Helpers\AssertCode.cs" />
@@ -23,17 +23,21 @@
     <Analyzer Include="$(RootPath)\src\Stunts\Stunts\bin\$(Configuration)\Stunts.dll" />
     <Analyzer Include="$(RootPath)\src\Stunts\Stunts.Sdk\bin\$(Configuration)\Stunts.Sdk.dll" />
     <Analyzer Include="$(RootPath)\src\Stunts\Stunts.Internal\bin\$(Configuration)\Roslyn.Services.Test.Utilities.dll" />
-    <Analyzer Include="$(RootPath)\src\Stunts\Stunts.Analyzer\bin\$(Configuration)\Stunts.Analyzer.dll" />
-    <Analyzer Include="$(RootPath)\src\Stunts\Stunts.Analyzer\bin\$(Configuration)\netstandard.dll" />
+    <Analyzer Include="$(RootPath)\src\Stunts\Stunts.CodeAnalysis\bin\$(Configuration)\Stunts.CodeAnalysis.dll" />
+    <Analyzer Include="$(RootPath)\src\Stunts\Stunts.CodeFix\bin\$(Configuration)\Stunts.CodeFix.dll" />
+    <Analyzer Include="$(RootPath)\src\Stunts\Stunts.CodeFix\bin\$(Configuration)\netstandard.dll" />
     <Analyzer Include="$(RootPath)\src\Moq\Moq.Sdk\bin\$(Configuration)\Moq.Sdk.dll" />
-    <Analyzer Include="$(RootPath)\src\Moq\Moq.Analyzer\bin\$(Configuration)\Moq.Analyzer.dll" />
+    <Analyzer Include="$(RootPath)\src\Moq\Moq.CodeAnalysis\bin\$(Configuration)\Moq.CodeAnalysis.dll" />
+    <Analyzer Include="$(RootPath)\src\Moq\Moq.CodeFix\bin\$(Configuration)\Moq.CodeFix.dll" />
   </ItemGroup>
   <ItemGroup>
     <IncludeReferenceFilter Include="Moq" />
-    <ExcludeReferenceFilter Include="Moq.Analyzer" />
+    <ExcludeReferenceFilter Include="Moq.CodeAnalysis" />
+    <ExcludeReferenceFilter Include="Moq.CodeFix" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Moq.Analyzer\Moq.Analyzer.csproj" />
+    <ProjectReference Include="..\Moq.CodeAnalysis\Moq.CodeAnalysis.csproj" />
+    <ProjectReference Include="..\Moq.CodeFix\Moq.CodeFix.csproj" />
     <ProjectReference Include="..\Moq.Sdk\Moq.Sdk.csproj" />
     <ProjectReference Include="..\Moq\Moq.csproj" />
     <ProjectReference Include="..\..\Stunts\Stunts\Stunts.csproj" />

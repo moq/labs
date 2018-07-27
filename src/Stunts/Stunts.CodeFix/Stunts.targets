@@ -1,0 +1,12 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Because our analyzers are intended to be design-time only, 
+       we cannot just include them in the package `analyzer` folder.
+       Instead, we have to use an alternative mechanism that only 
+       adds them for VS. The chosen hook is to check for the DesignTimeBuild 
+       property which is passed by VS to the project when retrieving the 
+       analyers to run as part of the design-time build only.       
+  -->
+  <ItemGroup Condition="'$(DesignTimeBuild)' == 'true'">
+    <Analyzer Include="$(MSBuildThisFileDirectory)*.dll"/>
+  </ItemGroup>
+</Project>

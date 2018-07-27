@@ -14,11 +14,15 @@
     <ProjectReference Include="..\Sample\Sample.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(DesignTimeBuild)' == 'true'">
+  <ItemGroup>
     <Analyzer Include="..\..\..\src\Stunts\Stunts\bin\$(Configuration)\Stunts.dll" />
+    <Analyzer Include="..\..\..\src\Stunts\Stunts.CodeAnalysis\bin\$(Configuration)\Stunts.CodeAnalysis.dll" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(DesignTimeBuild)' == 'true'">
+    <Analyzer Include="..\..\..\src\Stunts\Stunts.CodeFix\bin\$(Configuration)\netstandard.dll" />
     <Analyzer Include="..\..\..\src\Stunts\Stunts.Sdk\bin\$(Configuration)\Stunts.Sdk.dll" />
-    <Analyzer Include="..\..\..\src\Stunts\Stunts.Analyzer\bin\$(Configuration)\Stunts.Analyzer.dll" />
-    <Analyzer Include="..\..\..\src\Stunts\Stunts.Analyzer\bin\$(Configuration)\netstandard.dll" />
+    <Analyzer Include="..\..\..\src\Stunts\Stunts.CodeFix\bin\$(Configuration)\Stunts.CodeFix.dll" />
     <Analyzer Include="..\..\..\src\Stunts\Stunts.Internal\bin\$(Configuration)\Roslyn.Services.Test.Utilities.dll" />
   </ItemGroup>
 

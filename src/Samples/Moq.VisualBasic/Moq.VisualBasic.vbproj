@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\..\src\Moq\Moq\contentFiles\vb\netstandard1.3\*.vb">
+    <Compile Include="..\..\..\src\Moq\Moq\contentFiles\vb\netstandard2.0\*.vb">
       <Link>My Project\%(Filename)%(Extension)</Link>
       <!-- For whatever reason, the VB project system isn't honoring this metadata -->
       <Visible>false</Visible>
@@ -19,14 +19,20 @@
     <ProjectReference Include="..\Sample\Sample.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(DesignTimeBuild)' == 'true'">
+  <ItemGroup>
     <Analyzer Include="..\..\..\src\Stunts\Stunts\bin\$(Configuration)\Stunts.dll" />
-    <Analyzer Include="..\..\..\src\Stunts\Stunts.Sdk\bin\$(Configuration)\Stunts.Sdk.dll" />
-    <Analyzer Include="..\..\..\src\Stunts\Stunts.Analyzer\bin\$(Configuration)\Stunts.Analyzer.dll" />
-    <Analyzer Include="..\..\..\src\Stunts\Stunts.Analyzer\bin\$(Configuration)\netstandard.dll" />
-    <Analyzer Include="..\..\..\src\Stunts\Stunts.Internal\bin\$(Configuration)\Roslyn.Services.Test.Utilities.dll" />
+    <Analyzer Include="..\..\..\src\Stunts\Stunts.CodeAnalysis\bin\$(Configuration)\Stunts.CodeAnalysis.dll" />
+    <Analyzer Include="..\..\..\src\Moq\Moq\bin\$(Configuration)\Moq.dll" />
     <Analyzer Include="..\..\..\src\Moq\Moq.Sdk\bin\$(Configuration)\Moq.Sdk.dll" />
-    <Analyzer Include="..\..\..\src\Moq\Moq.Analyzer\bin\$(Configuration)\Moq.Analyzer.dll" />
+    <Analyzer Include="..\..\..\src\Moq\Moq.CodeAnalysis\bin\$(Configuration)\Moq.CodeAnalysis.dll" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(DesignTimeBuild)' == 'true'">
+    <Analyzer Include="..\..\..\src\Stunts\Stunts.CodeFix\bin\$(Configuration)\netstandard.dll" />
+    <Analyzer Include="..\..\..\src\Stunts\Stunts.Sdk\bin\$(Configuration)\Stunts.Sdk.dll" />
+    <Analyzer Include="..\..\..\src\Stunts\Stunts.CodeFix\bin\$(Configuration)\Stunts.CodeFix.dll" />
+    <Analyzer Include="..\..\..\src\Stunts\Stunts.Internal\bin\$(Configuration)\Roslyn.Services.Test.Utilities.dll" />
+    <Analyzer Include="..\..\..\src\Moq\Moq.CodeFix\bin\$(Configuration)\Moq.CodeFix.dll" />
   </ItemGroup>
 
 </Project>

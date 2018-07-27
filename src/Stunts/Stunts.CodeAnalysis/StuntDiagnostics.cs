@@ -3,7 +3,7 @@ using Stunts.Properties;
 
 namespace Stunts
 {
-    class StuntDiagnostics
+    public static class StuntDiagnostics
     {
         public static DiagnosticDescriptor MissingStunt { get; } = new DiagnosticDescriptor(
             "ST001",

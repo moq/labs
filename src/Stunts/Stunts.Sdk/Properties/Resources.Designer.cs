@@ -61,15 +61,6 @@ namespace Stunts.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot intercept sealed types..
-        /// </summary>
-        internal static string InvalidSealedBaseType {
-            get {
-                return ResourceManager.GetString("InvalidSealedBaseType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Only classes and interfaces can be used. Invalid set of symbols: {0}..
         /// </summary>
         internal static string InvalidStuntTypes {
@@ -84,24 +75,6 @@ namespace Stunts.Properties {
         internal static string StuntsRequired {
             get {
                 return ResourceManager.GetString("StuntsRequired", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to At least one symbol is required..
-        /// </summary>
-        internal static string SymbolRequired {
-            get {
-                return ResourceManager.GetString("SymbolRequired", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Only one base class can be specified, and it must be the first in the type list. Invalid set of symbols: {0}..
-        /// </summary>
-        internal static string WrongBaseType {
-            get {
-                return ResourceManager.GetString("WrongBaseType", resourceCulture);
             }
         }
     }
