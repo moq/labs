@@ -52,10 +52,14 @@ namespace Stunts
 
             if (MethodBase.IsSpecialName)
             {
-                if (MethodBase.Name.StartsWith("get_", StringComparison.Ordinal) ||
-                    MethodBase.Name.StartsWith("set_", StringComparison.Ordinal))
+                if (MethodBase.Name.StartsWith("get_", StringComparison.Ordinal))
                 {
                     result.Append(MethodBase.Name.Substring(4));
+                }
+                else if(MethodBase.Name.StartsWith("set_", StringComparison.Ordinal))
+                {
+                    result.Append(MethodBase.Name.Substring(4));
+                    result.Append(" = ").Append(Arguments[0]?.ToString() ?? "null");
                 }
                 else if (MethodBase.Name.StartsWith("add_", StringComparison.Ordinal))
                 {
