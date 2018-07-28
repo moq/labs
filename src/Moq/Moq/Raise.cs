@@ -15,7 +15,7 @@ namespace Moq
         public static EventHandler Event()
         {
             CallContext<EventRaiser>.SetData(EventRaiser.Empty);
-            return default(EventHandler);
+            return default;
         }
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace Moq
         public static EventHandler<TEventArgs> Event<TEventArgs>(TEventArgs args)
         {
             CallContext<EventRaiser>.SetData(new EventArgsEventRaiser(args));
-            return default(EventHandler<TEventArgs>);
+            return default;
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Moq
         public static EventHandler Event(EventArgs args)
         {
             CallContext<EventRaiser>.SetData(new EventArgsEventRaiser(args));
-            return default(EventHandler);
+            return default;
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace Moq
         public static TEventHandler Event<TEventHandler>(EventArgs args)
         {
             CallContext<EventRaiser>.SetData(new EventArgsEventRaiser(args));
-            return default(TEventHandler);
+            return default;
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace Moq
         public static TEventHandler Event<TEventHandler>(params object[] args)
         {
             CallContext<EventRaiser>.SetData(new CustomEventRaiser(args));
-            return default(TEventHandler);
+            return default;
         }
     }
 }

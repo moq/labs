@@ -45,10 +45,8 @@ namespace Stunts
             // i.e. Object[]& has ElementType = Object[]
             var typeKey = valueType.IsArray ? typeof(Array) : valueType;
 
-            Func<Type, object> factory = null;
-
             // Try get a handler with the concrete type first.
-            if (factories.TryGetValue(typeKey, out factory))
+            if (factories.TryGetValue(typeKey, out var factory))
                 return factory.Invoke(typeKey);
 
             // Fallback to getting one for the generic type, if available

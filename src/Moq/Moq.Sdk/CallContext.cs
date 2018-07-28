@@ -41,7 +41,7 @@ namespace Moq.Sdk
         /// <param name="name">The name of the item in the call context.</param>
         /// <returns>The object in the call context associated with the specified name, or a default value for <typeparamref name="T"/> if none is found.</returns>
         public static T GetData(string name) =>
-            state.TryGetValue(name, out AsyncLocal<T> data) ? data.Value : default(T);
+            state.TryGetValue(name, out var data) ? data.Value : default(T);
 
         /// <summary>
         /// Retrieves an object from the <see cref="CallContext"/>, and 
