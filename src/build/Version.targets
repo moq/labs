@@ -41,7 +41,7 @@ AssemblyVersion=$(AssemblyVersion)" />
 
       <!-- We'll use GitFlow and ship publicly from master, meaning we don't need branch metadata from there -->
       <SemVerMetadata Condition="'$(_GitBranch)' != 'master'">$(_GitBranch).</SemVerMetadata>
-      <SemVerMetadata>$(SemVerMetadata)sha.$(GitCommit)</SemVerMetadata>
+      <SemVerMetadata>$(SemVerMetadata)g$(GitCommit)</SemVerMetadata>
 
       <!-- If there is a pre-release label, fix the major.minor.build and increment the release label digit instead. -->
       <PackageVersion Condition="'$(GitSemVerDashLabel)' != ''">$(GitBaseVersionMajor).$(GitBaseVersionMinor).$(GitBaseVersionPatch)$(GitSemVerDashLabel).$(GitCommits)+$(SemVerMetadata)</PackageVersion>
