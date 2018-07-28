@@ -8,7 +8,7 @@
   <PropertyGroup Label="Hidden">
     <IntermediateOutputPath>$(RestoreOutputPath)\</IntermediateOutputPath>
     <AdditionalProperties>Configuration=$(Configuration)</AdditionalProperties>
-    <Out Condition="'$(Out)' == ''">out</Out>
+    <Out Condition="'$(Out)' == ''">$(MSBuildProjectDirectory)\out</Out>
     <GitVersionFile>src\GitInfo.txt</GitVersionFile>
   </PropertyGroup>
 
@@ -44,8 +44,8 @@
   <!-- Builds the repository -->
   <Target Name="Build">
 		<Message Text="Building AssemblyVersion=$(AssemblyVersion), PackageVersion=$(PackageVersion)" Importance="high" />
-		<MSBuild Projects="@(Solution)" Targets="Build" />
     <MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
+    <MSBuild Projects="@(Solution)" Targets="Build" Properties="PackageOutputPath=$(Out)" />
   </Target>
 
   <!-- Runs all unit tests -->
