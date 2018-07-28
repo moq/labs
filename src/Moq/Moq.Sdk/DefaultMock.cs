@@ -10,19 +10,25 @@ using Stunts;
 namespace Moq.Sdk
 {
     /// <summary>
-    /// Default implementation of the mock introspection API <see cref="IMock"/>
+    /// Default implementation of the mock introspection API <see cref="IMock"/>, 
+    /// which also ensures that the <see cref="IStunt.Behaviors"/> contains 
+    /// the <see cref="MockTrackingBehavior"/> when initially created.
     /// </summary>
     [DebuggerDisplay("Invocations = {Invocations.Count}", Name = nameof(IMocked) + "." + nameof(IMocked.Mock))]
     public class DefaultMock : IMock
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        readonly IStunt stunt;
+        private readonly IStunt stunt;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        readonly ConcurrentDictionary<IMockSetup, IMockBehaviorPipeline> setupBehaviorMap = new ConcurrentDictionary<IMockSetup, IMockBehaviorPipeline>();
+        private readonly ConcurrentDictionary<IMockSetup, IMockBehaviorPipeline> setupBehaviorMap = new ConcurrentDictionary<IMockSetup, IMockBehaviorPipeline>();
 
         public DefaultMock(IStunt stunt)
         {
             this.stunt = stunt ?? throw new ArgumentNullException(nameof(stunt));
+
+            if (!stunt.Behaviors.OfType<MockTrackingBehavior>().Any())
+                stunt.Behaviors.Insert(0, new MockTrackingBehavior());
+
             stunt.Behaviors.CollectionChanged += OnBehaviorsChanged;
         }
 
@@ -74,8 +80,6 @@ namespace Moq.Sdk
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     setupBehaviorMap.Clear();
-                    foreach (var behavior in Behaviors.OfType<IMockBehaviorPipeline>())
-                        setupBehaviorMap.TryAdd(behavior.Setup, behavior);
                     break;
             }
         }
