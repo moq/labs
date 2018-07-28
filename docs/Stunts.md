@@ -80,6 +80,14 @@ Unlike Castle DynamicProxy interception API, the `IMethodInvocation` is immutabl
 
 All of the supported .NET calling conventions should be supported by *Stunts*, as shown in (Stunts-Example.md).
 
+## Common Behaviors
+
+Some commonly used behaviors that are generally useful are provided in the library and can be added to stunts as needed:
+
+* [DefaultValueBehavior](https://github.com/moq/moq/blob/master/src/Stunts/Stunts/DefaultValueBehavior.cs): sets default values for method return and out arguments, based on its configured [DefaultValue](https://github.com/moq/moq/blob/master/src/Stunts/Stunts/DefaultValue.cs) provider. In addition to the built-in supported default values, additional default value factories can be registered for any type.
+
+* [DefaultEqualityBehavior](https://github.com/moq/moq/blob/master/src/Stunts/Stunts/DefaultEqualityBehavior.cs): implements the `Object.Equals` and `Object.GetHashCode` members just like `System.Object` implements them. 
+
 ## Stunts Code Generation
 
 As shown in the previous section, stunts are nothing special. You can just create new instances of them and invoke their members as usual. 
@@ -123,6 +131,10 @@ The factory-driven generated stunts will (by convention) end up in the `Stunts` 
 Just like in custom stunts, if an a generated stunt becomes outdated, you will also be offered to update/fix it right from the factory method invocation:
 
 ![Factory Update CodeFix](https://raw.githubusercontent.com/moq/moq/docs/docs/img/Stunts_FactoryUpdateCodeFix.png)
+
+The stunt factory method ends up invoking the [StuntFactory.Default](https://github.com/moq/moq/blob/master/src/Stunts/Stunts/StuntFactory.Default) which basically does an `Activator.CreateInstance` of the conventional type name for a stunt given the specified generic type parameters in the call (i.e. if you request `Stunt.Of<IServiceProvider>`, the looked up type will be `Stunts.IServiceProviderStunt` in the current assembly).
+
+> NOTE: all stunt types are looked up in the test/app assembly itself. This is achieved by directly adding the `Stunt` factory class to the project as a compile item, so `typeof(Stunt).Assembly` will actually return the calling/referencing assembly, not the `Stunts` assembly as it might appear. This is an important default behavior of the default [StuntFactory](https://github.com/moq/moq/blob/master/src/Stunts/Stunts/StuntFactory), which can nevertheless be changed to an alternative assembly lookup.
 
 ### Build Time
 
