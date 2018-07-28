@@ -21,7 +21,10 @@ namespace Moq.Tests
             EventHandler handler = (sender, args) => raised = true;
             calculator.TurnedOn += handler;
 
+            Assert.Equal(1, calculator.GetMock().Invocations.Count);
             calculator.TurnedOn += Raise.Event();
+            // Raising events should not increase invocation count.
+            Assert.Equal(1, calculator.GetMock().Invocations.Count);
 
             Assert.True(raised);
 

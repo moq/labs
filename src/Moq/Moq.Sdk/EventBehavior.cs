@@ -36,6 +36,7 @@ namespace Moq.Sdk
                     try
                     {
                         var mock = ((IMocked)invocation.Target).Mock;
+                        mock.Invocations.Remove(invocation);
                         if (mock.State.TryGetValue<Delegate>(info.Name, out var handler) &&
                             handler != null)
                         {
