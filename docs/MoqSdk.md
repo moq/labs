@@ -17,9 +17,9 @@ MyProxy
     - stunt behavior 5 (i.e. return default values)
 ```
 
-The SDK extends the *Stunts* [AppliesTo](../src/Stunts/Stunts/IStuntBehavior#L14) concept (a simple boolean given an [IMethodInvocation](../src/Stunts/Stunts/IMethodInvocation)) and turns into a flexible argument matching strategy configured via the mock's setup operations. The responsibility for matching an invocation to a given setup is in [MockSetup.AppliesTo](https://github.com/moq/moq/blob/master/src/Moq/Moq.Sdk/MockSetup.cs#L32) in Moq.
+The SDK extends the *Stunts* [AppliesTo](../src/Stunts/Stunts/IStuntBehavior.cs#L14) concept (a simple boolean given an [IMethodInvocation](../src/Stunts/Stunts/IMethodInvocation.cs)) and turns into a flexible argument matching strategy configured via the mock's setup operations. The responsibility for matching an invocation to a given setup is in [MockSetup.AppliesTo](https://github.com/moq/moq/blob/master/src/Moq/Moq.Sdk/MockSetup.cs#L32) in Moq.
 
-The SDK also extends the *Stunts* code generation, automatically implementing [IMock](https://github.com/moq/moq/blob/master/src/Moq/Moq.Sdk/IMock) on all generated classes. This interface gives the mocking library author access to the following key features of a mock:
+The SDK also extends the *Stunts* code generation, automatically implementing [IMock](https://github.com/moq/moq/blob/master/src/Moq/Moq.Sdk/IMock.cs) on all generated classes. This interface gives the mocking library author access to the following key features of a mock:
 
 The first step in getting your mocking API going is to provide a static factory method for your mocks. *Moq* itself provides this via the [Mock.Of](https://github.com/moq/moq/blob/master/src/Moq/Moq/contentFiles/cs/netstandard2.0/Mock.Overloads.cs) static method overloads, which follows the same approach as the [Stunt.Of](https://github.com/moq/moq/blob/master/docs/Stunts.md#stunt-factory) factory, and leverages the code generation provided by the Stunts and Moq SDKs to emit the "proxy" classes (a.k.a. *stunts*) into the test/app assembly itself.
 
@@ -45,16 +45,16 @@ In the case above, the resulting mock won't be very useful, since it doesn't hav
 
 1. [PropertyBehavior](https://github.com/moq/moq/blob/master/src/Moq/Moq.Sdk/PropertyBehavior.cs): provides an automatic "backing field" in the mock' `State` to implement property getter/setters. 
 
-    ```csharp
+```csharp
     [MockGenerator]
     public static T For<T>() 
         => (T)MockFactory.Default.CreateMock(typeof(Mocker).Assembly, typeof(T), new Type[0], new object[0])
                          .AddBehavior(new PropertyBehavior());
-   ```
+```
 
 2.  [EventBehavior](https://github.com/moq/moq/blob/master/src/Moq/Moq.Sdk/EventBehavior.cs): implements events so that they support adding/removing event handlers, as well as raising events using an [EventRaiser](https://github.com/moq/moq/blob/master/src/Moq/Moq.Sdk/EventRaiser.cs), like [Moq.Raise](https://github.com/moq/moq/blob/master/src/Moq/Moq/Raise.cs) class does:
 
-    ```csharp
+```csharp
     [MockGenerator]
     public static T For<T>() 
         => (T)MockFactory.Default.CreateMock(typeof(Mocker).Assembly, typeof(T), new Type[0], new object[0])
@@ -71,7 +71,7 @@ In the case above, the resulting mock won't be very useful, since it doesn't hav
     mock.PropertyChanged += Raise<PropertyChangedEventHandler>(new PropertyChangedEventArgs("Mode"));
 
     Assert.Equal("Mode", property);
-   ```
+```
 
 ## Mock Introspection
 
@@ -85,20 +85,20 @@ The introspection API has been heavily annotated with debugger hints so that whe
 
 By default, the received invocations are shown:
 
-![Mock Debugger](https://raw.githubusercontent.com/moq/moq/docs/docs/img/MockSdk_Debugger.png)
+![Mock Debugger](https://raw.githubusercontent.com/moq/moq/master/docs/img/MockSdk_Debugger.png)
 
 Expanding the Invocations property shows a friendly rendering of what they were:
 
-![Mock Debugging Invocations](https://raw.githubusercontent.com/moq/moq/docs/docs/img/MockSdk_DebuggerInvocations.png)
+![Mock Debugging Invocations](https://raw.githubusercontent.com/moq/moq/master/docs/img/MockSdk_DebuggerInvocations.png)
 
 Setups shows the configured mock behaviors for a given setup (or invocation matcher):
 
-![Mock Debugging Setups](https://raw.githubusercontent.com/moq/moq/docs/docs/img/MockSdk_DebuggerSetups.png)
+![Mock Debugging Setups](https://raw.githubusercontent.com/moq/moq/master/docs/img/MockSdk_DebuggerSetups.png)
 
 State renders the state bag associated with the mock, which in this case holds the backing field for the assigned Mode property, the backing delegate for the subscribed event, among other things:
 
-![Mock Debugging State](https://raw.githubusercontent.com/moq/moq/docs/docs/img/MockSdk_DebuggerState.png)
+![Mock Debugging State](https://raw.githubusercontent.com/moq/moq/master/docs/img/MockSdk_DebuggerState.png)
 
 Finally, the overall collection of stunt behaviors is also available:
 
-![Mock Debugging Behaviors](https://raw.githubusercontent.com/moq/moq/docs/docs/img/MockSdk_DebuggerBehaviors.png)
+![Mock Debugging Behaviors](https://raw.githubusercontent.com/moq/moq/master/docs/img/MockSdk_DebuggerBehaviors.png)

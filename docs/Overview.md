@@ -3,7 +3,7 @@
 Moq is structured in layers that separate the various responsibilities:
 
 * [Stunts](../src/Stunts): provides the runtime interception/proxy functionality.
-* [Moq.Sdk](../src/Moq): provides a common low-level abstraction for setting up conditional proxy behaviors and a full instrospection API for both set ups and invocations
+* [Moq.Sdk](../src/Moq/Moq.Sdk): provides a common low-level abstraction for setting up conditional proxy behaviors and a full instrospection API for both set ups and invocations
 * [Moq](../src/Moq): the Moq API itself, which builds on the previous two and exposes the end-user API
 
 ## Stunts
