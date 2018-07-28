@@ -32,11 +32,6 @@
   <!-- Configures the local environment and restores dependencies. 
        Also sets up the msbuild.rsp so that running the Help target renders colors appropriately. -->
   <Target Name="Configure" DependsOnTargets="Restore">
-    <!-- Update AppVeyor build # to match the actual one being used -->
-    <Exec Command="appveyor UpdateBuild -Version $(PackageVersion)"
-			  Condition=" '$(APPVEYOR)' == 'true' And '$(target)' != 'Restore' "
-			  ContinueOnError="true" />
-
     <!-- Configure colored console used for Help -->
     <MSBuild Projects="$(MSBuildProjectFullPath)" Properties="ForceBuild=Sure" Targets="ColoredConsole" />
   </Target>
@@ -44,6 +39,12 @@
   <!-- Builds the repository -->
   <Target Name="Build">
 		<Message Text="Building AssemblyVersion=$(AssemblyVersion), PackageVersion=$(PackageVersion)" Importance="high" />
+
+    <!-- Update AppVeyor build # to match the actual one being used -->
+    <Exec Command="appveyor UpdateBuild -Version $(PackageVersion)"
+			  Condition=" '$(APPVEYOR)' == 'true'"
+			  ContinueOnError="true" />
+
     <MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
     <MSBuild Projects="@(Solution)" Targets="Build" Properties="PackageOutputPath=$(Out)" />
   </Target>
