@@ -44,7 +44,7 @@ namespace Moq.Sdk
                 // queue of argument matchers to see if applies instead.
                 if (object.Equals(argument, defaultValue.For(parameter.ParameterType)) &&
                     currentMatchers.Count != 0 &&
-                    parameter.ParameterType.GetTypeInfo().IsAssignableFrom(currentMatchers.Peek().ArgumentType.GetTypeInfo()))
+                    parameter.ParameterType.GetValueTypeInfo().IsAssignableFrom(currentMatchers.Peek().ArgumentType.GetValueTypeInfo()))
                 {
                     finalMatchers.Add(currentMatchers.Dequeue());
                 }

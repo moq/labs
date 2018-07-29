@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
+using Moq.Sdk.Properties;
 using Stunts;
 
 namespace Moq.Sdk
@@ -65,6 +66,10 @@ namespace Moq.Sdk
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
+                    // Can't have more than one of MockTrackingBehavior, since that causes problems.
+                    if (Behaviors.OfType<MockTrackingBehavior>().Skip(1).Any())
+                        throw new InvalidOperationException(Resources.DuplicateTrackingBehavior);
+
                     foreach (var behavior in e.NewItems.OfType<IMockBehaviorPipeline>())
                         setupBehaviorMap.TryAdd(behavior.Setup, behavior);
                     break;

@@ -126,4 +126,7 @@
   <data name="TargetNotMock" xml:space="preserve">
     <value>The target of the invocation is not a mock.</value>
   </data>
+  <data name="DuplicateTrackingBehavior" xml:space="preserve">
+    <value>The mock already contains a tracking behavior.</value>
+  </data>
 </root>

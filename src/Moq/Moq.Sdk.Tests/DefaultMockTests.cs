@@ -19,6 +19,14 @@ namespace Moq.Sdk.Tests
             Assert.Collection(mock.Behaviors, x => Assert.IsType<MockTrackingBehavior>(x));
         }
 
+        [Fact]
+        public void PreventsDuplicateMockTrackingBehavior()
+        {
+            var mock = new DefaultMock(new FakeStunt());
+
+            Assert.Throws<InvalidOperationException>(() => mock.Behaviors.Add(new MockTrackingBehavior()));
+        }
+
         class FakeStunt : IStunt
         {
             public ObservableCollection<IStuntBehavior> Behaviors { get; } = new ObservableCollection<IStuntBehavior>();

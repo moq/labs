@@ -19,10 +19,7 @@ namespace Moq.Sdk
         {
             ArgumentType = argumentType;
 
-            info = argumentType.IsByRef && argumentType.HasElementType ? 
-                argumentType.GetElementType().GetTypeInfo() :
-                argumentType.GetTypeInfo();
-
+            info = argumentType.GetValueTypeInfo();
             isValueType = info.IsValueType;
             isNullable = isValueType && info.IsGenericType &&
                 argumentType.GetGenericTypeDefinition() == typeof(Nullable<>);

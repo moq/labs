@@ -42,9 +42,14 @@ namespace Moq.Sdk
                         new Type[0], 
                         new object[0])).Mock;
 
-                    // Clone the current mock's behaviors, except for the setups
-                    foreach (var behavior in currentMock.Behaviors.Where(x => !(x is IMockBehaviorPipeline)))
+                    // Clone the current mock's behaviors, except for the setups and the tracking 
+                    // behavior which is added already by default.
+                    foreach (var behavior in currentMock.Behaviors.Where(x => 
+                        !(x is IMockBehaviorPipeline) && 
+                        !(x is MockTrackingBehavior)))
+                    {
                         recursiveMock.Behaviors.Add(behavior);
+                    }
 
                     // Set up the current invocation to return the created value
                     var setup = currentMock.GetPipeline(MockContext.CurrentSetup);

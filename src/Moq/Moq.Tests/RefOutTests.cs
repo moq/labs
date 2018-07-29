@@ -84,8 +84,8 @@ namespace Moq.Tests.RefOut
             mock.Setup<TryParse>(() => mock.RefOut.TryParse)
                 .Returns((string input, out DateTimeOffset date) => DateTimeOffset.TryParse(value, out date));
 
-            Debug.Assert(mock.RefOut.TryParse(value, out var actual));
-            Debug.Assert(actual == expected);
+            Assert.True(mock.RefOut.TryParse(value, out var actual));
+            Assert.Equal(expected, actual);
         }
 
         delegate bool TryParse(string input, out DateTimeOffset date);
