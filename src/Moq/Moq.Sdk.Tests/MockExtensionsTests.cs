@@ -13,51 +13,56 @@ namespace Moq.Sdk.Tests
         public void WhenAddingMockBehavior_ThenCanAddLambda()
         {
             var mock = new Mocked();
+            var count = mock.GetMock().Behaviors.Count;
 
             mock.AddBehavior((m, n) => null, m => true);
 
-            Assert.Single(mock.Mock.Behaviors);
+            Assert.Equal(count + 1, mock.Mock.Behaviors.Count);
         }
 
         [Fact]
         public void WhenAddingMockBehavior_ThenCanAddInterface()
         {
             var mock = new Mocked();
+            var behavior = new TestMockBehavior();
 
-            mock.AddBehavior(new TestMockBehavior());
+            mock.AddBehavior(behavior);
 
-            Assert.Single(mock.Mock.Behaviors);
+            Assert.Contains(behavior, mock.Mock.Behaviors);
         }
 
         [Fact]
         public void WhenAddingMockBehaviorToObject_ThenCanAddLambda()
         {
             object mock = new Mocked();
+            var count = mock.GetMock().Behaviors.Count;
 
             mock.AddBehavior((m, n) => null, m => true);
 
-            Assert.Single(((IMocked)mock).Mock.Behaviors);
+            Assert.Equal(count + 1, ((IMocked)mock).Mock.Behaviors.Count);
         }
 
         [Fact]
         public void WhenAddingMockBehaviorToObject_ThenCanAddInterface()
         {
             object mock = new Mocked();
+            var count = mock.GetMock().Behaviors.Count;
 
             mock.AddBehavior(new TestMockBehavior());
 
-            Assert.Single(((IMocked)mock).Mock.Behaviors);
+            Assert.Equal(count + 1, ((IMocked)mock).Mock.Behaviors.Count);
         }
 
         [Fact]
         public void WhenInsertingMockBehavior_ThenCanAddLambda()
         {
             var mock = new Mocked();
+            var count = mock.GetMock().Behaviors.Count;
 
             mock.AddBehavior((m, n) => null, m => true);
             mock.InsertBehavior(0, (m, n) => throw new NotImplementedException(), m => true);
 
-            Assert.Equal(2, mock.Mock.Behaviors.Count);
+            Assert.Equal(count + 2, mock.Mock.Behaviors.Count);
             Assert.Throws<NotImplementedException>(() => mock.Mock.Behaviors[0].Execute(null, null));
         }
 
@@ -66,11 +71,12 @@ namespace Moq.Sdk.Tests
         {
             var mock = new Mocked();
             var behavior = new TestMockBehavior();
+            var count = mock.GetMock().Behaviors.Count;
 
             mock.AddBehavior((m, n) => null, m => true);
             mock.InsertBehavior(0, behavior);
 
-            Assert.Equal(2, mock.Mock.Behaviors.Count);
+            Assert.Equal(count + 2, mock.Mock.Behaviors.Count);
             Assert.Same(behavior, mock.Mock.Behaviors[0]);
         }
 
@@ -78,11 +84,12 @@ namespace Moq.Sdk.Tests
         public void WhenInsertingMockBehaviorToObject_ThenCanAddLambda()
         {
             object mock = new Mocked();
+            var count = mock.GetMock().Behaviors.Count;
 
             mock.AddBehavior((m, n) => null, m => true);
             mock.InsertBehavior(0, (m, n) => throw new NotImplementedException(), m => true);
 
-            Assert.Equal(2, ((IMocked)mock).Mock.Behaviors.Count);
+            Assert.Equal(count + 2, ((IMocked)mock).Mock.Behaviors.Count);
             Assert.Throws<NotImplementedException>(() => ((IMocked)mock).Mock.Behaviors[0].Execute(null, null));
         }
 
@@ -90,12 +97,13 @@ namespace Moq.Sdk.Tests
         public void WhenInsertingMockBehaviorToObject_ThenCanAddInterface()
         {
             object mock = new Mocked();
+            var count = mock.GetMock().Behaviors.Count;
             var behavior = new TestMockBehavior();
 
             mock.AddBehavior((m, n) => null, m => true);
             mock.InsertBehavior(0, behavior);
 
-            Assert.Equal(2, ((IMocked)mock).Mock.Behaviors.Count);
+            Assert.Equal(count + 2, ((IMocked)mock).Mock.Behaviors.Count);
             Assert.Same(behavior, ((IMocked)mock).Mock.Behaviors[0]);
         }
 
