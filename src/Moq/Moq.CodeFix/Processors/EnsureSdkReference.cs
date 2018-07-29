@@ -19,7 +19,7 @@ namespace Moq.Processors
 
         public ProcessorPhase Phase => ProcessorPhase.Prepare;
 
-        public Task<Document> ProcessAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<Document> ProcessAsync(Document document, CancellationToken cancellationToken = default)
         {
             // TODO: throwing doesn't seem useful at all here. 
             // Maybe we should have another analyzer that reports at a different level (compilation, semantic?).

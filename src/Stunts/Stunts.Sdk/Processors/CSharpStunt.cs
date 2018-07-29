@@ -27,7 +27,7 @@ namespace Stunts.Processors
         /// <summary>
         /// Adds the <see cref="IStunt"/> interface implementation to the document.
         /// </summary>
-        public async Task<Document> ProcessAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Document> ProcessAsync(Document document, CancellationToken cancellationToken = default)
         {
             var syntax = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
             syntax = new CSharpStuntVisitor(document).Visit(syntax);

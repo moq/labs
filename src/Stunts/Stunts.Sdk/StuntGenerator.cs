@@ -95,7 +95,7 @@ namespace Stunts
         /// This aggregating method basically invokes <see cref="CreateStunt(IEnumerable{INamedTypeSymbol}, SyntaxGenerator)"/> 
         /// followed by <see cref="ApplyProcessors(Document, CancellationToken)"/>.
         /// </remarks>
-        public async Task<Document> GenerateDocumentAsync(Project project, ITypeSymbol[] types, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Document> GenerateDocumentAsync(Project project, ITypeSymbol[] types, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
 

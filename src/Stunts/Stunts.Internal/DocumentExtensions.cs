@@ -28,7 +28,7 @@ namespace Microsoft.CodeAnalysis
         /// <summary>
         /// Applies the given named code fix to a document.
         /// </summary>
-        public static async Task<Document> ApplyCodeFixAsync(this Document document, string codeFixName, CancellationToken cancellationToken = default(CancellationToken))
+        public static async Task<Document> ApplyCodeFixAsync(this Document document, string codeFixName, CancellationToken cancellationToken = default)
         {
             // If we request and process ALL codefixes at once, we'll get one for each 
             // diagnostics, which is one per non-implemented member of the interface/abstract 
@@ -58,7 +58,7 @@ namespace Microsoft.CodeAnalysis
 
         static async Task<ImmutableArray<ICodeFix>> GetCodeFixes(
             Document document, string codeFixName, 
-            CancellationToken cancellationToken = default(CancellationToken))
+            CancellationToken cancellationToken = default)
         {
             var provider = GetCodeFixProvider(document, codeFixName);
             if (provider == null)

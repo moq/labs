@@ -35,7 +35,7 @@ namespace Stunts.Processors
         /// <summary>
         /// Adds the <c>auto-generated</c> file header to the document.
         /// </summary>
-        public async Task<Document> ProcessAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Document> ProcessAsync(Document document, CancellationToken cancellationToken = default)
         {
             var syntax = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
 

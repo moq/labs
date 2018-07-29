@@ -46,7 +46,7 @@ namespace Stunts.Processors
         /// <summary>
         /// Applies all existing code fixes to the document.
         /// </summary>
-        public async Task<Document> ProcessAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Document> ProcessAsync(Document document, CancellationToken cancellationToken = default)
         {
             foreach (var codeFixName in codeFixNames)
             {

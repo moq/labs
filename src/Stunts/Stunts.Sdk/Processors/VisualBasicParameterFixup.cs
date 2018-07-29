@@ -30,7 +30,7 @@ namespace Stunts.Processors
         /// Applies the fixup for https://developercommunity.visualstudio.com/content/problem/40204/running-implement-interface-code-action-results-in.html
         /// to the given document.
         /// </summary>
-        public async Task<Document> ProcessAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Document> ProcessAsync(Document document, CancellationToken cancellationToken = default)
         {
             var syntax = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
             syntax = new VisualBasicParameterFixupVisitor(SyntaxGenerator.GetGenerator(document)).Visit(syntax);

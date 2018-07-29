@@ -30,7 +30,7 @@ namespace Stunts.Processors
         /// Throws <see cref="ArgumentException"/> if the document's project does not 
         /// have a reference to the Stunts assembly.
         /// </summary>
-        public Task<Document> ProcessAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<Document> ProcessAsync(Document document, CancellationToken cancellationToken = default)
         {
             // Stunts must either be a direct metadata/assembly reference
             if (!document.Project.MetadataReferences.Any(r => r.Display.EndsWith(StuntsFile, StringComparison.Ordinal)) && 

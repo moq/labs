@@ -122,7 +122,7 @@ namespace Stunts.Tests
             Assert.NotNull(result.ReturnValue);
             Assert.True(result.ReturnValue is Task<PlatformID>);
             Assert.True(((Task)result.ReturnValue).IsCompleted);
-            Assert.Equal(default(PlatformID), ((Task<PlatformID>)result.ReturnValue).Result);
+            Assert.Equal(default, ((Task<PlatformID>)result.ReturnValue).Result);
         }
 
         [Fact]

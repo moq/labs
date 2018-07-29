@@ -67,7 +67,7 @@ namespace Moq
             var lambda = context.Node.Ancestors().OfType<CS.LambdaExpressionSyntax>().Cast<SyntaxNode>().FirstOrDefault() ??
                 context.Node.Ancestors().OfType<VB.LambdaExpressionSyntax>().Cast<SyntaxNode>().FirstOrDefault();
 
-            SymbolInfo setupInfo = default(SymbolInfo);
+            SymbolInfo setupInfo = default;
 
             // This could be one of two setup scenarios: Setup(x => ...) or a typed ref/out Setup(x.TryFoo).
             // If we cannot find a lambda, find the setup invocation where the node is just an argument

@@ -30,7 +30,7 @@ namespace Moq
                     behavior.Behaviors.Add(new ReturnsBehavior(value));
             }
 
-            return default(TResult);
+            return default;
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace Moq
                     behavior.Behaviors.Add(new ReturnsBehavior(_ => value()));
             }
 
-            return default(TResult);
+            return default;
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace Moq
                     behavior.Behaviors.Add(new ReturnsBehavior(x => value(x)));
             }
 
-            return default(TResult);
+            return default;
         }
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace Moq
                 mockBehavior.Behaviors.Add(Sdk.MockBehavior.Create(behavior, "Returns(() => ...)"));
             }
 
-            return default(TResult);
+            return default;
         }
     }
 }

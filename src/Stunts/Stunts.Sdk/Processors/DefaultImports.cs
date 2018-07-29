@@ -51,7 +51,7 @@ namespace Stunts.Processors
         /// <summary>
         /// Adds the configured set namespaces to the document.
         /// </summary>
-        public async Task<Document> ProcessAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Document> ProcessAsync(Document document, CancellationToken cancellationToken = default)
         {
             var generator = SyntaxGenerator.GetGenerator(document);
             var root = await document.GetSyntaxRootAsync();

@@ -22,6 +22,6 @@ namespace Stunts
         /// <summary>
         /// Processes the stunt document and optionally modifies its source code.
         /// </summary>
-        Task<Document> ProcessAsync(Document document, CancellationToken cancellationToken = default(CancellationToken));
+        Task<Document> ProcessAsync(Document document, CancellationToken cancellationToken = default);
     }
 }

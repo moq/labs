@@ -38,7 +38,7 @@ namespace Stunts.Tests
             Assert.True(intercepted, "Failed to intercept property getter");
 
             intercepted = false;
-            Assert.Equal(default(CalculatorMode), target.Mode);
+            Assert.Equal(default, target.Mode);
             Assert.True(intercepted, "Failed to intercept property getter");
 
             intercepted = false;
@@ -144,7 +144,7 @@ namespace Stunts.Tests
             Assert.True(intercepted, "Failed to intercept property setter");
 
             intercepted = false;
-            Assert.Equal(default(CalculatorMode), target.Mode);
+            Assert.Equal(default, target.Mode);
             Assert.True(intercepted, "Failed to intercept property getter");
 
             intercepted = false;

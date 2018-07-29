@@ -351,7 +351,7 @@ End Class")]
 
             public ProcessorPhase Phase => ProcessorPhase.Scaffold;
 
-            public async Task<Document> ProcessAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
+            public async Task<Document> ProcessAsync(Document document, CancellationToken cancellationToken = default)
             {
                 var syntax = await document.GetSyntaxRootAsync(cancellationToken);
                 syntax = Visit(syntax);

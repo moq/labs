@@ -22,7 +22,7 @@ namespace Moq.Sdk
             CallContext<Queue<IArgumentMatcher>>.GetData(() => new Queue<IArgumentMatcher>())
                .Enqueue(matcher);
 
-            return default(T);
+            return default;
         }
 
         internal static IMockSetup Freeze(IMethodInvocation invocation)

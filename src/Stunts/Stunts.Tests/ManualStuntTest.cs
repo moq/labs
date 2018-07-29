@@ -24,7 +24,7 @@ namespace Stunts.Tests
 
             Assert.True(isOn);
             Assert.Equal(3, stunt.Add(1, 2));
-            Assert.Equal(default(CalculatorMode), stunt.Mode);
+            Assert.Equal(default, stunt.Mode);
 
             stunt.Store("balance", 100);
             Assert.Equal(100, stunt.Recall("balance"));
