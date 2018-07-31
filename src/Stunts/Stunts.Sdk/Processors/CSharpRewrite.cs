@@ -77,8 +77,10 @@ namespace Stunts.Processors
                 }
                 else
                 {
-                    node = node.RemoveNodes(new SyntaxNode[] { node.Body }, SyntaxRemoveOptions.KeepNoTrivia)
-                        .WithExpressionBody(
+                    if (node.Body != null)
+                        node = node.RemoveNodes(new SyntaxNode[] { node.Body }, SyntaxRemoveOptions.KeepNoTrivia);
+
+                    node = node.WithExpressionBody(
                             ArrowExpressionClause(ExecutePipeline(node.ReturnType, node.ParameterList.Parameters)))
                         .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
                 }
