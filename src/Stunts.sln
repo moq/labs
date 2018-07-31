@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stunts.Sdk", "Stunts\Stunts
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stunts.Tests", "Stunts\Stunts.Tests\Stunts.Tests.csproj", "{1320496D-6348-42B0-95F5-BA7891EF0096}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stunts.Analyzer", "Stunts\Stunts.Analyzer\Stunts.Analyzer.csproj", "{3C2F7D4C-D10A-439C-B986-FF51664CD895}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stunts.CodeAnalysis", "Stunts\Stunts.CodeAnalysis\Stunts.CodeAnalysis.csproj", "{3C2F7D4C-D10A-439C-B986-FF51664CD895}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample", "Samples\Sample\Sample.csproj", "{F801B6E7-70DA-46FE-937D-199BB00E7647}"
 EndProject
