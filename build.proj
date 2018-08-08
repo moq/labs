@@ -13,7 +13,7 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="GitInfo" Version="*" />
+		<PackageReference Include="GitInfo" Version="2.0.11" />
 		<PackageReference Include="xunit.runner.msbuild" Version="2.4.0" />
 	</ItemGroup>
 
