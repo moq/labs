@@ -1,9 +1,9 @@
 <Project>
 
   <PropertyGroup>
-    <MicrosoftBuildVersion>15.7.179</MicrosoftBuildVersion>
-    <RoslynVersion>2.9.0-beta*</RoslynVersion>
-    <XunitVersion>2.4.0</XunitVersion>
+    <MicrosoftBuildVersion Condition="'$(MicrosoftBuildVersion)' == ''">15.7.179</MicrosoftBuildVersion>
+    <RoslynVersion Condition="'$(RoslynVersion)' == ''">2.9.0</RoslynVersion>
+    <XunitVersion Condition="'$(XunitVersion)' == ''">2.4.0</XunitVersion>
   </PropertyGroup>
 
   <ItemGroup Label="Common">
@@ -12,12 +12,12 @@
     <PackageReference Include="MSBuilder.ThisAssembly.Project" Version="0.3.4" PrivateAssets="all" />
     <PackageReference Include="NuGet.Build.Packaging" Version="0.2.5-dev.1" PrivateAssets="all" />
     <PackageReference Include="netfx-System.StringResources" Version="3.1.8" PrivateAssets="all" />
-    <PackageReference Include="IFluentInterface" Version="2.0.4" Condition="'$(Language)' == 'C#'" Pack="false" />
+    <PackageReference Include="IFluentInterface" Version="2.0.4" Condition="'$(Language)' == 'C#'" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup Label="MSBuild" Condition="'$(IncludeMSBuild)' == 'true'">
-    <PackageReference Include="Microsoft.Build" Version="$(MicrosoftBuildVersion)" ExcludeAssets="runtime" />
-    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="$(MicrosoftBuildVersion)" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.Build" Version="$(MicrosoftBuildVersion)" ExcludeAssets="runtime" Pack="false" />
+    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="$(MicrosoftBuildVersion)" ExcludeAssets="runtime" Pack="false" />
   </ItemGroup>
 
   <ItemGroup Label="Roslyn" Condition="'$(IncludeRoslyn)' == 'true'">
@@ -40,5 +40,6 @@
     <PackageReference Update="Microsoft.Build" ExcludeAssets="none" />
     <PackageReference Update="Microsoft.Build.Tasks.Core" ExcludeAssets="none" />
   </ItemGroup>
-  
+
+  <Import Project="PackageReference.CopyLocal.targets" Condition="'$(EnforceCopyLocalAssets)' == 'true'" />  
 </Project>

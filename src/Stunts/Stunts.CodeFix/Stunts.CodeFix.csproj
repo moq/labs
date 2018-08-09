@@ -5,19 +5,18 @@
     <RootNamespace>Stunts</RootNamespace>
     <IncludeRoslyn>true</IncludeRoslyn>
     <PrimaryOutputKind>Build</PrimaryOutputKind>
+    <PrimaryOutputFrameworkSpecific>true</PrimaryOutputFrameworkSpecific>
   </PropertyGroup>
 
   <ItemDefinitionGroup>
     <ProjectReference>
       <!-- This causes the output of the referenced projects to be packaged into the primary output folder too -->
-      <AdditionalProperties>PrimaryOutputKind=$(PrimaryOutputKind)</AdditionalProperties>
+      <AdditionalProperties>PrimaryOutputKind=$(PrimaryOutputKind);IncludeApi=false</AdditionalProperties>
     </ProjectReference>
   </ItemDefinitionGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\Stunts\Stunts.csproj">
-      <AdditionalProperties>IncludeApi=false</AdditionalProperties>
-    </ProjectReference>
+    <ProjectReference Include="..\Stunts\Stunts.csproj" />
     <ProjectReference Include="..\Stunts.Internal\Stunts.Internal.csproj" />
     <ProjectReference Include="..\Stunts.Sdk\Stunts.Sdk.csproj" />
   </ItemGroup>
@@ -38,16 +37,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="$(NuGetPackageRoot)\netstandard.library\$(NETStandardLibraryPackageVersion)\build\$(TargetFramework)\ref\netstandard.dll">
+    <None Update="Stunts.props">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Pack>true</Pack>
       <Kind>$(PrimaryOutputKind)</Kind>
-      <TargetPath>%(Filename)%(Extension)</TargetPath>
+      <Pack>true</Pack>
     </None>
     <None Update="Stunts.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Pack>true</Pack>
       <Kind>$(PrimaryOutputKind)</Kind>
+      <Pack>true</Pack>
     </None>
   </ItemGroup>
 

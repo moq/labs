@@ -52,7 +52,7 @@ namespace Stunts.Processors
 
             foreach (var codeFixName in codeFixNames)
             {
-                document = await document.ApplyCodeFixAsync(codeFixName, cancellationToken).ConfigureAwait(false);
+                document = await document.ApplyCodeFixAsync(codeFixName, cancellationToken: cancellationToken).ConfigureAwait(false);
             }
 
             return document;

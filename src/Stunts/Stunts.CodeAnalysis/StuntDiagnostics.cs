@@ -10,7 +10,7 @@ namespace Stunts
             new ResourceString(nameof(Resources.MissingStunt_Title)),
             new ResourceString(nameof(Resources.MissingStunt_Message)),
             "Build",
-            DiagnosticSeverity.Error,
+            DiagnosticSeverity.Warning,
             true,
             new ResourceString(nameof(Resources.MissingStunt_Description)));
 
@@ -19,7 +19,7 @@ namespace Stunts
             new ResourceString(nameof(Resources.OutdatedStunt_Title)),
             new ResourceString(nameof(Resources.OutdatedStunt_Message)),
             "Build",
-            DiagnosticSeverity.Error,
+            DiagnosticSeverity.Warning,
             true,
             new ResourceString(nameof(Resources.OutdatedStunt_Description)));
 

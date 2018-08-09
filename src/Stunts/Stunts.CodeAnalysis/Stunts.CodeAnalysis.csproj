@@ -38,7 +38,7 @@
   <Target Name="FixPackageFileFramework" BeforeTargets="GetPackageContents" AfterTargets="$(GetPackageContentsDependsOn)">
     <ItemGroup>
       <PackageFile>
-        <PackagePath>analyzers\netstandard1.3\%(Filename)%(Extension)</PackagePath>
+        <PackagePath>$(PrimaryOutputKind.ToLowerInvariant())\netstandard1.3\%(Filename)%(Extension)</PackagePath>
       </PackageFile>
     </ItemGroup>
   </Target>

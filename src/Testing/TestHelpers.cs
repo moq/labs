@@ -65,8 +65,8 @@ static partial class TestHelpers
         if (includeStuntApi)
         {
             var stuntApi = language == LanguageNames.CSharp ?
-                new FileInfo(@"contentFiles\cs\netstandard1.3\Stunt.cs").FullName :
-                new FileInfo(@"contentFiles\vb\netstandard1.3\Stunt.vb").FullName;
+                new FileInfo(@"contentFiles\cs\netstandard1.3\Stunts\Stunt.cs").FullName :
+                new FileInfo(@"contentFiles\vb\netstandard1.3\Stunts\Stunt.vb").FullName;
 
             Assert.True(File.Exists(stuntApi));
             documents.Add(DocumentInfo.Create(
@@ -79,8 +79,8 @@ static partial class TestHelpers
         if (includeMockApi)
         {
             var mockApi = language == LanguageNames.CSharp ?
-                new FileInfo(@"contentFiles\cs\netstandard2.0\Mock.cs").FullName :
-                new FileInfo(@"contentFiles\vb\netstandard2.0\Mock.vb").FullName;
+                new FileInfo(@"contentFiles\cs\netstandard2.0\Mocks\Mock.cs").FullName :
+                new FileInfo(@"contentFiles\vb\netstandard2.0\Mocks\Mock.vb").FullName;
             var mockApiOverloads = Path.ChangeExtension(mockApi, ".Overloads") + Path.GetExtension(mockApi);
 
             Assert.True(File.Exists(mockApi));

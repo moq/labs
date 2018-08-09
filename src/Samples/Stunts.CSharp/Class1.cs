@@ -2,6 +2,7 @@
 using Sample;
 using System.Linq;
 using Stunts;
+using System.Reflection;
 
 public class Tests
 {
@@ -29,13 +30,43 @@ public class Tests
         Console.WriteLine(result1); 
         Console.WriteLine(result2);
 
-        var foo = Stunt.Of<IBar>();
+        var bar = Stunt.Of<IBar>();
+    }
+
+    public void when_using_custom_generator()
+    {
+        var ping = Randomizer.Of<IPing>();
+
+        Console.WriteLine(ping.Ping());
+        Console.WriteLine(ping.Ping());
     }
 }
 
+public interface IPing
+{
+    int Ping();
+}
+
+public static class Randomizer
+{
+    static readonly Random random = new Random();
+
+    [StuntGenerator]
+    public static T Of<T>()
+        => Stunt.Of<T>()
+                .AddBehavior(
+                    (invocation, next) => invocation.CreateValueReturn(random.Next()), 
+                    invocation => invocation.MethodBase is MethodInfo info && info.ReturnType == typeof(int));
+}
+
+
+
 namespace Sample
 {
-    public interface IBar { }
+    public interface IBar
+    {
+        void Bar();
+    }
 
     public interface IFoo
     {

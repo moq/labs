@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -61,10 +62,41 @@ namespace Stunts
 
             // TODO: F#
             var extension = document.Project.Language == LanguageNames.CSharp ? ".cs" : ".vb";
-            var file = Path.Combine(Path.GetDirectoryName(document.Project.FilePath), naming.Namespace, name + extension);
-            var folders = naming.Namespace.Split('.');
+            string[] folders;
+            if (!diagnostic.Properties.TryGetValue("Location", out var file) ||
+                string.IsNullOrEmpty(file))
+            {
+                file = Path.Combine(Path.GetDirectoryName(document.Project.FilePath), naming.Namespace, name + extension);
+                folders = naming.Namespace.Split('.');
+            }
+            else
+            {
+                folders = Path.GetDirectoryName(file)
+                    .Replace(Path.GetDirectoryName(document.Project.FilePath), "")
+                    .Trim(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+                    .Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            }
 
             var stuntDoc = document.Project.Documents.FirstOrDefault(d => d.Name == Path.GetFileName(file) && d.Folders.SequenceEqual(folders));
+            var isBuildTime = document.Project.Solution.Workspace.Options.GetOption(StuntOptions.IsBuildTime);
+
+            // Also probe intermediate output path for build-time codegen.
+            if (stuntDoc == null && isBuildTime)
+            {
+                // Get configured generator options
+                if (document.Project.AnalyzerOptions.GetCodeFixSettings().TryGetValue("IntermediateOutputPath", out var intermediateOutputPath))
+                {
+                    folders = intermediateOutputPath.Split(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries)
+                        .Concat(folders)
+                        .ToArray();
+
+                    file = Path.Combine(Path.GetDirectoryName(document.Project.FilePath), intermediateOutputPath, naming.Namespace, name + ".g" + extension);
+
+                    // Search for the doc at the new location.
+                    stuntDoc = document.Project.Documents.FirstOrDefault(d => d.Name == Path.GetFileName(file) && d.Folders.SequenceEqual(folders));
+                }
+            }
+
             if (stuntDoc == null)
             {
                 if (document.Project.Solution.Workspace is AdhocWorkspace workspace)
@@ -73,12 +105,18 @@ namespace Stunts
                         .Create(
                             DocumentId.CreateNewId(document.Project.Id),
                             Path.GetFileName(file),
-                            folders: naming.Namespace.Split('.'),
+                            folders: folders,
                             filePath: file))
                         .WithSyntaxRoot(syntax);
                 }
                 else
                 {
+                    // Ensure target directory exists since both end up as 
+                    // linked folders until we add a generated stunt to it, because 
+                    // the API contentFiles are linked with the same folder name.
+                    if (naming.Namespace == nameof(Stunts) || naming.Namespace == "Mocks")
+                        Directory.CreateDirectory(Path.GetDirectoryName(file));
+
                     stuntDoc = document.Project.AddDocument(
                         Path.GetFileName(file),
                         syntax,
@@ -92,15 +130,16 @@ namespace Stunts
             }
 
             stuntDoc = await stunts.ApplyProcessors(stuntDoc, cancellationToken).ConfigureAwait(false);
-            // This is somewhat expensive, but since we're adding it to the user' solution, we might 
-            // as well make it look great ;)
+            
+            // This is somewhat expensive, but with the formatting, the code doesn't even compile :/
             stuntDoc = await Simplifier.ReduceAsync(stuntDoc).ConfigureAwait(false);
             if (document.Project.Language != LanguageNames.VisualBasic)
                 stuntDoc = await Formatter.FormatAsync(stuntDoc, Formatter.Annotation).ConfigureAwait(false);
 
             syntax = await stuntDoc.GetSyntaxRootAsync().ConfigureAwait(false);
+            stuntDoc = stuntDoc.WithSyntaxRoot(syntax);
 
-            return stuntDoc.WithSyntaxRoot(syntax);
+            return stuntDoc;
         }
     }
 }

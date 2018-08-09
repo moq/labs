@@ -31,6 +31,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="$(NuGetPackageRoot)\netstandard.library\$(NETStandardLibraryPackageVersion)\build\$(TargetFramework)\ref\netstandard.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Kind>$(PrimaryOutputKind)</Kind>
+      <FrameworkSpecific>true</FrameworkSpecific>
+      <Pack>true</Pack>
+      <TargetPath>%(Filename)%(Extension)</TargetPath>
+    </None>
+    <None Update="Moq.props">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <FrameworkSpecific>true</FrameworkSpecific>
+      <Kind>$(PrimaryOutputKind)</Kind>
+      <Pack>true</Pack>
+    </None>
     <None Update="Moq.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Kind>$(PrimaryOutputKind)</Kind>

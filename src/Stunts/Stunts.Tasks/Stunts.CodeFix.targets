@@ -1,0 +1,145 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <UsingTask TaskName="RecordFixableWarnings" AssemblyFile="Stunts.Tasks.dll" />
+  <UsingTask TaskName="CollectFixableWarnings" AssemblyFile="Stunts.Tasks.dll" />
+  <UsingTask TaskName="ResolveLocalAssemblies" AssemblyFile="Stunts.Tasks.dll" />
+  <UsingTask TaskName="GenerateStunts" AssemblyFile="Stunts.Tasks.dll" />
+
+  <PropertyGroup>
+    <DebugTask Condition="'$(DebugTask)' == ''">false</DebugTask>
+    <DebugConsole Condition="'$(DebugConsole)' == ''">false</DebugConsole>
+
+    <_CodeFixSettingsFile>$(IntermediateOutputPath)CodeFixSettings.txt</_CodeFixSettingsFile>
+    <_ApplyCodeFixFile>$(IntermediateOutputPath)ApplyCodeFix.flag</_ApplyCodeFixFile>
+    <_NewLineSeparator Condition="'$(OS)' == 'Windows_NT'">%0d</_NewLineSeparator>
+    <_NewLineSeparator>$(_NewLineSeparator)%0a</_NewLineSeparator>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="$(_CodeFixSettingsFile)" Visible="false" InProject="false" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(VsInstallRoot)' != ''">
+    <AssemblySearchPath Include="$(VsInstallRoot)\Common7\IDE\CommonExtensions\Microsoft\ManagedLanguages\VBCSharp\LanguageServices" />
+    <AssemblySearchPath Include="$(VsInstallRoot)\Common7\IDE\PublicAssemblies" />
+    <AssemblySearchPath Include="$(VsInstallRoot)\Common7\IDE\PrivateAssemblies" />
+  </ItemGroup>
+  <ItemGroup>
+    <AssemblySearchPath Include="$(MSBuildBinPath)" />
+    <AssemblySearchPath Include="$(MSBuildThisFileDirectory)" />
+  </ItemGroup>
+
+  <!-- See https://github.com/xamarin/xamarin-android/commit/18b8a5270969feb063f1e2926ca9a58099aabfa9 -->
+  <PropertyGroup>
+    <BuildDependsOn>
+      _EnsureDesignTimeBuildForBuild;
+      $(BuildDependsOn)
+    </BuildDependsOn>
+    <CompileDependsOn>
+      _EnsureDesignTimeBuildForCompile;
+      $(CompileDependsOn)
+    </CompileDependsOn>
+  </PropertyGroup>
+
+  <Target Name="_EnsureDesignTimeBuildForBuild">
+    <PropertyGroup>
+      <DesignTimeBuild Condition="'$(DesignTimeBuild)' == ''">false</DesignTimeBuild>
+    </PropertyGroup>    
+  </Target>
+
+  <Target Name="_EnsureDesignTimeBuildForCompile">
+    <PropertyGroup>
+      <DesignTimeBuild Condition="'$(DesignTimeBuild)' == ''">true</DesignTimeBuild>
+    </PropertyGroup>    
+  </Target>
+
+  <!-- We always pre-fix for non-IDE builds as well as IDE full builds (not design-time builds) when outdated files were detected -->
+  <Target Name="_ApplyCodeFixBeforeCompile" 
+          BeforeTargets="CoreCompile" 
+          Condition="'$(BuildingInsideVisualStudio)' != 'true' or
+                     ('$(DesignTimeBuild)' != 'true' and Exists('$(_ApplyCodeFixFile)'))">
+    <ResolveLocalAssemblies />
+    <GenerateStunts ProjectFullPath="$(MSBuildProjectFullPath)"
+                    ToolsPath="$(StuntToolsPath)"
+                    AssemblySearchPath="@(AssemblySearchPath)"
+                    MSBuildBinPath="$(MSBuildBinPath)"
+                    DebugTask="$(DebugTask)"
+                    DebugConsole="$(DebugConsole)"
+                    Analyzers="@(Analyzer);@(CodeFix)"
+                    FixableDiagnosticIds="@(FixableDiagnosticId)"
+                    BuildingInsideVisualStudio="$(BuildingInsideVisualStudio)" />
+    <Delete Files="$(_ApplyCodeFixFile)" />
+  </Target>
+
+  <Target Name="_RecordFixableWarnings" BeforeTargets="CoreCompile">
+    <RecordFixableWarnings FixableDiagnosticIds="@(FixableDiagnosticId)" ProjectFile="$(MSBuildProjectFullPath)" />
+  </Target>
+
+  <Target Name="_CollectFixableWarnings" Returns="@(FixableWarning)" AfterTargets="CoreCompile">
+    <CollectFixableWarnings ProjectFile="$(MSBuildProjectFullPath)">
+      <Output TaskParameter="FixableWarnings" ItemName="FixableWarning" />
+    </CollectFixableWarnings>
+  </Target>
+
+  <Target Name="_ApplyCodeFixes" AfterTargets="CoreCompile" DependsOnTargets="_CollectFixableWarnings;_ApplyCodeFixAfterCompile" />
+  
+  <Target Name="_ApplyCodeFixAfterCompile"
+          AfterTargets="CoreCompile"
+          Condition="'$(SkipApplyCodeFix)' != 'true' and '@(FixableWarning)' != ''">
+
+    <ItemGroup>
+      <FixableWarningMessage Include="@(FixableWarning -> '%(Identity): %(Message)')" />
+      <DistinctFixableMessage Include="@(FixableWarningMessage -> Distinct())" />
+    </ItemGroup>
+
+    <Message Importance="low" Text="Applying code fixes for fixable diagnostis:
+@(DistinctFixableMessage -> '%(Identity)', '$(_NewLineSeparator)')" />
+
+    <!-- If there were warnings, we need to run the code fixers, and invoke compile 
+         again, this time the warnings should be errors, since it means a fixable 
+         diagnostics didn't get fixed. -->
+
+    <!-- NOTE: generated code for now is collected by globbing Stunts/Mocks intermediate 
+         folders, so applying the code fixes would generate/update existing code and the 
+         Compile target we invoke will run again and generate a fixed output assembly -->
+
+    <ResolveLocalAssemblies />
+    <GenerateStunts ProjectFullPath="$(MSBuildProjectFullPath)"
+                    ToolsPath="$(StuntToolsPath)"
+                    AssemblySearchPath="@(AssemblySearchPath)"
+                    MSBuildBinPath="$(MSBuildBinPath)"
+                    DebugTask="$(DebugTask)"
+                    DebugConsole="$(DebugConsole)"
+                    Analyzers="@(Analyzer);@(CodeFix)"
+                    FixableDiagnosticIds="@(FixableDiagnosticId)"
+                    BuildingInsideVisualStudio="$(BuildingInsideVisualStudio)" />
+
+    <MSBuild Projects="$(MSBuildProjectFullPath)"
+             Targets="Compile"
+             Properties="FixableWarningsAsErrors=true;SkipApplyCodeFix=true"
+             />
+  </Target>
+
+  <!-- Persists settings for the code fixers to know the intermediate output path or other values during a build-time code fix -->
+  <Target Name="_SaveCodeFixSettings"
+          BeforeTargets="Compile;CompileDesignTime"
+          Inputs="$(MSBuildAllProjects)" Outputs="$(_CodeFixSettingsFile)">
+
+    <ItemGroup>
+      <CodeFixSetting Include="IntermediateOutputPath" Value="$([MSBuild]::NormalizeDirectory($(IntermediateOutputPath)))" />
+    </ItemGroup>
+
+    <WriteLinesToFile File="$(_CodeFixSettingsFile)" Overwrite="true" 
+                      Lines="@(CodeFixSetting -> '%(Identity)=%(Value)', '$(_NewLineSeparator)')" />
+    <ItemGroup>
+      <FileWrites Include="$(_CodeFixSettingsFile)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="_SetFixableWarningsAsErrors" AfterTargets="BeforeCompile" Condition="'$(FixableWarningsAsErrors)' == 'true'">
+    <PropertyGroup>
+      <WarningsAsErrors>$(WarningsAsErrors);@(FixableDiagnosticId)</WarningsAsErrors>
+    </PropertyGroup>
+  </Target>
+  
+</Project>

@@ -17,6 +17,9 @@ namespace Sample.CSharp
             calculator.Setup(m => m.Memory.Recall()).Returns(5);
             var c = Mock.Of<ICalculator>();
 
+            c.Recall("foo").Returns(5);
+
+
             c.Setup(x => x.Store("foo", 5));
         }
     }

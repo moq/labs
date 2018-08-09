@@ -8,9 +8,7 @@ namespace Stunts
 {
     /// <summary>
     /// Analyzes source code looking for method invocations to methods annotated with 
-    /// the <see cref="StuntGeneratorAttribute"/> and reports any missing or outdated 
-    /// generated types using the given <see cref="NamingConvention"/> to locate the
-    /// generated types.
+    /// the <see cref="StuntGeneratorAttribute"/> and reports unsupported scenarios.
     /// </summary>
     // TODO: F#
     [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
