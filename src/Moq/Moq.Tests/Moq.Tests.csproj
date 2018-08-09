@@ -9,7 +9,7 @@
     <AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\Moq\contentFiles\cs\netstandard2.0\*.cs" Visible="false" />
+    <Compile Include="..\Moq\contentFiles\cs\**" Visible="false" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\Testing\AssertCode.cs" Link="Helpers\AssertCode.cs" />

@@ -10,13 +10,6 @@
 AssemblyVersion=$(AssemblyVersion)" />
   </Target>
 
-  <Target Name="_SetLocalCommits" BeforeTargets="_GitPopulateVersionInfo" Condition="'$(CI)' != 'true'">
-    <PropertyGroup>
-      <!-- Local builds should always be commit count +1, since we'll be always working on the next version to be published. -->
-      <GitCommits>$([MSBuild]::Add('$(GitCommits)', '1'))</GitCommits>
-    </PropertyGroup>
-  </Target>
-
   <!-- $(ExcludeRestorePackageImports)==true when invoking /t:Restore -->
   <Target Name="SetVersion" BeforeTargets="Build;GetPackageVersion;_IntrospectProjectProperties" DependsOnTargets="GitVersion" Condition="'$(ExcludeRestorePackageImports)' != 'true'">
     <PropertyGroup>

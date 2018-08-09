@@ -42,7 +42,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{21EDC116
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stunts.ProjectReader", "Stunts\Stunts.ProjectReader\Stunts.ProjectReader.csproj", "{D4BCD0FD-946F-4A43-A6B0-6FE3832C2B10}"
-
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +77,10 @@ Global
 		{91F9A526-E62C-491B-8774-88A61BDF1E1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91F9A526-E62C-491B-8774-88A61BDF1E1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91F9A526-E62C-491B-8774-88A61BDF1E1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE3450C8-CB6E-4DA9-A0F0-977F82FFE6F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE3450C8-CB6E-4DA9-A0F0-977F82FFE6F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE3450C8-CB6E-4DA9-A0F0-977F82FFE6F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE3450C8-CB6E-4DA9-A0F0-977F82FFE6F9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F033B778-A0F8-43E6-85B9-E184DFFCF347}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F033B778-A0F8-43E6-85B9-E184DFFCF347}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F033B778-A0F8-43E6-85B9-E184DFFCF347}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -85,10 +89,6 @@ Global
 		{D4BCD0FD-946F-4A43-A6B0-6FE3832C2B10}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4BCD0FD-946F-4A43-A6B0-6FE3832C2B10}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D4BCD0FD-946F-4A43-A6B0-6FE3832C2B10}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AE3450C8-CB6E-4DA9-A0F0-977F82FFE6F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AE3450C8-CB6E-4DA9-A0F0-977F82FFE6F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AE3450C8-CB6E-4DA9-A0F0-977F82FFE6F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AE3450C8-CB6E-4DA9-A0F0-977F82FFE6F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

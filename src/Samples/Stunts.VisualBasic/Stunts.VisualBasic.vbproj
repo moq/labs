@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\..\src\Stunts\Stunts\contentFiles\vb\netstandard1.3\Stunt.vb" Link="Stunt.vb" Visible="false" />
+    <Compile Include="..\..\..\src\Stunts\Stunts\contentFiles\vb\**" />
   </ItemGroup>
 
   <ItemGroup>

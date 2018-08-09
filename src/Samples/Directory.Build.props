@@ -3,5 +3,6 @@
   <PropertyGroup>
     <RootPath>$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), .gitignore))\</RootPath>
     <BinPath>$(RootPath)bin\$(Configuration)\</BinPath>
+    <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
   </PropertyGroup>
 </Project>

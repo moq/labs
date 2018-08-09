@@ -24,7 +24,6 @@
 	</ItemDefinitionGroup>
 
 	<ItemGroup>
-		<Solution Include="src\Stunts.sln" />
 		<Solution Include="src\Moq.sln" />
 		<Solution Include="src\Samples\Samples.sln" />
 	</ItemGroup>

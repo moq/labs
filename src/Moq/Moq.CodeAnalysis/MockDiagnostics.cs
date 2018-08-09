@@ -10,7 +10,7 @@ namespace Moq
             new ResourceString(nameof(Resources.MissingMockAnalyzer_Title)),
             new ResourceString(nameof(Resources.MissingMockAnalyzer_Message)),
             "Build",
-            DiagnosticSeverity.Error,
+            DiagnosticSeverity.Warning,
             true,
             new ResourceString(nameof(Resources.MissingMockAnalyzer_Description)));
 
@@ -19,7 +19,7 @@ namespace Moq
             new ResourceString(nameof(Resources.OutdatedMockAnalyzer_Title)),
             new ResourceString(nameof(Resources.OutdatedMockAnalyzer_Message)),
             "Build",
-            DiagnosticSeverity.Error,
+            DiagnosticSeverity.Warning,
             true,
             new ResourceString(nameof(Resources.OutdatedMockAnalyzer_Description)));
     }

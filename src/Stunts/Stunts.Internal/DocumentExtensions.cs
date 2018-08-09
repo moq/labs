@@ -25,17 +25,20 @@ namespace Microsoft.CodeAnalysis
                 .Concat(new[] { new OverridableMembersAnalyzer() })
                 .ToImmutableArray());
 
+        // TODO: see if this should be moved elsewhere.
+        public static ImmutableArray<DiagnosticAnalyzer> BuiltInAnalyzers => builtInAnalyzers.Value;
+
         /// <summary>
         /// Applies the given named code fix to a document.
         /// </summary>
-        public static async Task<Document> ApplyCodeFixAsync(this Document document, string codeFixName, CancellationToken cancellationToken = default)
+        public static async Task<Document> ApplyCodeFixAsync(this Document document, string codeFixName, ImmutableArray<DiagnosticAnalyzer> analyzers = default, CancellationToken cancellationToken = default)
         {
             // If we request and process ALL codefixes at once, we'll get one for each 
             // diagnostics, which is one per non-implemented member of the interface/abstract 
             // base class, so we'd be applying unnecessary fixes after the first one.
             // So we re-retrieve them after each Apply, which will leave only the remaining 
             // ones.
-            var codeFixes = await GetCodeFixes(document, codeFixName, cancellationToken).ConfigureAwait(false);
+            var codeFixes = await GetCodeFixes(document, codeFixName, analyzers, cancellationToken).ConfigureAwait(false);
             while (codeFixes.Length != 0)
             {
                 var operations = await codeFixes[0].Action.GetOperationsAsync(cancellationToken);
@@ -44,7 +47,7 @@ namespace Microsoft.CodeAnalysis
                 {
                     document = operation.ChangedSolution.GetDocument(document.Id);
                     // Retrieve the codefixes for the updated doc again.
-                    codeFixes = await GetCodeFixes(document, codeFixName, cancellationToken).ConfigureAwait(false);
+                    codeFixes = await GetCodeFixes(document, codeFixName, analyzers, cancellationToken).ConfigureAwait(false);
                 }
                 else
                 {
@@ -57,8 +60,8 @@ namespace Microsoft.CodeAnalysis
         }
 
         static async Task<ImmutableArray<ICodeFix>> GetCodeFixes(
-            Document document, string codeFixName, 
-            CancellationToken cancellationToken = default)
+            Document document, string codeFixName,
+            ImmutableArray<DiagnosticAnalyzer> analyzers = default, CancellationToken cancellationToken = default)
         {
             var provider = GetCodeFixProvider(document, codeFixName);
             if (provider == null)
@@ -66,7 +69,10 @@ namespace Microsoft.CodeAnalysis
 
             var compilation = await document.Project.GetCompilationAsync(cancellationToken);
             // TODO: should we allow extending the set of built-in analyzers being added?
-            var analyerCompilation = compilation.WithAnalyzers(builtInAnalyzers.Value, cancellationToken: cancellationToken);
+            if (analyzers.IsDefaultOrEmpty)
+                analyzers = builtInAnalyzers.Value;
+
+            var analyerCompilation = compilation.WithAnalyzers(analyzers, cancellationToken: cancellationToken);
             var allDiagnostics = await analyerCompilation.GetAllDiagnosticsAsync(cancellationToken);
             var diagnostics = allDiagnostics
                 .Where(x => provider.FixableDiagnosticIds.Contains(x.Id))

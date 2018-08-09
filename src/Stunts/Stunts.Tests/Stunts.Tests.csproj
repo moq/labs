@@ -2,13 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>net471</TargetFramework>
+    <LangVersion>Latest</LangVersion>
     <IncludeXunit>true</IncludeXunit>
     <IncludeRoslyn>true</IncludeRoslyn>
     <IncludeMSBuild>true</IncludeMSBuild>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\Stunts\contentFiles\cs\netstandard1.3\Stunt.cs" Link="Stunt.cs" />
+    <Compile Include="..\Stunts\contentFiles\cs\**" Visible="false" />
     <Compile Include="..\..\Testing\AssertCode.cs" Link="Helpers\AssertCode.cs" />
     <Compile Include="..\..\Testing\MockBuildEngine.cs" Link="Helpers\MockBuildEngine.cs" />
     <Compile Include="..\...\Testing\RecordingBehavior.cs" Link="Helpers\RecordingBehavior.cs" />
