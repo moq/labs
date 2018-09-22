@@ -132,6 +132,14 @@ namespace Stunts
                         }.ToImmutableDictionary(),
                         name);
 
+                    // Flag AutoCodeFix that the next build should generate the type.
+                    if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("AutoCodeFix")) &&
+                        // We only flag if we're not being run by AutoCodeFix itself
+                        context.Options.GetCodeFixSettings().TryGetValue("IntermediateOutputPath", out var intermediateOutputPath))
+                    {
+                        File.WriteAllText(Path.Combine(intermediateOutputPath, "AutoCodeFixBeforeCompile.flag"), "");
+                    }
+
                     context.ReportDiagnostic(diagnostic);
                 }
                 else
@@ -151,7 +159,9 @@ namespace Stunts
                         // Any outdated files should be automatically updated on the next build, 
                         // so signal this to the build targets with a text file that the targets 
                         // can use to determine a pre-compile analysis and codefix phase is needed.
-                        if (context.Options.GetCodeFixSettings().TryGetValue("IntermediateOutputPath", out var intermediateOutputPath))
+                        if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("AutoCodeFix")) &&
+                            // We only flag if we're not being run by AutoCodeFix itself
+                            context.Options.GetCodeFixSettings().TryGetValue("IntermediateOutputPath", out var intermediateOutputPath))
                         {
                             File.WriteAllText(Path.Combine(intermediateOutputPath, "AutoCodeFixBeforeCompile.flag"), "");
                         }
