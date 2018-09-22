@@ -153,7 +153,7 @@ namespace Stunts
                         // can use to determine a pre-compile analysis and codefix phase is needed.
                         if (context.Options.GetCodeFixSettings().TryGetValue("IntermediateOutputPath", out var intermediateOutputPath))
                         {
-                            File.WriteAllText(Path.Combine(intermediateOutputPath, "ApplyCodeFix.flag"), "");
+                            File.WriteAllText(Path.Combine(intermediateOutputPath, "AutoCodeFixBeforeCompile.flag"), "");
                         }
 
                         // If there are compilation errors, we should update the proxy.

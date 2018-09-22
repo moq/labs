@@ -37,6 +37,7 @@
       <FrameworkSpecific>true</FrameworkSpecific>
       <Pack>true</Pack>
       <TargetPath>%(Filename)%(Extension)</TargetPath>
+      <Visible>false</Visible>
     </None>
     <None Update="Moq.props">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -8,7 +8,9 @@ namespace Moq.Sdk
     /// the <see cref="IMock"/> interface for introspecting 
     /// a mock instance.
     /// </summary>
-    [GeneratedCode("Moq", ThisAssembly.Project.Properties.AssemblyVersion)] // This attribute prevents registering the "Implement through behavior pipeline" codefix.
+    // These attributes prevent registering the "Implement through behavior pipeline" codefix.
+    // See CustomMockCodeFixProvider and its base class CustomStuntCodeFixProvider.
+    [GeneratedCode("Moq", ThisAssembly.Metadata.Version)] 
     [CompilerGenerated]
     public interface IMocked
     {

@@ -58,7 +58,7 @@ namespace Stunts
             bool isGenerated(SyntaxNode n)
             {
                 var symbol = model.GetSymbolInfo(n, context.CancellationToken);
-                // [CompilerGenerated] is used in IStunt and IMocked to signal that 
+                // [CompilerGenerated] and [GeneratedCode] are used in IStunt and IMocked to signal that 
                 // no implementation should be offered thought the behavior pipeline
                 // because a custom code fix provides the implementation instead.
                 return

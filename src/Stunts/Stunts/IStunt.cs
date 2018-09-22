@@ -7,7 +7,9 @@ namespace Stunts
     /// <summary>
     /// Interface implemented by all stunts.
     /// </summary>
-    [GeneratedCode("Stunts", ThisAssembly.Project.Properties.AssemblyVersion)] // This attribute prevents registering the "Implement through behavior pipeline" codefix.
+    // These attributes prevent registering the "Implement through behavior pipeline" codefix.
+    // See CustomMockCodeFixProvider and its base class CustomStuntCodeFixProvider.
+    [GeneratedCode("Stunts", ThisAssembly.Metadata.Version)]
     [CompilerGenerated]
     public interface IStunt
 	{

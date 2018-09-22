@@ -1,4 +1,4 @@
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <Import Project="$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.props" Condition="Exists('$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.props')" />
   <PropertyGroup Label="Globals">
@@ -21,13 +21,11 @@
     <ProjectReference Include="..\Moq.CodeFix\Moq.CodeFix.csproj" />
     <ProjectReference Include="..\Moq.Sdk\Moq.Sdk.csproj" />
     <ProjectReference Include="..\Moq\Moq.csproj" />
-    <ProjectReference Include="..\..\Stunts\Stunts.Package\Stunts.Package.nuproj" />
+    <ProjectReference Include="..\..\Stunts\Stunts.Package\Stunts.Package.nuproj" IncludeAssets="all" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
   <Import Project="$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.targets" Condition="Exists('$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.targets')" />
-
-  <Target Name="FixPackageFileFramework" BeforeTargets="Pack" AfterTargets="$(GetPackageContents)"
-          Returns="@(_PackageContent)">
+  <Target Name="FixPackageFileFramework" BeforeTargets="Pack" AfterTargets="$(GetPackageContents)" Returns="@(_PackageContent)">
     <ItemGroup>
       <_PackageContent Condition="'%(Kind)' == 'Dependency'">
         <TargetFrameworkMoniker>.NETStandard,Version=v2.0</TargetFrameworkMoniker>
@@ -36,5 +34,4 @@
       </_PackageContent>
     </ItemGroup>
   </Target>
-
 </Project>

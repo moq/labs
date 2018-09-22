@@ -20,8 +20,9 @@
     <ProjectReference Include="..\Stunts\Stunts.csproj" />
     <ProjectReference Include="..\Stunts.CodeAnalysis\Stunts.CodeAnalysis.csproj" />
     <ProjectReference Include="..\Stunts.CodeFix\Stunts.CodeFix.csproj" />
-    <ProjectReference Include="..\Stunts.Tasks\Stunts.Tasks.csproj" />
-    <ProjectReference Include="..\Stunts.ProjectReader\Stunts.ProjectReader.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AutoCodeFix" Version="0.2.0-beta" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
   <Import Project="$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.targets" Condition="Exists('$(NuGetAuthoringPath)\NuGet.Packaging.Authoring.targets')" />

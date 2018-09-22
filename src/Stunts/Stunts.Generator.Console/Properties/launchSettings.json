@@ -1,9 +1,0 @@
-{
-  "profiles": {
-    "Moq.Proxy.Generator.Console": {
-      "commandName": "Project",
-      "commandLineArgs": "@pgen.rsp",
-      "workingDirectory": "$(OutputPath)"
-    }
-  }
-}

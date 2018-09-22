@@ -78,10 +78,13 @@ namespace Stunts
             }
 
             var stuntDoc = document.Project.Documents.FirstOrDefault(d => d.Name == Path.GetFileName(file) && d.Folders.SequenceEqual(folders));
-            var isBuildTime = document.Project.Solution.Workspace.Options.GetOption(StuntOptions.IsBuildTime);
+
+            // NOTE: the environment variable tells us we're being run with AutoCodeFix enabled and 
+            // active, meaning we should generate files into the intermediate output path instead.
+            var autoCodeFixEnabled = bool.TryParse(Environment.GetEnvironmentVariable("AutoCodeFix"), out var value) && value;
 
             // Also probe intermediate output path for build-time codegen.
-            if (stuntDoc == null && isBuildTime)
+            if (stuntDoc == null && autoCodeFixEnabled)
             {
                 // Get configured generator options
                 if (document.Project.AnalyzerOptions.GetCodeFixSettings().TryGetValue("IntermediateOutputPath", out var intermediateOutputPath))
@@ -111,12 +114,6 @@ namespace Stunts
                 }
                 else
                 {
-                    // Ensure target directory exists since both end up as 
-                    // linked folders until we add a generated stunt to it, because 
-                    // the API contentFiles are linked with the same folder name.
-                    if (naming.Namespace == nameof(Stunts) || naming.Namespace == "Mocks")
-                        Directory.CreateDirectory(Path.GetDirectoryName(file));
-
                     stuntDoc = document.Project.AddDocument(
                         Path.GetFileName(file),
                         syntax,

@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace Stunts
 {
     /// <summary>
-    /// Allows retrieving generator metadata from the configured analyzer options.
+    /// Allows retrieving code fix settings from the configured analyzer options.
     /// </summary>
     public static class AnalyzerOptionsExtensions
     {
@@ -18,14 +18,16 @@ namespace Stunts
         /// </summary>
         public static IDictionary<string, string> GetCodeFixSettings(this AnalyzerOptions options)
         {
-            var metadataFile = options.AdditionalFiles.FirstOrDefault(x => x.Path.EndsWith("CodeFixSettings.txt", StringComparison.OrdinalIgnoreCase));
+            var metadataFile = options.AdditionalFiles.FirstOrDefault(x => x.Path.EndsWith("AutoCodeFix.ini", StringComparison.OrdinalIgnoreCase));
             if (metadataFile != null)
             {
+                // We can pass ourselves arbitrary settings by adding <AutoFixSetting Include="" Value="" /> items.
+                // If items are calculated, you can create a target and run BeforeTargets="SaveAutoFixSettings".
                 return File.ReadAllLines(metadataFile.Path)
                     .Where(line => !string.IsNullOrEmpty(line))
                     .Select(line => line.Split('='))
                     .Where(pair => pair.Length == 2)
-                    .ToDictionary(pair => pair[0], pair => pair[1]);
+                    .ToDictionary(pair => pair[0].Trim(), pair => pair[1].Trim());
             }
 
             return emptySettings;

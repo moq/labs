@@ -40,7 +40,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Stunts.ProjectReader\Stunts.ProjectReader.csproj" />
     <ProjectReference Include="..\Stunts\Stunts.csproj" />
     <ProjectReference Include="..\Stunts.Internal\Stunts.Internal.csproj" />
     <ProjectReference Include="..\Stunts.Sdk\Stunts.Sdk.csproj" />
