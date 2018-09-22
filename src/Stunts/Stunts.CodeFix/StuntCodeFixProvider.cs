@@ -60,6 +60,7 @@ namespace Stunts
         protected abstract CodeAction CreateCodeAction(Document document, Diagnostic diagnostic);
 
         // See https://github.com/dotnet/roslyn/blob/master/docs/analyzers/FixAllProvider.md for more information on Fix All Providers
-        public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
+        //public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
+        public override FixAllProvider GetFixAllProvider() => null;
     }
 }

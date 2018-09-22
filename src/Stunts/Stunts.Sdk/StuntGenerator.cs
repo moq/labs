@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
@@ -29,7 +30,7 @@ namespace Stunts
         /// </summary>
         public static IDocumentProcessor[] GetDefaultProcessors() => new IDocumentProcessor[]
         {
-            new EnsureStuntsReference(),
+            //new EnsureStuntsReference(),
             new DefaultImports(),
             new CSharpFileHeader(),
             new CSharpScaffold(),
@@ -111,6 +112,7 @@ namespace Stunts
 #endif
 
             Document document;
+            EnsureTargetDirectory(project);
 
             if (project.Solution.Workspace is AdhocWorkspace workspace)
             {
@@ -194,6 +196,7 @@ namespace Stunts
                 cancellationToken = CancellationToken.None;
 #endif
 
+            EnsureTargetDirectory(document.Project);
             var language = document.Project.Language;
             if (!processors.TryGetValue(language, out var supportedProcessors))
                 return document;
@@ -231,6 +234,19 @@ namespace Stunts
             }
 
             return document;
+        }
+
+        void EnsureTargetDirectory(Project project)
+        {
+            var autoCodeFixEnabled = bool.TryParse(Environment.GetEnvironmentVariable("AutoCodeFix"), out var value) && value;
+            // When running the generator from build-time, ensure the folder exists.
+            if (!autoCodeFixEnabled)
+            {
+                // Ensure target directory exists since a linked file in teh same folder 
+                // may already exist in the project and the file adding fails in that case.
+                var directory = Path.Combine(Path.GetDirectoryName(project.FilePath), Path.Combine(naming.Namespace.Split('.')));
+                Directory.CreateDirectory(directory);
+            }
         }
     }
 }

@@ -1,5 +1,10 @@
 <Project>
-  <Import Project="CI.props" />
+
+  <PropertyGroup Condition="'$(CI)' == ''">
+    <CI>false</CI>
+    <CI Condition="'$(TF_BUILD)' == 'true'">true</CI>
+  </PropertyGroup>
+
   <Import Project="Packaging.props" Condition="'$(MSBuildProjectExtension)' == '.nuproj'" />
 
   <PropertyGroup>
@@ -32,11 +37,6 @@
   <ItemGroup>
     <!-- We use msbuild.rsp to always generate .binlog for easy build diagnostics. Don't show them in the IDE -->
     <None Remove="*.binlog" />
-
-    <ThisAssemblyProjectProperty Include="AssemblyVersion" />
-    <ThisAssemblyProjectProperty Include="PackageVersion" />
-    <ThisAssemblyProjectProperty Include="FileVersion" />
-    <ThisAssemblyProjectProperty Include="InformationalVersion" />
   </ItemGroup>
 
   <!-- IsTestProject is set by xunit  -->

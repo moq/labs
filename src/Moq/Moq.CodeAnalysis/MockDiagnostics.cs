@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System;
+using Microsoft.CodeAnalysis;
 using Moq.Properties;
 
 namespace Moq
@@ -10,7 +11,7 @@ namespace Moq
             new ResourceString(nameof(Resources.MissingMockAnalyzer_Title)),
             new ResourceString(nameof(Resources.MissingMockAnalyzer_Message)),
             "Build",
-            DiagnosticSeverity.Warning,
+            bool.TryParse(Environment.GetEnvironmentVariable("AutoCodeFix"), out var value) && value ? DiagnosticSeverity.Warning : DiagnosticSeverity.Info,
             true,
             new ResourceString(nameof(Resources.MissingMockAnalyzer_Description)));
 
@@ -19,7 +20,7 @@ namespace Moq
             new ResourceString(nameof(Resources.OutdatedMockAnalyzer_Title)),
             new ResourceString(nameof(Resources.OutdatedMockAnalyzer_Message)),
             "Build",
-            DiagnosticSeverity.Warning,
+            bool.TryParse(Environment.GetEnvironmentVariable("AutoCodeFix"), out var value) && value ? DiagnosticSeverity.Warning : DiagnosticSeverity.Info,
             true,
             new ResourceString(nameof(Resources.OutdatedMockAnalyzer_Description)));
     }

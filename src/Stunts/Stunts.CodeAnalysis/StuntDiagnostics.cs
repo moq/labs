@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System;
+using Microsoft.CodeAnalysis;
 using Stunts.Properties;
 
 namespace Stunts
@@ -10,7 +11,7 @@ namespace Stunts
             new ResourceString(nameof(Resources.MissingStunt_Title)),
             new ResourceString(nameof(Resources.MissingStunt_Message)),
             "Build",
-            DiagnosticSeverity.Warning,
+            bool.TryParse(Environment.GetEnvironmentVariable("AutoCodeFix"), out var value) && value ? DiagnosticSeverity.Warning : DiagnosticSeverity.Info,
             true,
             new ResourceString(nameof(Resources.MissingStunt_Description)));
 
@@ -19,7 +20,7 @@ namespace Stunts
             new ResourceString(nameof(Resources.OutdatedStunt_Title)),
             new ResourceString(nameof(Resources.OutdatedStunt_Message)),
             "Build",
-            DiagnosticSeverity.Warning,
+            bool.TryParse(Environment.GetEnvironmentVariable("AutoCodeFix"), out var value) && value ? DiagnosticSeverity.Warning : DiagnosticSeverity.Info,
             true,
             new ResourceString(nameof(Resources.OutdatedStunt_Description)));
 

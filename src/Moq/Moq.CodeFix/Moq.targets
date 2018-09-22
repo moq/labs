@@ -1,20 +1,10 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <CompileDependsOn>
-    _AddIntermediateMocks;
-    $(CompileDependsOn)
-  </CompileDependsOn>
-
-  <Target Name="_AddIntermediateMocks">
-    <ItemGroup>
-      <_Mocks Include="$(IntermediateOutputPath)Mocks/*$(DefaultLanguageSourceExtension)" />
-      <Compile Include="@(_Mocks)" Visible="false" />
-      <!--
-      <Compile Update="@(Compile -> WithMetadataValue('LinkBase', 'Stunts'))">
-        <Visible>false</Visible>
-      </Compile>
-      -->
-    </ItemGroup>
-  </Target>
+  <ItemGroup>
+    <Compile Include="$(IntermediateOutputPath)Mocks/*$(DefaultLanguageSourceExtension)">
+      <Link>Mocks/%(Filename)%(Extension)</Link>
+      <Visible>false</Visible>
+    </Compile>
+  </ItemGroup>
 
 </Project>
