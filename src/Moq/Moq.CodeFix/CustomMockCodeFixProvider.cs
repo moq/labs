@@ -13,10 +13,18 @@ using Stunts.Processors;
 
 namespace Moq
 {
+    /// <summary>
+    /// Custom mocks allow manually creating classes that implement IMocked and the 
+    /// behavior pipeline from the base stunt too. It allows to manually create mocks.
+    /// </summary>
     [ExportCodeFixProvider(LanguageNames.CSharp, LanguageNames.VisualBasic, Name = "CustomMock")]
     [ExtensionOrder(Before = "ImplementInterface")]
     public class CustomMockCodeFixProvider : CodeFixProvider
     {
+        /// <summary>
+        /// We fixup the implementation of abstract and interface members by forwarding 
+        /// the implementations through the behavior pipeline.
+        /// </summary>
         public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
             // See http://source.roslyn.io/#Microsoft.CodeAnalysis.CSharp.Features/ImplementAbstractClass/CSharpImplementAbstractClassCodeFixProvider.cs,15
             "CS0534",

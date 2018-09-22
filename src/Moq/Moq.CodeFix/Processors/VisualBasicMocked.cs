@@ -12,6 +12,9 @@ using static Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory;
 
 namespace Moq.Processors
 {
+    /// <summary>
+    /// Generates the VB implementation of the mock interfaces.
+    /// </summary>
     class VisualBasicMocked : IDocumentProcessor
     {
         public string[] Languages { get; } = new[] { LanguageNames.VisualBasic };

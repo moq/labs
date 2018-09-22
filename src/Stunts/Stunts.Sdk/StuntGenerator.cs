@@ -30,7 +30,6 @@ namespace Stunts
         /// </summary>
         public static IDocumentProcessor[] GetDefaultProcessors() => new IDocumentProcessor[]
         {
-            //new EnsureStuntsReference(),
             new DefaultImports(),
             new CSharpFileHeader(),
             new CSharpScaffold(),

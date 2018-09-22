@@ -1,14 +1,16 @@
-using System;
-using System.Reflection;
-
 namespace Stunts
 {
+    using System;
+    using System.CodeDom.Compiler;
+    using System.Reflection;
+
     /// <summary>
     /// Instantiates stunts for the specified types.
     /// </summary>
+    [GeneratedCode("Stunts", "5.0")]
     internal partial class Stunt
     {
-        static T Create<T>(object[] constructorArgs, params Type[] interfaces) => 
+        private static T Create<T>(object[] constructorArgs, params Type[] interfaces) => 
             (T)StuntFactory.Default.CreateStunt(typeof(Stunt).GetTypeInfo().Assembly, typeof(T), interfaces, constructorArgs);
 
         /// <summary>
