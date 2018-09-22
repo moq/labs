@@ -148,7 +148,7 @@
     <value>Generate Stunt</value>
   </data>
   <data name="GenerateStuntCodeFix_TitleFormat" xml:space="preserve">
-    <value>Generate {0}</value>
+    <value>Add {0} to project</value>
   </data>
   <data name="InvalidStuntTypes" xml:space="preserve">
     <value>Only classes and interfaces can be used in stunts. Invalid set of symbols: {0}.</value>

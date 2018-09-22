@@ -1,8 +1,10 @@
 ﻿Imports System
+Imports System.CodeDom.Compiler
 Imports System.Reflection
 
 Namespace Global.Stunts
 
+    <GeneratedCode("Stunts", "5.0")>
     Partial Friend Class Stunt
 
         Private Shared Function Create(Of T)(ByVal constructorArgs As Object(), ParamArray interfaces As Type()) As T

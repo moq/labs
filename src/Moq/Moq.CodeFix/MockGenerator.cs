@@ -16,7 +16,6 @@ namespace Moq
         public MockGenerator(NamingConvention naming)
             : base(naming, new IDocumentProcessor[]
                 {
-                    //new EnsureSdkReference(),
                     new DefaultImports(typeof(LazyInitializer).Namespace, typeof(IMocked).Namespace),
                 }
                 .Concat(GetDefaultProcessors())

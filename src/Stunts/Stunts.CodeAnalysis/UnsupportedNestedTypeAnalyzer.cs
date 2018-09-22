@@ -23,8 +23,7 @@ namespace Stunts
     // however, that the same reason the codefix isn't showing up when we ask for it, will cause that service to return 
     // an empty list of code actions too. 
     // It may be costly to investigate, and it doesn't seem like a core scenario anyway. 
-    // Another workaround might be to let the user manually implement stunts/mocks and detect the presence of 
-    // the IStunt interface and offer the rewriting codefix. This might be interesting too in general.
+    // It can be worked around by creating a custom mock.
     // TODO: F#
     [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public class UnsupportedNestedTypeAnalyzer : DiagnosticAnalyzer

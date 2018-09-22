@@ -11,6 +11,9 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Moq.Processors
 {
+    /// <summary>
+    /// Generates the C# implementation of the mock interfaces.
+    /// </summary>
     class CSharpMocked : IDocumentProcessor
     {
         public string[] Languages { get; } = new[] { LanguageNames.CSharp };

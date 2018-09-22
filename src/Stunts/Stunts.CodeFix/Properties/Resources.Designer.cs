@@ -151,7 +151,7 @@ namespace Stunts.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Generate {0}.
+        ///   Looks up a localized string similar to Add {0} to project.
         /// </summary>
         internal static string GenerateStuntCodeFix_TitleFormat {
             get {

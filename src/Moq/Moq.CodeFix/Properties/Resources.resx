@@ -124,7 +124,7 @@
     <value>Implement mock</value>
   </data>
   <data name="GenerateMockCodeFix_TitleFormat" xml:space="preserve">
-    <value>Generate {0}</value>
+    <value>Add {0} to project</value>
   </data>
   <data name="MissingMockAnalyzer_Description" xml:space="preserve">
     <value>Invoked method requires a mock to be generated at design-time or compile-time.</value>
