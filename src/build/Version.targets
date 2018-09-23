@@ -10,7 +10,7 @@
     <GetPackageVersionDependsOn>SetVersions;$(GetPackageVersionDependsOn)</GetPackageVersionDependsOn>
   </PropertyGroup>
 
-  <Target Name="Version" DependsOnTargets="SetVersion">
+  <Target Name="Version" DependsOnTargets="SetVersions">
     <Message Importance="high" Text="PackageVersion=$(PackageVersion)
 AssemblyVersion=$(AssemblyVersion)" />
     <Message Condition="$(CI)" Importance="high" Text="##vso[build.updatebuildnumber]$(Version)"/>
