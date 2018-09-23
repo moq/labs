@@ -9,7 +9,7 @@ steps:
   displayName: Restore
   inputs:
     solution: src/Moq.sln
-    msbuildArguments: /t:Restore /p:Configuration=Release /p:RestoreIgnoreFailedSources=true /p:NoWarn=NU1801 /m
+    msbuildArguments: /t:Restore /p:Configuration=Release /m
 
 - task: MSBuild@1
   displayName: Version
