@@ -13,6 +13,7 @@
   <Target Name="Version" DependsOnTargets="SetVersion">
     <Message Importance="high" Text="PackageVersion=$(PackageVersion)
 AssemblyVersion=$(AssemblyVersion)" />
+    <Message Condition="$(CI)" Importance="high" Text="##vso[build.updatebuildnumber]$(Version)"/>
   </Target>
 
   <Target Name="SetVersions"
@@ -54,7 +55,6 @@ AssemblyVersion=$(AssemblyVersion)" />
       </AssemblyAttribute>
     </ItemGroup>
 
-    <Message Condition="$(CI)" Importance="high" Text="##vso[build.updatebuildnumber]$(Version)"/>
   </Target>
 
 </Project>
