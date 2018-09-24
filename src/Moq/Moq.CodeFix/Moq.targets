@@ -4,7 +4,9 @@
     <Compile Include="$(IntermediateOutputPath)Mocks/*$(DefaultLanguageSourceExtension)">
       <Link>Mocks/%(Filename)%(Extension)</Link>
       <Visible>false</Visible>
+      <IsIntermediateCodeGen>true</IsIntermediateCodeGen>
     </Compile>
+    <IntermediateCodeGenPath Include="$(IntermediateOutputPath)Mocks/" />
   </ItemGroup>
 
 </Project>

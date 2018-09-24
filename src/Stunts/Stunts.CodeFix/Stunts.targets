@@ -4,7 +4,9 @@
     <Compile Include="$(IntermediateOutputPath)Stunts/*$(DefaultLanguageSourceExtension)">
       <Link>Stunts/%(Filename)%(Extension)</Link>
       <Visible>false</Visible>
+      <IsIntermediateCodeGen>true</IsIntermediateCodeGen>
     </Compile>
+    <IntermediateCodeGenPath Include="$(IntermediateOutputPath)Stunts/" />
   </ItemGroup>
 
   <!-- Because our analyzers are intended to be design-time only, 
@@ -16,6 +18,27 @@
   <Target Name="_AddDesignTimeAnalyzers" BeforeTargets="CoreCompile" Condition="'$(DesignTimeBuild)' == 'true'">
     <ItemGroup>
       <Analyzer Include="@(CodeFix)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="_AddIntermediateFileWrites" AfterTargets="AfterAutoCodeFix">
+    <ItemGroup>
+      <_IntermediateGeneratedFiles Include="%(IntermediateCodeGenPath.Identity)*$(DefaultLanguageSourceExtension)" />
+      <FileWrites Include="@(_IntermediateGeneratedFiles)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="_RemoveCleanedFiles" BeforeTargets="CoreCompile">
+    <ItemGroup>
+      <Compile Remove="@(Compile -> WithMetadataValue('IsIntermediateCodeGen', 'true'))" Condition="!Exists('%(FullPath)')" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="AddGeneratedFiles" AfterTargets="AfterAutoCodeFix">
+    <ItemGroup>
+      <Compile Remove="@(Compile -> WithMetadataValue('IsIntermediateCodeGen', 'true'))" />
+      <_NewCodeGen Include="%(IntermediateCodeGenPath.Identity)*$(DefaultLanguageSourceExtension)" />
+      <Compile Include="@(_NewCodeGen)" />
     </ItemGroup>
   </Target>
 
