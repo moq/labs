@@ -111,6 +111,7 @@ namespace Stunts
 #endif
 
             Document document;
+
             EnsureTargetDirectory(project);
 
             if (project.Solution.Workspace is AdhocWorkspace workspace)
@@ -195,7 +196,6 @@ namespace Stunts
                 cancellationToken = CancellationToken.None;
 #endif
 
-            EnsureTargetDirectory(document.Project);
             var language = document.Project.Language;
             if (!processors.TryGetValue(language, out var supportedProcessors))
                 return document;
@@ -238,7 +238,7 @@ namespace Stunts
         void EnsureTargetDirectory(Project project)
         {
             var autoCodeFixEnabled = bool.TryParse(Environment.GetEnvironmentVariable("AutoCodeFix"), out var value) && value;
-            // When running the generator from build-time, ensure the folder exists.
+            // When running the generator from design-time, ensure the folder exists.
             if (!autoCodeFixEnabled)
             {
                 // Ensure target directory exists since a linked file in teh same folder 

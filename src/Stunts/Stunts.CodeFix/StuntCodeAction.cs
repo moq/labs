@@ -62,19 +62,15 @@ namespace Stunts
 
             // TODO: F#
             var extension = document.Project.Language == LanguageNames.CSharp ? ".cs" : ".vb";
-            string[] folders;
+
+            // The logical folder is always the split namespace, since generated code is 
+            // expected to be added as hidden linked files.
+            var folders = naming.Namespace.Split('.');
+
             if (!diagnostic.Properties.TryGetValue("Location", out var file) ||
                 string.IsNullOrEmpty(file))
             {
-                file = Path.Combine(Path.GetDirectoryName(document.Project.FilePath), naming.Namespace, name + extension);
-                folders = naming.Namespace.Split('.');
-            }
-            else
-            {
-                folders = Path.GetDirectoryName(file)
-                    .Replace(Path.GetDirectoryName(document.Project.FilePath), "")
-                    .Trim(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
-                    .Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                file = Path.Combine(Path.GetDirectoryName(document.Project.FilePath), Path.Combine(folders), name + extension);
             }
 
             var stuntDoc = document.Project.Documents.FirstOrDefault(d => d.Name == Path.GetFileName(file) && d.Folders.SequenceEqual(folders));
@@ -83,20 +79,13 @@ namespace Stunts
             // active, meaning we should generate files into the intermediate output path instead.
             var autoCodeFixEnabled = bool.TryParse(Environment.GetEnvironmentVariable("AutoCodeFix"), out var value) && value;
 
-            // Also probe intermediate output path for build-time codegen.
+            // Update target file path if running from build-time codegen.
             if (stuntDoc == null && autoCodeFixEnabled)
             {
-                // Get configured generator options
+                // Get configured generator options to build the final path
                 if (document.Project.AnalyzerOptions.GetCodeFixSettings().TryGetValue("IntermediateOutputPath", out var intermediateOutputPath))
                 {
-                    folders = intermediateOutputPath.Split(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries)
-                        .Concat(folders)
-                        .ToArray();
-
-                    file = Path.Combine(Path.GetDirectoryName(document.Project.FilePath), intermediateOutputPath, naming.Namespace, name + ".g" + extension);
-
-                    // Search for the doc at the new location.
-                    stuntDoc = document.Project.Documents.FirstOrDefault(d => d.Name == Path.GetFileName(file) && d.Folders.SequenceEqual(folders));
+                    file = Path.Combine(intermediateOutputPath, Path.Combine(folders), name + ".g" + extension);
                 }
             }
 
@@ -114,6 +103,16 @@ namespace Stunts
                 }
                 else
                 {
+                    // When running the generator from design-time, ensure the folder exists.
+                    // This is necessary since we link files into the Mocks/Stunts folder, 
+                    // which becomes a "linked" folder itself, and when adding the document, 
+                    // VS fails to so.
+                    if (!autoCodeFixEnabled)
+                    {
+                        var directory = Path.Combine(Path.GetDirectoryName(document.Project.FilePath), Path.Combine(folders));
+                        Directory.CreateDirectory(directory);
+                    }
+
                     stuntDoc = document.Project.AddDocument(
                         Path.GetFileName(file),
                         syntax,

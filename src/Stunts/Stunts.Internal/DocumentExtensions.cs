@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Host.Mef;
+using Microsoft.CodeAnalysis.Text;
 using Stunts;
 
 namespace Microsoft.CodeAnalysis
@@ -45,7 +46,7 @@ namespace Microsoft.CodeAnalysis
                 ApplyChangesOperation operation;
                 if ((operation = operations.OfType<ApplyChangesOperation>().FirstOrDefault()) != null)
                 {
-                    document = operation.ChangedSolution.GetDocument(document.Id);
+                    document = await operation.ChangedSolution.GetDocument(document.Id).RecreateDocumentAsync(cancellationToken);
                     // Retrieve the codefixes for the updated doc again.
                     codeFixes = await GetCodeFixes(document, codeFixName, analyzers, cancellationToken).ConfigureAwait(false);
                 }
@@ -57,6 +58,14 @@ namespace Microsoft.CodeAnalysis
             }
 
             return document;
+        }
+
+        public static async Task<Document> RecreateDocumentAsync(this Document document, CancellationToken cancellationToken)
+        {
+            var newText = await document.GetTextAsync(cancellationToken).ConfigureAwait(false);
+            newText = newText.WithChanges(new TextChange(new TextSpan(0, 0), " "));
+            newText = newText.WithChanges(new TextChange(new TextSpan(0, 1), string.Empty));
+            return document.WithText(newText);
         }
 
         static async Task<ImmutableArray<ICodeFix>> GetCodeFixes(
