@@ -33,7 +33,7 @@ AssemblyVersion=$(AssemblyVersion)" />
     </PropertyGroup>
 
     <ItemGroup>
-      <VersionMetadata Include="$(GitCommits)" Condition="'$(GitSemVerDashLabel)' == ''"/>
+      <VersionMetadata Include="$(GitCommits)" Condition="'$(GitSemVerDashLabel)' == '' and '$(GitCommits)' != '0'"/>
 
       <!-- Branch metadata always present for non-master branches, unless the existing label matches the branch.
            For a versioned branch, it doesn't make sense either. -->
@@ -49,7 +49,7 @@ AssemblyVersion=$(AssemblyVersion)" />
     <PropertyGroup>
       <VersionMetadataLabel>@(VersionMetadata -> '%(Identity)', '-')</VersionMetadataLabel>
       <VersionMetadataPlusLabel Condition="'$(VersionMetadataLabel)' != ''">+$(VersionMetadataLabel)</VersionMetadataPlusLabel>
-      <GitSemVerDashLabel Condition="'$(GitSemVerDashLabel)' != ''">$(GitSemVerDashLabel).$(GitCommits)</GitSemVerDashLabel>
+      <GitSemVerDashLabel Condition="'$(GitSemVerDashLabel)' != '' and '$(GitCommits)' != '0'">$(GitSemVerDashLabel).$(GitCommits)</GitSemVerDashLabel>
 
       <BuildVersion>$(GitBaseVersionMajor).$(GitBaseVersionMinor).$(GitBaseVersionPatch)$(GitSemVerDashLabel)$(VersionMetadataPlusLabel)</BuildVersion>
 
