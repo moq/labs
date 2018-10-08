@@ -1,4 +1,4 @@
-# moq
+# moq v5
 
 The most popular and friendly mocking framework for .NET
 
@@ -9,6 +9,8 @@ The most popular and friendly mocking framework for .NET
 [![Follow on Twitter](https://img.shields.io/twitter/follow/moqthis.svg?style=social&label=Follow)](http://twitter.com/intent/user?screen_name=moqthis)
 
 This repository supports [corebuild](http://www.corebuild.io) for configure/build/test from `msbuild`.
+
+> **IMPORTANT**: this repository is for the *upcoming* version of Moq. Issues and source for the current stable Moq v4.x are at https://github.com/moq/moq4
 
 ## Building the repository
 
