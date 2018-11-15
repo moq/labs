@@ -78,7 +78,7 @@ The design of the behavior pipeline involves a full stack-preserving chain of re
 
 Unlike Castle DynamicProxy interception API, the `IMethodInvocation` is immutable, which simplifies state management and eliminates possible concurrency issues. Any behavior can nevertheless modify the `invocation` passed to the next behavior delegate by just creating a new `MethodInvocation` with different values. To short-circuit the call, we can simply return from our behavior by calling either `CreateExceptionReturn` or `CreateValueReturn` on the received invocation.
 
-All of the supported .NET calling conventions should be supported by *Stunts*, as shown in (Stunts-Example.md).
+All of the supported .NET calling conventions should be supported by *Stunts*, as shown in [Stunts Full Example](Stunts-Example.md).
 
 ## Common Behaviors
 
