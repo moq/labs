@@ -5,6 +5,16 @@
     <CI Condition="'$(TF_BUILD)' == 'true'">true</CI>
   </PropertyGroup>
 
+  <PropertyGroup Label="Metadata">
+    <Authors>kzu</Authors>
+    <Owners>kzu</Owners>
+
+    <PackageVersion>1.0.0</PackageVersion>
+    <PackageProjectUrl>https://github.com/moq/moq/</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/moq/moq/blob/master/LICENSE</PackageLicenseUrl>
+    <Copyright>Copyright © 2017 Daniel Cazzulino and Contributors</Copyright>
+  </PropertyGroup>
+
   <Import Project="Packaging.props" Condition="'$(MSBuildProjectExtension)' == '.nuproj'" />
 
   <PropertyGroup>

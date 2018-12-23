@@ -1,4 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Sdk Name="Microsoft.Build.CentralPackageVersions" />
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -12,13 +13,8 @@
     <PackageId>Stunts.Sdk</PackageId>
     <PackageVersion Condition="'$(PackageVersion)' == ''">1.0.0</PackageVersion>
     <Title>Stunts.Sdk</Title>
-    <Authors>kzu</Authors>
-    <Owners>kzu</Owners>
     <Summary>Allows extending Stunts code analyzers and code fixes to generate custom "Dynamic proxies" that can run everywhere, including mobile!</Summary>
     <Description>$(Summary)</Description>
-    <PackageProjectUrl>https://github.com/moq/moq/</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/moq/moq/blob/master/LICENSE</PackageLicenseUrl>
-    <Copyright>Copyright © 2017 Moq Team</Copyright>
     <PackageTags>netstandard proxy runtime dynamic</PackageTags>
   </PropertyGroup>
   

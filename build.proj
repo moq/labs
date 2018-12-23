@@ -12,12 +12,15 @@
     <GitVersionFile>src\GitInfo.txt</GitVersionFile>
   </PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="GitInfo" Version="2.0.11" />
-		<PackageReference Include="xunit.runner.msbuild" Version="2.4.0" />
+  <ItemGroup>
+		<PackageReference Include="GitInfo" />
+		<PackageReference Include="xunit.runner.msbuild" />
 	</ItemGroup>
 
-	<ItemDefinitionGroup>
+  <!-- Get the proper versions -->
+  <Import Project="src\Packages.props"/>
+
+  <ItemDefinitionGroup>
 		<Solution>
 			<AdditionalProperties>$(AdditionalProperties)</AdditionalProperties>
 		</Solution>
@@ -38,12 +41,6 @@
   <!-- Builds the repository -->
   <Target Name="Build">
 		<Message Text="Building AssemblyVersion=$(AssemblyVersion), PackageVersion=$(PackageVersion)" Importance="high" />
-
-    <!-- Update AppVeyor build # to match the actual one being used -->
-    <Exec Command="appveyor UpdateBuild -Version $(PackageVersion)"
-			  Condition=" '$(APPVEYOR)' == 'true'"
-			  ContinueOnError="true" />
-
     <MakeDir Directories="$(Out)" Condition="!Exists('$(Out)')" />
     <MSBuild Projects="@(Solution)" Targets="Build" Properties="PackageOutputPath=$(Out)" />
   </Target>

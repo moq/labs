@@ -21,20 +21,22 @@
     </ItemGroup>
   </Target>
 
-  <Target Name="_AddIntermediateFileWrites" AfterTargets="AfterAutoCodeFix">
+  <!-- Implements Clean support, see https://github.com/Microsoft/msbuild/issues/2408#issuecomment-321082997 -->
+  <Target Name="_EnsureDeleteCodeGenOnClean"
+          BeforeTargets="_CleanRecordFileWrites"
+          DependsOnTargets="_CleanGetCurrentAndPriorFileWrites">
     <ItemGroup>
-      <_IntermediateGeneratedFiles Include="%(IntermediateCodeGenPath.Identity)*$(DefaultLanguageSourceExtension)" />
-      <FileWrites Include="@(_IntermediateGeneratedFiles)" />
+      <_CleanCurrentFileWrites Include="%(IntermediateCodeGenPath.Identity)*$(DefaultLanguageSourceExtension)" />
     </ItemGroup>
   </Target>
 
-  <Target Name="_RemoveCleanedFiles" BeforeTargets="CoreCompile">
+  <Target Name="_RemoveCleanedFilesFromCompile" BeforeTargets="CoreCompile">
     <ItemGroup>
       <Compile Remove="@(Compile -> WithMetadataValue('IsIntermediateCodeGen', 'true'))" Condition="!Exists('%(FullPath)')" />
     </ItemGroup>
   </Target>
 
-  <Target Name="AddGeneratedFiles" AfterTargets="AfterAutoCodeFix">
+  <Target Name="AddGeneratedFilesToCompile" AfterTargets="AfterAutoCodeFix">
     <ItemGroup>
       <Compile Remove="@(Compile -> WithMetadataValue('IsIntermediateCodeGen', 'true'))" />
       <_NewCodeGen Include="%(IntermediateCodeGenPath.Identity)*$(DefaultLanguageSourceExtension)" />

@@ -1,41 +1,25 @@
 <Project>
 
-  <PropertyGroup>
-    <MicrosoftBuildVersion Condition="'$(MicrosoftBuildVersion)' == ''">15.7.179</MicrosoftBuildVersion>
-    <RoslynVersion Condition="'$(RoslynVersion)' == ''">2.9.0</RoslynVersion>
-    <XunitVersion Condition="'$(XunitVersion)' == ''">2.4.0</XunitVersion>
-  </PropertyGroup>
-
-  <ItemGroup Label="Common">
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-*" PrivateAssets="all" />
-    <PackageReference Include="GitInfo" Version="2.0.11" PrivateAssets="all" />
-    <PackageReference Include="MSBuilder.GenerateAssemblyInfo" Version="0.2.1" PrivateAssets="all" />
-    <PackageReference Include="MSBuilder.ThisAssembly.Metadata" Version="0.1.3" PrivateAssets="all" />
-    <PackageReference Include="NuGet.Build.Packaging" Version="0.2.5-dev.*" PrivateAssets="all" />
-    <PackageReference Include="netfx-System.StringResources" Version="3.1.8" PrivateAssets="all" />
-    <PackageReference Include="IFluentInterface" Version="2.0.4" Condition="'$(Language)' == 'C#'" PrivateAssets="all" />
-  </ItemGroup>
-
   <ItemGroup Label="MSBuild" Condition="'$(IncludeMSBuild)' == 'true'">
-    <PackageReference Include="Microsoft.Build" Version="$(MicrosoftBuildVersion)" ExcludeAssets="runtime" Pack="false" />
-    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="$(MicrosoftBuildVersion)" ExcludeAssets="runtime" Pack="false" />
+    <PackageReference Include="Microsoft.Build" ExcludeAssets="runtime" Pack="false" />
+    <PackageReference Include="Microsoft.Build.Tasks.Core" ExcludeAssets="runtime" Pack="false" />
   </ItemGroup>
 
   <ItemGroup Label="Roslyn" Condition="'$(IncludeRoslyn)' == 'true'">
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="$(RoslynVersion)" Pack="false" />
-    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Features" Version="$(RoslynVersion)" Pack="false" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Pack="false" />
+    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Features" Pack="false" />
   </ItemGroup>
 
   <ItemGroup Label="Test" Condition="'$(IncludeXunit)' == 'true'">
-    <PackageReference Include="NETStandard.Library" Version="2.0.0" />
+    <PackageReference Include="NETStandard.Library" VersionOverride="2.0.0" />
 
-    <PackageReference Include="xunit" Version="$(XunitVersion)" />
+    <PackageReference Include="xunit" />
     <!-- xunit.runner.visualstudio is needed for VSTest built-in task in VSTS -->
-    <PackageReference Include="xunit.runner.visualstudio" Version="$(XunitVersion)" />
+    <PackageReference Include="xunit.runner.visualstudio" />
     <!-- xunit.runner.desktop is needed for Live Unit Testing support -->
-    <PackageReference Include="xunit.runner.console" Version="$(XunitVersion)" />
-    <!-- xunit.runner.console is used to implement /t:Test in test projects -->    
-    <PackageReference Include="xunit.runner.msbuild" Version="$(XunitVersion)" />
+    <PackageReference Include="xunit.runner.console" />
+    <!-- xunit.runner.console is used to implement /t:Test in test projects -->
+    <PackageReference Include="xunit.runner.msbuild" />
     
     <!-- test projects need all of MSBuild assemblies in the output -->
     <PackageReference Update="Microsoft.Build" ExcludeAssets="none" />

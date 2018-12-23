@@ -1,4 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Sdk Name="Microsoft.Build.CentralPackageVersions" />
 
   <PropertyGroup>
     <TargetFramework>net471</TargetFramework>
@@ -17,14 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\Testing\AssertCode.cs" Link="Helpers\AssertCode.cs" />
-    <Compile Include="..\..\Testing\MockBuildEngine.cs" Link="Helpers\MockBuildEngine.cs" />
-    <Compile Include="..\..\Testing\RecordingBehavior.cs" Link="Helpers\RecordingBehavior.cs" />
-    <Compile Include="..\..\Testing\TestHelpers.cs" Link="Helpers\TestHelpers.cs" />
-    <Compile Include="..\..\Testing\TestOutputLogger.cs" Link="Helpers\TestOutputLogger.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <IncludeReferenceFilter Include="Moq" />
     <ExcludeReferenceFilter Include="Moq.Analyzer" />
   </ItemGroup>
@@ -40,5 +33,7 @@
     <ProjectReference Include="..\..\Stunts\Stunts.Sdk\Stunts.Sdk.csproj" />
     <ProjectReference Include="..\..\Samples\Sample\Sample.csproj" />
   </ItemGroup>
+
+  <Import Project="..\..\Testing\Moq.Testing.projitems" Label="Shared" />
 
 </Project>
