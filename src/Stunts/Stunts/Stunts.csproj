@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  
+  <Sdk Name="Microsoft.Build.CentralPackageVersions" />
+
   <PropertyGroup>
     <TargetFramework>netstandard1.3</TargetFramework>
 
@@ -17,8 +18,4 @@
     <Content Include="contentFiles\**\*.*" CopyToOutputDirectory="PreserveNewest" Kind="$(ContentKind)" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="IFluentInterface" Version="2.0.4" Pack="false" />
-  </ItemGroup>
-  
 </Project>

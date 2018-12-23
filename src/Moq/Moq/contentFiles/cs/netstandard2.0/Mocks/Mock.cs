@@ -8,7 +8,7 @@ namespace Moq
     /// <summary>
     /// Instantiates mocks for the specified types.
     /// </summary>
-    [GeneratedCode("Stunts", "5.0")]
+    [GeneratedCode("Moq", "5.0")]
     partial class Mock
     {
         /// <summary>

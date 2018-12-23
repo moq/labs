@@ -1,4 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Sdk Name="Microsoft.Build.CentralPackageVersions" />
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -11,10 +12,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Moq.Sdk\Moq.Sdk.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="IFluentInterface" Version="2.0.4" Pack="false" />
   </ItemGroup>
 
   <ItemGroup>

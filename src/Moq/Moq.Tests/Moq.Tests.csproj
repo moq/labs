@@ -1,4 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Sdk Name="Microsoft.Build.CentralPackageVersions" />
   <PropertyGroup>
     <TargetFramework>net471</TargetFramework>
     <IncludeXunit>true</IncludeXunit>
@@ -10,13 +11,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\Moq\contentFiles\cs\**" Visible="false" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\..\Testing\AssertCode.cs" Link="Helpers\AssertCode.cs" />
-    <Compile Include="..\..\Testing\MockBuildEngine.cs" Link="Helpers\MockBuildEngine.cs" />
-    <Compile Include="..\..\Testing\RecordingBehavior.cs" Link="Helpers\RecordingBehavior.cs" />
-    <Compile Include="..\..\Testing\TestHelpers.cs" Link="Helpers\TestHelpers.cs" />
-    <Compile Include="..\..\Testing\TestOutputLogger.cs" Link="Helpers\TestOutputLogger.cs" />
   </ItemGroup>
   <ItemGroup Condition="'$(DesignTimeBuild)' == 'true'">
     <!-- TODO: since we can't get Roslyn to compile code during test run, we must generate mocks at design-time  -->
@@ -44,4 +38,5 @@
     <ProjectReference Include="..\..\Stunts\Stunts.Sdk\Stunts.Sdk.csproj" />
     <ProjectReference Include="..\..\Samples\Sample\Sample.csproj" />
   </ItemGroup>
+  <Import Project="..\..\Testing\Moq.Testing.projitems" Label="Shared" />
 </Project>
