@@ -52,6 +52,9 @@
   <!-- IsTestProject is set by xunit  -->
   <Import Project="Settings.Tests.props" Condition="'$(IsTestProject)' == 'true'" />
 
+  <!-- This target is replaced by GitInfo when restored. Allows Version.targets to rely on it before restore. -->
+  <Target Name="GitVersion" />
+
   <!-- Import [project].props if it exists -->
   <Import Project="$(MSBuildProjectDirectory)\$(MSBuildProjectName).props"
           Condition="'$(MSBuildProjectExtension)' != '.props' And Exists('$(MSBuildProjectDirectory)\$(MSBuildProjectName).props')" />
