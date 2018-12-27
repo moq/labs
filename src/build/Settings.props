@@ -9,7 +9,14 @@
     <Authors>kzu</Authors>
     <Owners>kzu</Owners>
 
-    <PackageVersion>1.0.0</PackageVersion>
+    <!-- Default version values for non-git builds -->
+    <GitBaseVersionMajor>42</GitBaseVersionMajor>
+    <GitBaseVersionMinor>42</GitBaseVersionMinor>
+    <GitBaseVersionPatch>42</GitBaseVersionPatch>
+    <GitCommits>0</GitCommits>
+    <GitBranch>local</GitBranch>
+    <PackageVersion>42.42.42</PackageVersion>
+
     <PackageProjectUrl>https://github.com/moq/moq/</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/moq/moq/blob/master/LICENSE</PackageLicenseUrl>
     <Copyright>Copyright © 2017 Daniel Cazzulino and Contributors</Copyright>

@@ -1,8 +1,11 @@
 <Project>
 
+  <ItemGroup Condition="Exists('$(MSBuildThisFileDirectory)../.git')">
+    <GlobalPackageReference Include="GitInfo" Version="2.0.20" />
+    <GlobalPackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-*" />
+  </ItemGroup>
+
   <ItemGroup>
-    <GlobalPackageReference Include="GitInfo" Version="2.0.11" />
-    <GlobalPackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-*" Condition="Exists('..\..\.git')" />
     <GlobalPackageReference Include="MSBuilder.GenerateAssemblyInfo" Version="0.2.1" />
     <GlobalPackageReference Include="MSBuilder.ThisAssembly.Metadata" Version="0.1.4" />
     <GlobalPackageReference Include="NuGet.Build.Packaging" Version="0.2.5-dev.*" />

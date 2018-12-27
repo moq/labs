@@ -33,7 +33,7 @@
 		</PropertyGroup>
 	</Target>
 
-  <!-- We get the 1.1.0 Microsoft.CodeAnalyis.Analyzers automatically, and those slow down and sometimes fail, so turn off. -->
+  <!-- We get the Microsoft.CodeAnalyis.Analyzers automatically, and those slow down and sometimes fail, so turn off. -->
   <Target Name="RemoveResolvedAnalyzers" BeforeTargets="ResolveLockFileAnalyzers">
     <ItemGroup>
       <ResolvedAnalyzers Remove="@(ResolvedAnalyzers)" />
