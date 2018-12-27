@@ -30,7 +30,10 @@ steps:
     runInParallel: 'true'
     codeCoverageEnabled: 'true'
     publishRunAttachments: 'true'
-
+    rerunFailedTests: true
+    rerunFailedThreshold: 100
+    rerunMaxAttempts: 5
+    
 - task: PublishBuildArtifacts@1
   displayName: Publish Artifact
   inputs:
