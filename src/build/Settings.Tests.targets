@@ -1,11 +1,4 @@
 <Project>
-  <PropertyGroup>
-    <ReferencePathsFile>$(IntermediateOutputPath)ReferencePaths.g.cs</ReferencePathsFile>
-    <CoreCompileDependsOn Condition="'$(Language)' == 'C#'">
-      $(CoreCompileDependsOn);
-      GenerateReferencePaths;
-    </CoreCompileDependsOn>
-  </PropertyGroup>
 
   <ItemDefinitionGroup>
     <ReferencePath>
@@ -13,6 +6,13 @@
       <FusionName/>
     </ReferencePath>
   </ItemDefinitionGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadata">
+      <_Parameter1>MSBuildBinPath</_Parameter1>
+      <_Parameter2>$(MSBuildBinPath)</_Parameter2>
+    </AssemblyAttribute>
+  </ItemGroup>
 
   <Target Name="Test" DependsOnTargets="Build">
     <xunit Assemblies="@(TargetPathWithTargetPlatformMoniker)" />
@@ -28,49 +28,22 @@
     <ExcludeReferenceFilter Include="Stunts\.Sdk" />
   </ItemGroup>
 
-  <PropertyGroup>
-    <CoreCompileDependsOn>
-      $(CoreCompileDependsOn);
-      GenerateReferencePaths
-    </CoreCompileDependsOn>
-  </PropertyGroup>
-
-  <Target Name="GenerateReferencePaths"
-          Condition="'$(Language)' == 'C#'"
-          Inputs="$(MSBuildAllProjects)"
-          Outputs="$(ReferencePathsFile)"
-          DependsOnTargets="ResolveReferences">
+  <Target Name="AddReferencePathsMetadata" AfterTargets="ResolveReferences" BeforeTargets="GenerateThisAssemblyMetadata" DependsOnTargets="ResolveReferences;GetTargetPathWithTargetPlatformMoniker">
 
     <FilterReferences References="@(ReferencePath)" Include="@(IncludeReferenceFilter)" Exclude="@(ExcludeReferenceFilter)">
       <Output TaskParameter="Filtered" ItemName="_FilteredReferencePath" />
     </FilterReferences>
 
-    <WriteLinesToFile File="$(ReferencePathsFile)"
-						  Overwrite="true"
-						  Lines='static class ReferencePaths
-{
-  public static string[] Paths = new[]
-  { '/>
-
-    <WriteLinesToFile File="$(ReferencePathsFile)"
-                      Overwrite="false"
-                      Lines='
-    @"%(_FilteredReferencePath.FullPath)",'/>
-
-    <WriteLinesToFile File="$(ReferencePathsFile)"
-						  Condition="'$(IncludeTargetPath)' != 'false'"
-						  Overwrite="false"
-						  Lines='
-    @"$(TargetPath)",'/>
-
-    <WriteLinesToFile File="$(ReferencePathsFile)" Overwrite="false"
-							  Lines='
-  }%3B
-}'/>
+    <ItemGroup>
+      <_FilteredReferencePath Include="@(ReferencePath)" Condition="'%(ReferencePath.FrameworkFile)' == 'true'" />
+      <_FilteredReferencePath Include="@(TargetPathWithTargetPlatformMoniker)" />
+    </ItemGroup>
 
     <ItemGroup>
-      <FileWrites Include="$(ReferencePathsFile)" />
-      <Compile Include="$(ReferencePathsFile)" />
+      <AssemblyAttribute Include="System.Reflection.AssemblyMetadata">
+        <_Parameter1>ReferencePaths</_Parameter1>
+        <_Parameter2>@(_FilteredReferencePath -> '%(FullPath)', '|')</_Parameter2>
+      </AssemblyAttribute>
     </ItemGroup>
 
   </Target>

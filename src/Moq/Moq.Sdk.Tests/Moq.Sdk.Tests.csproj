@@ -8,8 +8,6 @@
 
     <!-- Don't include this assembly in the generated ReferencePaths.g.cs because we confuse Roslyn with NS2 + net471 refs -->
     <IncludeTargetPath>false</IncludeTargetPath>
-    <!-- We declare the Analyzer to be a dependency for IDE build order -->
-    <AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
   </PropertyGroup>
 
   <ItemGroup>

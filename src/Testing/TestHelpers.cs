@@ -34,7 +34,6 @@ static partial class TestHelpers
                 (ParseOptions)new VisualBasicParseOptions(Microsoft.CodeAnalysis.VisualBasic.LanguageVersion.Latest);
 
         //The location of the .NET assemblies
-        var frameworkPath = Path.GetDirectoryName(typeof(object).Assembly.Location);
         var netstandardPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @".nuget\packages\NETStandard.Library\2.0.0\build\netstandard2.0\ref");
         if (!Directory.Exists(netstandardPath))
             netstandardPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), @"dotnet\sdk\NuGetFallbackFolder\netstandard.library\2.0.0\build\netstandard2.0\ref");
@@ -45,17 +44,10 @@ static partial class TestHelpers
             throw new InvalidOperationException("Failed to find location of .NETStandard 2.0 reference assemblies");
 
         var referencePaths =
-            //new[]
-            //{
-            //    typeof(object).Assembly.Location,
-            //    typeof(Enumerable).Assembly.Location,
-            //    typeof(CSharpCompilation).Assembly.Location,
-            //    typeof(Compilation).Assembly.Location,
-            //}
             Directory.EnumerateFiles(netstandardPath, "*.dll")
-            .Concat(ReferencePaths.Paths)
-            //ReferencePaths.Paths
-            //.Concat(Directory.EnumerateFiles(netstandardPath, "*.dll"))
+#pragma warning disable CS0436 // Type conflicts with imported type
+            .Concat(ThisAssembly.Metadata.ReferencePaths.Split('|'))
+#pragma warning restore CS0436 // Type conflicts with imported type
             .Where(path => !string.IsNullOrEmpty(path) && File.Exists(path))
             .Distinct(FileNameEqualityComparer.Default);
 
