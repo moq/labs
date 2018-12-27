@@ -4,7 +4,7 @@
     <GlobalPackageReference Include="GitInfo" Version="2.0.11" />
     <GlobalPackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-*" Condition="Exists('..\..\.git')" />
     <GlobalPackageReference Include="MSBuilder.GenerateAssemblyInfo" Version="0.2.1" />
-    <GlobalPackageReference Include="MSBuilder.ThisAssembly.Metadata" Version="0.1.3" />
+    <GlobalPackageReference Include="MSBuilder.ThisAssembly.Metadata" Version="0.1.4" />
     <GlobalPackageReference Include="NuGet.Build.Packaging" Version="0.2.5-dev.*" />
     <GlobalPackageReference Include="netfx-System.StringResources" Version="3.1.8" />
     <GlobalPackageReference Include="IFluentInterface" Version="2.0.4" Condition="'$(Language)' == 'C#'" />
@@ -13,6 +13,7 @@
   <ItemGroup>
     <PackageReference Update="Microsoft.Build" Version="15.7.179" />
     <PackageReference Update="Microsoft.Build.Tasks.Core" Version="15.7.179" />
+    <PackageReference Update="Microsoft.Build.Locator" Version="1.0.18" />
 
     <PackageReference Update="Microsoft.CodeAnalysis.CSharp.Features" Version="2.9.0" />
     <PackageReference Update="Microsoft.CodeAnalysis.VisualBasic.Features" Version="2.9.0" />

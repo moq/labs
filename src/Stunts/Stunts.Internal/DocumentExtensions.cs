@@ -46,6 +46,9 @@ namespace Microsoft.CodeAnalysis
                 ApplyChangesOperation operation;
                 if ((operation = operations.OfType<ApplyChangesOperation>().FirstOrDefault()) != null)
                 {
+                    // According to https://github.com/DotNetAnalyzers/StyleCopAnalyzers/pull/935 and 
+                    // https://github.com/dotnet/roslyn-sdk/issues/140, Sam Harwell mentioned that we should 
+                    // be forcing a re-parse of the document syntax tree at this point. 
                     document = await operation.ChangedSolution.GetDocument(document.Id).RecreateDocumentAsync(cancellationToken);
                     // Retrieve the codefixes for the updated doc again.
                     codeFixes = await GetCodeFixes(document, codeFixName, analyzers, cancellationToken).ConfigureAwait(false);

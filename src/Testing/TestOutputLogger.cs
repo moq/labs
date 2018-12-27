@@ -5,7 +5,7 @@ using Xunit.Abstractions;
 /// <summary>
 /// xunit logger > MSBuild logger
 /// </summary>
-public class TestOutputLogger : ILogger
+class TestOutputLogger : ILogger
 {
 	ITestOutputHelper output;
 

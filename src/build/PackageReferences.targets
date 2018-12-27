@@ -20,10 +20,8 @@
     <PackageReference Include="xunit.runner.console" />
     <!-- xunit.runner.console is used to implement /t:Test in test projects -->
     <PackageReference Include="xunit.runner.msbuild" />
-    
-    <!-- test projects need all of MSBuild assemblies in the output -->
-    <PackageReference Update="Microsoft.Build" ExcludeAssets="none" />
-    <PackageReference Update="Microsoft.Build.Tasks.Core" ExcludeAssets="none" />
+
+    <PackageReference Include="Microsoft.Build.Locator" />
   </ItemGroup>
 
   <Import Project="PackageReference.CopyLocal.targets" Condition="'$(EnforceCopyLocalAssets)' == 'true'" />  
