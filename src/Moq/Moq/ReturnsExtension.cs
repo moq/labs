@@ -96,7 +96,7 @@ namespace Moq
                 // Simulate Any<T> matchers for each member parameter
                 var parameters = @delegate.Method.GetParameters();
                 var arguments = new object[parameters.Length];
-                var defaultValue = new DefaultValue(false);
+                var defaultValue = new DefaultValueProvider(false);
                 for (var i = 0; i < arguments.Length; i++)
                 {
                     var parameter = parameters[i];

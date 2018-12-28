@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis;
 using Sample;
 using Xunit;
 using Xunit.Abstractions;
+using Moq.Sdk;
 
 namespace Stunts.Tests
 {

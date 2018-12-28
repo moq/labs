@@ -32,7 +32,7 @@ namespace Moq.Sdk
             var parameters = invocation.MethodBase.GetParameters();
             var defaultValue = (invocation.Target as IMocked)?.
                 Mock.Behaviors.OfType<DefaultValueBehavior>().FirstOrDefault()?.Provider ??
-                new DefaultValue();
+                new DefaultValueProvider();
 
             for (var i = 0; i < invocation.Arguments.Count; i++)
             {

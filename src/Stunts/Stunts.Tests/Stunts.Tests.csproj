@@ -36,6 +36,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="..\..\Moq\Moq.Sdk\DefaultValueBehavior.cs" Link="DefaultValueBehavior.cs" />
+    <Compile Include="..\..\Moq\Moq.Sdk\DefaultValueProvider.cs" Link="DefaultValueProvider.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Stunts\Stunts.csproj" />
     <ProjectReference Include="..\Stunts.Internal\Stunts.Internal.csproj" />
     <ProjectReference Include="..\Stunts.Sdk\Stunts.Sdk.csproj" />

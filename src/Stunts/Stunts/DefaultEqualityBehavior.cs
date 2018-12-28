@@ -16,8 +16,8 @@ namespace Stunts
             => invocation.MethodBase.Name == nameof(GetHashCode) || invocation.MethodBase.Name == nameof(Equals);
 
         /// <summary>
-        /// Fills in the ref, out and return values with the defaults determined 
-        /// by the <see cref="DefaultValue"/> utility class.
+        /// Implements the <see cref="object.GetHashCode"/> and <see cref="object.Equals(object)"/> 
+        /// methods.
         /// </summary>
         public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next)
         {

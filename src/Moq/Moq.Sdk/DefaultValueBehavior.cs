@@ -1,7 +1,8 @@
 ﻿using System.Linq;
 using System.Reflection;
+using Stunts;
 
-namespace Stunts
+namespace Moq.Sdk
 {
     /// <summary>
     /// A <see cref="IStuntBehavior"/> that returns default values from an 
@@ -13,7 +14,7 @@ namespace Stunts
         /// <summary>
         /// Gets or sets the provider of default values for the behavior.
         /// </summary>
-        public DefaultValue Provider { get; set; } = new DefaultValue();
+        public DefaultValueProvider Provider { get; set; } = new DefaultValueProvider();
 
         /// <summary>
         /// Always returns <see langword="true" />
@@ -22,7 +23,7 @@ namespace Stunts
 
         /// <summary>
         /// Fills in the ref, out and return values with the defaults determined 
-        /// by the <see cref="DefaultValue"/> utility class.
+        /// by the <see cref="DefaultValueProvider"/> utility class.
         /// </summary>
         IMethodReturn IStuntBehavior.Execute(IMethodInvocation invocation, GetNextBehavior next)
         {

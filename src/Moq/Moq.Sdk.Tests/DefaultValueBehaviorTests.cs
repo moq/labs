@@ -2,9 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Stunts;
 using Xunit;
 
-namespace Stunts.Tests
+namespace Moq.Sdk.Tests
 {
     public class DefaultValueBehaviorTests
     {
@@ -172,7 +173,7 @@ namespace Stunts.Tests
 
             Assert.True(parameter.ParameterType.IsByRef);
 
-            var value = new DefaultValue().For(parameter.ParameterType);
+            var value = new DefaultValueProvider().For(parameter.ParameterType);
 
             Assert.NotNull(value);
             Assert.True(value is object[]);
@@ -183,9 +184,24 @@ namespace Stunts.Tests
         public void DefaultValueForArrayWithRank()
         {
             var array = new int[0][][];
-            var value = new DefaultValue().For(array.GetType());
+            var value = new DefaultValueProvider().For(array.GetType());
 
             Assert.Equal(array.GetType().GetArrayRank(), value.GetType().GetArrayRank());
+        }
+
+        [Fact]
+        public void DefaultValueForValueTuple()
+        {
+            var method = typeof(IDefaultValues).GetMethod(nameof(IDefaultValues.ReturnsValueTuple));
+            var value = new DefaultValueProvider().For(method.ReturnType);
+
+            var (providers, formatter) = ((IServiceProvider[], Task<IFormatProvider>))value;
+
+            Assert.NotNull(providers);
+            Assert.Empty(providers);
+            Assert.NotNull(formatter);
+            Assert.True(formatter.IsCompleted);
+            Assert.Equal(default(IFormatProvider), formatter.Result);
         }
 
         public interface IDefaultValues
@@ -211,6 +227,8 @@ namespace Stunts.Tests
             IEnumerable ReturnEnumerable();
 
             IEnumerable<object> ReturnGenericEnumerable();
+
+            (IServiceProvider[], Task<IFormatProvider>) ReturnsValueTuple();
         }
     }
 }
