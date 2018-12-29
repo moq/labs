@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System;
 using System.Diagnostics;
+using TypeNameFormatter;
 
 namespace Stunts
 {
@@ -64,9 +65,8 @@ namespace Stunts
         public override string ToString() => string
             .Join(", ", infos
                 .Select((p, i) =>
-                    (p.IsOut ? "out " : (p.ParameterType.IsByRef ? "ref " : "")) +
-                    Stringly.ToTypeName(p.ParameterType) + " " +
-                    p.Name +
+                    (p.IsOut ? p.ParameterType.GetFormattedName().Replace("ref ", "out ") : p.ParameterType.GetFormattedName()) +
+                    " " + p.Name +
                     (p.IsOut ? "" :
                         (" = " +
                             ((IsString(p.ParameterType) && values[i] != null) ? "\"" + values[i] + "\"" :

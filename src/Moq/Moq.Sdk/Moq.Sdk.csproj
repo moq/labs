@@ -25,4 +25,8 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="TypeNameFormatter.Sources" PrivateAssets="all" />
+  </ItemGroup>
+
 </Project>

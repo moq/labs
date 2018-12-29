@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Reflection;
+using TypeNameFormatter;
 
 namespace Moq.Sdk
 {
@@ -42,7 +43,7 @@ namespace Moq.Sdk
             return value == null || info.IsAssignableFrom(value.GetType().GetTypeInfo());
         }
 
-        public override string ToString() => "Any<" + Stringly.ToTypeName(ArgumentType) + ">";
+        public override string ToString() => "Any<" + ArgumentType.GetFormattedName() + ">";
 
         #region Equality
 

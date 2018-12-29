@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using TypeNameFormatter;
 
 namespace Moq.Sdk
 {
@@ -50,7 +51,7 @@ namespace Moq.Sdk
                 condition((T)value);
         }
 
-        public override string ToString() => "Any<" + Stringly.ToTypeName(ArgumentType) + ">(" + name + ")";
+        public override string ToString() => "Any<" + ArgumentType.GetFormattedName() + ">(" + name + ")";
 
         #region Equality
 

@@ -18,4 +18,8 @@
     <Content Include="contentFiles\**\*.*" CopyToOutputDirectory="PreserveNewest" Kind="$(ContentKind)" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="TypeNameFormatter.Sources" PrivateAssets="all" />
+  </ItemGroup>
+
 </Project>

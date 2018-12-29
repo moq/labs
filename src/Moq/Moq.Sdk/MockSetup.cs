@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Stunts;
+using TypeNameFormatter;
 
 namespace Moq.Sdk
 {
@@ -55,7 +56,7 @@ namespace Moq.Sdk
             if (invocation.MethodBase is MethodInfo info)
             {
                 if (info.ReturnType != typeof(void))
-                    result.Append(Stringly.ToTypeName(info.ReturnType)).Append(" ");
+                    result.Append(info.ReturnType.GetFormattedName()).Append(" ");
                 else
                     result.Append("void ");
             }
@@ -98,7 +99,7 @@ namespace Moq.Sdk
                     .Append("(")
                     .Append(string.Join(", ", parameters.Select((p, i) =>
                         (p.IsOut ? "out " : (p.ParameterType.IsByRef ? "ref " : "")) +
-                        Stringly.ToTypeName(p.ParameterType) + " " +
+                        p.ParameterType.GetFormattedName() + " " +
                         p.Name +
                         (p.IsOut ? "" : (" = " + matchers[i]))
                     )))

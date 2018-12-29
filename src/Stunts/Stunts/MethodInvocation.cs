@@ -5,6 +5,7 @@ using System.Text;
 using System.Linq;
 using System.Collections;
 using System.Runtime.CompilerServices;
+using TypeNameFormatter;
 
 namespace Stunts
 {
@@ -45,7 +46,7 @@ namespace Stunts
             if (MethodBase is MethodInfo info)
             {
                 if (info.ReturnType != typeof(void))
-                    result.Append(Stringly.ToTypeName(info.ReturnType)).Append(" ");
+                    result.AppendFormattedName(info.ReturnType).Append(" ");
                 else
                     result.Append("void ");
             }
