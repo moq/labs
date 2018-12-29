@@ -16,3 +16,4 @@ obj
 *.rsp
 /src/Usage
 /src/Backup
+/src/TestResults

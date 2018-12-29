@@ -35,8 +35,8 @@ namespace Stunts
 
         public object this[string name]
         {
-            get => values[IndexOf(name)];
-            set => values[IndexOf(name)] = value;
+            get => values[ValidIndexOf(name)];
+            set => values[ValidIndexOf(name)] = value;
         }
 
         public int Count => infos.Count;
@@ -45,7 +45,7 @@ namespace Stunts
 
         public IEnumerator<object> GetEnumerator() => values.GetEnumerator();
 
-        public ParameterInfo GetInfo(string name) => infos[IndexOf(name)];
+        public ParameterInfo GetInfo(string name) => infos[ValidIndexOf(name)];
 
         public ParameterInfo GetInfo(int index) => infos[index];
 
@@ -76,11 +76,21 @@ namespace Stunts
                 )
             );
 
+        int ValidIndexOf(string name)
+        {
+            var index = IndexOf(name);
+            if (index == -1)
+                throw new KeyNotFoundException(name);
+
+            return index;
+        }
+
         static bool IsString(Type type) => type == typeof(string) ||
             (type.IsByRef && type.HasElementType && type.GetElementType() == typeof(string));
 
-        IEnumerator IEnumerable.GetEnumerator() => values.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
+        [DebuggerNonUserCode]
         class DebugView
         {
             ArgumentCollection arguments;
