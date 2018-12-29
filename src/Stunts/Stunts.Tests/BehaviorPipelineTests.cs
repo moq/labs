@@ -7,6 +7,21 @@ namespace Stunts.Tests
     public class BehaviorPipelineTests
     {
         [Fact]
+        public void WhenInvokingPipelineWithNoBehaviors_ThenInvokesTarget()
+        {
+            var targetCalled = false;
+
+            var pipeline = new BehaviorPipeline();
+
+            Action a = WhenInvokingPipelineWithNoBehaviors_ThenInvokesTarget;
+
+            pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo()),
+                new ExecuteDelegate((m, n) => { targetCalled = true; return m.CreateValueReturn(null); }));
+
+            Assert.True(targetCalled);
+        }
+
+        [Fact]
         public void WhenInvokingPipeline_ThenInvokesAllBehaviorsAndTarget()
         {
             var firstCalled = false;
@@ -24,6 +39,27 @@ namespace Stunts.Tests
 
             Assert.True(firstCalled);
             Assert.True(secondCalled);
+            Assert.True(targetCalled);
+        }
+
+        [Fact]
+        public void WhenInvokingPipelineWithNoApplicableBehaviors_ThenInvokesTarget()
+        {
+            var firstCalled = false;
+            var secondCalled = false;
+            var targetCalled = false;
+
+            var pipeline = new BehaviorPipeline(
+                StuntBehavior.Create((m, n) => { firstCalled = true; return n().Invoke(m, n); }, m => false),
+                StuntBehavior.Create((m, n) => { secondCalled = true; return n().Invoke(m, n); }, m => false));
+
+            Action a = WhenInvokingPipelineWithNoApplicableBehaviors_ThenInvokesTarget;
+
+            pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo()),
+                new ExecuteDelegate((m, n) => { targetCalled = true; return m.CreateValueReturn(null); }));
+
+            Assert.False(firstCalled);
+            Assert.False(secondCalled);
             Assert.True(targetCalled);
         }
 
@@ -140,6 +176,19 @@ namespace Stunts.Tests
         }
 
         [Fact]
+        public void WhenInvokingPipeline_ThenBehaviorsCanReturnException()
+        {
+            var pipeline = new BehaviorPipeline(
+                new ExecuteDelegate((m, n) => m.CreateExceptionReturn(new ArgumentException())));
+
+            Action a = WhenInvokingPipeline_ThenBehaviorsCanReturnException;
+
+            Assert.Throws<ArgumentException>(() 
+                => pipeline.Invoke(new MethodInvocation(this, a.GetMethodInfo()),
+                new ExecuteDelegate((m, n) => throw new NotImplementedException()), true));
+        }
+
+        [Fact]
         public void WhenInvokingPipeline_ThenBehaviorsCanReturnValueWithOut()
         {
             var expected = new object();
@@ -175,6 +224,100 @@ namespace Stunts.Tests
             Assert.Equal(expected, result.ReturnValue);
             Assert.Equal(byref, result.Outputs[0]);
             Assert.Equal(output, result.Outputs[1]);
+        }
+
+        [Fact]
+        public void CanExecutePipelineResultNoTarget()
+        {
+            var value = new object();
+
+            var pipeline = new BehaviorPipeline(new ExecuteDelegate((m, n) => m.CreateValueReturn(value)));
+
+            Func<object> f = NonVoidMethod;
+
+            Assert.Same(value, pipeline.Execute<object>(new MethodInvocation(this, f.GetMethodInfo())));
+        }
+
+        [Fact]
+        public void CanExecutePipelineResultWithTarget()
+        {
+            var value = new object();
+
+            var pipeline = new BehaviorPipeline(new ExecuteDelegate((m, n) => m.CreateValueReturn(value)));
+
+            Func<object> f = NonVoidMethod;
+
+            Assert.Same(value, pipeline.Execute<object>(
+                new MethodInvocation(this, f.GetMethodInfo()),
+                new ExecuteDelegate((m, n) => throw new NotImplementedException())));
+        }
+
+        [Fact]
+        public void CanExecutePipelineWithTarget()
+        {
+            var pipeline = new BehaviorPipeline();
+
+            Action a = CanExecutePipelineWithTarget;
+
+            pipeline.Execute(new MethodInvocation(this, a.GetMethodInfo()),
+                new ExecuteDelegate((m, n) => m.CreateValueReturn(null)));
+        }
+
+        [Fact]
+        public void CanExecutePipelineNoTarget()
+        {
+            var pipeline = new BehaviorPipeline(new ExecuteDelegate((m, n) => m.CreateValueReturn(null)));
+
+            Action a = CanExecutePipelineNoTarget;
+
+            pipeline.Execute(new MethodInvocation(this, a.GetMethodInfo()));
+        }
+
+        [Fact]
+        public void WhenExecutingPipelineWithNoTarget_ThenThrowsIfNoBehaviorReturns()
+        {
+            var pipeline = new BehaviorPipeline();
+
+            Action a = CanExecutePipelineNoTarget;
+
+            Assert.Throws<NotImplementedException>(() => pipeline.Execute(new MethodInvocation(this, a.GetMethodInfo())));
+        }
+
+        [Fact]
+        public void WhenExecutingPipeline_ThenBehaviorCanThrow()
+        {
+            var pipeline = new BehaviorPipeline(
+                new ExecuteDelegate((m, n) => m.CreateExceptionReturn(new ArgumentException())));
+
+            Action a = WhenInvokingPipeline_ThenBehaviorsCanReturnException;
+
+            Assert.Throws<ArgumentException>(()
+                => pipeline.Execute(new MethodInvocation(this, a.GetMethodInfo()),
+                new ExecuteDelegate((m, n) => throw new NotImplementedException())));
+        }
+
+        [Fact]
+        public void WhenExecutingPipelineResult_ThenBehaviorCanThrow()
+        {
+            var pipeline = new BehaviorPipeline(
+                new ExecuteDelegate((m, n) => m.CreateExceptionReturn(new ArgumentException())));
+
+            Func<object> f = NonVoidMethod;
+
+            Assert.Throws<ArgumentException>(()
+                => pipeline.Execute<object>(new MethodInvocation(this, f.GetMethodInfo()),
+                new ExecuteDelegate((m, n) => throw new NotImplementedException())));
+        }
+
+        [Fact]
+        public void WhenExecutingPipelineResultWithNoTarget_ThenThrowsIfNoResult()
+        {
+            var pipeline = new BehaviorPipeline();
+
+            Func<object> f = NonVoidMethod;
+
+            Assert.Throws<NotImplementedException>(()
+                => pipeline.Execute<object>(new MethodInvocation(this, f.GetMethodInfo())));
         }
 
         delegate object NonVoidMethodWithArgRefDelegate(object arg1, ref object arg2);
