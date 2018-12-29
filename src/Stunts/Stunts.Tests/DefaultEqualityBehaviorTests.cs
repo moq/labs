@@ -63,6 +63,25 @@ namespace Stunts.Tests
             Assert.False(actual);
         }
 
+        [Fact]
+        public void InvokeNextIfNotEqualsOrGetHashCode()
+        {
+            var method = typeof(Foo).GetMethod(nameof(Foo.ToString));
+            var behavior = new DefaultEqualityBehavior();
+            var target = new Foo();
+            var nextCalled = false;
+
+            behavior.Execute(
+                new MethodInvocation(target, method), 
+                () => (m, n) =>
+                {
+                    nextCalled = true;
+                    return m.CreateValueReturn(null);
+                });
+
+            Assert.True(nextCalled);
+        }
+
         public class Foo
         {
             public override string ToString()
