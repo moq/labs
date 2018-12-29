@@ -352,21 +352,16 @@ namespace Moq.Tests
             Assert.Equal(MockBehavior.Loose, moq.Behavior);
 
             var value = calculator.Add(5, 5);
-
             Assert.Equal(0, value);
 
             moq.DefaultValue.Register(() => 10);
-
             value = calculator.Add(5, 5);
-
             Assert.Equal(10, value);
 
             moq.Behavior = MockBehavior.Strict;
-
             Assert.Throws<StrictMockException>(() => calculator.Add(5, 5));
 
             moq.Behavior = MockBehavior.Loose;
-
             Assert.Equal(10, calculator.Add(5, 5));
         }
 

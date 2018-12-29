@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using Moq.Properties;
 using Moq.Sdk;
@@ -125,6 +126,7 @@ namespace Moq
                 }
             }
 
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)]
             IMock IMoq.Sdk => Sdk;
         }
     }

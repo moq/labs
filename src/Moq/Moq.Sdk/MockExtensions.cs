@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using Moq.Sdk.Properties;
 using Stunts;
@@ -119,6 +120,7 @@ namespace Moq.Sdk
 
             public T Object { get; }
 
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)]
             object IMock.Object => mock.Object;
 
             public IList<IMethodInvocation> Invocations => mock.Invocations;

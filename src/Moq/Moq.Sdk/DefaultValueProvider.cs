@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ namespace Moq.Sdk
     /// </summary>
     public class DefaultValueProvider
     {
+        [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
         readonly ConcurrentDictionary<Type, Func<Type, object>> factories = new ConcurrentDictionary<Type, Func<Type, object>>();
 
         /// <summary>
@@ -40,6 +42,9 @@ namespace Moq.Sdk
 				factories[typeof(ValueTuple<,,,,,,>)] = CreateValueTupleOf;
 				factories[typeof(ValueTuple<,,,,,,,>)] = CreateValueTupleOf;
             }
+
+            string foo = null;
+            Console.WriteLine(foo);
         }
         
         /// <summary>

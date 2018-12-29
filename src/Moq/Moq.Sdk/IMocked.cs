@@ -1,4 +1,5 @@
 ﻿using System.CodeDom.Compiler;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace Moq.Sdk
@@ -17,6 +18,8 @@ namespace Moq.Sdk
         /// <summary>
         /// The introspection information for the current mock.
         /// </summary>
+        [DebuggerDisplay("Invocations = {Mock.Invocations.Count}", Name = nameof(IMocked) + "." + nameof(IMocked.Mock))]
+        [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
         IMock Mock { get; }
     }
 }
