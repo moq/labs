@@ -21,10 +21,10 @@ namespace Moq.Tests
             EventHandler handler = (sender, args) => raised = true;
             calculator.TurnedOn += handler;
 
-            Assert.Equal(1, calculator.GetMock().Invocations.Count);
+            Assert.Equal(1, calculator.AsMock().Invocations.Count);
             calculator.TurnedOn += Raise.Event();
             // Raising events should not increase invocation count.
-            Assert.Equal(1, calculator.GetMock().Invocations.Count);
+            Assert.Equal(1, calculator.AsMock().Invocations.Count);
 
             Assert.True(raised);
 
@@ -287,7 +287,7 @@ namespace Moq.Tests
 
             Assert.Equal(4, calculator.Add(2, 2));
 
-            Assert.Equal(1, calculator.GetMock().Invocations.Count);
+            Assert.Equal(1, calculator.AsMock().Invocations.Count);
         }
 
         [Fact]
@@ -304,8 +304,71 @@ namespace Moq.Tests
             var ex = Record.Exception(() => calculator.Verify(c => c.Store(Any<string>(), Any<int>())));
 
             Assert.IsAssignableFrom<VerifyException>(ex);
-            Assert.Equal(1, calculator.GetMock().InvocationsFor(c => c.Add(2, 3)).Count());
-            Assert.Equal(0, calculator.GetMock().InvocationsFor(c => c.Add(Not(2), Not(3))).Count());
+            Assert.Equal(1, calculator.AsMock().InvocationsFor(c => c.Add(2, 3)).Count());
+            Assert.Equal(0, calculator.AsMock().InvocationsFor(c => c.Add(Not(2), Not(3))).Count());
         }
+
+        [Fact]
+        public void ChangeDefaultValue()
+        {
+            var calculator = Mock.Of<ICalculator>();
+            var moq = calculator.AsMoq();
+
+            Assert.Equal(MockBehavior.Loose, moq.Behavior);
+
+            var value = calculator.Add(5, 5);
+
+            Assert.Equal(0, value);
+
+            moq.DefaultValue.Register(() => 10);
+
+            value = calculator.Add(5, 5);
+
+            Assert.Equal(10, value);
+        }
+
+        [Fact]
+        public void ChangeBehavior()
+        {
+            var calculator = Mock.Of<ICalculator>();
+            var moq = calculator.AsMoq();
+
+            Assert.Equal(MockBehavior.Loose, moq.Behavior);
+
+            // Does not throw
+            calculator.Add(5, 5);
+
+            moq.Behavior = MockBehavior.Strict;
+
+            Assert.Throws<StrictMockException>(() => calculator.Add(5, 5));
+        }
+
+        [Fact]
+        public void ChangingBehaviorPreservesDefaultValue()
+        {
+            var calculator = Mock.Of<ICalculator>();
+            var moq = calculator.AsMoq();
+
+            Assert.Equal(MockBehavior.Loose, moq.Behavior);
+
+            var value = calculator.Add(5, 5);
+
+            Assert.Equal(0, value);
+
+            moq.DefaultValue.Register(() => 10);
+
+            value = calculator.Add(5, 5);
+
+            Assert.Equal(10, value);
+
+            moq.Behavior = MockBehavior.Strict;
+
+            Assert.Throws<StrictMockException>(() => calculator.Add(5, 5));
+
+            moq.Behavior = MockBehavior.Loose;
+
+            Assert.Equal(10, calculator.Add(5, 5));
+        }
+
     }
 }

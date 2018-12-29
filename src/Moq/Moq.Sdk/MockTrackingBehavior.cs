@@ -19,7 +19,7 @@ namespace Moq.Sdk
 
         public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next)
         {
-            var mock = invocation.Target.GetMock();
+            var mock = invocation.Target.AsMock();
 
             // Allows subsequent extension methods on the fluent API to retrieve the 
             // current invocation being performed via the MockContext.

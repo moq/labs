@@ -20,7 +20,7 @@ namespace Moq
             var setup = MockContext.CurrentSetup;
             if (setup != null)
             {
-                var mock = setup.Invocation.Target.GetMock();
+                var mock = setup.Invocation.Target.AsMock();
                 mock.Invocations.Remove(setup.Invocation);
                 var behavior = mock.GetPipeline(setup);
                 var returnBehavior = behavior.Behaviors.OfType<ReturnsBehavior>().FirstOrDefault();
@@ -43,7 +43,7 @@ namespace Moq
             var setup = MockContext.CurrentSetup;
             if (setup != null)
             {
-                var mock = setup.Invocation.Target.GetMock();
+                var mock = setup.Invocation.Target.AsMock();
                 mock.Invocations.Remove(setup.Invocation);
                 var behavior = mock.GetPipeline(setup);
                 var returnBehavior = behavior.Behaviors.OfType<ReturnsBehavior>().FirstOrDefault();
@@ -67,7 +67,7 @@ namespace Moq
             var setup = MockContext.CurrentSetup;
             if (setup != null)
             {
-                var mock = setup.Invocation.Target.GetMock();
+                var mock = setup.Invocation.Target.AsMock();
                 mock.Invocations.Remove(setup.Invocation);
                 var behavior = mock.GetPipeline(setup);
                 var returnBehavior = behavior.Behaviors.OfType<ReturnsBehavior>().FirstOrDefault();
@@ -113,7 +113,7 @@ namespace Moq
                 if (setup != null)
                 {
                     setup.Invocation.Target
-                        .GetMock()
+                        .AsMock()
                         .GetPipeline(setup)
                         .Behaviors.Add(new ReturnsDelegateBehavior(@delegate));
                 }
@@ -129,7 +129,7 @@ namespace Moq
                 // the right compiler safety already?
                 setup.Invocation.EnsureCompatible(value);
 
-                var mock = setup.Invocation.Target.GetMock();
+                var mock = setup.Invocation.Target.AsMock();
                 mock.Invocations.Remove(setup.Invocation);
                 var mockBehavior = mock.GetPipeline(setup);
 

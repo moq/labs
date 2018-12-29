@@ -21,7 +21,7 @@ namespace Moq
             {
                 action(mock);
                 var setup = MockContext.CurrentSetup;
-                var info = mock.GetMock();
+                var info = mock.AsMock();
                 if (!info.Invocations.Any(i => setup.AppliesTo(i)))
                     throw new VerifyException<T>(info, setup);
             }
@@ -37,7 +37,7 @@ namespace Moq
             {
                 function(mock);
                 var setup = MockContext.CurrentSetup;
-                var info = mock.GetMock();
+                var info = mock.AsMock();
                 if (!info.Invocations.Any(i => setup.AppliesTo(i)))
                     throw new VerifyException<T>(info, setup);
             }

@@ -34,7 +34,7 @@ namespace Moq.Sdk
         /// specified function, if a value with the given type does not already exist.
         /// </summary>
         public T GetOrAdd<T>(Func<T> valueFactory)
-            => (T)state.GetOrAdd(typeof(T), _ => valueFactory);
+            => (T)state.GetOrAdd(typeof(T), _ => valueFactory());
 
         /// <summary>
         /// Adds the state of the given type <typeparamref name="T"/> and <paramref name="key"/> 

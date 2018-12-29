@@ -18,7 +18,7 @@ namespace Moq
         /// </summary>
         public static T Named<T>(this T target, string name)
         {
-            target.GetMock().State.Set("Name", name);
+            target.AsMock().State.Set("Name", name);
             return target;
         }
     }

@@ -19,7 +19,7 @@ namespace Moq
         {
             var mocked = (IMocked)MockFactory.Default.CreateMock(typeof(Mock).GetTypeInfo().Assembly, typeof(T), interfaces, constructorArgs);
 
-            mocked.SetBehavior(behavior);
+            mocked.Initialize(behavior);
 
             return (T)mocked;
         }

@@ -14,11 +14,15 @@ namespace Moq.Sdk
     /// </summary>
     public class DefaultValueProvider
     {
-        ConcurrentDictionary<Type, Func<Type, object>> factories = new ConcurrentDictionary<Type, Func<Type, object>>();
+        readonly ConcurrentDictionary<Type, Func<Type, object>> factories = new ConcurrentDictionary<Type, Func<Type, object>>();
 
-        public DefaultValueProvider(bool addDefaults = true)
+        /// <summary>
+        /// Initializes the provider.
+        /// </summary>
+        /// <param name="registerDefaults">Whether to register the default value factories.</param>
+        public DefaultValueProvider(bool registerDefaults = true)
         {
-            if (addDefaults)
+            if (registerDefaults)
             {
                 factories[typeof(Array)] = CreateArray;
                 factories[typeof(Task)] = CreateTask;
@@ -39,12 +43,12 @@ namespace Moq.Sdk
         }
         
         /// <summary>
-        /// Calculates the default value for the given type <typeparamref name="T"/>.
+        /// Gets a default value for the given type <typeparamref name="T"/>.
         /// </summary>
         public T For<T>() => (T)For(typeof(T));
 
         /// <summary>
-        /// Calculates the default value for the given type <paramref name="type"/>
+        /// Gets a default value for the given type <paramref name="type"/>
         /// </summary>
         public object For(Type type)
         {
@@ -65,14 +69,32 @@ namespace Moq.Sdk
             return GetFallbackDefaultValue(valueType);
         }
 
+        /// <summary>
+        /// Deregisters a default value factory for the given <paramref name="key"/>.
+        /// </summary>
+        /// <returns>Whether there was a registered factory and it was removed.</returns>
         public bool Deregister(Type key) => factories.TryRemove(key, out _);
 
+        /// <summary>
+        /// Registers a default value factory for the given <paramref name="key"/>.
+        /// </summary>
         public void Register(Type key, Func<Type, object> factory) => factories[key] = factory;
 
-		/// <summary>
-		/// Determines the default value for the given <paramref name="type"/> when no suitable factory is registered for it.
-		/// </summary>
-		/// <param name="type">The type of which to produce a value.</param>
+        /// <summary>
+        /// Deregisters a default value factory for the given <typeparamref name="T"/>.
+        /// </summary>
+        /// <returns>Whether there was a registered factory and it was removed.</returns>
+        public bool Deregister<T>() => Deregister(typeof(T));
+
+        /// <summary>
+        /// Registers a default value factory for the given <typeparamref name="T"/>.
+        /// </summary>
+        public void Register<T>(Func<T> factory) => Register(typeof(T), _ => factory());
+
+        /// <summary>
+        /// Determines the default value for the given <paramref name="type"/> when no suitable factory is registered for it.
+        /// </summary>
+        /// <param name="type">The type of which to produce a value.</param>
         protected virtual object GetFallbackDefaultValue(Type type)
         {
             if (type.GetTypeInfo().IsValueType)

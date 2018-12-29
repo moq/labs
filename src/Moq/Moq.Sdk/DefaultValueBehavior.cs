@@ -11,10 +11,15 @@ namespace Moq.Sdk
     /// </summary>
     public class DefaultValueBehavior : IStuntBehavior
     {
+        public DefaultValueBehavior()
+            : this(new DefaultValueProvider()) { }
+
+        public DefaultValueBehavior(DefaultValueProvider provider) => Provider = provider;
+
         /// <summary>
         /// Gets or sets the provider of default values for the behavior.
         /// </summary>
-        public DefaultValueProvider Provider { get; set; } = new DefaultValueProvider();
+        public DefaultValueProvider Provider { get; set; }
 
         /// <summary>
         /// Always returns <see langword="true" />

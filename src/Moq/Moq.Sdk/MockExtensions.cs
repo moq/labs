@@ -74,8 +74,8 @@ namespace Moq.Sdk
         /// <summary>
         /// Gets the introspection information for a mocked object instance.
         /// </summary>
-        public static IMock<T> GetMock<T>(this T target)
-            => (target as IMocked)?.Mock.As<T>(target) ?? throw new ArgumentException(Strings.TargetNotMock, nameof(target));
+        public static IMock<T> AsMock<T>(this T instance)
+            => (instance as IMocked)?.Mock.As(instance) ?? throw new ArgumentException(Strings.TargetNotMock, nameof(instance));
 
         /// <summary>
         /// Gets the invocations performed on the mock so far that match the given 
