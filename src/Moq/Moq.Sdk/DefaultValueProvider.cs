@@ -50,12 +50,12 @@ namespace Moq.Sdk
         /// <summary>
         /// Gets a default value for the given type <typeparamref name="T"/>.
         /// </summary>
-        public T For<T>() => (T)For(typeof(T));
+        public T GetDefault<T>() => (T)GetDefault(typeof(T));
 
         /// <summary>
         /// Gets a default value for the given type <paramref name="type"/>
         /// </summary>
-        public object For(Type type)
+        public object GetDefault(Type type)
         {
             // If type is by ref, we need to get the actual element type of the ref. 
             // i.e. Object[]& has ElementType = Object[]
@@ -141,7 +141,7 @@ namespace Moq.Sdk
             var items = new object[itemTypes.Length];
             for (int i = 0, n = itemTypes.Length; i < n; ++i)
             {
-                items[i] = For(itemTypes[i]);
+                items[i] = GetDefault(itemTypes[i]);
             }
             
             return Activator.CreateInstance(type, items);
@@ -155,7 +155,7 @@ namespace Moq.Sdk
 
             var setResultMethod = tcs.GetType().GetTypeInfo().GetDeclaredMethod("SetResult");
             var taskProperty = tcs.GetType().GetTypeInfo().GetDeclaredProperty("Task");
-            var result = For(type);
+            var result = GetDefault(type);
 
             setResultMethod.Invoke(tcs, new[] { result });
 

@@ -40,14 +40,14 @@ namespace Moq.Sdk
                 // Only provide default values for out parameters. 
                 // NOTE: does not touch ByRef values.
                 if (parameter.IsOut)
-                    arguments[i] = Provider.For(parameter.ParameterType);
+                    arguments[i] = Provider.GetDefault(parameter.ParameterType);
             }
 
             var returnValue = default(object);
             if (invocation.MethodBase is MethodInfo info &&
                 info.ReturnType != typeof(void))
             {
-                returnValue = Provider.For(info.ReturnType);
+                returnValue = Provider.GetDefault(info.ReturnType);
             }
 
             return invocation.CreateValueReturn(returnValue, arguments);

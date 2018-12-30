@@ -42,7 +42,7 @@ namespace Moq.Sdk
                 // This is a bit fuzzy since we compare the actual argument value against the 
                 // default value for the parameter type, or the type of the matcher in the 
                 // queue of argument matchers to see if applies instead.
-                if (object.Equals(argument, defaultValue.For(parameter.ParameterType)) &&
+                if (object.Equals(argument, defaultValue.GetDefault(parameter.ParameterType)) &&
                     currentMatchers.Count != 0 &&
                     parameter.ParameterType.GetValueTypeInfo().IsAssignableFrom(currentMatchers.Peek().ArgumentType.GetValueTypeInfo()))
                 {

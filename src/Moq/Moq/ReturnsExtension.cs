@@ -103,7 +103,7 @@ namespace Moq
 
                     MockSetup.Push(new AnyMatcher(parameter.IsOut ? parameter.ParameterType.GetElementType() : parameter.ParameterType));
                     if (!parameter.IsOut)
-                        arguments[i] = defaultValue.For(parameter.ParameterType);
+                        arguments[i] = defaultValue.GetDefault(parameter.ParameterType);
                 }
 
                 target.Delegate.DynamicInvoke(arguments);
