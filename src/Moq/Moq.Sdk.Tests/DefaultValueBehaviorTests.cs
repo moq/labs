@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Stunts;
 using Xunit;
@@ -72,6 +73,14 @@ namespace Moq.Sdk.Tests
             Assert.Null(result.ReturnValue);
         }
 
+        [Fact]
+        public void DoesNotFailWithNonMethodInfo()
+        {
+            var ctor = typeof(Foo).GetConstructors().First();
+            IStuntBehavior behavior = new DefaultValueBehavior();
+
+            behavior.Execute(new MethodInvocation(new object(), ctor, new object[1]), () => null);
+        }
 
         [Fact]
         public void SetsReturnArray()
@@ -202,6 +211,13 @@ namespace Moq.Sdk.Tests
             Assert.NotNull(formatter);
             Assert.True(formatter.IsCompleted);
             Assert.Equal(default(IFormatProvider), formatter.Result);
+        }
+
+        public class Foo
+        {
+            public Foo(PlatformID platform)
+            {
+            }
         }
 
         public interface IDefaultValues

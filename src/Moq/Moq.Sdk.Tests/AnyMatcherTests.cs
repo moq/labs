@@ -23,6 +23,8 @@ namespace Moq.Sdk.Tests
             Assert.Same(x.ArgumentType, y.ArgumentType);
             Assert.Equal(x, y);
             Assert.True(((object)x).Equals(y));
+            Assert.False(x.Equals(new object()));
+            Assert.False(x.Equals((object)null));
             Assert.Equal(x.GetHashCode(), y.GetHashCode());
             Assert.NotEqual(x, z);
             Assert.False(((object)x).Equals(z));

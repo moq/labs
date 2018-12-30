@@ -8,6 +8,31 @@ namespace Moq.Sdk.Tests
     public class CallContextTests
     {
         [Fact]
+        public void WhenGettingUnSetData_ThenGetsNull()
+            => Assert.Null(CallContext.GetData("foo"));
+
+        [Fact]
+        public void WhenGettingUnSetTypedData_ThenGetsNull()
+            => Assert.Null(CallContext<object>.GetData());
+
+        [Fact]
+        public void WhenGettingUnSetTypedData_ThenCanProvideDefaultValue()
+            => Assert.NotNull(CallContext<object>.GetData(() => new object()));
+
+        [Fact]
+        public void WhenGettingUnSetTypedData_ThenSetsDefaultValueOnAllThreadsFromFirstDelegate()
+        {
+            var value = new object();
+            Assert.NotNull(CallContext<object>.GetData("foo", () => value));
+            var ev = new ManualResetEventSlim();
+            Task.Run(() =>
+            {
+                Assert.Same(value, CallContext<object>.GetData(() => new object()));
+                ev.Set();
+            });
+        }
+
+        [Fact]
         public void WhenFlowingData_ThenCanUseContext()
         {
             var key1 = Guid.NewGuid().ToString();

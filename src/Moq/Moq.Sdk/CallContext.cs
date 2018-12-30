@@ -90,6 +90,6 @@ namespace Moq.Sdk
         /// <param name="name">The name of the item in the call context.</param>
         /// <returns>The object in the call context associated with the specified name, or <see langword="null"/> if not found.</returns>
         public static object GetData(string name) =>
-            state.TryGetValue(name, out AsyncLocal<object> data) ? data.Value : null;
+            state.TryGetValue(name, out var data) ? data.Value : null;
     }
 }

@@ -65,31 +65,6 @@ namespace Moq.Sdk.Tests
         }
 
         [Fact]
-        public void AnyMatcherEquality()
-        {
-            var matcher = AnyMatcher<bool>.Default;
-
-            Assert.True(matcher.Equals(AnyMatcher<bool>.Default));
-            Assert.False(matcher.Equals(null));
-            Assert.False(matcher.Equals(AnyMatcher<string>.Default));
-        }
-
-        [Fact]
-        public void ConditionalMatcherEqualsByConditionFunctionAndName()
-        {
-            Func<string, bool> condition = s => s.Length > 0;
-            var matcher = new ConditionalMatcher<string>(condition, "foo");
-
-            Assert.True(matcher.Equals(new ConditionalMatcher<string>(condition, "foo")));
-            Assert.True(matcher.Equals(new ConditionalMatcher<string>(condition, "foo"), EqualityComparer<object>.Default));
-            Assert.Equal(matcher.GetHashCode(), new ConditionalMatcher<string>(condition, "foo").GetHashCode());
-            Assert.Equal(matcher.GetHashCode(EqualityComparer<object>.Default), new ConditionalMatcher<string>(condition, "foo").GetHashCode(EqualityComparer<object>.Default));
-
-            Assert.False(matcher.Equals(new ConditionalMatcher<string>(condition, "bar")));
-            Assert.False(matcher.Equals(new ConditionalMatcher<string>(s => s.Length > 0, "foo")));
-        }
-
-        [Fact]
         public void ValueMatcherEqualsByTypeAndValue()
         {
             var matcher = new ValueMatcher(typeof(string), "foo");
