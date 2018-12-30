@@ -19,13 +19,11 @@ namespace Moq.Sdk.Tests
             var args = new object[] { true, "foo", PlatformID.Win32NT };
             var target = this;
 
-            IStructuralEquatable equatable = new MethodInvocation(target, method, args);
-            IStructuralEquatable other = new MethodInvocation(target, method, args);
+            IEquatable<IMethodInvocation> equatable = new MethodInvocation(target, method, args);
+            IEquatable<IMethodInvocation> other = new MethodInvocation(target, method, args);
 
             Assert.True(equatable.Equals(other));
-            Assert.True(equatable.Equals(other, EqualityComparer<object>.Default));
             Assert.Equal(equatable.GetHashCode(), other.GetHashCode());
-            Assert.Equal(equatable.GetHashCode(EqualityComparer<object>.Default), other.GetHashCode(EqualityComparer<object>.Default));
         }
 
         [Fact]

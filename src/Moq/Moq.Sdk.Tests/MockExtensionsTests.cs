@@ -138,7 +138,7 @@ namespace Moq.Sdk.Tests
         {
             public ObservableCollection<IStuntBehavior> Behaviors { get; } = new ObservableCollection<IStuntBehavior>();
 
-            public IList<IMethodInvocation> Invocations { get; } = new List<IMethodInvocation>();
+            public ICollection<IMethodInvocation> Invocations { get; } = new HashSet<IMethodInvocation>();
 
             public object Object { get; set; }
 

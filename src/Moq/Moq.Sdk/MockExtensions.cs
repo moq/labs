@@ -123,7 +123,7 @@ namespace Moq.Sdk
             [DebuggerBrowsable(DebuggerBrowsableState.Never)]
             object IMock.Object => mock.Object;
 
-            public IList<IMethodInvocation> Invocations => mock.Invocations;
+            public ICollection<IMethodInvocation> Invocations => mock.Invocations;
 
             public MockState State => mock.State;
 

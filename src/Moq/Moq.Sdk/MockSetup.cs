@@ -16,14 +16,11 @@ namespace Moq.Sdk
         readonly IMethodInvocation invocation;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         readonly IArgumentMatcher[] matchers;
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        readonly Lazy<IStructuralEquatable> equatable;
 
         public MockSetup(IMethodInvocation invocation, IArgumentMatcher[] matchers)
         {
-            this.invocation = invocation;
-            this.matchers = matchers;
-            equatable = new Lazy<IStructuralEquatable>(CreateEquatable);
+            this.invocation = invocation ?? throw new ArgumentNullException(nameof(invocation));
+            this.matchers = matchers ?? throw new ArgumentNullException(nameof(matchers));
         }
 
         public IMethodInvocation Invocation => invocation;
@@ -113,53 +110,19 @@ namespace Moq.Sdk
         static bool IsString(Type type) => type == typeof(string) ||
             (type.IsByRef && type.HasElementType && type.GetElementType() == typeof(string));
 
-        IStructuralEquatable CreateEquatable()
-        {
-            // TODO: Since Func and Action already support a max of 8, maybe that's all we need?
-            // TODO: correction, they support 16 :S. Maybe use a tuple item to chain more args?
-            if (matchers.Length <= 8)
-            {
-                switch (matchers.Length)
-                {
-                    case 0:
-                        return Tuple.Create(invocation);
-                    case 1:
-                        return Tuple.Create(invocation, matchers[0]);
-                    case 2:
-                        return Tuple.Create(invocation, matchers[0], matchers[1]);
-                    case 3:
-                        return Tuple.Create(invocation, matchers[0], matchers[1], matchers[2]);
-                    case 4:
-                        return Tuple.Create(invocation, matchers[0], matchers[1], matchers[2], matchers[3]);
-                    case 5:
-                        return Tuple.Create(invocation, matchers[0], matchers[1], matchers[2], matchers[3], matchers[4]);
-                    case 6:
-                        return Tuple.Create(invocation, matchers[0], matchers[1], matchers[2], matchers[3], matchers[4], matchers[5]);
-                    case 7:
-                        return Tuple.Create(invocation, matchers[0], matchers[1], matchers[2], matchers[3], matchers[4], matchers[5], matchers[6]);
-                    case 8:
-                        return Tuple.Create(invocation, matchers[0], matchers[1], matchers[2], matchers[3], matchers[4], matchers[5], Tuple.Create(matchers[6], matchers[7]));
-                    default:
-                        throw new NotSupportedException("A maximum of 8 argument matchers are supported at the moment.");
-                }
-            }
-            else
-            {
-                throw new NotSupportedException("A maximum of 8 argument matchers are supported at the moment.");
-            }
-        }
-
         #region Equality
 
-        public bool Equals(MockSetup other) => equatable.Value.Equals(other?.equatable?.Value);
+        public bool Equals(IMockSetup other)
+            => other != null && Invocation.Equals(other.Invocation) && Matchers.SequenceEqual(other.Matchers);
 
-        public bool Equals(object other, IEqualityComparer comparer) => equatable.Value.Equals((other as MockSetup)?.equatable?.Value, comparer);
+        public bool Equals(MockSetup other) 
+            => Equals((IMockSetup)other);
 
-        public int GetHashCode(IEqualityComparer comparer) => equatable.Value.GetHashCode(comparer);
+        public override bool Equals(object obj) 
+            => Equals(obj as IMockSetup);
 
-        public override bool Equals(object obj) => Equals(obj as MockSetup, EqualityComparer<object>.Default);
-
-        public override int GetHashCode() => equatable.Value.GetHashCode();
+        public override int GetHashCode() 
+            => new HashCode().Add(Invocation).AddRange(Matchers).ToHashCode();
 
         #endregion
     }

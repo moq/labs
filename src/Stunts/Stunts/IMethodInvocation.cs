@@ -8,7 +8,7 @@ namespace Stunts
     /// <summary>
     /// Represents a method invocation.
     /// </summary>
-	public interface IMethodInvocation : IStructuralEquatable, IFluentInterface
+	public interface IMethodInvocation : IEquatable<IMethodInvocation>, IFluentInterface
     {
         /// <summary>
         /// The arguments of the method invocation.

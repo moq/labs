@@ -17,7 +17,7 @@ namespace Moq.Sdk
         /// <summary>
         /// Invocations performed on the mock so far.
         /// </summary>
-        IList<IMethodInvocation> Invocations { get; }
+        ICollection<IMethodInvocation> Invocations { get; }
 
         /// <summary>
         /// The mock object this introspection data belongs to.

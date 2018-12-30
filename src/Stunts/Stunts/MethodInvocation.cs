@@ -6,6 +6,7 @@ using System.Linq;
 using System.Collections;
 using System.Runtime.CompilerServices;
 using TypeNameFormatter;
+using System.Diagnostics;
 
 namespace Stunts
 {
@@ -14,32 +15,63 @@ namespace Stunts
     /// </summary>
     public class MethodInvocation : IEquatable<MethodInvocation>, IMethodInvocation
     {
-        Lazy<IStructuralEquatable> equatable;
-
         public MethodInvocation(object target, MethodBase method, params object[] arguments)
         {
             // TODO: validate that arguments length and type match the method info?
-            Target = target;
-            MethodBase = method;
+            Target = target ?? throw new ArgumentNullException(nameof(target));
+            MethodBase = method ?? throw new ArgumentNullException(nameof(method));
             Arguments = new ArgumentCollection(arguments, method.GetParameters());
             Context = new Dictionary<string, object>();
-            equatable = new Lazy<IStructuralEquatable>(() => Tuple.Create(RuntimeHelpers.GetHashCode(target), method, arguments));
         }
 
+        /// <summary>
+        /// The arguments of the method invocation.
+        /// </summary>
         public IArgumentCollection Arguments { get; }
 
+        /// <summary>
+        /// An arbitrary property bag used during the invocation.
+        /// </summary>
         public IDictionary<string, object> Context { get; }
 
+        /// <summary>
+        /// The runtime method being invoked.
+        /// </summary>
         public MethodBase MethodBase { get; }
 
+        /// <summary>
+        /// The ultimate target of the method invocation, typically 
+        /// a stunt object.
+        /// </summary>
         public object Target { get; }
 
+        /// <summary>
+        /// Creates the method invocation return that ends the 
+        /// current invocation.
+        /// </summary>
+        /// <param name="returnValue">Optional return value from the method invocation. <see langword="null"/> for <see langword="void"/> methods.</param>
+        /// <param name="allArguments">Ordered list of all arguments to the method invocation, including ref/out arguments.</param>
+        /// <returns>The <see cref="IMethodReturn"/> for the current invocation.</returns>
         public IMethodReturn CreateExceptionReturn(Exception exception) 
             => new MethodReturn(this, exception);
 
+        /// <summary>
+        /// Creates a method invocation return that represents 
+        /// a thrown exception.
+        /// </summary>
+        /// <param name="exception">The exception to throw from the method invocation.</param>
+        /// <returns>The <see cref="IMethodReturn"/> for the current invocation.</returns>
         public IMethodReturn CreateValueReturn(object returnValue, params object[] allArguments) 
             => new MethodReturn(this, returnValue, allArguments);
 
+        /// <summary>
+        /// Gets a friendly representation of the invocation.
+        /// </summary>
+        /// <devdoc>
+        /// We don't want to optimize code coverage for this since it's a debugger aid only. 
+        /// No actual behavior depends on these strings.
+        /// </devdoc>
+        [DebuggerNonUserCode]
         public override string ToString()
         {
             var result = new StringBuilder();
@@ -100,15 +132,17 @@ namespace Stunts
 
         #region Equality
 
-        public bool Equals(MethodInvocation other) => equatable.Value.Equals(other?.equatable?.Value, EqualityComparer<object>.Default);
+        public bool Equals(IMethodInvocation other)
+            => other != null && object.ReferenceEquals(Target, other.Target) && MethodBase.Equals(other.MethodBase) && Arguments.SequenceEqual(other.Arguments);
 
-        public bool Equals(object other, IEqualityComparer comparer) => equatable.Value.Equals((other as MethodInvocation)?.equatable?.Value, comparer);
+        public bool Equals(MethodInvocation other)
+            => Equals((IMethodInvocation)other);
 
-        public int GetHashCode(IEqualityComparer comparer) => equatable.Value.GetHashCode(comparer);
+        public override bool Equals(object obj) 
+            => Equals(obj as IMethodInvocation);
 
-        public override bool Equals(object obj) => Equals(obj as MethodInvocation);
-
-        public override int GetHashCode() => equatable.Value.GetHashCode();
+        public override int GetHashCode() 
+            => new HashCode().Combine(RuntimeHelpers.GetHashCode(Target)).Add(MethodBase).AddRange(Arguments).ToHashCode();
 
         #endregion
     }

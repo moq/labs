@@ -37,7 +37,7 @@ namespace Moq.Sdk
         public ObservableCollection<IStuntBehavior> Behaviors => stunt.Behaviors;
 
         /// <inheritdoc />
-        public IList<IMethodInvocation> Invocations { get; } = new List<IMethodInvocation>();
+        public ICollection<IMethodInvocation> Invocations { get; } = new HashSet<IMethodInvocation>();
 
         /// <inheritdoc />
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]

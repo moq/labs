@@ -16,9 +16,7 @@ namespace Moq.Sdk.Tests
 
         IMethodInvocation IMockSetup.Invocation => Invocation;
 
-        public bool Equals(object other, IEqualityComparer comparer) => base.Equals(other);
-
-        public int GetHashCode(IEqualityComparer comparer) => base.GetHashCode();
+        public bool Equals(IMockSetup other) => base.Equals(other);
 
         bool IMockSetup.AppliesTo(IMethodInvocation actualInvocation) => AppliesTo(actualInvocation);
     }

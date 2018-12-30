@@ -1,4 +1,6 @@
-﻿using Xunit;
+﻿using System;
+using System.Reflection;
+using Xunit;
 
 namespace Stunts.Tests
 {
@@ -27,6 +29,34 @@ namespace Stunts.Tests
             var actual = invocation.ToString();
 
             Assert.Equal("void DoWithInt(int value = 5)", actual);
+        }
+
+        [Fact]
+        public void EqualIfTargetMethodAndArgumentsMatch()
+        {
+            var doThis = new MethodInvocation(this, typeof(MethodInvocationTests).GetMethod(nameof(Do)));
+            var doThiss = new MethodInvocation(this, typeof(MethodInvocationTests).GetMethod(nameof(Do)));
+
+            Assert.Equal((object)doThis, doThiss);
+            Assert.Equal(doThis, doThiss);
+            Assert.Equal(doThis.GetHashCode(), doThiss.GetHashCode());
+            Assert.True(doThis.Equals(doThiss));
+            Assert.True(doThis.Equals((object)doThiss));
+
+            var doOther = new MethodInvocation(new MethodInvocationTests(), typeof(MethodInvocationTests).GetMethod(nameof(Do)));
+
+            Assert.NotEqual(doThis, doOther);
+
+            var doInt5 = new MethodInvocation(this, typeof(MethodInvocationTests).GetMethod(nameof(DoWithInt)), 5);
+            var doInt5s = new MethodInvocation(this, typeof(MethodInvocationTests).GetMethod(nameof(DoWithInt)), 5);
+
+            Assert.NotEqual(doThis, doInt5);
+            Assert.Equal(doInt5, doInt5s);
+            Assert.Equal(doInt5.GetHashCode(), doInt5s.GetHashCode());
+
+            var doInt6 = new MethodInvocation(this, typeof(MethodInvocationTests).GetMethod(nameof(DoWithInt)), 6);
+
+            Assert.NotEqual(doInt5, doInt6);
         }
 
         public void DoWithNullableInt(int? value) { }
@@ -112,6 +142,14 @@ namespace Stunts.Tests
 
             Assert.Equal("void DoOut(out int value)", actual);
         }
+
+        [Fact]
+        public void ThrowsIfNullTarget()
+            => Assert.Throws<ArgumentNullException>(() => new MethodInvocation(null, MethodBase.GetCurrentMethod()));
+
+        [Fact]
+        public void ThrowsIfNullMethodBase()
+            => Assert.Throws<ArgumentNullException>(() => new MethodInvocation(this, null));
     }
 #pragma warning restore xUnit1013 // Public method should be marked as test
 }
