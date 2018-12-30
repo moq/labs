@@ -17,6 +17,16 @@ namespace Stunts.Tests
         }
 
         [Fact]
+        public void WhenAddingStuntBehavior_ThenCanCustom()
+        {
+            IStunt stunt = new TestStunt();
+
+            stunt.AddBehavior(new TestStuntBehavior());
+
+            Assert.Single(stunt.Behaviors);
+        }
+
+        [Fact]
         public void WhenAddingStuntBehavior_ThenCanAddLambdaWithAppliesTo()
         {
             var stunt = new TestStunt();
@@ -24,6 +34,18 @@ namespace Stunts.Tests
             stunt.AddBehavior((m, n) => null, m => true);
 
             Assert.True(stunt.Behaviors[0].AppliesTo(null));
+        }
+
+        [Fact]
+        public void WhenAddingStuntBehavior_ThenCanAddLambdaWithAppliesToNamed()
+        {
+            var stunt = new TestStunt();
+
+            stunt.AddBehavior((m, n) => null, m => true, "true");
+            ((IStunt)stunt).AddBehavior((m, n) => null, m => false, "false");
+
+            Assert.Contains("true", stunt.Behaviors[0].ToString());
+            Assert.Contains("false", stunt.Behaviors[1].ToString());
         }
 
         [Fact]
@@ -57,6 +79,18 @@ namespace Stunts.Tests
         }
 
         [Fact]
+        public void WhenAddingStuntBehaviorToObject_ThenCanAddLambdaWithAppliesToNamed()
+        {
+            object stunt = new TestStunt();
+
+            stunt.AddBehavior((m, n) => null, m => true, "true");
+            ((IStunt)stunt).AddBehavior((m, n) => null, m => false, "false");
+
+            Assert.Contains("true", ((IStunt)stunt).Behaviors[0].ToString());
+            Assert.Contains("false", ((IStunt)stunt).Behaviors[1].ToString());
+        }
+
+        [Fact]
         public void WhenAddingStuntBehaviorToObject_ThenCanAddInterface()
         {
             object stunt = new TestStunt();
@@ -79,6 +113,18 @@ namespace Stunts.Tests
         }
 
         [Fact]
+        public void WhenInsertingStuntBehavior_ThenCanCustom()
+        {
+            IStunt stunt = new TestStunt();
+
+            stunt.AddBehavior((m, n) => null);
+            stunt.InsertBehavior(0, new TestStuntBehavior());
+
+            Assert.Equal(2, stunt.Behaviors.Count);
+            Assert.IsType<TestStuntBehavior>(stunt.Behaviors[0]);
+        }
+
+        [Fact]
         public void WhenInsertingStuntBehavior_ThenCanAddLambdaWithAppliesTo()
         {
             var stunt = new TestStunt();
@@ -91,6 +137,20 @@ namespace Stunts.Tests
             Assert.False(stunt.Behaviors[0].AppliesTo(null));
             Assert.True(stunt.Behaviors[1].AppliesTo(null));
             Assert.Throws<NotImplementedException>(() => stunt.Behaviors[1].Execute(null, null));
+        }
+
+        [Fact]
+        public void WhenInsertingStuntBehavior_ThenCanAddLambdaWithAppliesToNamed()
+        {
+            var stunt = new TestStunt();
+
+            stunt.AddBehavior((m, n) => null);
+            stunt.InsertBehavior(0, (m, n) => throw new NotImplementedException(), m => true, "true");
+            ((IStunt)stunt).InsertBehavior(0, (m, n) => throw new ArgumentException(), m => false, "false");
+
+            Assert.Equal(3, stunt.Behaviors.Count);
+            Assert.Contains("false", stunt.Behaviors[0].ToString());
+            Assert.Contains("true", stunt.Behaviors[1].ToString());
         }
 
         [Fact]
@@ -131,6 +191,20 @@ namespace Stunts.Tests
             Assert.False(((IStunt)stunt).Behaviors[0].AppliesTo(null));
             Assert.True(((IStunt)stunt).Behaviors[1].AppliesTo(null));
             Assert.Throws<NotImplementedException>(() => ((IStunt)stunt).Behaviors[1].Execute(null, null));
+        }
+
+        [Fact]
+        public void WhenInsertingStuntBehaviorToObject_ThenCanAddLambdaWithAppliesToNamed()
+        {
+            object stunt = new TestStunt();
+
+            stunt.AddBehavior((m, n) => null);
+            stunt.InsertBehavior(0, (m, n) => throw new NotImplementedException(), m => true, "true");
+            ((IStunt)stunt).InsertBehavior(0, (m, n) => throw new ArgumentException(), m => false, "false");
+
+            Assert.Equal(3, ((IStunt)stunt).Behaviors.Count);
+            Assert.Contains("false", ((IStunt)stunt).Behaviors[0].ToString());
+            Assert.Contains("true", ((IStunt)stunt).Behaviors[1].ToString());
         }
 
         [Fact]
