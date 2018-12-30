@@ -21,7 +21,7 @@ steps:
   displayName: Build
   inputs:
     solution: src/Moq.sln
-    msbuildArguments: /bl:"$(Build.ArtifactStagingDirectory)\build.binlog" /p:PackageOutputPath=$(Build.ArtifactStagingDirectory) /p:Configuration=Release
+    msbuildArguments: /bl:"$(Build.ArtifactStagingDirectory)\build.binlog" /p:PackOnBuild=true /p:PackageOutputPath=$(Build.ArtifactStagingDirectory) /p:Configuration=Release
 
 - task: VSTest@2
   displayName: Test
