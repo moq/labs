@@ -111,11 +111,15 @@ namespace Moq.Sdk.Tests
             var t22 = default(Foo);
             var t23 = default(Foo);
 
+            Thread thread1 = null;
+            Thread thread2 = null;
+
             Task.WaitAll(
                 Task.Run(() =>
                 {
                     CallContext<Foo>.SetData(key1, d1);
-                    new Thread(() => t10 = CallContext<Foo>.GetData(key1)).Start();
+                    thread1 = new Thread(() => t10 = CallContext<Foo>.GetData(key1));
+                    thread1.Start();
                     Task.WaitAll(
                         Task.Run(() => t1 = CallContext<Foo>.GetData(key1))
                             .ContinueWith(t => t11 = CallContext<Foo>.GetData(key1)),
@@ -126,7 +130,8 @@ namespace Moq.Sdk.Tests
                 Task.Run(() =>
                 {
                     CallContext<Foo>.SetData(key2, d2);
-                    new Thread(() => t20 = CallContext<Foo>.GetData(key2)).Start();
+                    thread2 = new Thread(() => t20 = CallContext<Foo>.GetData(key2));
+                    thread2.Start();
                     Task.WaitAll(
                         Task.Run(() => t2 = CallContext<Foo>.GetData(key2))
                             .ContinueWith(t => t21 = CallContext<Foo>.GetData(key2)),
@@ -136,11 +141,15 @@ namespace Moq.Sdk.Tests
                 })
             );
 
+            thread1.Join();
+
             Assert.Same(d1, t1);
             Assert.Same(d1, t10);
             Assert.Same(d1, t11);
             Assert.Same(d1, t12);
             Assert.Same(d1, t13);
+
+            thread2.Join();
 
             Assert.Same(d2, t2);
             Assert.Same(d2, t20);
