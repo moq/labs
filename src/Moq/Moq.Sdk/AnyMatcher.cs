@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics;
 using System.Reflection;
 using TypeNameFormatter;
 
@@ -10,7 +11,7 @@ namespace Moq.Sdk
     /// including <see langword="null"/> if the type is a reference type 
     /// or a nullable value type.
     /// </summary>
-    public class AnyMatcher : IArgumentMatcher, IEquatable<AnyMatcher>, IStructuralEquatable
+    public class AnyMatcher : IArgumentMatcher, IEquatable<AnyMatcher>
     {
         TypeInfo info;
         bool isValueType;
@@ -18,7 +19,7 @@ namespace Moq.Sdk
 
         public AnyMatcher(Type argumentType)
         {
-            ArgumentType = argumentType;
+            ArgumentType = argumentType ?? throw new ArgumentNullException();
 
             info = argumentType.GetValueTypeInfo();
             isValueType = info.IsValueType;
@@ -43,15 +44,24 @@ namespace Moq.Sdk
             return value == null || info.IsAssignableFrom(value.GetType().GetTypeInfo());
         }
 
+        /// <summary>
+        /// Gets a friendly representation of the object.
+        /// </summary>
+        /// <devdoc>
+        /// We don't want to optimize code coverage for this since it's a debugger aid only. 
+        /// Annotating this method with DebuggerNonUserCode achieves that.
+        /// No actual behavior depends on these strings.
+        /// </devdoc>
+        [DebuggerNonUserCode]
         public override string ToString() => "Any<" + ArgumentType.GetFormattedName() + ">";
 
         #region Equality
 
-        public bool Equals(AnyMatcher other) => Equals(other);
+        public bool Equals(AnyMatcher other) => other != null && info.Equals(other.info);
 
-        public bool Equals(object other, IEqualityComparer comparer) => Equals(other);
+        public override bool Equals(object other) => Equals(other as AnyMatcher);
 
-        public int GetHashCode(IEqualityComparer comparer) => GetHashCode();
+        public override int GetHashCode() => info.GetHashCode();
 
         #endregion
     }

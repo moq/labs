@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics;
 using System.Reflection;
 using TypeNameFormatter;
 
@@ -11,7 +12,7 @@ namespace Moq.Sdk
     /// or a nullable value type.
     /// </summary>
     /// <typeparam name="T">Type of argument to match.</typeparam>
-    public class AnyMatcher<T> : IArgumentMatcher, IEquatable<AnyMatcher<T>>, IStructuralEquatable
+    public class AnyMatcher<T> : IArgumentMatcher, IEquatable<AnyMatcher<T>>
     {
         // Disable warning since we only use this member from this class
         static bool IsValueType = typeof(T).GetTypeInfo().IsValueType;
@@ -43,15 +44,24 @@ namespace Moq.Sdk
                 typeof(T).GetTypeInfo().IsAssignableFrom(value.GetType().GetTypeInfo());
         }
 
+        /// <summary>
+        /// Gets a friendly representation of the object.
+        /// </summary>
+        /// <devdoc>
+        /// We don't want to optimize code coverage for this since it's a debugger aid only. 
+        /// Annotating this method with DebuggerNonUserCode achieves that.
+        /// No actual behavior depends on these strings.
+        /// </devdoc>
+        [DebuggerNonUserCode]
         public override string ToString() => "Any<" + ArgumentType.GetFormattedName() + ">";
 
         #region Equality
 
-        public bool Equals(AnyMatcher<T> other) => Equals(other);
+        public bool Equals(AnyMatcher<T> other) => other != null;
 
-        public bool Equals(object other, IEqualityComparer comparer) => Equals(other);
+        public override bool Equals(object obj) => Equals(obj as AnyMatcher<T>);
 
-        public int GetHashCode(IEqualityComparer comparer) => GetHashCode();
+        public override int GetHashCode() => typeof(T).GetHashCode();
 
         #endregion
     }
