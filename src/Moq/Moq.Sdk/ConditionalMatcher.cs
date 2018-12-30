@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using Stunts;
 using TypeNameFormatter;
 
 namespace Moq.Sdk
@@ -22,14 +23,11 @@ namespace Moq.Sdk
         string name;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         Func<T, bool> condition;
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        Lazy<IStructuralEquatable> equatable;
 
         public ConditionalMatcher(Func<T, bool> condition, string name = "condition")
         {
-            this.condition = condition;
-            this.name = name;
-            equatable = new Lazy<IStructuralEquatable>(() => Tuple.Create(condition, name));
+            this.condition = condition ?? throw new ArgumentNullException(nameof(condition));
+            this.name = name ?? throw new ArgumentNullException(nameof(name));
         }
 
         /// <summary>
@@ -47,23 +45,30 @@ namespace Moq.Sdk
                 return false;
 
             return (value == null ||
+                typeof(T) == value.GetType() ||
                 typeof(T).GetTypeInfo().IsAssignableFrom(value.GetType().GetTypeInfo())) &&
                 condition((T)value);
         }
 
+        /// <summary>
+        /// Gets a friendly representation of the object.
+        /// </summary>
+        /// <devdoc>
+        /// We don't want to optimize code coverage for this since it's a debugger aid only. 
+        /// Annotating this method with DebuggerNonUserCode achieves that.
+        /// No actual behavior depends on these strings.
+        /// </devdoc>
+        [DebuggerNonUserCode]
         public override string ToString() => "Any<" + ArgumentType.GetFormattedName() + ">(" + name + ")";
 
         #region Equality
 
-        public bool Equals(ConditionalMatcher<T> other) => equatable.Value.Equals(other?.equatable?.Value, EqualityComparer<object>.Default);
-
-        public bool Equals(object other, IEqualityComparer comparer) => equatable.Value.Equals((other as ConditionalMatcher<T>)?.equatable?.Value, comparer);
-
-        public int GetHashCode(IEqualityComparer comparer) => equatable.Value.GetHashCode(comparer);
+        public bool Equals(ConditionalMatcher<T> other)
+            => other != null && ReferenceEquals(condition, other.condition) && name.Equals(other.name);
 
         public override bool Equals(object obj) => Equals(obj as ConditionalMatcher<T>);
 
-        public override int GetHashCode() => GetHashCode(EqualityComparer<object>.Default);
+        public override int GetHashCode() => new HashCode().Add(condition).Add(name).ToHashCode();
 
         #endregion
     }
