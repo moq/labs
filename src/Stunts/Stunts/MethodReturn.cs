@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -57,6 +58,15 @@ namespace Stunts
 
 		public IDictionary<string, object> Context { get => invocation.Context; }
 
+        /// <summary>
+        /// Gets a friendly representation of the object.
+        /// </summary>
+        /// <devdoc>
+        /// We don't want to optimize code coverage for this since it's a debugger aid only. 
+        /// Annotating this method with DebuggerNonUserCode achieves that.
+        /// No actual behavior depends on these strings.
+        /// </devdoc>
+        [DebuggerNonUserCode]
         public override string ToString()
         {
             var result = new StringBuilder();

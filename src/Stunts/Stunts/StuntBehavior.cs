@@ -1,4 +1,6 @@
-﻿namespace Stunts
+﻿using System.Diagnostics;
+
+namespace Stunts
 {
     /// <summary>
     /// A factory for a <see cref="IStuntBehavior"/> from a delegate (a.k.a. anonymous behavior).
@@ -33,6 +35,15 @@
             public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next) =>
                 behavior(invocation, next);
 
+            /// <summary>
+            /// Gets a friendly representation of the object.
+            /// </summary>
+            /// <devdoc>
+            /// We don't want to optimize code coverage for this since it's a debugger aid only. 
+            /// Annotating this method with DebuggerNonUserCode achieves that.
+            /// No actual behavior depends on these strings.
+            /// </devdoc>
+            [DebuggerNonUserCode]
             public override string ToString() => name ?? "<unnamed>";
         }
     }

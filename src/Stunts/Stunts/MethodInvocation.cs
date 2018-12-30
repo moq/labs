@@ -69,6 +69,7 @@ namespace Stunts
         /// </summary>
         /// <devdoc>
         /// We don't want to optimize code coverage for this since it's a debugger aid only. 
+        /// Annotating this method with DebuggerNonUserCode achieves that.
         /// No actual behavior depends on these strings.
         /// </devdoc>
         [DebuggerNonUserCode]
