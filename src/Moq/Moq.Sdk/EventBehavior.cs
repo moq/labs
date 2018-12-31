@@ -9,7 +9,8 @@ namespace Moq.Sdk
     /// <summary>
     /// An <see cref="IStuntBehavior"/> that keeps track of backing delegates 
     /// for events, combining and removing handlers from them as += and -= 
-    /// are invoked on the mock.
+    /// are invoked on the mock. Also raises events when an <see cref="EventRaiser"/> 
+    /// exists in the <see cref="CallContext"/>.
     /// </summary>
     public class EventBehavior : IStuntBehavior
     {
@@ -18,8 +19,7 @@ namespace Moq.Sdk
         /// add or remove handler.
         /// </summary>
         public bool AppliesTo(IMethodInvocation invocation)
-            => invocation.MethodBase.IsSpecialName &&
-              (invocation.MethodBase.Name.StartsWith("add_", StringComparison.Ordinal) ||
+            => (invocation.MethodBase.Name.StartsWith("add_", StringComparison.Ordinal) ||
                invocation.MethodBase.Name.StartsWith("remove_", StringComparison.Ordinal));
 
         /// <inheritdoc />
