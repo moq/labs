@@ -4,10 +4,14 @@
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
+    <GenerateDependencyFile>false</GenerateDependencyFile>
   </PropertyGroup>
 
   <PropertyGroup Label="Package">
+    <IsPackagingProject>true</IsPackagingProject>
     <IncludeFrameworkReferencesInPackage>false</IncludeFrameworkReferencesInPackage>
+    <IncludeOutputsInPackage>false</IncludeOutputsInPackage>
+    <IncludeProjectReferencesInPackage>true</IncludeProjectReferencesInPackage>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" />

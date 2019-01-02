@@ -26,7 +26,3 @@ msbuild /t:configure
 msbuild /t:build
 msbuild /t:test
 ```
-
-## Dependencies
-
-The packaging projects are [NuGetizer](https://github.com/NuGet/NuGet.Build.Packaging/) projects, and require the [VS2017 extension](http://bit.ly/nugetizer-2017) to load in Visual Studio. The extension is not necessary to build the packages from MSBuild, however.

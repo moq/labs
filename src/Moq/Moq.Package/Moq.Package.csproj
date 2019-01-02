@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.Build.NoTargets">
+  <Sdk Name="Microsoft.Build.CentralPackageVersions" />
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <!--<PackageTargetFallback>net11;net20;net35;net40;net403;net45;net451;net452;net46;net461;net462;net47;net471;net472;netcore;netcore45;netcore451;netcore50;win8;win81;win10;sl4;sl5;wp;wp7;wp75;wp8;wp81;wpa81;uap;uap10;netstandard1.0;netstandard1.1;netstandard1.2;netstandard1.3;netstandard1.4;netstandard1.5;netstandard1.6;netstandard2.0;netcoreapp1.0;netcoreapp2.0;monoandroid;monotouch;monomac;xamarinios;xamarinmac;xamarinpsthree;xamarinpsfour;xamarinpsvita;xamarinwatchos;xamarintvos;xamarinxboxthreesixty;xamarinxboxone</PackageTargetFallback>-->
+
+    <PackageId>Moq</PackageId>
+    <Title>Moq</Title>
+    <Summary>The most popular and friendly mocking framework for .NET</Summary>
+    <Description>The most popular and friendly mocking framework for .NET</Description>
+    <PackageTags>moq mocking mock</PackageTags>
+
+    <PackOnBuild>true</PackOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Moq.CodeAnalysis\Moq.CodeAnalysis.csproj" />
+    <ProjectReference Include="..\Moq.CodeFix\Moq.CodeFix.csproj" />
+    <ProjectReference Include="..\Moq.Sdk\Moq.Sdk.csproj" />
+    <ProjectReference Include="..\Moq\Moq.csproj" />
+    <ProjectReference Include="..\..\Stunts\Stunts.Package\Stunts.Package.csproj" IncludeAssets="all" />
+  </ItemGroup>
+
+  <Target Name="FixPackageFileFramework" BeforeTargets="Pack" AfterTargets="$(GetPackageContents)" Returns="@(_PackageContent)">
+    <ItemGroup>
+      <_PackageContent Condition="'%(Kind)' == 'Dependency'">
+        <TargetFrameworkMoniker>.NETStandard,Version=v2.0</TargetFrameworkMoniker>
+        <!-- NOTE: in order for this attribute to work in NuGetizer, we need a bump to dev.3+ -->
+        <Include>all</Include>
+      </_PackageContent>
+    </ItemGroup>
+  </Target>
+
+</Project>

@@ -17,7 +17,7 @@
   
   <Import Project="PackageReferences.targets" />
   <Import Project="Version.targets" />
-  <Import Project="Packaging.targets" Condition="'$(MSBuildProjectExtension)' == '.nuproj'" />
+  <Import Project="Packaging.targets" Condition="'$(MSBuildProjectExtension)' == '.nuproj' or $(MSBuildProjectName.EndsWith('.Package'))" />
 
   <ItemGroup>
     <PackageReference Update="NETStandard.Library" PrivateAssets="all" />

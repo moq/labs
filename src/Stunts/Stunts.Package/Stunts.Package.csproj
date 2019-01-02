@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.Build.NoTargets">
+  <Sdk Name="Microsoft.Build.CentralPackageVersions" />
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <!--<PackageTargetFallback>net11;net20;net35;net40;net403;net45;net451;net452;net46;net461;net462;net47;net471;net472;netcore;netcore45;netcore451;netcore50;win8;win81;win10;sl4;sl5;wp;wp7;wp75;wp8;wp81;wpa81;uap;uap10;netstandard1.0;netstandard1.1;netstandard1.2;netstandard1.3;netstandard1.4;netstandard1.5;netstandard1.6;netstandard2.0;netcoreapp1.0;netcoreapp2.0;monoandroid;monotouch;monomac;xamarinios;xamarinmac;xamarinpsthree;xamarinpsfour;xamarinpsvita;xamarinwatchos;xamarintvos;xamarinxboxthreesixty;xamarinxboxone</PackageTargetFallback>-->
+
+    <PackageId>Stunts</PackageId>
+    <Title>Stunts</Title>
+    <Summary>"Dynamic proxies" that can run everywhere, including mobile!</Summary>
+    <Description>Design-time generated classes whose behavior can be configured dynamically at run-time with arbitrary behaviors (a.k.a. "proxies").</Description>
+    <PackageTags>netstandard proxy runtime dynamic</PackageTags>
+
+    <PackOnBuild>true</PackOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Stunts\Stunts.csproj" />
+    <ProjectReference Include="..\Stunts.CodeAnalysis\Stunts.CodeAnalysis.csproj" />
+    <ProjectReference Include="..\Stunts.CodeFix\Stunts.CodeFix.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoCodeFix" />
+  </ItemGroup>
+
+</Project>

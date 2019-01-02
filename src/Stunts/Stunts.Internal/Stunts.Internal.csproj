@@ -13,7 +13,15 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(MSBuildProjectDirectory)\RoslynInternalKey.Private.snk</AssemblyOriginatorKeyFile>
 
-    <PrimaryOutputKind Condition="'$(PrimaryOutputKind)' == ''">Analyzers</PrimaryOutputKind>
+    <PrimaryOutputKind Condition="'$(PrimaryOutputKind)' == ''">Build</PrimaryOutputKind>
   </PropertyGroup>
+
+  <Target Name="FixPackageFileFramework" BeforeTargets="GetPackageContents" AfterTargets="$(GetPackageContentsDependsOn)">
+    <ItemGroup>
+      <PackageFile>
+        <PackagePath>$(PrimaryOutputKind.ToLowerInvariant())\netstandard1.3\%(Filename)%(Extension)</PackagePath>
+      </PackageFile>
+    </ItemGroup>
+  </Target>
 
 </Project>

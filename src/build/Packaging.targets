@@ -1,5 +1,7 @@
 <Project>
 
+  <Target Name="PackOnBuild" Condition="$(PackOnBuild) == true" DependsOnTargets="Pack" AfterTargets="Build" />
+
   <Target Name="FixupPackaging" AfterTargets="_CollectPrimaryOutputRelatedFiles" BeforeTargets="InferPrimaryOutputDependencies" Returns="@(_PrimaryOutputRelatedFile)">
     <ItemGroup>
       <_PrimaryOutputRelatedFile Update="@(_PrimaryOutputRelatedFile)" 

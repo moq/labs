@@ -1,5 +1,6 @@
 {
     "msbuild-sdks": {
-        "Microsoft.Build.CentralPackageVersions": "2.0.1"
+        "Microsoft.Build.CentralPackageVersions": "2.0.1",
+        "Microsoft.Build.NoTargets": "1.0.40"
     }
 }

@@ -22,7 +22,7 @@
     <Copyright>Copyright © 2017 Daniel Cazzulino and Contributors</Copyright>
   </PropertyGroup>
 
-  <Import Project="Packaging.props" Condition="'$(MSBuildProjectExtension)' == '.nuproj'" />
+  <Import Project="Packaging.props" Condition="'$(MSBuildProjectExtension)' == '.nuproj' or $(MSBuildProjectName.EndsWith('.Package'))" />
 
   <PropertyGroup>
     <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
