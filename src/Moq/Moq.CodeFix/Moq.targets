@@ -9,4 +9,12 @@
     <IntermediateCodeGenPath Include="$(IntermediateOutputPath)Mocks/" />
   </ItemGroup>
 
+  <Target Name="AddCodeFixAnalyzers" BeforeTargets="CollectAnalyzersDesignTime">
+    <ItemGroup>
+      <!-- CodeFix analyzers should only be added to DTBs since they depend on 
+         editor features that are not available from csc/vbc -->
+      <Analyzer Include="@(CodeFix)" />
+    </ItemGroup>
+  </Target>
+
 </Project>
