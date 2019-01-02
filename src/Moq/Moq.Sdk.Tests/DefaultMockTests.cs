@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
+using System.Threading;
 using Stunts;
 using Xunit;
 
@@ -11,6 +9,10 @@ namespace Moq.Sdk.Tests
 {
     public class DefaultMockTests
     {
+        [Fact]
+        public void ThrowsIfNullStunt()
+            => Assert.Throws<ArgumentNullException>(() => new DefaultMock(null));
+
         [Fact]
         public void AddsMockTrackingBehavior()
         {
@@ -27,9 +29,68 @@ namespace Moq.Sdk.Tests
             Assert.Throws<InvalidOperationException>(() => mock.Behaviors.Add(new MockTrackingBehavior()));
         }
 
-        class FakeStunt : IStunt
+        [Fact]
+        public void TrackMockBehaviors()
         {
-            public ObservableCollection<IStuntBehavior> Behaviors { get; } = new ObservableCollection<IStuntBehavior>();
+            var stunt = new FakeStunt();
+            // Forces initialization of the default mock.
+            Assert.NotNull(stunt.Mock);
+
+            var setup = new MockSetup(
+                new MethodInvocation(stunt, typeof(FakeStunt).GetMethod("Do")),
+                Array.Empty<IArgumentMatcher>());
+
+            var behavior = new MockBehaviorPipeline(setup);
+
+            stunt.AddBehavior(behavior);
+            stunt.AddBehavior(StuntBehavior.Create((m, n) => n().Invoke(m, n)));
+            Assert.Equal(3, stunt.Behaviors.Count);
+
+            Assert.Single(stunt.Mock.Setups);
+            Assert.Same(behavior, stunt.Mock.GetPipeline(setup));
+
+            stunt.Behaviors.Remove(behavior);
+
+            Assert.Equal(2, stunt.Behaviors.Count);
+            Assert.Empty(stunt.Mock.Setups);
+        }
+
+        [Fact]
+        public void AddPipelineForSetupIfMissing()
+        {
+            var stunt = new FakeStunt();
+            var setup = new MockSetup(
+                new MethodInvocation(stunt, typeof(FakeStunt).GetMethod("Do")),
+                Array.Empty<IArgumentMatcher>());
+
+            var behavior = stunt.Mock.GetPipeline(setup);
+
+            Assert.NotNull(behavior);
+            Assert.Equal(2, stunt.Behaviors.Count);
+            Assert.Single(stunt.Mock.Setups);
+        }
+
+        [Fact]
+        public void TracksTargetObject()
+        {
+            var stunt = new FakeStunt();
+            Assert.Same(stunt, stunt.Mock.Object);
+        }
+
+        [Fact]
+        public void InitializesState()
+            => Assert.NotNull(new FakeStunt().Mock.State);
+
+        class FakeStunt : IStunt, IMocked
+        {
+            BehaviorPipeline pipeline = new BehaviorPipeline();
+            DefaultMock mock;
+
+            public ObservableCollection<IStuntBehavior> Behaviors => pipeline.Behaviors;
+
+            public IMock Mock => LazyInitializer.EnsureInitialized(ref mock, () => new DefaultMock(this));
+
+            public void Do() => pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
         }
     }
 }

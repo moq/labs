@@ -16,63 +16,6 @@ namespace Moq.Sdk
     public static class MockExtensions
     {
         /// <summary>
-        /// Adds a behavior to a mock for the current <see cref="MockContext.CurrentSetup"/> setup.
-        /// </summary>
-        public static IMock AddBehavior(this IMock mock, ExecuteDelegate behavior, Lazy<string> displayName)
-        {
-            mock
-                .GetPipeline(MockContext.CurrentSetup ?? throw new InvalidOperationException(Strings.NoCurrentSetup))
-                .Behaviors
-                .Add(MockBehavior.Create(behavior, displayName));
-            
-            return mock;
-        }
-
-        /// <summary>
-        /// Inserts a behavior into the mock behavior pipeline at the specified 
-        /// index for the current <see cref="MockContext.CurrentSetup"/> setup.
-        /// </summary>
-        public static IMock InsertBehavior(this IMock mock, int index, ExecuteDelegate behavior, Lazy<string> displayName)
-        {
-            mock
-                .GetPipeline(MockContext.CurrentSetup ?? throw new InvalidOperationException(Strings.NoCurrentSetup))
-                .Behaviors
-                .Insert(index, MockBehavior.Create(behavior, displayName));
-
-            return mock;
-        }
-
-        /// <summary>
-        /// Adds a mock behavior to a mock.
-        /// </summary>
-        public static TMock AddBehavior<TMock>(this TMock mock, IMockBehaviorPipeline behavior)
-        {
-            if (mock is IMocked mocked)
-                mocked.Mock.Behaviors.Add(behavior);
-            else if (mock is IMock m)
-                m.Behaviors.Add(behavior);
-            else
-                throw new ArgumentException(Strings.TargetNotMock, nameof(mock));
-
-            return mock;
-        }
-
-        /// <summary>
-        /// Inserts a mock behavior into the mock behavior pipeline at the specified index.
-        /// </summary>
-        public static TMock InsertBehavior<TMock>(this TMock mock, int index, IMockBehaviorPipeline behavior)
-        {
-            if (mock is IMocked mocked)
-                mocked.Mock.Behaviors.Insert(index, behavior);
-            else if (mock is IMock m)
-                m.Behaviors.Insert(index, behavior);
-            else
-                throw new ArgumentException(Strings.TargetNotMock, nameof(mock));
-
-            return mock;
-        }
-
-        /// <summary>
         /// Gets the introspection information for a mocked object instance.
         /// </summary>
         public static IMock<T> AsMock<T>(this T instance)

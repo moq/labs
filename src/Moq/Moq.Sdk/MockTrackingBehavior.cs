@@ -19,8 +19,6 @@ namespace Moq.Sdk
 
         public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next)
         {
-            var mock = invocation.Target.AsMock();
-
             // Allows subsequent extension methods on the fluent API to retrieve the 
             // current invocation being performed via the MockContext.
             CallContext<IMethodInvocation>.SetData(invocation);
@@ -31,9 +29,9 @@ namespace Moq.Sdk
             // current setup being performed via the MockContext.
             CallContext<IMockSetup>.SetData(MockSetup.Freeze(invocation));
 
-            // Don't record the invocation if it's performed within a setup scope.
+            // Only record the invocation if it's *not* performed within a setup scope.
             if (!SetupScope.IsActive)
-                mock.Invocations.Add(invocation);
+                invocation.Target.AsMock().Invocations.Add(invocation);
 
             // While debugging, capture invocation stack traces for easier 
             // troubleshooting

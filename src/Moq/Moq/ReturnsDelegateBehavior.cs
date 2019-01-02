@@ -14,7 +14,7 @@ namespace Moq
 
         public ReturnsDelegateBehavior(Delegate @delegate) => this.@delegate = @delegate;
 
-        public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next)
+        public IMethodReturn Execute(IMock mock, IMethodInvocation invocation, GetNextMockBehavior next)
         {
             var arguments = invocation.Arguments.ToArray();
             var parameters = invocation.MethodBase.GetParameters();

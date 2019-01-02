@@ -16,6 +16,22 @@ namespace Moq.Sdk
         /// <param name="invocation">The current method invocation.</param>
         /// <param name="next">Delegate to invoke the next behavior in the pipeline.</param>
         /// <returns>The result of the method invocation.</returns>
-        IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next);
+        IMethodReturn Execute(IMock mock, IMethodInvocation invocation, GetNextMockBehavior next);
     }
+
+    /// <summary>
+    /// Method signature for getting the next behavior in a pipeline.
+    /// </summary>
+    /// <returns>The delegate to invoke the next behavior in a pipeline.</returns>
+	public delegate ExecuteMockDelegate GetNextMockBehavior();
+
+    /// <summary>
+    /// Method signature for invoking the next behavior in a pipeline.
+    /// </summary>
+    /// <param name="mock">The mock the invocation is performed on.</param>
+    /// <param name="invocation">The current method invocation.</param>
+    /// <param name="next">Delegate to invoke the next behavior in the pipeline.</param>
+    /// <returns>The result of the method invocation.</returns>
+    public delegate IMethodReturn ExecuteMockDelegate(IMock mock, IMethodInvocation invocation, GetNextMockBehavior next);
+
 }

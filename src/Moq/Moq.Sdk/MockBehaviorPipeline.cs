@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
+using Moq.Sdk.Properties;
 using Stunts;
 
 namespace Moq.Sdk
@@ -30,8 +30,10 @@ namespace Moq.Sdk
 
         public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next)
         {
+            var mock = (invocation.Target as IMocked)?.Mock ?? throw new ArgumentException(Resources.TargetNotMock);
+
             // NOTE: the mock behavior is like a sub-pipeline within the overall stunt 
-            // behavior pipeline, where all the behaviors added automatically apply as 
+            // behavior pipeline, where all the behaviors added automatically apply 
             // since they all share the same AppliesTo implementation, which is the setup 
             // itself.
 
@@ -39,12 +41,13 @@ namespace Moq.Sdk
                 return next().Invoke(invocation, next);
 
             var index = 0;
-            var result = Behaviors[0].Execute(invocation, () =>
+            var result = Behaviors[0].Execute(mock, invocation, () =>
             {
                 ++index;
                 return (index < Behaviors.Count) ?
                     Behaviors[index].Execute :
-                    next();
+                    // Adapt the GetNextBehavior to our mock version
+                    new ExecuteMockDelegate((m, i, n) => next().Invoke(i, next));
             });
 
             return result;

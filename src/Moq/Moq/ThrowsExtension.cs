@@ -24,7 +24,7 @@ namespace Moq
                 var behavior = mock.GetPipeline(setup);
 
                 behavior.Behaviors.Add(Sdk.MockBehavior.Create(
-                    (mi, next) => mi.CreateExceptionReturn(exception),
+                    (m, i, next) => i.CreateExceptionReturn(exception),
                     new Lazy<string>(() => $"Throws<{exception.GetType().Name}>(\"{exception.Message}\")")
                ));
             }
@@ -45,7 +45,7 @@ namespace Moq
                 var behavior = mock.GetPipeline(setup);
 
                 behavior.Behaviors.Add(Sdk.MockBehavior.Create(
-                    (mi, next) => mi.CreateExceptionReturn(new TException()),
+                    (m, i, next) => i.CreateExceptionReturn(new TException()),
                     new Lazy<string>(() => $"Throws<{typeof(TException).Name}>()")
                ));
             }

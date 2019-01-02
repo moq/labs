@@ -15,15 +15,15 @@ namespace Stunts
         /// <param name="appliesTo">Whether the <paramref name="behavior"/> applies to a particular <see cref="IMethodInvocation"/>. Defaults to 'always applies'.</param>
         /// <param name="name">Optional friendly name for the behavior for diagnostics.</param>
         public static IStuntBehavior Create(ExecuteDelegate behavior, AppliesTo appliesTo = null, string name = null)
-            => new AnonymousProxyBehavior(behavior, appliesTo, name);
+            => new AnonymousStuntBehavior(behavior, appliesTo, name);
 
-        class AnonymousProxyBehavior : IStuntBehavior
+        class AnonymousStuntBehavior : IStuntBehavior
         {
             AppliesTo appliesTo;
             ExecuteDelegate behavior;
             string name;
 
-            public AnonymousProxyBehavior(ExecuteDelegate behavior, AppliesTo appliesTo, string name)
+            public AnonymousStuntBehavior(ExecuteDelegate behavior, AppliesTo appliesTo, string name)
             {
                 this.behavior = behavior;
                 this.appliesTo = appliesTo ?? new AppliesTo(invocation => true);

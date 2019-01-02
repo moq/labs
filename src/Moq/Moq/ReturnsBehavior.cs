@@ -48,7 +48,7 @@ namespace Moq
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         object DebuggerValue => value ?? "<function>";
 
-        public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next)
+        public IMethodReturn Execute(IMock mock, IMethodInvocation invocation, GetNextMockBehavior next)
             => invocation.CreateValueReturn(getter(invocation.Arguments), invocation.Arguments.ToArray());
     }
 }

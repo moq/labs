@@ -12,6 +12,26 @@ namespace Moq.Sdk.Tests
     public class MockBehaviorTests
     {
         [Fact]
+        public void CreatesBehaviorWithDisplayName()
+            => Assert.Equal("test", MockBehavior.Create((m, i, n) => n().Invoke(m, i, n), "test").ToString());
+
+        [Fact]
+        public void CreatesBehaviorWithLazyDisplayName()
+            => Assert.Equal("test", MockBehavior.Create((m, i, n) => n().Invoke(m, i, n), new Lazy<string>(() => "test")).ToString());
+
+        [Fact]
+        public void ExecutesAnonymousBehavior()
+        {
+            var called = false;
+            var behavior = MockBehavior.Create((m, i, n) => { called = true; return i.CreateValueReturn(null); }, "test");
+            var mock = new FakeMock();
+
+            behavior.Execute(mock.Mock, new MethodInvocation(mock, typeof(object).GetMethod(nameof(object.ToString))), () => null);
+
+            Assert.True(called);
+        }
+
+        [Fact]
         public void RecordsInvocation()
         {
             var behavior = new MockTrackingBehavior();
@@ -39,6 +59,7 @@ namespace Moq.Sdk.Tests
         {
             var calculator = new CalculatorInterfaceStunt();
 
+            // TODO: this is not adding a mock behavior but a regular stunt behavior
             calculator.AddBehavior((m, n) => m.CreateValueReturn(CalculatorMode.Scientific), m => m.MethodBase.Name == "get_Mode");
             calculator.AddBehavior(new DefaultValueBehavior());
             calculator.AddBehavior(new DefaultEqualityBehavior());

@@ -1,11 +1,24 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Reflection;
+using System.Threading;
 using Stunts;
 
 namespace Moq.Sdk.Tests
 {
+    public class FakeMock : IStunt, IMocked
+    {
+        DefaultMock mock;
+
+        protected BehaviorPipeline Pipeline = new BehaviorPipeline();
+
+        public ObservableCollection<IStuntBehavior> Behaviors => Pipeline.Behaviors;
+
+        public IMock Mock => LazyInitializer.EnsureInitialized(ref mock, () => new DefaultMock(this));
+    }
+
     public class FakeSetup : IMockSetup
     {
         public Func<IMethodInvocation, bool> AppliesTo { get; set; } = m => true;

@@ -28,7 +28,7 @@ namespace Moq
                 {
                     var wrapped = behavior.Behaviors.Pop();
                     behavior.Behaviors.Add(Sdk.MockBehavior.Create(
-                        (mi, next) =>
+                        (m, i, next) =>
                         {
                             // If the wrapped target does not invoke the next 
                             // behavior (us), then we invoke the callback explicitly.
@@ -36,18 +36,18 @@ namespace Moq
 
                             // Note we're tweaking the GetNextBehavior to always 
                             // call us, before invoking the actual next behavior.
-                            var result = wrapped.Execute(mi, () => (IMethodInvocation _, GetNextBehavior __) =>
+                            var result = wrapped.Execute(m, i, () => (IMock _, IMethodInvocation __, GetNextMockBehavior ___) =>
                             {
-                                callback(mi.Arguments);
+                                callback(i.Arguments);
                                 called = true;
-                                return next()(mi, next);
+                                return next()(m, i, next);
                             });
 
                             // The Returns behavior does not invoke the GetNextBehavior, 
                             // and therefore we won't have been called in that case, 
                             // so call the callback before returning.
                             if (!called)
-                                callback(mi.Arguments);
+                                callback(i.Arguments);
 
                             return result;
                         }, "Callback")
@@ -56,10 +56,10 @@ namespace Moq
                 else
                 {
                     behavior.Behaviors.Add(Sdk.MockBehavior.Create(
-                        (mi, next) =>
+                        (m, i, next) =>
                         {
-                            callback(mi.Arguments);
-                            return next()(mi, next);
+                            callback(i.Arguments);
+                            return next()(m, i, next);
                         }, "Callback")
                    );
                 }
