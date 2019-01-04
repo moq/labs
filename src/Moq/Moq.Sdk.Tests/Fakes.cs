@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reflection;
-using System.Threading;
 using Stunts;
 
 namespace Moq.Sdk.Tests
@@ -14,9 +13,11 @@ namespace Moq.Sdk.Tests
 
         protected BehaviorPipeline Pipeline = new BehaviorPipeline();
 
+        public FakeMock() => mock = new DefaultMock(this);
+
         public ObservableCollection<IStuntBehavior> Behaviors => Pipeline.Behaviors;
 
-        public IMock Mock => LazyInitializer.EnsureInitialized(ref mock, () => new DefaultMock(this));
+        public IMock Mock => mock;
     }
 
     public class FakeSetup : IMockSetup
@@ -38,7 +39,7 @@ namespace Moq.Sdk.Tests
     {
         public FakeInvocation() => Target = new Mocked();
 
-        public IArgumentCollection Arguments { get; set; }
+        public IArgumentCollection Arguments { get; set; } 
 
         public IDictionary<string, object> Context { get; set; }
 

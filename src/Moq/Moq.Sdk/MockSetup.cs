@@ -47,6 +47,15 @@ namespace Moq.Sdk
             return true;
         }
 
+        /// <summary>
+        /// Gets a friendly representation of the object.
+        /// </summary>
+        /// <devdoc>
+        /// We don't want to optimize code coverage for this since it's a debugger aid only. 
+        /// Annotating this method with DebuggerNonUserCode achieves that.
+        /// No actual behavior depends on these strings.
+        /// </devdoc>
+        [DebuggerNonUserCode]
         public override string ToString()
         {
             var result = new StringBuilder();
@@ -106,9 +115,6 @@ namespace Moq.Sdk
 
             return result.ToString();
         }
-
-        static bool IsString(Type type) => type == typeof(string) ||
-            (type.IsByRef && type.HasElementType && type.GetElementType() == typeof(string));
 
         #region Equality
 

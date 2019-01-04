@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using Stunts;
 
 namespace Moq.Sdk
 {
@@ -13,10 +14,6 @@ namespace Moq.Sdk
     /// <typeparam name="T">Type of argument being conditioned.</typeparam>
     public class NotMatcher<T> : IArgumentMatcher, IEquatable<NotMatcher<T>>
     {
-        static bool IsValueType = typeof(T).GetTypeInfo().IsValueType;
-        static bool IsNullable = typeof(T).GetTypeInfo().IsGenericType &&
-            typeof(T).GetGenericTypeDefinition() == typeof(Nullable<>);
-
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         T value;
 
@@ -35,19 +32,26 @@ namespace Moq.Sdk
             return !(Object.Equals(this.value, value));
         }
 
+        /// <summary>
+        /// Gets a friendly representation of the object.
+        /// </summary>
+        /// <devdoc>
+        /// We don't want to optimize code coverage for this since it's a debugger aid only. 
+        /// Annotating this method with DebuggerNonUserCode achieves that.
+        /// No actual behavior depends on these strings.
+        /// </devdoc>
+        [DebuggerNonUserCode]
         public override string ToString() => "!" + (value is string ? "\"" + value + "\"" : value.ToString());
 
         #region Equality
 
-        public bool Equals(NotMatcher<T> other) => other == null ? false : EqualityComparer<object>.Default.Equals(value, other.value);
-
-        public bool Equals(object other, IEqualityComparer comparer) => comparer.Equals(this, other as NotMatcher<T>);
-
-        public int GetHashCode(IEqualityComparer comparer) => comparer.GetHashCode(value);
+        public bool Equals(NotMatcher<T> other) => other == null ? false : 
+            ArgumentType == other.ArgumentType && object.Equals(value, other.value);
 
         public override bool Equals(object obj) => Equals(obj as NotMatcher<T>);
 
-        public override int GetHashCode() => GetHashCode(EqualityComparer<object>.Default);
+        public override int GetHashCode() 
+            => new HashCode().Add(ArgumentType).Add(value == null ? 0 : value.GetHashCode()).ToHashCode();
 
         #endregion
     }

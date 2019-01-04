@@ -32,6 +32,8 @@ namespace Moq.Sdk
         /// </summary>
         public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next)
         {
+            if (invocation == null) throw new ArgumentNullException(nameof(invocation));
+
             var state = (invocation.Target as IMocked ?? throw new ArgumentException(Strings.TargetNotMock, nameof(invocation)))
                 .Mock.State;
 

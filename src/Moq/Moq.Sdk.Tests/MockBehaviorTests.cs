@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
 using Sample;
 using Stunts;
 using Xunit;
@@ -11,6 +7,10 @@ namespace Moq.Sdk.Tests
 {
     public class MockBehaviorTests
     {
+        [Fact]
+        public void CreatesBehaviorWithNullDisplayName()
+            => Assert.Equal("<unnamed>", MockBehavior.Create((m, i, n) => n().Invoke(m, i, n), default(string)).ToString());
+
         [Fact]
         public void CreatesBehaviorWithDisplayName()
             => Assert.Equal("test", MockBehavior.Create((m, i, n) => n().Invoke(m, i, n), "test").ToString());

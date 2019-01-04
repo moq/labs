@@ -32,8 +32,8 @@ namespace Moq.Sdk
         /// </summary>
         IMethodReturn IStuntBehavior.Execute(IMethodInvocation invocation, GetNextBehavior next)
         {
-            var arguments = invocation.Arguments.ToArray();
-            var parameters = invocation.MethodBase.GetParameters();
+            var arguments = invocation.Arguments?.ToArray() ?? new object[0];
+            var parameters = invocation.MethodBase?.GetParameters() ?? new ParameterInfo[0];
             for (var i = 0; i < parameters.Length; i++)
             {
                 var parameter = parameters[i];

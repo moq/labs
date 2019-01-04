@@ -22,11 +22,12 @@ namespace Moq
                 var behavior = mock.GetPipeline(setup);
 
                 // If there is already a behavior wrap it instead, 
-                // so we can do a callback after even if it's a 
+                // so we can do a callback after even it if it's a 
                 // short-circuiting one like Returns.
                 if (behavior.Behaviors.Count > 0)
                 {
-                    var wrapped = behavior.Behaviors.Pop();
+                    var wrapped = behavior.Behaviors[behavior.Behaviors.Count - 1];
+                    behavior.Behaviors.RemoveAt(behavior.Behaviors.Count - 1);
                     behavior.Behaviors.Add(Sdk.MockBehavior.Create(
                         (m, i, next) =>
                         {

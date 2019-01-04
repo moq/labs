@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics;
 
 namespace Moq.Sdk
 {
@@ -33,6 +34,15 @@ namespace Moq.Sdk
         /// </summary>
         public bool Matches(object value) => object.Equals(value, MatchValue);
 
+        /// <summary>
+        /// Gets a friendly representation of the object.
+        /// </summary>
+        /// <devdoc>
+        /// We don't want to optimize code coverage for this since it's a debugger aid only. 
+        /// Annotating this method with DebuggerNonUserCode achieves that.
+        /// No actual behavior depends on these strings.
+        /// </devdoc>
+        [DebuggerNonUserCode]
         public override string ToString()
             => (IsString(ArgumentType) && MatchValue != null)
                 ? "\"" + MatchValue + "\""
@@ -43,11 +53,7 @@ namespace Moq.Sdk
 
         #region Equality
 
-        public bool Equals(ValueMatcher other) => value.Equals(other?.value);
-
-        public bool Equals(object other, IEqualityComparer comparer) => ((IStructuralEquatable)value).Equals((other as ValueMatcher)?.value, comparer);
-
-        public int GetHashCode(IEqualityComparer comparer) => ((IStructuralEquatable)value).GetHashCode(comparer);
+        public bool Equals(ValueMatcher other) => object.Equals(value, other?.value);
 
         public override bool Equals(object obj) => Equals(obj as ValueMatcher);
 

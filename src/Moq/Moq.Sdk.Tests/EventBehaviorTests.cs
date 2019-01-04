@@ -155,43 +155,36 @@ namespace Moq.Sdk.Tests
             Assert.Equal(name, name2);
         }
 
-        public class EventfulMock : IStunt, IMocked, IEventful
+        public class EventfulMock : FakeMock, IEventful
         {
-            BehaviorPipeline pipeline = new BehaviorPipeline();
-            IMock mock;
-
-            public ObservableCollection<IStuntBehavior> Behaviors => pipeline.Behaviors;
-
-            public IMock Mock => LazyInitializer.EnsureInitialized(ref mock, () => new DefaultMock(this));
-
             public event EventHandler Empty
             {
-                add => pipeline.Execute<EventHandler>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value));
-                remove => pipeline.Execute<EventHandler>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value));
+                add => Pipeline.Execute<EventHandler>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value));
+                remove => Pipeline.Execute<EventHandler>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value));
             }
 
             public event EventHandler<Args> WithArgs
             {
-                add => pipeline.Execute<EventHandler<Args>>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value));
-                remove => pipeline.Execute<EventHandler<Args>>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value));
+                add => Pipeline.Execute<EventHandler<Args>>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value));
+                remove => Pipeline.Execute<EventHandler<Args>>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value));
             }
 
             public event PropertyChangedEventHandler PropertyChanged
             {
-                add => pipeline.Execute<PropertyChangedEventHandler>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value));
-                remove => pipeline.Execute<PropertyChangedEventHandler>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value));
+                add => Pipeline.Execute<PropertyChangedEventHandler>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value));
+                remove => Pipeline.Execute<PropertyChangedEventHandler>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value));
             }
 
             public event CustomDelegate Custom
             {
-                add => pipeline.Execute<CustomDelegate>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value));
-                remove => pipeline.Execute<CustomDelegate>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value));
+                add => Pipeline.Execute<CustomDelegate>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value));
+                remove => Pipeline.Execute<CustomDelegate>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value));
             }
 
             public event Action<int> Action
             {
-                add => pipeline.Execute<Action<int>>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value));
-                remove => pipeline.Execute<Action<int>>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value));
+                add => Pipeline.Execute<Action<int>>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value));
+                remove => Pipeline.Execute<Action<int>>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), value));
             }
         }
 

@@ -296,6 +296,8 @@ namespace Moq.Tests
             var calculator = Mock.Of<ICalculator>();
 
             calculator.TurnOn();
+            Assert.Single(calculator.AsMock().InvocationsFor(c => c.TurnOn()));
+
             calculator.Add(2, 3);
 
             calculator.Verify(c => c.TurnOn());
@@ -304,8 +306,8 @@ namespace Moq.Tests
             var ex = Record.Exception(() => calculator.Verify(c => c.Store(Any<string>(), Any<int>())));
 
             Assert.IsAssignableFrom<VerifyException>(ex);
-            Assert.Equal(1, calculator.AsMock().InvocationsFor(c => c.Add(2, 3)).Count());
-            Assert.Equal(0, calculator.AsMock().InvocationsFor(c => c.Add(Not(2), Not(3))).Count());
+            Assert.Single(calculator.AsMock().InvocationsFor(c => c.Add(2, 3)));
+            Assert.Empty(calculator.AsMock().InvocationsFor(c => c.Add(Not(2), Not(3))));
         }
 
         [Fact]

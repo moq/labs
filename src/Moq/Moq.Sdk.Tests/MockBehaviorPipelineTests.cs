@@ -46,5 +46,15 @@ namespace Moq.Sdk.Tests
 
             Assert.NotNull(pipeline.Execute(invocation, () => (m, n) => m.CreateValueReturn(null)));
         }
+
+        [Fact]
+        public void ThrowsIfTargetNotIMocked()
+        {
+            var invocation = new MethodInvocation(new object(), typeof(object).GetMethod(nameof(object.ToString)));
+            var pipeline = new MockBehaviorPipeline(new MockSetup(invocation, Array.Empty<IArgumentMatcher>()));
+
+            pipeline.Behaviors.Add(MockBehavior.Create((m, i, n) => i.CreateValueReturn(null), "test"));
+
+            Assert.Throws<ArgumentException>(() => pipeline.Execute(invocation, () => (m, n) => throw new NotImplementedException()));        }
     }
 }

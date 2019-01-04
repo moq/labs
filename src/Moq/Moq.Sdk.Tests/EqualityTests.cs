@@ -71,9 +71,7 @@ namespace Moq.Sdk.Tests
             var other = new ValueMatcher(typeof(string), "foo");
 
             Assert.True(matcher.Equals(other));
-            Assert.True(matcher.Equals(other, EqualityComparer<object>.Default));
             Assert.Equal(matcher.GetHashCode(), other.GetHashCode());
-            Assert.Equal(matcher.GetHashCode(EqualityComparer<object>.Default), other.GetHashCode(EqualityComparer<object>.Default));
 
             Assert.False(matcher.Equals(new ValueMatcher(typeof(string), "bar")));
             Assert.False(matcher.Equals(new ValueMatcher(typeof(object), "foo")));

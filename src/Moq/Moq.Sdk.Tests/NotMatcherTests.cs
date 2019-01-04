@@ -44,15 +44,9 @@ namespace Moq.Sdk.Tests
 
             Assert.Equal(expected, actual);
             Assert.True(expected.Equals(actual));
-            Assert.True(expected.Equals(actual, EqualityComparer<object>.Default));
+            Assert.True(((object)expected).Equals(actual));
             Assert.False(expected.Equals(null));
-            Assert.False(expected.Equals(null, EqualityComparer<object>.Default));
-        }
-
-        public void MatcherToString()
-        {
-            Console.WriteLine(new NotMatcher<int>(5).ToString());
-            Console.WriteLine(new NotMatcher<string>("foo").ToString());
+            Assert.Equal(expected.GetHashCode(), actual.GetHashCode());
         }
 
         class Value
@@ -61,8 +55,7 @@ namespace Moq.Sdk.Tests
 
             public Guid Id { get; }
 
-            public override bool Equals(object obj) 
-                => Id.Equals((obj as Value)?.Id);
+            public override bool Equals(object obj)  => Id.Equals((obj as Value)?.Id);
 
             public override int GetHashCode() => Id.GetHashCode();
         }
