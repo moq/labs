@@ -31,13 +31,13 @@ namespace Stunts
         {
             var document = context.Document;
             var span = context.Span;
-            var root = await document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
+            var root = await document.GetSyntaxRootAsync(context.CancellationToken);
 
             var token = root.FindToken(span.Start);
             if (!token.Span.IntersectsWith(span))
                 return;
 
-            var model = await document.GetSemanticModelAsync(context.CancellationToken).ConfigureAwait(false);
+            var model = await document.GetSemanticModelAsync(context.CancellationToken);
             var generator = SyntaxGenerator.GetGenerator(document);
 
             // Getting the inner-most ensure we get the type identifiers, rather 
@@ -98,7 +98,6 @@ namespace Stunts
             protected override Task<Document> GetChangedDocumentAsync(CancellationToken cancellationToken)
                 => new StuntGenerator(
                     new DefaultImports(),
-                    new CSharpFileHeader(),
                     new CSharpScaffold("OverrideAllMembersCodeFix"),
                     new CSharpRewrite(),
                     new CSharpStunt(),
@@ -106,7 +105,6 @@ namespace Stunts
                     new VisualBasicScaffold("OverrideAllMembersCodeFix"),
                     new VisualBasicRewrite(),
                     new VisualBasicStunt(),
-                    new VisualBasicFileHeader(),
                     new VisualBasicCompilerGenerated())
                 .ApplyProcessors(document, cancellationToken);
         }
@@ -121,14 +119,12 @@ namespace Stunts
 
             protected override Task<Document> GetChangedDocumentAsync(CancellationToken cancellationToken)
                 => new StuntGenerator(
-                    new CSharpFileHeader(),
                     new CSharpScaffold(),
                     new CSharpRewrite(),
                     new CSharpCompilerGenerated(),
                     new VisualBasicScaffold(),
                     new VisualBasicRewrite(),
                     new VisualBasicParameterFixup(),
-                    new VisualBasicFileHeader(),
                     new VisualBasicCompilerGenerated())
                 .ApplyProcessors(document, cancellationToken);
         }
