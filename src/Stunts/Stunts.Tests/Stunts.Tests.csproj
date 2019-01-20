@@ -68,5 +68,14 @@
     </Compile>
   </ItemGroup>
 
+  <Target Name="RemoveMSBuild" AfterTargets="Build">
+    <ItemGroup>
+      <MSBuildFile Include="$(MSBuildProjectDirectory)\$(OutputPath)Microsoft.Build.Framework.dll" />
+      <MSBuildFile Include="$(MSBuildProjectDirectory)\$(OutputPath)Microsoft.Build.Utilities.Core.dll" />
+    </ItemGroup>
+
+    <Delete Files="@(MSBuildFile)" />
+  </Target>
+
   <Import Project="..\..\Testing\Moq.Testing.projitems" Label="Shared" />
 </Project>
