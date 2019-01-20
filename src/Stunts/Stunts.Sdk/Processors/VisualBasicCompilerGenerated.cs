@@ -31,7 +31,7 @@ namespace Stunts.Processors
         /// </summary>
         public async Task<Document> ProcessAsync(Document document, CancellationToken cancellationToken = default)
         {
-            var syntax = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
+            var syntax = await document.GetSyntaxRootAsync(cancellationToken);
             syntax = new VisualBasicRewriteVisitor(SyntaxGenerator.GetGenerator(document)).Visit(syntax);
 
             return document.WithSyntaxRoot(syntax);
@@ -48,8 +48,7 @@ namespace Stunts.Processors
                 if (generator.GetAttributes(node).Any(attr => generator.GetName(attr) == "CompilerGenerated"))
                     return base.VisitMethodBlock(node);
 
-                return base.VisitMethodBlock((MethodBlockSyntax)
-                    generator.AddAttributes(node, Attribute(IdentifierName("CompilerGenerated"))));
+                return base.VisitMethodBlock((MethodBlockSyntax)AddAttributes(node));
             }
 
             public override SyntaxNode VisitPropertyBlock(PropertyBlockSyntax node)
@@ -57,8 +56,7 @@ namespace Stunts.Processors
                 if (generator.GetAttributes(node).Any(attr => generator.GetName(attr) == "CompilerGenerated"))
                     return base.VisitPropertyBlock(node);
 
-                return base.VisitPropertyBlock((PropertyBlockSyntax)
-                    generator.AddAttributes(node, Attribute(IdentifierName("CompilerGenerated"))));
+                return base.VisitPropertyBlock((PropertyBlockSyntax)AddAttributes(node));
             }
 
             public override SyntaxNode VisitEventBlock(EventBlockSyntax node)
@@ -66,9 +64,21 @@ namespace Stunts.Processors
                 if (generator.GetAttributes(node).Any(attr => generator.GetName(attr) == "CompilerGenerated"))
                     return base.VisitEventBlock(node);
 
-                return base.VisitEventBlock((EventBlockSyntax)
-                    generator.AddAttributes(node, Attribute(IdentifierName("CompilerGenerated"))));
+                return base.VisitEventBlock((EventBlockSyntax)AddAttributes(node));
             }
+
+            SyntaxNode AddAttributes(SyntaxNode node)
+                => generator.AddAttributes(node,
+                    Attribute(IdentifierName("CompilerGenerated")),
+                    Attribute(
+                        null,
+                        IdentifierName("GeneratedCode"),
+                        ArgumentList(SeparatedList<ArgumentSyntax>(new[]
+                        {
+                            SimpleArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(nameof(Stunts)))),
+                            SimpleArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(ThisAssembly.Metadata.PackageVersion))),
+                        })))
+                    );
         }
     }
 }

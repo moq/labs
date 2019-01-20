@@ -31,7 +31,7 @@ namespace Stunts.Processors
         /// </summary>
         public async Task<Document> ProcessAsync(Document document, CancellationToken cancellationToken = default)
         {
-            var syntax = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
+            var syntax = await document.GetSyntaxRootAsync(cancellationToken);
             syntax = new CSharpRewriteVisitor(SyntaxGenerator.GetGenerator(document)).Visit(syntax);
 
             return document.WithSyntaxRoot(syntax);
@@ -48,17 +48,15 @@ namespace Stunts.Processors
                 if (generator.GetAttributes(node).Any(attr => generator.GetName(attr) == "CompilerGenerated"))
                     return base.VisitMethodDeclaration(node);
 
-                return base.VisitMethodDeclaration((MethodDeclarationSyntax)
-                    generator.AddAttributes(node, Attribute(IdentifierName("CompilerGenerated"))));
+                return base.VisitMethodDeclaration((MethodDeclarationSyntax)AddAttributes(node));
             }
 
             public override SyntaxNode VisitPropertyDeclaration(PropertyDeclarationSyntax node)
             {
                 if (generator.GetAttributes(node).Any(attr => generator.GetName(attr) == "CompilerGenerated"))
                     return base.VisitPropertyDeclaration(node);
-
-                return base.VisitPropertyDeclaration((PropertyDeclarationSyntax)
-                    generator.AddAttributes(node, Attribute(IdentifierName("CompilerGenerated"))));
+                
+                return base.VisitPropertyDeclaration((PropertyDeclarationSyntax)AddAttributes(node));
             }
 
             public override SyntaxNode VisitIndexerDeclaration(IndexerDeclarationSyntax node)
@@ -66,8 +64,7 @@ namespace Stunts.Processors
                 if (generator.GetAttributes(node).Any(attr => generator.GetName(attr) == "CompilerGenerated"))
                     return base.VisitIndexerDeclaration(node);
 
-                return base.VisitIndexerDeclaration((IndexerDeclarationSyntax)
-                    generator.AddAttributes(node, Attribute(IdentifierName("CompilerGenerated"))));
+                return base.VisitIndexerDeclaration((IndexerDeclarationSyntax)AddAttributes(node));
             }
 
             public override SyntaxNode VisitEventDeclaration(EventDeclarationSyntax node)
@@ -75,9 +72,19 @@ namespace Stunts.Processors
                 if (generator.GetAttributes(node).Any(attr => generator.GetName(attr) == "CompilerGenerated"))
                     return base.VisitEventDeclaration(node);
 
-                return base.VisitEventDeclaration((EventDeclarationSyntax)
-                    generator.AddAttributes(node, Attribute(IdentifierName("CompilerGenerated"))));
+                return base.VisitEventDeclaration((EventDeclarationSyntax)AddAttributes(node));
             }
+
+            SyntaxNode AddAttributes(SyntaxNode node)
+                => generator.AddAttributes(node,
+                    Attribute(IdentifierName("CompilerGenerated")),
+                    Attribute(IdentifierName("GeneratedCode"),
+                        AttributeArgumentList(SeparatedList(new[]
+                        {
+                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(nameof(Stunts)))),
+                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(ThisAssembly.Metadata.PackageVersion))),
+                        })))
+                    );
         }
     }
 }

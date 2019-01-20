@@ -1,6 +1,8 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -20,10 +22,12 @@ namespace Stunts.Processors
         static readonly string[] DefaultNamespaces = 
         {
             typeof(EventArgs).Namespace,
+            typeof(GeneratedCodeAttribute).Namespace,
             typeof(ObservableCollection<>).Namespace,
+            typeof(DebuggerDisplayAttribute).Namespace,
             typeof(MethodBase).Namespace,
-            typeof(IStunt).Namespace,
             typeof(CompilerGeneratedAttribute).Namespace,
+            typeof(IStunt).Namespace,
         };
 
         readonly string[] namespaces;

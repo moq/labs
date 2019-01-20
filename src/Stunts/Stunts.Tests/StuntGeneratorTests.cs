@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Immutable;
 using System.ComponentModel;
 using System.IO;
@@ -115,14 +116,29 @@ namespace Stunts.Tests.GeneratorTests
                 $"Generated member {x.Name} did not have the 'CompilerGeneratedAttribute' attribute applied."));
 
             Assert.All(
+                type.GetInterfaceMap(typeof(ICalculator)).TargetMethods.Where(m => !m.IsSpecialName),
+                x => Assert.True(x.GetCustomAttributes(typeof(GeneratedCodeAttribute), false).Any(),
+                $"Generated member {x.Name} did not have the 'GeneratedCodeAttribute' attribute applied."));
+
+            Assert.All(
                 type.GetProperties(BindingFlags.Instance | BindingFlags.Public),
                 x => Assert.True(x.GetCustomAttributes(typeof(CompilerGeneratedAttribute), false).Any(),
                 $"Generated member {x.Name} did not have the 'CompilerGeneratedAttribute' attribute applied."));
 
             Assert.All(
+                type.GetProperties(BindingFlags.Instance | BindingFlags.Public),
+                x => Assert.True(x.GetCustomAttributes(typeof(GeneratedCodeAttribute), false).Any(),
+                $"Generated member {x.Name} did not have the 'GeneratedCodeAttribute' attribute applied."));
+
+            Assert.All(
                 type.GetEvents(BindingFlags.Instance | BindingFlags.Public),
                 x => Assert.True(x.GetCustomAttributes(typeof(CompilerGeneratedAttribute), false).Any(),
                 $"Generated member {x.Name} did not have the 'CompilerGeneratedAttribute' attribute applied."));
+
+            Assert.All(
+                type.GetEvents(BindingFlags.Instance | BindingFlags.Public),
+                x => Assert.True(x.GetCustomAttributes(typeof(GeneratedCodeAttribute), false).Any(),
+                $"Generated member {x.Name} did not have the 'GeneratedCodeAttribute' attribute applied."));
         }
 
         [InlineData(LanguageNames.CSharp)]
