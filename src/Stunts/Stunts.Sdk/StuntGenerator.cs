@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -42,6 +41,7 @@ namespace Stunts
             new VisualBasicParameterFixup(),
             new VisualBasicFileHeader(),
             new VisualBasicCompilerGenerated(),
+            new FixupImports(),
         };
 
         /// <summary>
@@ -132,7 +132,7 @@ namespace Stunts
                     filePath: filePath);
             }
 
-            document = await ApplyProcessors(document, cancellationToken).ConfigureAwait(false);
+            document = await ApplyProcessors(document, cancellationToken);
 
 #if DEBUG
             // Update the persisted temp file in debug builds.
@@ -204,7 +204,7 @@ namespace Stunts
             {
                 foreach (var prepare in prepares)
                 {
-                    document = await prepare.ProcessAsync(document, cancellationToken).ConfigureAwait(false);
+                    document = await prepare.ProcessAsync(document, cancellationToken);
                 }
             }
 
@@ -212,7 +212,7 @@ namespace Stunts
             {
                 foreach (var scaffold in scaffolds)
                 {
-                    document = await scaffold.ProcessAsync(document, cancellationToken).ConfigureAwait(false);
+                    document = await scaffold.ProcessAsync(document, cancellationToken);
                 }
             }
 
@@ -220,7 +220,7 @@ namespace Stunts
             {
                 foreach (var rewriter in rewriters)
                 {
-                    document = await rewriter.ProcessAsync(document, cancellationToken).ConfigureAwait(false);
+                    document = await rewriter.ProcessAsync(document, cancellationToken);
                 }
             }
 
@@ -228,7 +228,7 @@ namespace Stunts
             {
                 foreach (var fixup in fixups)
                 {
-                    document = await fixup.ProcessAsync(document, cancellationToken).ConfigureAwait(false);
+                    document = await fixup.ProcessAsync(document, cancellationToken);
                 }
             }
 

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Immutable;
 using System.Linq;
+using System.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Shared.Extensions;
@@ -33,7 +34,8 @@ namespace Stunts
             if (symbol == null)
                 return;
 
-            var overridable = symbol.GetOverridableMembers(context.CancellationToken);
+            var overridable = RoslynInternals.GetOverridableMembers(symbol, context.CancellationToken);
+
             if (context.Node.Language == LanguageNames.VisualBasic)
                 overridable = overridable.Where(x => x.MetadataName != "Finalize")
                     // VB doesn't support overriding events (yet). See https://github.com/dotnet/vblang/issues/63

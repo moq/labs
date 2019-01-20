@@ -39,7 +39,7 @@ namespace Microsoft.CodeAnalysis
             // base class, so we'd be applying unnecessary fixes after the first one.
             // So we re-retrieve them after each Apply, which will leave only the remaining 
             // ones.
-            var codeFixes = await GetCodeFixes(document, codeFixName, analyzers, cancellationToken).ConfigureAwait(false);
+            var codeFixes = await GetCodeFixes(document, codeFixName, analyzers, cancellationToken);
             while (codeFixes.Length != 0)
             {
                 var operations = await codeFixes[0].Action.GetOperationsAsync(cancellationToken);
@@ -51,7 +51,7 @@ namespace Microsoft.CodeAnalysis
                     // be forcing a re-parse of the document syntax tree at this point. 
                     document = await operation.ChangedSolution.GetDocument(document.Id).RecreateDocumentAsync(cancellationToken);
                     // Retrieve the codefixes for the updated doc again.
-                    codeFixes = await GetCodeFixes(document, codeFixName, analyzers, cancellationToken).ConfigureAwait(false);
+                    codeFixes = await GetCodeFixes(document, codeFixName, analyzers, cancellationToken);
                 }
                 else
                 {
@@ -65,7 +65,7 @@ namespace Microsoft.CodeAnalysis
 
         public static async Task<Document> RecreateDocumentAsync(this Document document, CancellationToken cancellationToken)
         {
-            var newText = await document.GetTextAsync(cancellationToken).ConfigureAwait(false);
+            var newText = await document.GetTextAsync(cancellationToken);
             newText = newText.WithChanges(new TextChange(new TextSpan(0, 0), " "));
             newText = newText.WithChanges(new TextChange(new TextSpan(0, 1), string.Empty));
             return document.WithText(newText);
@@ -107,8 +107,13 @@ namespace Microsoft.CodeAnalysis
 
         static CodeFixProvider GetCodeFixProvider(Document document, string codeFixName)
             => codeFixName == nameof(OverrideAllMembersCodeFix) ? new OverrideAllMembersCodeFix() :
-                document.Project.Solution.Workspace.Services.HostServices.GetExports<CodeFixProvider, CodeChangeProviderMetadata>()
-                    .Where(x => x.Metadata.Languages.Contains(document.Project.Language) && x.Metadata.Name == codeFixName)
+                document.Project.Solution.Workspace.Services.HostServices
+                    .GetExports<CodeFixProvider, IDictionary<string, object>>()
+                    .Where(x =>
+                        x.Metadata.ContainsKey("Languages") && x.Metadata.ContainsKey("Name") &&
+                        x.Metadata["Languages"] is string[] languages &&
+                        languages.Contains(document.Project.Language) &&
+                        x.Metadata["Name"] is string name && name == codeFixName)
                     .Select(x => x.Value)
                     .FirstOrDefault();
     }

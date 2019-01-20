@@ -24,7 +24,7 @@ namespace Stunts
                     .Add(typeof(CodeFixNamesGenerator).Assembly))
                 .CreateContainer();
 
-            var providers = composition.GetExports<Lazy<CodeFixProvider, CodeChangeProviderMetadata>>();
+            var providers = composition.GetExports<Lazy<CodeFixProvider, IDictionary<string, object>>>();
 
             var allFixes = new HashSet<string>();
             var codeFixes = new Dictionary<string, HashSet<string>>
@@ -32,15 +32,20 @@ namespace Stunts
                 { "All", allFixes }
             };
 
-            foreach (var provider in providers.Where(x => !string.IsNullOrEmpty(x.Metadata.Name)))
+            foreach (var provider in providers.Where(x => 
+                x.Metadata.TryGetValue("Name", out var value) && 
+                value is string name &&
+                !string.IsNullOrEmpty(name) && 
+                x.Metadata.TryGetValue("Languages", out value) && 
+                value is string[]))
             {
-                foreach (var language in provider.Metadata.Languages)
+                foreach (var language in (string[])provider.Metadata["Languages"])
                 {
                     if (!codeFixes.ContainsKey(language))
                         codeFixes.Add(language, new HashSet<string>());
 
-                    codeFixes[language].Add(provider.Metadata.Name);
-                    allFixes.Add(provider.Metadata.Name);
+                    codeFixes[language].Add((string)provider.Metadata["Name"]);
+                    allFixes.Add((string)provider.Metadata["Name"]);
                 }
             }
 

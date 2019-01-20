@@ -3,16 +3,18 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyName>Roslyn.Services.Test.Utilities</AssemblyName>
-    <RootNamespace>Microsoft.CodeAnalysis.Diagnostics</RootNamespace>
+    <AssemblyName>Stunts.Internal</AssemblyName>
+    <RootNamespace>Stunts</RootNamespace>
     <IncludeRoslyn>true</IncludeRoslyn>
 
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
-
+    
+    <!--
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(MSBuildProjectDirectory)\RoslynInternalKey.Private.snk</AssemblyOriginatorKeyFile>
-
+    -->
+    
     <PrimaryOutputKind Condition="'$(PrimaryOutputKind)' == ''">Build</PrimaryOutputKind>
   </PropertyGroup>
 

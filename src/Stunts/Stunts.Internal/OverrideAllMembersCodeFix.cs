@@ -1,13 +1,12 @@
 ﻿using System.Collections.Immutable;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
-using Microsoft.CodeAnalysis.CodeGeneration;
 using Microsoft.CodeAnalysis.Editing;
-using Microsoft.CodeAnalysis.Shared.Extensions;
 
 namespace Stunts
 {
@@ -20,7 +19,7 @@ namespace Stunts
 
         public override async Task RegisterCodeFixesAsync(CodeFixContext context)
         {
-            var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
+            var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken);
             var diagnostic = context.Diagnostics.FirstOrDefault(d => FixableDiagnosticIds.Contains(d.Id));
             if (diagnostic == null)
                 return;
@@ -47,7 +46,8 @@ namespace Stunts
             if (symbol == null)
                 return document.Project.Solution;
 
-            var overridables = symbol.GetOverridableMembers(cancellationToken);
+            var overridables = RoslynInternals.GetOverridableMembers(symbol, cancellationToken);
+
             if (type.Language == LanguageNames.VisualBasic)
                 overridables = overridables.Where(x => x.MetadataName != "Finalize")
                     // VB doesn't support overriding events (yet). See https://github.com/dotnet/vblang/issues/63
@@ -55,11 +55,11 @@ namespace Stunts
                     .ToImmutableArray();            
 
             var generator = SyntaxGenerator.GetGenerator(document);
-            var memberTasks = overridables.SelectAsArray(
-                m => generator.OverrideAsync(m, symbol, document, cancellationToken: cancellationToken));
+            var memberTasks = overridables.Select(
+                m => RoslynInternals.OverrideAsync(generator, m, symbol, document, cancellationToken: cancellationToken));
 
-            var members = await Task.WhenAll(memberTasks).ConfigureAwait(false);
-            var newDoc = await CodeGenerator.AddMemberDeclarationsAsync(document.Project.Solution, symbol, members, cancellationToken: cancellationToken).ConfigureAwait(false);
+            var members = await Task.WhenAll(memberTasks);
+            var newDoc = await RoslynInternals.AddMemberDeclarationsAsync(document.Project.Solution, symbol, members, cancellationToken);
             
             return newDoc.Project.Solution;
         }

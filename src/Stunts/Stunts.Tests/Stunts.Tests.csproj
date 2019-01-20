@@ -38,6 +38,9 @@
   <ItemGroup>
     <Compile Include="..\..\Moq\Moq.Sdk\DefaultValueBehavior.cs" Link="DefaultValueBehavior.cs" />
     <Compile Include="..\..\Moq\Moq.Sdk\DefaultValueProvider.cs" Link="DefaultValueProvider.cs" />
+    <Compile Include="..\Stunts.Internal\RoslynInternals.cs" Link="RoslynInternals.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -49,12 +52,21 @@
 
   <ItemGroup>
     <PackageReference Include="StreamJsonRpc" />
+    <PackageReference Include="NuGet.Client" VersionOverride="4.2.0" />
+    <PackageReference Include="NuGet.Protocol.Core.v3" VersionOverride="4.2.0" />
+    <PackageReference Include="InjectModuleInitializer" VersionOverride="2.0.0" />
+    <PackageReference Include="MSBuild.StructuredLogger" VersionOverride="2.0.64" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 
-  <Import Project="..\..\Testing\Moq.Testing.projitems" Label="Shared" />
+  <ItemGroup>
+    <Compile Update="Program.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+  </ItemGroup>
 
+  <Import Project="..\..\Testing\Moq.Testing.projitems" Label="Shared" />
 </Project>

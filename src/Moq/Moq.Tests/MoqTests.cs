@@ -5,7 +5,6 @@ using Moq.Sdk;
 using static Moq.Syntax;
 using Stunts;
 using Sample;
-using System.Linq;
 
 namespace Moq.Tests
 {

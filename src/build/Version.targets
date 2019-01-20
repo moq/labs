@@ -1,6 +1,8 @@
 <Project>
 
   <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+
     <GitSkipCache>true</GitSkipCache>
     <GitIgnoreTagVersion>true</GitIgnoreTagVersion>
   </PropertyGroup>
@@ -70,6 +72,23 @@ AssemblyVersion=$(AssemblyVersion)" />
       </AssemblyAttribute>
     </ItemGroup>
 
+  </Target>
+
+  <Target Name="AddVersionMetadata" DependsOnTargets="GetAssemblyVersion" BeforeTargets="GenerateThisAssemblyMetadata">
+    <ItemGroup>
+      <AssemblyAttribute Include="System.Reflection.AssemblyMetadata">
+        <_Parameter1>AssemblyVersion</_Parameter1>
+        <_Parameter2>$(AssemblyVersion)</_Parameter2>
+      </AssemblyAttribute>
+      <AssemblyAttribute Include="System.Reflection.AssemblyMetadata">
+        <_Parameter1>FileVersion</_Parameter1>
+        <_Parameter2>$(FileVersion)</_Parameter2>
+      </AssemblyAttribute>
+      <AssemblyAttribute Include="System.Reflection.AssemblyMetadata">
+        <_Parameter1>InformationalVersion</_Parameter1>
+        <_Parameter2>$(InformationalVersion)</_Parameter2>
+      </AssemblyAttribute>
+    </ItemGroup>
   </Target>
 
 </Project>
