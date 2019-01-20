@@ -30,7 +30,7 @@ namespace Stunts
         /// </remarks>
         public static async Task<IImmutableSet<ImmutableArray<INamedTypeSymbol>>> DiscoverStuntsAsync(this Project project, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var compilation = await project.GetCompilationAsync(cancellationToken).ConfigureAwait(false);
+            var compilation = await project.GetCompilationAsync(cancellationToken);
             var stuntGeneratorSymbol = compilation.GetTypeByMetadataName(typeof(StuntGeneratorAttribute).FullName);
             if (stuntGeneratorSymbol == null)
                 throw new ArgumentException(Strings.StuntsRequired(project.Name));
@@ -47,7 +47,7 @@ namespace Stunts
             var candidates = new HashSet<ImmutableArray<INamedTypeSymbol>>(StructuralComparer<ImmutableArray<INamedTypeSymbol>>.Default);
             foreach (var document in project.Documents)
             {
-                var discovered = await discoverer(document, stuntGeneratorSymbol, cancellationToken).ConfigureAwait(false);
+                var discovered = await discoverer(document, stuntGeneratorSymbol, cancellationToken);
                 foreach (var stunt in discovered)
                 {
                     candidates.Add(stunt);
@@ -69,7 +69,7 @@ namespace Stunts
         /// </summary>
         public static async Task<ImmutableHashSet<ImmutableArray<INamedTypeSymbol>>> DiscoverStuntsAsync(this Document document, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var compilation = await document.Project.GetCompilationAsync(cancellationToken).ConfigureAwait(false);
+            var compilation = await document.Project.GetCompilationAsync(cancellationToken);
             var stuntGeneratorSymbol = compilation.GetTypeByMetadataName(typeof(StuntGeneratorAttribute).FullName);
             if (stuntGeneratorSymbol == null)
                 throw new ArgumentException(Strings.StuntsRequired(document.Project.Name));
@@ -83,7 +83,7 @@ namespace Stunts
                 // TODO: F#
                 return ImmutableHashSet.Create<ImmutableArray<INamedTypeSymbol>>();
 
-            var discovered = await discoverer(document, stuntGeneratorSymbol, cancellationToken).ConfigureAwait(false);
+            var discovered = await discoverer(document, stuntGeneratorSymbol, cancellationToken);
 
             return discovered.ToImmutableHashSet(StructuralComparer<ImmutableArray<INamedTypeSymbol>>.Default);
         }
@@ -92,8 +92,8 @@ namespace Stunts
             where TSyntax : SyntaxNode
         {
             var stunts = new HashSet<ImmutableArray<INamedTypeSymbol>>(StructuralComparer<ImmutableArray<INamedTypeSymbol>>.Default);
-            var semantic = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
-            var syntax = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
+            var semantic = await document.GetSemanticModelAsync(cancellationToken);
+            var syntax = await document.GetSyntaxRootAsync(cancellationToken);
             cancellationToken.ThrowIfCancellationRequested();
 
             foreach (var node in syntax.DescendantNodes().OfType<TSyntax>())

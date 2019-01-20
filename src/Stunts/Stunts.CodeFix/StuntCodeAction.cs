@@ -35,11 +35,11 @@ namespace Stunts
 
         protected override async Task<Document> GetChangedDocumentAsync(CancellationToken cancellationToken)
         {
-            var root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
+            var root = await document.GetSyntaxRootAsync(cancellationToken);
             if (root == null)
                 return document;
 
-            var semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
+            var semanticModel = await document.GetSemanticModelAsync(cancellationToken);
             if (semanticModel == null)
                 return document;
 
@@ -125,14 +125,14 @@ namespace Stunts
                 stuntDoc = stuntDoc.WithSyntaxRoot(syntax);
             }
 
-            stuntDoc = await stunts.ApplyProcessors(stuntDoc, cancellationToken).ConfigureAwait(false);
+            stuntDoc = await stunts.ApplyProcessors(stuntDoc, cancellationToken);
             
             // This is somewhat expensive, but with the formatting, the code doesn't even compile :/
-            stuntDoc = await Simplifier.ReduceAsync(stuntDoc).ConfigureAwait(false);
+            stuntDoc = await Simplifier.ReduceAsync(stuntDoc);
             if (document.Project.Language != LanguageNames.VisualBasic)
-                stuntDoc = await Formatter.FormatAsync(stuntDoc, Formatter.Annotation).ConfigureAwait(false);
+                stuntDoc = await Formatter.FormatAsync(stuntDoc, Formatter.Annotation);
 
-            syntax = await stuntDoc.GetSyntaxRootAsync().ConfigureAwait(false);
+            syntax = await stuntDoc.GetSyntaxRootAsync();
             stuntDoc = stuntDoc.WithSyntaxRoot(syntax);
 
             return stuntDoc;

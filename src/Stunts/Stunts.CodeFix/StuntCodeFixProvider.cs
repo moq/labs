@@ -42,7 +42,7 @@ namespace Stunts
     {
         public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context)
         {
-            var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
+            var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken);
             // TODO: should we instead try to register for all diagnostics matching our fixable ones instead of just the first one?
             var diagnostic = context.Diagnostics.FirstOrDefault(d => FixableDiagnosticIds.Contains(d.Id));
             if (diagnostic == null)

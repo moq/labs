@@ -30,7 +30,7 @@ namespace Moq
         {
             var document = context.Document;
             var span = context.Span;
-            var root = await document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
+            var root = await document.GetSyntaxRootAsync(context.CancellationToken);
 
             var token = root.FindToken(span.Start);
             if (!token.Span.IntersectsWith(span))
@@ -40,7 +40,7 @@ namespace Moq
             if (diagnostic == null)
                 return;
 
-            var semantic = await document.GetSemanticModelAsync(context.CancellationToken).ConfigureAwait(false);
+            var semantic = await document.GetSemanticModelAsync(context.CancellationToken);
 
             var node = root.FindNode(span);
             if (node == null)
@@ -60,7 +60,7 @@ namespace Moq
             if (setupSymbol.CandidateSymbols.IsDefaultOrEmpty)
                 return;
 
-            var compilation = await document.Project.GetCompilationAsync().ConfigureAwait(false);
+            var compilation = await document.Project.GetCompilationAsync();
             var scope = compilation.GetTypeByMetadataName(typeof(SetupScopeAttribute).FullName);
             if (scope == null)
                 return;
@@ -133,7 +133,7 @@ namespace Moq
             protected override async Task<Document> GetChangedDocumentAsync(CancellationToken cancellationToken)
             {
                 var generator = SyntaxGenerator.GetGenerator(document);
-                var root = await setup.SyntaxTree.GetRootAsync(cancellationToken).ConfigureAwait(false);
+                var root = await setup.SyntaxTree.GetRootAsync(cancellationToken);
                 var node = FindSetup(root);
                 var member = setup.Ancestors().First(x => generator.GetDeclarationKind(x) == DeclarationKind.Method);
                 var @class = member.Ancestors().First(x => generator.GetDeclarationKind(x) == DeclarationKind.Class);
@@ -156,7 +156,7 @@ namespace Moq
                 else
                 {                    
                     var tempDoc = document.WithSyntaxRoot(generator.ReplaceNode(root, @delegate, signature));
-                    tempDoc = await Simplifier.ReduceAsync(tempDoc).ConfigureAwait(false);
+                    tempDoc = await Simplifier.ReduceAsync(tempDoc);
                     var tempRoot = await tempDoc.GetSyntaxRootAsync(cancellationToken);
                     var className = generator.GetName(@class);
                     var tempClass = tempRoot.DescendantNodes().First(x =>

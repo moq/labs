@@ -29,7 +29,7 @@ namespace Stunts
             {
                 case FixAllScope.Document:
                     {
-                        var diagnostics = await fixAllContext.GetDocumentDiagnosticsAsync(fixAllContext.Document).ConfigureAwait(false);
+                        var diagnostics = await fixAllContext.GetDocumentDiagnosticsAsync(fixAllContext.Document);
                         diagnostics = diagnostics.Where(d => d.Id == diagnosticId).ToImmutableArray();
                         if (diagnostics.Length > 0)
                             diagnosticsToFix.Add(new KeyValuePair<Project, ImmutableArray<Diagnostic>>(fixAllContext.Project, diagnostics));
@@ -41,7 +41,7 @@ namespace Stunts
                 case FixAllScope.Project:
                     {
                         Project project = fixAllContext.Project;
-                        var diagnostics = await fixAllContext.GetAllDiagnosticsAsync(project).ConfigureAwait(false);
+                        var diagnostics = await fixAllContext.GetAllDiagnosticsAsync(project);
                         if (diagnostics.Length > 0)
                             diagnosticsToFix.Add(new KeyValuePair<Project, ImmutableArray<Diagnostic>>(project, diagnostics));
 
@@ -53,7 +53,7 @@ namespace Stunts
                     {
                         foreach (var project in fixAllContext.Solution.Projects)
                         {
-                            var diagnostics = await fixAllContext.GetAllDiagnosticsAsync(project).ConfigureAwait(false);
+                            var diagnostics = await fixAllContext.GetAllDiagnosticsAsync(project);
                             if (diagnostics.Length > 0)
                                 diagnosticsToFix.Add(new KeyValuePair<Project, ImmutableArray<Diagnostic>>(project, diagnostics));
                         }
@@ -101,7 +101,7 @@ namespace Stunts
                         var document = project.GetDocument(diagnostic.Location.SourceTree);
                         var codeAction = new StuntCodeAction(Title, document, diagnostic, new NamingConvention());
 
-                        var operations = await codeAction.GetOperationsAsync(cancellationToken).ConfigureAwait(false);
+                        var operations = await codeAction.GetOperationsAsync(cancellationToken);
                         ApplyChangesOperation operation;
                         if ((operation = operations.OfType<ApplyChangesOperation>().FirstOrDefault()) != null)
                             changedSolution = operation.ChangedSolution;

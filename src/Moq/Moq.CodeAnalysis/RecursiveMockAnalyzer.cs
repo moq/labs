@@ -37,7 +37,7 @@ namespace Moq
             // TODO: see if we need to consider symbol.CandidateSymbols too
             if (symbol.Symbol == null)
                 return;
-
+            
             // We only process recursive property and method accesses
             if (symbol.Symbol?.Kind != SymbolKind.Property &&
                 symbol.Symbol?.Kind != SymbolKind.Method)

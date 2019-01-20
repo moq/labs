@@ -37,7 +37,7 @@ namespace Stunts.Processors
         /// </summary>
         public async Task<Document> ProcessAsync(Document document, CancellationToken cancellationToken = default)
         {
-            var syntax = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
+            var syntax = await document.GetSyntaxRootAsync(cancellationToken);
 
             return document.WithSyntaxRoot(syntax.WithLeadingTrivia(Comment(header)));
         }
