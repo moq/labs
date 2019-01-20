@@ -1,14 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CodeActions;
+using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Emit;
+using Microsoft.CodeAnalysis.Text;
 using Microsoft.CodeAnalysis.VisualBasic;
 using Xunit;
 
@@ -109,8 +115,48 @@ static partial class TestHelpers
 
     public static CancellationToken TimeoutToken(int seconds)
         => Debugger.IsAttached ?
-            new CancellationTokenSource().Token :
+            CancellationToken.None :
             new CancellationTokenSource(TimeSpan.FromSeconds(seconds)).Token;
+
+    public static Document AddDocument(this AdhocWorkspace workspace, Project project, string content, string fileName = "code.cs")
+        => workspace.AddDocument(DocumentInfo.Create(
+            DocumentId.CreateNewId(project.Id),
+            "code.cs",
+            loader: TextLoader.From(TextAndVersion.Create(SourceText.From(content), VersionStamp.Create()))));
+
+    public static async Task<Document> ApplyCodeFixAsync<TDiagnosticAnalyzer, TCodeFixProvider>(this Workspace workspace, Document document, string diagnosticId)
+        where TDiagnosticAnalyzer : DiagnosticAnalyzer, new()
+        where TCodeFixProvider : CodeFixProvider, new()
+    {
+        var compilation = await document.Project.GetCompilationAsync(TimeoutToken(5));
+        var withAnalyzers = compilation.WithAnalyzers(ImmutableArray.Create<DiagnosticAnalyzer>(new TDiagnosticAnalyzer()));
+        var diagnostic = (await withAnalyzers.GetAnalyzerDiagnosticsAsync())
+            .Where(d => d.Id == diagnosticId)
+            .OrderBy(d => d.Location.SourceSpan.Start)
+            .FirstOrDefault();
+
+        Assert.NotNull(diagnostic);
+
+        var provider = new TCodeFixProvider();
+        var actions = new List<CodeAction>();
+        var context = new CodeFixContext(document, diagnostic, (a, d) => actions.Add(a), TimeoutToken(5));
+
+        await provider.RegisterCodeFixesAsync(context);
+
+        var applyChanges = actions
+            .SelectMany(x => x.GetOperationsAsync(TimeoutToken(10)).Result)
+            .OfType<ApplyChangesOperation>()
+            .FirstOrDefault();
+
+        Assert.NotNull(applyChanges);
+
+        applyChanges.Apply(workspace, TimeoutToken(5));
+
+        // According to https://github.com/DotNetAnalyzers/StyleCopAnalyzers/pull/935 and 
+        // https://github.com/dotnet/roslyn-sdk/issues/140, Sam Harwell mentioned that we should 
+        // be forcing a re-parse of the document syntax tree at this point. 
+        return await workspace.CurrentSolution.GetDocument(document.Id).RecreateDocumentAsync(TimeoutToken(2));
+    }
 
     public static Assembly Emit(this Compilation compilation)
     {

@@ -95,7 +95,13 @@ public static class AssertCode
                 "Errors:" +
                     Environment.NewLine +
                     string.Join(Environment.NewLine, diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error || d.Severity == DiagnosticSeverity.Warning).Select(d
-                        => $"  '{d.Location.SourceTree.GetText().GetSubText(d.Location.SourceSpan).ToString()}' : {d.ToString()}")) +
+                        => $"  '{d.Location.SourceTree.GetText().GetSubText(d.Location.SourceSpan).ToString()}' : {d.ToString()}" +
+                            Environment.NewLine +
+                            string.Join(Environment.NewLine,
+                                d.Location.SourceTree.ToString()
+                                .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
+                                .Select((line, index) => $"    {(index + indexOffset).ToString().PadLeft(3, ' ')}| {line}"))
+                        )) +
                     Environment.NewLine +
                 "Source:" +
                     Environment.NewLine +

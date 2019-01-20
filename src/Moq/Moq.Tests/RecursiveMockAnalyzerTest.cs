@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,7 +14,7 @@ namespace Moq.Tests
 {
     public class RecursiveMockAnalyzerTest
     {
-        [Fact(Skip = "Can't get Roslyn to properly build and run analyzers + codefix, keep getting build errors after applying code fixes.")]
+        [Fact]
         public async Task ReportDiagnosticForRecursiveMock()
         {
             var code = @"
@@ -23,17 +22,17 @@ using Moq;
 
 namespace Recursive
 {
-    public interface IRecursiveRoot
+    public interface IRecursiveRoot2
     {
-        IRecursiveBranch Branch { get; }
+        IRecursiveBranch2 Branch { get; }
     }
 
-    public interface IRecursiveBranch
+    public interface IRecursiveBranch2
     {
-        IRecursiveLeaf Leaf { get; }
+        IRecursiveLeaf2 Leaf { get; }
     }
 
-    public interface IRecursiveLeaf
+    public interface IRecursiveLeaf2
     {
         string Name { get; set; }
     }
@@ -42,9 +41,10 @@ namespace Recursive
     {
         public RecursiveMocks()
         {
-            var mock = Mock.Of<IRecursiveRoot>();
+            var mock = Mock.Of<IRecursiveRoot2>();
 
-            mock.Branch.Leaf.Name.Returns(""foo"");
+            mock.Setup(m => m.Branch.Leaf.Name).Returns(""foo="");
+            // mock.Branch.Leaf.Name.Returns(""foo"");
         }
     }
 }
@@ -54,44 +54,50 @@ namespace Recursive
 
             AssertCode.NoErrors(compilation);
 
-            //var doc = project.AddDocument("code.cs", SourceText.From(code));
-            var doc = workspace.AddDocument(DocumentInfo.Create(
-                DocumentId.CreateNewId(project.Id),
-                "code.cs",
-                loader: TextLoader.From(TextAndVersion.Create(SourceText.From(code), VersionStamp.Create()))));
+            var doc = workspace.AddDocument(project, code);
+
+            var exports = workspace.Services.HostServices.GetExports<CodeFixProvider, IDictionary<string, object>>()
+                .Where(x =>
+                    x.Metadata.ContainsKey("Languages") && x.Metadata.ContainsKey("Name") &&
+                    x.Metadata["Languages"] is string[] languages &&
+                    languages.Contains(doc.Project.Language) &&
+                    x.Metadata["Name"] is string name && name == "ImplementInterface")
+                .Select(x => x.Value)
+                .FirstOrDefault();
+
+            Assert.NotNull(exports);
 
             compilation = await doc.Project.GetCompilationAsync(TimeoutToken(5));
 
             AssertCode.NoErrors(compilation);
 
-            var withAnalyzers = compilation.WithAnalyzers(ImmutableArray.Create<DiagnosticAnalyzer>(new MockGeneratorAnalyzer()));
+            // First we'll generate the mock from Mock.Of<T>
+            doc = await workspace.ApplyCodeFixAsync<MockGeneratorAnalyzer, GenerateMockCodeFix>(doc, "MOQ001");
+
+            await AssertCode.NoErrorsAsync(doc);
+
+            var analyzer = new RecursiveMockAnalyzer();
+            compilation = await doc.Project.GetCompilationAsync(TimeoutToken(5));
+            var withAnalyzers = compilation.WithAnalyzers(ImmutableArray.Create<DiagnosticAnalyzer>(analyzer));
 
             var diagnostics = (await withAnalyzers.GetAnalyzerDiagnosticsAsync())
+                .Where(d => d.Id == "MOQ001")
                 .OrderBy(d => d.Location.SourceSpan.Start)
                 .ToArray();
 
-            // Apply first codefix in document order
-            var provider = new GenerateMockCodeFix();
-            var actions = new List<CodeAction>();
-            var context = new CodeFixContext(doc, diagnostics[0], (a, d) => actions.Add(a), TimeoutToken(5));
+            Assert.Equal(2, diagnostics.Length);
 
-            await provider.RegisterCodeFixesAsync(context);
+            doc = await workspace.ApplyCodeFixAsync<RecursiveMockAnalyzer, GenerateMockCodeFix>(doc, "MOQ001");
+            doc = await workspace.ApplyCodeFixAsync<RecursiveMockAnalyzer, GenerateMockCodeFix>(doc, "MOQ001");
 
-            var solution = actions
-                .SelectMany(x => x.GetOperationsAsync(TimeoutToken(2)).Result)
-                .OfType<ApplyChangesOperation>()
-                .First()
-                .ChangedSolution;
-
-            doc = solution.GetDocument(doc.Id);
-            var analyzer = new RecursiveMockAnalyzer();
             compilation = await doc.Project.GetCompilationAsync(TimeoutToken(5));
-            var diag = compilation.GetDiagnostics(TimeoutToken(5));
-
-            AssertCode.NoErrors(compilation);
-
             withAnalyzers = compilation.WithAnalyzers(ImmutableArray.Create<DiagnosticAnalyzer>(analyzer));
+            diagnostics = (await withAnalyzers.GetAnalyzerDiagnosticsAsync())
+                .Where(d => d.Id == "MOQ001")
+                .OrderBy(d => d.Location.SourceSpan.Start)
+                .ToArray();
 
+            Assert.Empty(diagnostics);
         }
     }
 }
