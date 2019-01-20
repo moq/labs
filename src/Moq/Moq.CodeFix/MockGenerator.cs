@@ -23,6 +23,7 @@ namespace Moq
                 {
                     new CSharpMocked(),
                     new VisualBasicMocked(),
+                    new FixupImports(),
                 }).ToArray())
         {
         }
