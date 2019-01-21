@@ -30,6 +30,7 @@ steps:
     runInParallel: 'true'
     codeCoverageEnabled: 'true'
     publishRunAttachments: 'true'
+    diagnosticsEnabled: false
     rerunFailedTests: true
     
 - task: PublishBuildArtifacts@1
