@@ -30,7 +30,7 @@ namespace Stunts.Tests
 $@"<Project Sdk='Microsoft.NET.Sdk'>
     <PropertyGroup>    
         <OutputType>Exe</OutputType>
-        <TargetFramework>netcoreapp3.0</TargetFramework>
+        <TargetFramework>net461</TargetFramework>
         <EnableDefaultItems>false</EnableDefaultItems>
         <OutputPath>bin\{package.Version}</OutputPath>
     </PropertyGroup>
