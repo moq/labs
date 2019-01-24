@@ -1,1 +1,0 @@
-Source: https://github.com/dotnet/roslyn-analyzers/blob/master/build/Strong%20Name%20Keys/RoslynInternalKey.Private.snk

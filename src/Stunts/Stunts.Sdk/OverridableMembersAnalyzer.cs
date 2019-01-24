@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using Microsoft.CodeAnalysis;
@@ -7,10 +8,21 @@ using Microsoft.CodeAnalysis.Shared.Extensions;
 
 namespace Stunts
 {
+    /// <summary>
+    /// Analyzer that flags types that have overridable members as 
+    /// exposed by <see cref="RoslynInternals.GetOverridableMembers"/>.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public class OverridableMembersAnalyzer : DiagnosticAnalyzer
     {
+        /// <summary>
+        /// The diagnostics identifier exposed by this analyzer, <c>ST999</c>.
+        /// </summary>
         public const string DiagnosticId = "ST999";
+        /// <summary>
+        /// The category for the diagnostics reported by this analyzer, <c>Build</c>.
+        /// </summary>
         public const string Category = "Build";
 
         static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
@@ -20,8 +32,15 @@ namespace Stunts
             Category,
             DiagnosticSeverity.Hidden, isEnabledByDefault: true);
 
+        /// <summary>
+        /// Reports the only supported rule by this analyzer.
+        /// </summary>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule);
 
+        /// <summary>
+        /// Registers the analyzer for both C# and VB class declarations.
+        /// </summary>
+        /// <param name="context"></param>
         public override void Initialize(AnalysisContext context)
         {
             context.RegisterSyntaxNodeAction(AnalyzeSyntaxNode, Microsoft.CodeAnalysis.CSharp.SyntaxKind.ClassDeclaration);

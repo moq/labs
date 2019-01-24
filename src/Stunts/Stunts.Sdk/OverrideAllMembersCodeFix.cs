@@ -10,12 +10,13 @@ using Microsoft.CodeAnalysis.Editing;
 
 namespace Stunts
 {
+    /// <summary>
+    /// Implements the codefix for overriding all members in a class 
+    /// using <see cref="RoslynInternals.OverrideAsync"/>.
+    /// </summary>
     class OverrideAllMembersCodeFix : CodeFixProvider
     {
-        public sealed override ImmutableArray<string> FixableDiagnosticIds
-        {
-            get => ImmutableArray.Create(OverridableMembersAnalyzer.DiagnosticId);
-        }
+        public sealed override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(OverridableMembersAnalyzer.DiagnosticId);
 
         public override async Task RegisterCodeFixesAsync(CodeFixContext context)
         {
@@ -49,7 +50,8 @@ namespace Stunts
             var overridables = RoslynInternals.GetOverridableMembers(symbol, cancellationToken);
 
             if (type.Language == LanguageNames.VisualBasic)
-                overridables = overridables.Where(x => x.MetadataName != "Finalize")
+                overridables = overridables
+                    .Where(x => x.MetadataName != "Finalize")
                     // VB doesn't support overriding events (yet). See https://github.com/dotnet/vblang/issues/63
                     .Where(x => x.Kind != SymbolKind.Event)
                     .ToImmutableArray();            

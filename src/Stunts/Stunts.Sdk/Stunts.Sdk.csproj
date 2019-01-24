@@ -37,7 +37,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Stunts.CodeAnalysis\Stunts.CodeAnalysis.csproj" Pack="$(IsPackable)" />
-    <ProjectReference Include="..\Stunts.Internal\Stunts.Internal.csproj" Pack="$(IsPackable)" />
     <ProjectReference Include="..\Stunts\Stunts.csproj" Pack="$(IsPackable)" />
   </ItemGroup>
 
