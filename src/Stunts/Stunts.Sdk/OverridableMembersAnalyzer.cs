@@ -56,7 +56,7 @@ namespace Stunts
             var overridable = RoslynInternals.GetOverridableMembers(symbol, context.CancellationToken);
 
             if (context.Node.Language == LanguageNames.VisualBasic)
-                overridable = overridable.Where(x => x.MetadataName != "Finalize")
+                overridable = overridable.Where(x => x.MetadataName != WellKnownMemberNames.DestructorName)
                     // VB doesn't support overriding events (yet). See https://github.com/dotnet/vblang/issues/63
                     .Where(x => x.Kind != SymbolKind.Event)
                     .ToImmutableArray();

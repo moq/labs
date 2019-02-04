@@ -51,7 +51,7 @@ namespace Stunts
 
             if (type.Language == LanguageNames.VisualBasic)
                 overridables = overridables
-                    .Where(x => x.MetadataName != "Finalize")
+                    .Where(x => x.MetadataName != WellKnownMemberNames.DestructorName)
                     // VB doesn't support overriding events (yet). See https://github.com/dotnet/vblang/issues/63
                     .Where(x => x.Kind != SymbolKind.Event)
                     .ToImmutableArray();            
