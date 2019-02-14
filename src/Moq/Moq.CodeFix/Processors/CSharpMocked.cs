@@ -86,14 +86,14 @@ namespace Moq.Processors
                                     IdentifierName(nameof(LazyInitializer.EnsureInitialized))),
                                 ArgumentList(SeparatedList(new ArgumentSyntax[]
                                 {
-                            Argument(RefExpression(IdentifierName("mock"))),
-                            Argument(ParenthesizedLambdaExpression(
-                                ObjectCreationExpression(
-                                    IdentifierName(nameof(DefaultMock)))
-                                .WithArgumentList(ArgumentList(SingletonSeparatedList(Argument(
-                                    ThisExpression()
-                                ))))
-                            ))
+                                    Argument(NameColon("target"), Token(SyntaxKind.RefKeyword), IdentifierName("mock")),
+                                    Argument(ParenthesizedLambdaExpression(
+                                        ObjectCreationExpression(
+                                            IdentifierName(nameof(DefaultMock)))
+                                        .WithArgumentList(ArgumentList(SingletonSeparatedList(Argument(
+                                            ThisExpression()
+                                        ))))
+                                    ))
                                 }))
                             )
                         ))

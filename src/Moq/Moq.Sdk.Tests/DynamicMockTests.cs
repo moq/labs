@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using Sample;
 using Stunts;
 using Xunit;
 
@@ -11,7 +8,7 @@ namespace Moq.Sdk.Tests
 {
     public class DynamicMockTests
     {
-        [Fact(Skip = "Couldn't make Roslyn compile generated code at runtime :(")]
+        [Fact]
         public async Task WhenAddingMockBehavior_ThenCanInterceptSelectively()
         {
             var calculator = await new DynamicMock(LanguageNames.CSharp).CreateAsync<ICalculator>();

@@ -13,6 +13,8 @@ namespace Moq
     /// </summary>
     class MockGenerator : StuntGenerator
     {
+        public MockGenerator() : this(new MockNamingConvention()) { }
+
         public MockGenerator(NamingConvention naming)
             : base(naming, new IDocumentProcessor[]
                 {

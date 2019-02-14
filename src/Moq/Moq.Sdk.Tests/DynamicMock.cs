@@ -14,7 +14,7 @@ namespace Moq
     // TODO: can't get Roslyn to compile generated code while running the tests :(
     class DynamicMock
     {
-        MockGenerator generator = new MockGenerator(new MockNamingConvention());
+        MockGenerator generator = new MockGenerator();
         Project project;
         readonly string language;
 
