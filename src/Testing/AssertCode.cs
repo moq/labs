@@ -79,6 +79,7 @@ public static class AssertCode
                 syntax = syntax.NormalizeWhitespace();
                 document = document.WithSyntaxRoot(syntax);
                 compilation = await document.Project.GetCompilationAsync(TimeoutToken(5));
+                diagnostics = compilation.GetDiagnostics(TimeoutToken(5)).Where(d => !noWarn.Contains(d.Id)).ToArray();
             }
             catch
             {
@@ -100,7 +101,7 @@ public static class AssertCode
                             string.Join(Environment.NewLine,
                                 d.Location.SourceTree.ToString()
                                 .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
-                                .Select((line, index) => $"    {(index + indexOffset).ToString().PadLeft(3, ' ')}| {line}"))
+                                .Select((line, index) => $"    {(index + 1).ToString().PadLeft(3, ' ')}| {line}"))
                         )) +
                     Environment.NewLine +
                 "Source:" +
@@ -108,7 +109,7 @@ public static class AssertCode
                     string.Join(Environment.NewLine,
                         syntax.ToString()
                         .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
-                        .Select((line, index) => $"{(index + indexOffset).ToString().PadLeft(3, ' ')}| {line}")) +
+                        .Select((line, index) => $"{(index + 1).ToString().PadLeft(3, ' ')}| {line}")) +
                     Environment.NewLine +
                 "References:" +
                     Environment.NewLine +
