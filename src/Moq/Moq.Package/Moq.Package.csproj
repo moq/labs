@@ -12,7 +12,7 @@
     <Description>The most popular and friendly mocking framework for .NET</Description>
     <PackageTags>moq mocking mock</PackageTags>
 
-    <PackOnBuild>true</PackOnBuild>
+    <PackOnBuild Condition="'$(PackOnBuild)' == '' and '$(Configuration)' == 'Release'">true</PackOnBuild>
   </PropertyGroup>
 
   <ItemGroup>

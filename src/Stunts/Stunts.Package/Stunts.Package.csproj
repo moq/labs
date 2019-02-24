@@ -12,7 +12,7 @@
     <Description>Design-time generated classes whose behavior can be configured dynamically at run-time with arbitrary behaviors (a.k.a. "proxies").</Description>
     <PackageTags>netstandard proxy runtime dynamic</PackageTags>
 
-    <PackOnBuild>true</PackOnBuild>
+    <PackOnBuild Condition="'$(PackOnBuild)' == '' and '$(Configuration)' == 'Release'">true</PackOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
