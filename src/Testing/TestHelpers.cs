@@ -17,6 +17,7 @@ using Microsoft.CodeAnalysis.Emit;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.CodeAnalysis.VisualBasic;
 using Xunit;
+using Xunit.Abstractions;
 
 static partial class TestHelpers
 {
@@ -98,13 +99,13 @@ static partial class TestHelpers
         var projectDir = Path.Combine(Path.GetTempPath(), "Mock", projectId.Id.ToString());
 
         return ProjectInfo.Create(
-            projectId, 
-            VersionStamp.Create(),  
+            projectId,
+            VersionStamp.Create(),
             assemblyName + "." + suffix,
             assemblyName + "." + suffix,
             language,
-            filePath: language == LanguageNames.CSharp 
-                ? Path.Combine(projectDir, "code.csproj") 
+            filePath: language == LanguageNames.CSharp
+                ? Path.Combine(projectDir, "code.csproj")
                 : Path.Combine(projectDir, "code.vbproj"),
             compilationOptions: options,
             parseOptions: parse,
@@ -156,6 +157,23 @@ static partial class TestHelpers
         // https://github.com/dotnet/roslyn-sdk/issues/140, Sam Harwell mentioned that we should 
         // be forcing a re-parse of the document syntax tree at this point. 
         return await workspace.CurrentSolution.GetDocument(document.Id).RecreateDocumentAsync(TimeoutToken(2));
+    }
+
+    public static async Task VerifyCodeFixAsync<TDiagnosticAnalyzer, TCodeFixProvider>(string language, string diagnosticId, string testCode, string fixedCode)
+        where TDiagnosticAnalyzer : DiagnosticAnalyzer, new()
+        where TCodeFixProvider : CodeFixProvider, new()
+    {
+        var (workspace, project) = CreateWorkspaceAndProject(language, includeMockApi: true);
+        var doc = workspace.AddDocument(project, testCode);
+        await AssertCode.NoErrorsAsync(doc);
+
+        doc = await workspace.ApplyCodeFixAsync<TDiagnosticAnalyzer, TCodeFixProvider>(doc, diagnosticId);
+
+        await AssertCode.NoErrorsAsync(doc);
+
+        var result = (await doc.GetSyntaxTreeAsync(TimeoutToken(5))).ToString();
+
+        Assert.Equal(fixedCode, result);
     }
 
     public static Assembly Emit(this Compilation compilation)

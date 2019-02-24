@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <GlobalPackageReference Include="MSBuilder.GenerateAssemblyInfo" Version="0.2.1" />
+    <!-- TODO: bump to version with fixed Input/Outputs for CoreGenerateThisAssemblyMetadataCS -->
     <GlobalPackageReference Include="MSBuilder.ThisAssembly.Metadata" Version="0.1.4" />
     <GlobalPackageReference Include="NuGet.Build.Packaging" Version="0.2.5-dev.*" />
     <GlobalPackageReference Include="netfx-System.StringResources" Version="3.1.8" />

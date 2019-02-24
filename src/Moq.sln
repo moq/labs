@@ -65,6 +65,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stunts.Package", "Stunts\St
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Package", "Moq\Moq.Package\Moq.Package.csproj", "{46FC4979-83CA-4758-8969-FBACB9F89417}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{E8AD1871-2C6E-47AE-9E14-3DE12CB58EC7}"
+	ProjectSection(SolutionItems) = preProject
+		..\docs\MOQ1000.md = ..\docs\MOQ1000.md
+		..\docs\MoqSdk.md = ..\docs\MoqSdk.md
+		..\docs\Overview.md = ..\docs\Overview.md
+		..\docs\Stunts-Example.md = ..\docs\Stunts-Example.md
+		..\docs\Stunts.md = ..\docs\Stunts.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Testing\Moq.Testing.projitems*{1bd7dfde-2fc8-4899-9903-6ca5724cc185}*SharedItemsImports = 13
