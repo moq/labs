@@ -81,7 +81,7 @@ namespace Moq
         }
 
         /// <summary>
-        /// Invokes the given delegate when the setup method is invoked, typically used 
+        /// Invokes the given delegate when the methog being set up is invoked, typically used 
         /// to access and set ref/out arguments in a typed fashion. Used in combination 
         /// with <see cref="SetupExtension.Setup{TDelegate}(object, TDelegate)"/>.
         /// </summary>
