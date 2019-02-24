@@ -11,18 +11,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="DynamicMock.cs" />
-    <Compile Remove="DynamicMockTests.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <IncludeReferenceFilter Include="Moq" />
     <ExcludeReferenceFilter Include="Moq.Analyzer" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="DynamicMock.cs" />
-    <None Include="DynamicMockTests.cs" />
   </ItemGroup>
 
   <ItemGroup>
