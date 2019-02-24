@@ -1,3 +1,6 @@
+using System.CodeDom.Compiler;
+using System.Runtime.CompilerServices;
+
 namespace Moq
 {
     /// <summary>
@@ -9,60 +12,96 @@ namespace Moq
         /// Creates a mock that inherits or implements the type <typeparamref name="T"/>.
         /// </summary>
         [MockGenerator]
+        [GeneratedCode("Moq", "5.0")]
+        [CompilerGenerated]
         public static T Of<T>(params object[] constructorArgs) => Create<T>(MockBehavior.Loose, constructorArgs);
 
         [MockGenerator]
+        [GeneratedCode("Moq", "5.0")]
+        [CompilerGenerated]
         public static T Of<T, T1>(params object[] constructorArgs) => Create<T>(MockBehavior.Loose, constructorArgs, typeof(T1));
 
         [MockGenerator]
+        [GeneratedCode("Moq", "5.0")]
+        [CompilerGenerated]
         public static T Of<T, T1, T2>(params object[] constructorArgs) => Create<T>(MockBehavior.Loose, constructorArgs, typeof(T1), typeof(T2));
 
         [MockGenerator]
+        [GeneratedCode("Moq", "5.0")]
+        [CompilerGenerated]
         public static T Of<T, T1, T2, T3>(params object[] constructorArgs) => Create<T>(MockBehavior.Loose, constructorArgs, typeof(T1), typeof(T2), typeof(T3));
 
         [MockGenerator]
+        [GeneratedCode("Moq", "5.0")]
+        [CompilerGenerated]
         public static T Of<T, T1, T2, T3, T4>(params object[] constructorArgs) => Create<T>(MockBehavior.Loose, constructorArgs, typeof(T1), typeof(T2), typeof(T3), typeof(T4));
 
         [MockGenerator]
+        [GeneratedCode("Moq", "5.0")]
+        [CompilerGenerated]
         public static T Of<T, T1, T2, T3, T4, T5>(params object[] constructorArgs) => Create<T>(MockBehavior.Loose, constructorArgs, typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5));
 
         [MockGenerator]
+        [GeneratedCode("Moq", "5.0")]
+        [CompilerGenerated]
         public static T Of<T, T1, T2, T3, T4, T5, T6>(params object[] constructorArgs) => Create<T>(MockBehavior.Loose, constructorArgs, typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6));
 
         [MockGenerator]
+        [GeneratedCode("Moq", "5.0")]
+        [CompilerGenerated]
         public static T Of<T, T1, T2, T3, T4, T5, T6, T7>(params object[] constructorArgs) => Create<T>(MockBehavior.Loose, constructorArgs, typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7));
 
         [MockGenerator]
+        [GeneratedCode("Moq", "5.0")]
+        [CompilerGenerated]
         public static T Of<T, T1, T2, T3, T4, T5, T6, T7, T8>(params object[] constructorArgs) => Create<T>(MockBehavior.Loose, constructorArgs, typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8));
 
         /// <summary>
         /// Creates a mock that inherits or implements the type <typeparamref name="T"/>.
         /// </summary>
         [MockGenerator]
+        [GeneratedCode("Moq", "5.0")]
+        [CompilerGenerated]
         public static T Of<T>(MockBehavior behavior, params object[] constructorArgs) => Create<T>(behavior, constructorArgs);
 
         [MockGenerator]
+        [GeneratedCode("Moq", "5.0")]
+        [CompilerGenerated]
         public static T Of<T, T1>(MockBehavior behavior, params object[] constructorArgs) => Create<T>(behavior, constructorArgs, typeof(T1));
 
         [MockGenerator]
+        [GeneratedCode("Moq", "5.0")]
+        [CompilerGenerated]
         public static T Of<T, T1, T2>(MockBehavior behavior, params object[] constructorArgs) => Create<T>(behavior, constructorArgs, typeof(T1), typeof(T2));
 
         [MockGenerator]
+        [GeneratedCode("Moq", "5.0")]
+        [CompilerGenerated]
         public static T Of<T, T1, T2, T3>(MockBehavior behavior, params object[] constructorArgs) => Create<T>(behavior, constructorArgs, typeof(T1), typeof(T2), typeof(T3));
 
         [MockGenerator]
+        [GeneratedCode("Moq", "5.0")]
+        [CompilerGenerated]
         public static T Of<T, T1, T2, T3, T4>(MockBehavior behavior, params object[] constructorArgs) => Create<T>(behavior, constructorArgs, typeof(T1), typeof(T2), typeof(T3), typeof(T4));
 
         [MockGenerator]
+        [GeneratedCode("Moq", "5.0")]
+        [CompilerGenerated]
         public static T Of<T, T1, T2, T3, T4, T5>(MockBehavior behavior, params object[] constructorArgs) => Create<T>(behavior, constructorArgs, typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5));
 
         [MockGenerator]
+        [GeneratedCode("Moq", "5.0")]
+        [CompilerGenerated]
         public static T Of<T, T1, T2, T3, T4, T5, T6>(MockBehavior behavior, params object[] constructorArgs) => Create<T>(behavior, constructorArgs, typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6));
 
         [MockGenerator]
+        [GeneratedCode("Moq", "5.0")]
+        [CompilerGenerated]
         public static T Of<T, T1, T2, T3, T4, T5, T6, T7>(MockBehavior behavior, params object[] constructorArgs) => Create<T>(behavior, constructorArgs, typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7));
 
         [MockGenerator]
+        [GeneratedCode("Moq", "5.0")]
+        [CompilerGenerated]
         public static T Of<T, T1, T2, T3, T4, T5, T6, T7, T8>(MockBehavior behavior, params object[] constructorArgs) => Create<T>(behavior, constructorArgs, typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8));
     }
 }
