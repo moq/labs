@@ -14,7 +14,7 @@ steps:
 - task: MSBuild@1
   displayName: Version
   inputs:
-    solution: src/Moq/Moq.Package/Moq.Package.csproj
+    solution: src/Moq/Moq.Package/Moq.Package.msbuildproj
     msbuildArguments: /t:Version /bl:"$(Build.ArtifactStagingDirectory)\version.binlog"
 
 - task: MSBuild@1
