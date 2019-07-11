@@ -31,11 +31,18 @@ stages:
       clean: true
 
     - task: MSBuild@1
-      displayName: Restore
+      displayName: Restore Script
+      inputs:
+        solution: build.proj
+        configuration: $(Configuration)
+        msbuildArguments: -t:restore
+
+    - task: MSBuild@1
+      displayName: Restore Solution
       inputs:
         solution: src/Moq.sln
         configuration: $(Configuration)
-        msbuildArguments: -t:restore -m -bl:$(Build.ArtifactStagingDirectory)/logs/restore.binlog
+        msbuildArguments: -t:restore -bl:$(Build.ArtifactStagingDirectory)/logs/restore.binlog
 
     - task: MSBuild@1
       displayName: Set Version
