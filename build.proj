@@ -1,8 +1,10 @@
-<Project Sdk="CoreBuild/1.0.0-alpha" DefaultTargets="Help" TreatAsLocalProperty="Configuration">
+<Project Sdk="Microsoft.Build.NoTargets" DefaultTargets="Help" TreatAsLocalProperty="Configuration">
+	<Sdk Name="Microsoft.Build.CentralPackageVersions" />
 
 	<PropertyGroup>
     <!-- Configuration to build. Defaults to 'Debug' -->
 		<Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <TargetFramework>net472</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup Label="Hidden">
@@ -10,15 +12,13 @@
     <AdditionalProperties>Configuration=$(Configuration)</AdditionalProperties>
     <Out Condition="'$(Out)' == ''">$(MSBuildProjectDirectory)\out</Out>
     <GitVersionFile>src\GitInfo.txt</GitVersionFile>
+    <CentralPackagesFile>$(MSBuildProjectDirectory)\src\Packages.props</CentralPackagesFile>
   </PropertyGroup>
 
   <ItemGroup>
-		<PackageReference Include="GitInfo" />
 		<PackageReference Include="xunit.runner.msbuild" />
-	</ItemGroup>
-
-  <!-- Get the proper versions -->
-  <Import Project="src\Packages.props"/>
+    <PackageReference Include="CoreBuild.Help" />
+  </ItemGroup>
 
   <ItemDefinitionGroup>
 		<Solution>
@@ -31,11 +31,15 @@
 		<Solution Include="src\Samples\Samples.sln" />
 	</ItemGroup>
 
+  <!-- Overwritten after restore -->
+  <Target Name="Help" />
+
   <!-- Configures the local environment and restores dependencies. 
        Also sets up the msbuild.rsp so that running the Help target renders colors appropriately. -->
-  <Target Name="Configure" DependsOnTargets="Restore">
+  <Target Name="Configure" DependsOnTargets="Restore" AfterTargets="Restore">
     <!-- Configure colored console used for Help -->
     <MSBuild Projects="$(MSBuildProjectFullPath)" Properties="ForceBuild=Sure" Targets="ColoredConsole" />
+    <Message Text="Run 'msbuild /t:help' to learn more about supported targets and properties." Importance="high" />
   </Target>
 
   <!-- Builds the repository -->
