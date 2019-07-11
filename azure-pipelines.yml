@@ -126,4 +126,4 @@ stages:
               artifactName: packages
 
           - script: 'sleet push --config none $(Pipeline.Workspace)/packages -f --verbose -p "SLEET_FEED_CONNECTIONSTRING=$(SLEET_FEED_CONNECTIONSTRING)"'
-            displayName: 'sleet push'
+            displayName: 'Push packages via Sleet'
