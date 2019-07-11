@@ -29,20 +29,12 @@ AssemblyVersion=$(AssemblyVersion)" />
           Returns="$(Version)"
           Condition="'$(GitInfoImported)' == 'true' And '$(ExcludeRestorePackageImports)' != 'true'">
 
-    <PropertyGroup>
-      <!-- We don't build stable versions from non-master branches. When the version came from the branch, we leave it as-is. -->
-      <GitSemVerDashLabel Condition="'$(GitBranch)' != 'master' and '$(GitSemVerDashLabel)' == '' and '$(GitSemVerSource)' != 'Branch'">-$(GitBranch)</GitSemVerDashLabel>
-    </PropertyGroup>
-
     <ItemGroup>
-      <VersionMetadata Include="$(GitCommits)" Condition="'$(GitSemVerDashLabel)' == '' and '$(GitCommits)' != '0'"/>
+      <LabelMetadata Include="$(GitSemVerLabel)" Condition="'$(GitSemVerLabel)' != ''" />
+      <LabelMetadata Include="$(GitBranch)" Condition="'$(GitBranch)' != 'master' and '$(GitSemVerSource)' != 'Branch' and '$(GitSemVerLabel)' != '$(GitBranch)'" />
+      <LabelMetadata Include="pr$(SYSTEM_PULLREQUEST_PULLREQUESTNUMBER)" Condition="'$(SYSTEM_PULLREQUEST_PULLREQUESTNUMBER)' != ''" />
 
-      <!-- Branch metadata always present for non-master branches, unless the existing label matches the branch.
-           For a versioned branch, it doesn't make sense either. -->
-      <VersionMetadata Include="$(GitBranch)" Condition="'$(GitBranch)' != 'master' and '$(GitSemVerSource)' != 'Branch' and '$(GitSemVerDashLabel)' != '-$(GitBranch)'" />
-
-      <VersionMetadata Condition="$(CI) and '$(BUILD_REASON)' == 'PullRequest'"
-                       Include="pr.$(SYSTEM_PULLREQUEST_PULLREQUESTNUMBER)"/>
+      <VersionMetadata Include="$(GitCommits)" Condition="'$(GitSemVerLabel)' == '' and '$(GitCommits)' != '0'" />
       <VersionMetadata Include="sha.$(GitCommit)" Condition="'$(GitCommit)' != ''"/>
       <VersionMetadata Condition="$(CI)"
                        Include="build.$(BUILD_BUILDID)"/>
@@ -51,6 +43,9 @@ AssemblyVersion=$(AssemblyVersion)" />
     <PropertyGroup>
       <VersionMetadataLabel>@(VersionMetadata -> '%(Identity)', '-')</VersionMetadataLabel>
       <VersionMetadataPlusLabel Condition="'$(VersionMetadataLabel)' != ''">+$(VersionMetadataLabel)</VersionMetadataPlusLabel>
+
+      <LabelMetadata>@(LabelMetadata -> '%(Identity)', '-')</LabelMetadata>
+      <GitSemVerDashLabel Condition="'$(LabelMetadata)' != ''">-$(LabelMetadata)</GitSemVerDashLabel>
       <GitSemVerDashLabel Condition="'$(GitSemVerDashLabel)' != '' and '$(GitCommits)' != '0'">$(GitSemVerDashLabel).$(GitCommits)</GitSemVerDashLabel>
 
       <BuildVersion>$(GitBaseVersionMajor).$(GitBaseVersionMinor).$(GitBaseVersionPatch)$(GitSemVerDashLabel)$(VersionMetadataPlusLabel)</BuildVersion>
