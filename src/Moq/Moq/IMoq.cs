@@ -5,7 +5,7 @@ namespace Moq
     /// <summary>
     /// Provides configuration information for a mock.
     /// </summary>
-    public interface IMoq : IMock, IFluentInterface
+    public interface IMoq : IMock
     {
         /// <summary>
         /// Gets the <see cref="MockBehavior"/> of the mock.

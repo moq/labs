@@ -3,7 +3,7 @@
     /// <summary>
     /// Provides introspection information about a mock.
     /// </summary>
-    public interface IMock<T> : IMock
+    public interface IMock<T> : IMock, IFluentInterface
     {
         /// <summary>
         /// The mock object this introspection data belongs to.
