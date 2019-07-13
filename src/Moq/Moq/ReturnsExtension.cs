@@ -9,7 +9,7 @@ namespace Moq
     /// <summary>
     /// Extensions for configuring return values from mock invocations.
     /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public static partial class ReturnsExtension
     {
         /// <summary>

@@ -8,7 +8,7 @@ namespace Moq
     /// <summary>
     /// Provides mock verification methods.
     /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public static class VerifyExtension
     {
         /// <summary>

@@ -7,7 +7,7 @@ namespace Moq
     /// <summary>
     /// Extensions for throwing exception from mock invocations.
     /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public static class ThrowsExtension
     {
         /// <summary>

@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.Host;
 
 namespace Microsoft.CodeAnalysis
 {
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public static class HostServiceExtensions
     {
         static readonly ConcurrentDictionary<Tuple<Type, Type, Type>, Delegate> getExportsCache = new ConcurrentDictionary<Tuple<Type, Type, Type>, Delegate>();

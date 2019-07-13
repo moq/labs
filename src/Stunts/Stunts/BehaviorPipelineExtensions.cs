@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace Stunts
 {
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public static class BehaviorPipelineExtensions
     {
         /// <summary>

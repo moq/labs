@@ -8,7 +8,7 @@ namespace Moq
     /// invocation tracking and strict mock behavior should 
     /// be suspended.
     /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public static class SetupExtension
     {
         /// <summary>

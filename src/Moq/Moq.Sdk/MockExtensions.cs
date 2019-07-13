@@ -12,7 +12,7 @@ namespace Moq.Sdk
     /// <summary>
     /// Usability functions for working with mocks.
     /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public static class MockExtensions
     {
         /// <summary>

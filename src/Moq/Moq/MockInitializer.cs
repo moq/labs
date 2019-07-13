@@ -8,6 +8,10 @@ using Stunts;
 
 namespace Moq
 {
+    /// <summary>
+    /// Provides the <see cref="Initialize"/> method for configuring the initial 
+    /// behaviors set of behaviors for a given <see cref="MockBehavior"/>.
+    /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static class MockInitializer
     {

@@ -10,7 +10,7 @@ namespace Moq
     /// <summary>
     /// Extension for naming mocks.
     /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public static class NamedExtension
     {
         /// <summary>
