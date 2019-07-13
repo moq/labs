@@ -1,11 +1,11 @@
+using System;
+using System.CodeDom.Compiler;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using Moq.Sdk;
+
 namespace Moq
 {
-    using System;
-    using System.CodeDom.Compiler;
-    using System.Reflection;
-    using System.Runtime.CompilerServices;
-    using Moq.Sdk;
-
     /// <summary>
     /// Instantiates mocks for the specified types.
     /// </summary>
