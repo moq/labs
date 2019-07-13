@@ -20,6 +20,8 @@
     <PackageProjectUrl>https://github.com/moq/moq/</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/moq/moq/blob/master/LICENSE</PackageLicenseUrl>
     <Copyright>Copyright © 2017 Daniel Cazzulino and Contributors</Copyright>
+
+    <PackageOutputPath Condition="'$(PackageOutputPath)' == ''">$(MSBuildThisFileDirectory)\..\..\out</PackageOutputPath>
   </PropertyGroup>
 
   <Import Project="Packaging.props" Condition="'$(MSBuildProjectExtension)' == '.msbuildproj' or $(MSBuildProjectName.EndsWith('.Package'))" />

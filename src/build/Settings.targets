@@ -40,22 +40,14 @@
     </ItemGroup>
   </Target>
 
-  <!-- If a package is produced, copy it to %temp%\packages so it can be easily tested locally 
-       This deletes any restored packages with the matching id, so that wildcard references 
-       will automatically pick up this newest package.
-  -->
-  <Target Name="LocalPublish" Condition="'$(CI)' != 'true'" AfterTargets="Pack">
-    <Exec Command='rd "$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())" /q /s' Condition="Exists('$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())')" />
-
-    <ItemGroup>
-      <_ToDelete Include="$(TEMP)\packages\$(PackageId)*.nupkg" />
-      <ToDelete Include="@(_ToDelete)" 
-                Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(Filename)', '$(PackageId)\.\d+\.\d+\.\d+\.*'))" />
-    </ItemGroup>
-    <Delete Files="@(ToDelete)" />
-
-    <MakeDir Directories="$(TEMP)\packages" Condition="!Exists('$(TEMP)\packages')" />
-    <Copy SourceFiles="$(PackageTargetPath)" DestinationFolder="$(TEMP)\packages" />
+  <!-- If a package is produced, delete any restored packages with the matching id
+       from the local cache, so that package references will force a new restore 
+       that will pick up the changes. -->
+  <Target Name="DeleteCachedPackage" Condition="'$(CI)' != 'true'" AfterTargets="Pack">
+    <Exec Command='rd "$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())" /q /s' 
+          Condition="Exists('$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())') And '$(OS)' == 'Windows_NT'" />
+    <Exec Command='rm -rf "$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())"' 
+          Condition="Exists('$(NuGetPackageRoot)$(PackageId.ToLowerInvariant())') And '$(OS)' != 'Windows_NT'" />
   </Target>
 
   <!-- IsTestProject is set by xunit  -->

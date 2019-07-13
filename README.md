@@ -19,10 +19,37 @@ msbuild /t:configure
 msbuild
 ```
 
-The default target is `Help`, which will render the documentation for the build itself and what targets are available. Since this is a [corebuild](http://www.corebuild.io) standard repository, you can run:
+The default target is `Help`, which will render the documentation for the build itself and what targets are available. 
+Since this is a [corebuild](http://www.corebuild.io) standard repository, you can run:
 
 ```
 msbuild /t:configure
 msbuild /t:build
 msbuild /t:test
+```
+
+## Testing built packages locally
+
+Release builds will produce packages. In Debug builds, you will need to right-click and `Pack` the relevant project, 
+such as `Moq.Package` (which will also pack its dependencies like `Stunts.Package`). These packages will be dropped 
+in the `out` folder in the repository root directory. To test these packages you can just add a package source 
+pointing to it. You can also just place a `NuGet.Config` like the following anywhere above the directory with the 
+test solution(s):
+
+```xml
+<configuration>
+	<packageSources>
+		<add key="moq" value="[cloned repo dir]\out" />
+  </packageSources>
+</configuration>
+```
+
+Every time the packages are produced, the local nuget cache is cleared, so that a subsequent restore in VS will 
+automatically cause the updated version to be unpacked again. If versions change between package builds, you can 
+just reference them with a wildcard so the latest will automatically be chosen, such as:
+
+```xml
+<ItemGroup>
+  <PackageReference Include="Moq" Version="5.0.0-alpha.*"/>
+</ItemGroup>
 ```
