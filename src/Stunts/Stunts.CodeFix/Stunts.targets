@@ -1,6 +1,6 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <Target Name="AddStuntCodeFixAnalyzers" BeforeTargets="CollectAnalyzersDesignTime">
+  <Target Name="_AddStuntsDesignTimeAnalyzers" BeforeTargets="CoreCompile" Condition="'$(DesignTimeBuild)' == 'true'">
     <ItemGroup>
       <!-- CodeFix analyzers should only be added to DTBs since they depend on 
          editor features that are not available from csc/vbc -->
