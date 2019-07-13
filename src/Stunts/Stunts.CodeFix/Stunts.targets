@@ -1,22 +1,23 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <ItemGroup>
+    <!-- Include generated stunts from intermediate output -->
     <Compile Include="$(IntermediateOutputPath)Stunts/*$(DefaultLanguageSourceExtension)">
-      <Link>Stunts/%(Filename)%(Extension)</Link>
       <Visible>false</Visible>
       <IsIntermediateCodeGen>true</IsIntermediateCodeGen>
+    </Compile>
+    <!-- Ensure nuget-linked source content files are not shown in the project -->
+    <Compile Update="$(NuGetPackageRoot)stunts/*/contentFiles/**/*$(DefaultLanguageSourceExtension)">
+      <Visible>false</Visible>
+      <Link />
     </Compile>
     <IntermediateCodeGenPath Include="$(IntermediateOutputPath)Stunts/" />
   </ItemGroup>
 
-  <!-- Because our analyzers are intended to be design-time only, 
-       we cannot just include them in the package `analyzer` folder.
-       Instead, we have to use an alternative mechanism that only 
-       adds them for VS. The chosen hook is to check for the DesignTimeBuild 
-       property which is passed by VS to the project when retrieving the 
-       analyers to run as part of the design-time build only. -->
-  <Target Name="_AddDesignTimeAnalyzers" BeforeTargets="CoreCompile" Condition="'$(DesignTimeBuild)' == 'true'">
+  <Target Name="AddStuntCodeFixAnalyzers" BeforeTargets="CollectAnalyzersDesignTime">
     <ItemGroup>
+      <!-- CodeFix analyzers should only be added to DTBs since they depend on 
+         editor features that are not available from csc/vbc -->
       <Analyzer Include="@(CodeFix)" />
     </ItemGroup>
   </Target>
