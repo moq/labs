@@ -23,7 +23,7 @@ namespace Stunts.Tests
 
         [Theory]
         [MemberData(nameof(GetPackageVersions))]
-        public void CanAccessInternals(PackageIdentity package)
+        public void CanAccessRequiredInternalsViaReflection(PackageIdentity package)
         {
             var projectFile = Path.GetFullPath("test-" + package.ToString() + ".csproj");
             File.WriteAllText(projectFile,
