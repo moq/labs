@@ -14,6 +14,11 @@ namespace Moq
     partial class Mock
     {
         /// <summary>
+        /// Gets the configuration and introspection for the given mocked instance.
+        /// </summary>
+        public static IMoq<T> Get<T>(T instance) => new Moq<T>(instance.AsMock());
+
+        /// <summary>
         /// Creates the mock instance by using the specified types to 
         /// lookup the mock type in the assembly defining this class.
         /// </summary>

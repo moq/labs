@@ -6,7 +6,7 @@ namespace Moq.Sdk
     /// <summary>
     /// Provides introspection information about a mock.
     /// </summary>
-    public interface IMock : IStunt
+    public interface IMock : IStunt, IFluentInterface
     {
         /// <summary>
         /// Returns a <see cref="IMockBehaviorPipeline"/> for the given <see cref="IMockSetup"/>.

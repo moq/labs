@@ -3,13 +3,9 @@
 namespace Moq
 {
     /// <summary>
-    /// Provides configuration information for a mock.
+    /// Provides configuration and introspection information for a mock.
     /// </summary>
-    public interface IMoq<T> : IMoq
+    public interface IMoq<T> : IMoq, IMock<T>, IFluentInterface
     {
-        /// <summary>
-        /// Access the underlying introspection data for the mock.
-        /// </summary>
-        new IMock<T> Sdk { get; }
     }
 }
