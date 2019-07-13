@@ -313,7 +313,7 @@ namespace Moq.Tests
         public void ChangeDefaultValue()
         {
             var calculator = Mock.Of<ICalculator>();
-            var moq = calculator.AsMoq();
+            var moq = Mock.Get(calculator);
 
             Assert.Equal(MockBehavior.Loose, moq.Behavior);
 
@@ -332,7 +332,7 @@ namespace Moq.Tests
         public void ChangeBehavior()
         {
             var calculator = Mock.Of<ICalculator>();
-            var moq = calculator.AsMoq();
+            var moq = Mock.Get(calculator);
 
             Assert.Equal(MockBehavior.Loose, moq.Behavior);
 
@@ -348,7 +348,7 @@ namespace Moq.Tests
         public void ChangingBehaviorPreservesDefaultValue()
         {
             var calculator = Mock.Of<ICalculator>();
-            var moq = calculator.AsMoq();
+            var moq = Mock.Get(calculator);
 
             Assert.Equal(MockBehavior.Loose, moq.Behavior);
 
