@@ -11,6 +11,10 @@ namespace Moq.Sdk
     {
         readonly IMock mock;
 
+        /// <summary>
+        /// Initializes the decorator with the given underlying <see cref="IMock"/> 
+        /// to use as default pass-through.
+        /// </summary>
         protected MockDecorator(IMock mock) => this.mock = mock;
 
         /// <summary>

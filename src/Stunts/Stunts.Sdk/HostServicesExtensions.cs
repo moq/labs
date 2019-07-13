@@ -8,11 +8,19 @@ using Microsoft.CodeAnalysis.Host;
 
 namespace Microsoft.CodeAnalysis
 {
+    /// <summary>
+    /// Extension methods for <see cref="HostServices"/>, to allow accessing its MEF exports.
+    /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static class HostServiceExtensions
     {
         static readonly ConcurrentDictionary<Tuple<Type, Type, Type>, Delegate> getExportsCache = new ConcurrentDictionary<Tuple<Type, Type, Type>, Delegate>();
 
+        /// <summary>
+        /// Gets the exports and their metadata.
+        /// </summary>
+        /// <typeparam name="TExtension">The type of MEF extension to retrieve.</typeparam>
+        /// <typeparam name="TMetadata">The metadata of the exported MEF extension.</typeparam>
         public static IEnumerable<Lazy<TExtension, TMetadata>> GetExports<TExtension, TMetadata>(this HostServices services)
         {
             var getExports = getExportsCache.GetOrAdd(Tuple.Create(services.GetType(), typeof(TExtension), typeof(TMetadata)),

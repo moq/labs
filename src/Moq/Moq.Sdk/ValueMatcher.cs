@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Diagnostics;
 
 namespace Moq.Sdk
@@ -9,7 +8,7 @@ namespace Moq.Sdk
     /// </summary>
     public class ValueMatcher : IArgumentMatcher, IEquatable<ValueMatcher>
     {
-        Tuple<Type, object> value;
+        readonly Tuple<Type, object> value;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ValueMatcher"/> class.
@@ -53,10 +52,13 @@ namespace Moq.Sdk
 
         #region Equality
 
+        /// <inheritdoc />
         public bool Equals(ValueMatcher other) => object.Equals(value, other?.value);
 
+        /// <inheritdoc />
         public override bool Equals(object obj) => Equals(obj as ValueMatcher);
 
+        /// <inheritdoc />
         public override int GetHashCode() => value.GetHashCode();
 
         #endregion

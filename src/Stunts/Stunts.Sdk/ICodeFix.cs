@@ -21,8 +21,7 @@ namespace Stunts
         ImmutableArray<Diagnostic> Diagnostics { get; }
 
         /// <summary>
-        /// The name of the <see cref="CodeFixProvider"/>, which can be retrieved
-        /// using <see cref="ICodeFixService.GetCodeFixProvider"/>.
+        /// The name of the <see cref="Microsoft.CodeAnalysis.CodeFixes.CodeFixProvider"/>.
         /// </summary>
         string Provider { get; }
     }

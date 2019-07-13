@@ -1,22 +1,22 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Reflection;
 using Stunts;
 
 namespace Moq.Sdk
 {
     /// <summary>
     /// Matches an argument with the given type <typeparamref name="T"/>, 
-    /// as long as it satisfies a given condition.
+    /// as long as it is not equal to the initial value.
     /// </summary>
     /// <typeparam name="T">Type of argument being conditioned.</typeparam>
     public class NotMatcher<T> : IArgumentMatcher, IEquatable<NotMatcher<T>>
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        T value;
+        readonly T value;
 
+        /// <summary>
+        /// Initalizes the matcher with the value to check for.
+        /// </summary>
         public NotMatcher(T value) => this.value = value;
 
         /// <summary>
@@ -25,12 +25,10 @@ namespace Moq.Sdk
         public Type ArgumentType => typeof(T);
 
         /// <summary>
-        /// Evaluates whether the given value matches this instance.
+        /// Evaluates whether the given value matches this instance, which is always 
+        /// the case unless the initial value equals the <paramref name="value"/>.
         /// </summary>
-        public bool Matches(object value)
-        {
-            return !(Object.Equals(this.value, value));
-        }
+        public bool Matches(object value) => !(Object.Equals(this.value, value));
 
         /// <summary>
         /// Gets a friendly representation of the object.
@@ -45,11 +43,14 @@ namespace Moq.Sdk
 
         #region Equality
 
+        /// <inheritdoc />
         public bool Equals(NotMatcher<T> other) => other == null ? false : 
             ArgumentType == other.ArgumentType && object.Equals(value, other.value);
 
+        /// <inheritdoc />
         public override bool Equals(object obj) => Equals(obj as NotMatcher<T>);
 
+        /// <inheritdoc />
         public override int GetHashCode() 
             => new HashCode().Add(ArgumentType).Add(value == null ? 0 : value.GetHashCode()).ToHashCode();
 

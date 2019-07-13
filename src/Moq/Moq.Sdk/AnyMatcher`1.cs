@@ -57,10 +57,24 @@ namespace Moq.Sdk
 
         #region Equality
 
+        /// <summary>
+        /// Checks whether this matcher equals the <paramref name="other"/>, which 
+        /// is always the case if both have the same <typeparamref name="T"/> and the 
+        /// <paramref name="other"/> is not null.
+        /// </summary>
+        /// <returns><see langword="true"/> if the <paramref name="other"/> is not null.</returns>
         public bool Equals(AnyMatcher<T> other) => other != null;
 
-        public override bool Equals(object obj) => Equals(obj as AnyMatcher<T>);
+        /// <summary>
+        /// Checks whether this matcher equals the <paramref name="other"/>, which 
+        /// is always the case if it is also an <see cref="AnyMatcher{T}"/> with the same 
+        /// <typeparamref name="T"/> and it's not <see langword="null"/>.
+        /// </summary>
+        /// <returns><see langword="true"/> if <paramref name="other"/> is not null and 
+        /// it's an <see cref="AnyMatcher{T}"/> with the same <typeparamref name="T"/> .</returns>
+        public override bool Equals(object other) => Equals(other as AnyMatcher<T>);
 
+        /// <inheritdoc />
         public override int GetHashCode() => typeof(T).GetHashCode();
 
         #endregion

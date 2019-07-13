@@ -35,6 +35,7 @@ namespace Moq
             // See http://source.roslyn.io/#Microsoft.CodeAnalysis.VisualBasic.Features/ImplementInterface/VisualBasicImplementInterfaceCodeFixProvider.vb,16
             "BC30149");
 
+        /// <inheritdoc />
         public override async Task RegisterCodeFixesAsync(CodeFixContext context)
         {
             var document = context.Document;
@@ -70,6 +71,10 @@ namespace Moq
             }
         }
 
+        /// <summary>
+        /// Returns <see langword="null"/> since this provider does not support batch-fixing.
+        /// </summary>
+        /// <returns></returns>
         public sealed override FixAllProvider GetFixAllProvider() => null;
 
         class ImplementMockCodeAction : CodeAction

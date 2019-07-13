@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Diagnostics;
 using System.Reflection;
 using TypeNameFormatter;
@@ -17,6 +16,10 @@ namespace Moq.Sdk
         bool isValueType;
         bool isNullable;
 
+        /// <summary>
+        /// Initializes the matcher with the given <paramref name="argumentType"/>.
+        /// </summary>
+        /// <param name="argumentType">Type of argument that this matcher matches.</param>
         public AnyMatcher(Type argumentType)
         {
             ArgumentType = argumentType ?? throw new ArgumentNullException();
@@ -57,10 +60,13 @@ namespace Moq.Sdk
 
         #region Equality
 
+        /// <inheritdoc />
         public bool Equals(AnyMatcher other) => other != null && info.Equals(other.info);
 
+        /// <inheritdoc />
         public override bool Equals(object other) => Equals(other as AnyMatcher);
 
+        /// <inheritdoc />
         public override int GetHashCode() => info.GetHashCode();
 
         #endregion

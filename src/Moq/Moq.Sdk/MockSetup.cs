@@ -10,6 +10,9 @@ using TypeNameFormatter;
 
 namespace Moq.Sdk
 {
+    /// <summary>
+    /// Default implementation of the configuration used to set up a <see cref="IMockBehaviorPipeline" />.
+    /// </summary>
     public partial class MockSetup : IMockSetup, IEquatable<MockSetup>
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -17,16 +20,23 @@ namespace Moq.Sdk
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         readonly IArgumentMatcher[] matchers;
 
+        /// <summary>
+        /// Initializes the class with the <paramref name="invocation"/> and 
+        /// <paramref name="matchers"/> that determine this setup instance.
+        /// </summary>
         public MockSetup(IMethodInvocation invocation, IArgumentMatcher[] matchers)
         {
             this.invocation = invocation ?? throw new ArgumentNullException(nameof(invocation));
             this.matchers = matchers ?? throw new ArgumentNullException(nameof(matchers));
         }
 
+        /// <inheritdoc />
         public IMethodInvocation Invocation => invocation;
 
+        /// <inheritdoc />
         public IArgumentMatcher[] Matchers => matchers;
 
+        /// <inheritdoc />
         public bool AppliesTo(IMethodInvocation actualInvocation)
         {
             if (actualInvocation == null)
@@ -118,15 +128,19 @@ namespace Moq.Sdk
 
         #region Equality
 
+        /// <inheritdoc />
         public bool Equals(IMockSetup other)
             => other != null && Invocation.Equals(other.Invocation) && Matchers.SequenceEqual(other.Matchers);
 
+        /// <inheritdoc />
         public bool Equals(MockSetup other) 
             => Equals((IMockSetup)other);
 
+        /// <inheritdoc />
         public override bool Equals(object obj) 
             => Equals(obj as IMockSetup);
 
+        /// <inheritdoc />
         public override int GetHashCode() 
             => new HashCode().Add(Invocation).AddRange(Matchers).ToHashCode();
 

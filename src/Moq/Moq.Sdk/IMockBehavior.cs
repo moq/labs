@@ -11,8 +11,9 @@ namespace Moq.Sdk
     public interface IMockBehavior
     {
         /// <summary>
-        /// Executes the behavior for the given invocation.
+        /// Executes the behavior for the given mock and method invocation.
         /// </summary>
+        /// <param name="mock">The mock the invocation is being performed on.</param>
         /// <param name="invocation">The current method invocation.</param>
         /// <param name="next">Delegate to invoke the next behavior in the pipeline.</param>
         /// <returns>The result of the method invocation.</returns>

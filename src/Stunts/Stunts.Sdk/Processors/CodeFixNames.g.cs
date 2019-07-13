@@ -1,3 +1,4 @@
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 namespace Stunts.Processors
 {
     partial class CodeFixNames
@@ -12,12 +13,15 @@ namespace Stunts.Processors
             public const string AddNew = "AddNew";
             public const string AddOverloads = "AddOverloads";
             public const string AddParameter = "AddParameter";
+            public const string AddParenthesesAroundConditionalExpressionInInterpolatedString = "AddParenthesesAroundConditionalExpressionInInterpolatedString";
+            public const string AliasAmbiguousType = "AliasAmbiguousType";
             public const string ApplyNamingStyle = "ApplyNamingStyle";
             public const string ChangeReturnType = "ChangeReturnType";
             public const string ChangeToYield = "ChangeToYield";
             public const string ConvertToAsync = "ConvertToAsync";
             public const string ConvertToIterator = "ConvertToIterator";
             public const string CorrectNextControlVariable = "CorrectNextControlVariable";
+            public const string CSharpUseAutoPropertyCodeFixProvider = "CSharpUseAutoPropertyCodeFixProvider";
             public const string FixIncorrectExitContinue = "FixIncorrectExitContinue";
             public const string FixIncorrectFunctionReturnType = "FixIncorrectFunctionReturnType";
             public const string FullyQualify = "FullyQualify";
@@ -33,6 +37,8 @@ namespace Stunts.Processors
             public const string ImplementInterface = "ImplementInterface";
             public const string InsertMissingCast = "InsertMissingCast";
             public const string InvokeDelegateWithConditionalAccessCodeFixProvider = "InvokeDelegateWithConditionalAccessCodeFixProvider";
+            public const string MakeFieldReadonly = "MakeFieldReadonly";
+            public const string MakeMethodSynchronous = "MakeMethodSynchronous";
             public const string MoveToTopOfFile = "MoveToTopOfFile";
             public const string PopulateSwitch = "PopulateSwitch";
             public const string PreferFrameworkType = "PreferFrameworkType";
@@ -40,14 +46,18 @@ namespace Stunts.Processors
             public const string RemoveDocCommentNode = "RemoveDocCommentNode";
             public const string RemoveUnnecessaryCast = "RemoveUnnecessaryCast";
             public const string RemoveUnnecessaryImports = "RemoveUnnecessaryImports";
+            public const string RemoveUnreachableCode = "RemoveUnreachableCode";
+            public const string RemoveUnusedLocalFunction = "RemoveUnusedLocalFunction";
             public const string RemoveUnusedVariable = "RemoveUnusedVariable";
             public const string SimplifyNames = "SimplifyNames";
+            public const string SimplifyThisOrMe = "SimplifyThisOrMe";
             public const string SpellCheck = "SpellCheck";
             public const string UseCollectionInitializer = "UseCollectionInitializer";
             public const string UseExplicitType = "UseExplicitType";
             public const string UseImplicitType = "UseImplicitType";
             public const string UseObjectInitializer = "UseObjectInitializer";
             public const string UseThrowExpression = "UseThrowExpression";
+            public const string VisualBasicUseAutoPropertyCodeFixProvider = "VisualBasicUseAutoPropertyCodeFixProvider";
         }
 
         public static partial class CSharp
@@ -59,10 +69,13 @@ namespace Stunts.Processors
             public const string AddMissingReference = "AddMissingReference";
             public const string AddNew = "AddNew";
             public const string AddParameter = "AddParameter";
+            public const string AddParenthesesAroundConditionalExpressionInInterpolatedString = "AddParenthesesAroundConditionalExpressionInInterpolatedString";
+            public const string AliasAmbiguousType = "AliasAmbiguousType";
             public const string ApplyNamingStyle = "ApplyNamingStyle";
             public const string ChangeReturnType = "ChangeReturnType";
             public const string ChangeToYield = "ChangeToYield";
             public const string ConvertToAsync = "ConvertToAsync";
+            public const string CSharpUseAutoPropertyCodeFixProvider = "CSharpUseAutoPropertyCodeFixProvider";
             public const string FullyQualify = "FullyQualify";
             public const string GenerateConstructor = "GenerateConstructor";
             public const string GenerateConversion = "GenerateConversion";
@@ -73,14 +86,18 @@ namespace Stunts.Processors
             public const string ImplementAbstractClass = "ImplementAbstractClass";
             public const string ImplementInterface = "ImplementInterface";
             public const string InvokeDelegateWithConditionalAccessCodeFixProvider = "InvokeDelegateWithConditionalAccessCodeFixProvider";
+            public const string MakeMethodSynchronous = "MakeMethodSynchronous";
             public const string PopulateSwitch = "PopulateSwitch";
             public const string PreferFrameworkType = "PreferFrameworkType";
             public const string QualifyMemberAccess = "QualifyMemberAccess";
             public const string RemoveDocCommentNode = "RemoveDocCommentNode";
             public const string RemoveUnnecessaryCast = "RemoveUnnecessaryCast";
             public const string RemoveUnnecessaryImports = "RemoveUnnecessaryImports";
+            public const string RemoveUnreachableCode = "RemoveUnreachableCode";
+            public const string RemoveUnusedLocalFunction = "RemoveUnusedLocalFunction";
             public const string RemoveUnusedVariable = "RemoveUnusedVariable";
             public const string SimplifyNames = "SimplifyNames";
+            public const string SimplifyThisOrMe = "SimplifyThisOrMe";
             public const string SpellCheck = "SpellCheck";
             public const string UseCollectionInitializer = "UseCollectionInitializer";
             public const string UseExplicitType = "UseExplicitType";
@@ -96,6 +113,7 @@ namespace Stunts.Processors
             public const string AddMissingReference = "AddMissingReference";
             public const string AddOverloads = "AddOverloads";
             public const string AddParameter = "AddParameter";
+            public const string AliasAmbiguousType = "AliasAmbiguousType";
             public const string ApplyNamingStyle = "ApplyNamingStyle";
             public const string ChangeToYield = "ChangeToYield";
             public const string ConvertToAsync = "ConvertToAsync";
@@ -115,6 +133,8 @@ namespace Stunts.Processors
             public const string ImplementAbstractClass = "ImplementAbstractClass";
             public const string ImplementInterface = "ImplementInterface";
             public const string InsertMissingCast = "InsertMissingCast";
+            public const string MakeFieldReadonly = "MakeFieldReadonly";
+            public const string MakeMethodSynchronous = "MakeMethodSynchronous";
             public const string MoveToTopOfFile = "MoveToTopOfFile";
             public const string PopulateSwitch = "PopulateSwitch";
             public const string PreferFrameworkType = "PreferFrameworkType";
@@ -124,9 +144,12 @@ namespace Stunts.Processors
             public const string RemoveUnnecessaryImports = "RemoveUnnecessaryImports";
             public const string RemoveUnusedVariable = "RemoveUnusedVariable";
             public const string SimplifyNames = "SimplifyNames";
+            public const string SimplifyThisOrMe = "SimplifyThisOrMe";
             public const string SpellCheck = "SpellCheck";
             public const string UseCollectionInitializer = "UseCollectionInitializer";
             public const string UseObjectInitializer = "UseObjectInitializer";
+            public const string VisualBasicUseAutoPropertyCodeFixProvider = "VisualBasicUseAutoPropertyCodeFixProvider";
         }
     }
 }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member

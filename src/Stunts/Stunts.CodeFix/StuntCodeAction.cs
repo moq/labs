@@ -12,13 +12,19 @@ using Microsoft.CodeAnalysis.Simplification;
 
 namespace Stunts
 {
+    /// <summary>
+    /// Code action that performs the actual code generation.
+    /// </summary>
     public class StuntCodeAction : CodeAction
     {
-        string title;
-        Document document;
+        readonly string title;
+        readonly Document document;
         readonly Diagnostic diagnostic;
         readonly NamingConvention naming;
 
+        /// <summary>
+        /// Initializes the action.
+        /// </summary>
         public StuntCodeAction(string title, Document document, Diagnostic diagnostic, NamingConvention naming)
         {
             this.title = title;
@@ -27,12 +33,18 @@ namespace Stunts
             this.naming = naming;
         }
 
+        /// <inheritdoc />
         public override string EquivalenceKey => diagnostic.Id + ":" + diagnostic.Properties["TargetFullName"];
 
+        /// <inheritdoc />
         public override string Title => title;
 
+        /// <summary>
+        /// Gets the generator for the given coding convention.
+        /// </summary>
         protected virtual StuntGenerator CreateGenerator(NamingConvention naming) => new StuntGenerator(naming);
 
+        /// <inheritdoc />
         protected override async Task<Document> GetChangedDocumentAsync(CancellationToken cancellationToken)
         {
             var root = await document.GetSyntaxRootAsync(cancellationToken);

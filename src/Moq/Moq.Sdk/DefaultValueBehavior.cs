@@ -11,9 +11,15 @@ namespace Moq.Sdk
     /// </summary>
     public class DefaultValueBehavior : IStuntBehavior
     {
+        /// <summary>
+        /// Initializes the behavior with a default <see cref="DefaultValueProvider"/>.
+        /// </summary>
         public DefaultValueBehavior()
             : this(new DefaultValueProvider()) { }
 
+        /// <summary>
+        /// Initializes the behavior with a specific <see cref="DefaultValueProvider"/>.
+        /// </summary>
         public DefaultValueBehavior(DefaultValueProvider provider) => Provider = provider;
 
         /// <summary>

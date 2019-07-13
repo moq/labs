@@ -12,13 +12,19 @@ using VisualBasic = Microsoft.CodeAnalysis.VisualBasic.Syntax;
 
 namespace Stunts
 {
+    /// <summary>
+    /// Allows automatically fixing the ordering of mock generator method 
+    /// type parameters.
+    /// </summary>
     // TODO: not working yet
     // [ExportCodeFixProvider(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public class MoveBaseTypeFirstCodeFixProvider : CodeFixProvider
     {
+        /// <inheritdoc />
         public override ImmutableArray<string> FixableDiagnosticIds { get; }
             = ImmutableArray.Create(StuntDiagnostics.BaseTypeNotFirst.Id);
 
+        /// <inheritdoc />
         public override async Task RegisterCodeFixesAsync(CodeFixContext context)
         {
             var document = context.Document;
@@ -28,8 +34,6 @@ namespace Stunts
             var token = root.FindToken(span.Start);
             if (!token.Span.IntersectsWith(span))
                 return;
-
-            var model = await document.GetSemanticModelAsync(context.CancellationToken);
 
             // Getting the inner-most ensure we get the type identifiers, rather 
             // than the SimpleBaseTypeSyntax, from which we can't get the symbol.

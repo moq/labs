@@ -12,7 +12,11 @@ namespace Moq.Sdk
         /// The most recent invocation performed on the mock, tracked 
         /// by the <see cref="MockTrackingBehavior"/>.
         /// </summary>
-        public static IMethodInvocation CurrentInvocation => CallContext<IMethodInvocation>.GetData();
+        public static IMethodInvocation CurrentInvocation
+        {
+            get => CallContext<IMethodInvocation>.GetData();
+            set => CallContext<IMethodInvocation>.SetData(value);
+        }
 
         /// <summary>
         /// The last invocation on the mock, turned into an <see cref="IMockSetup"/> 
@@ -24,6 +28,10 @@ namespace Moq.Sdk
         /// This property is also tracked and populated by the 
         /// <see cref="MockTrackingBehavior"/>.
         /// </remarks>
-        public static IMockSetup CurrentSetup => CallContext<IMockSetup>.GetData();
+        public static IMockSetup CurrentSetup
+        {
+            get => CallContext<IMockSetup>.GetData();
+            set => CallContext<IMockSetup>.SetData(value);
+        }
     }
 }

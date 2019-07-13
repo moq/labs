@@ -3,6 +3,9 @@ using System.ComponentModel;
 
 namespace Stunts
 {
+    /// <summary>
+    /// Provides the <c>Execute</c> usability overloads.
+    /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static class BehaviorPipelineExtensions
     {

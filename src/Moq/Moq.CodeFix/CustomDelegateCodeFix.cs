@@ -16,9 +16,13 @@ using Moq.Properties;
 
 namespace Moq
 {
+    /// <summary>
+    /// Generates code for custom delegates used for ref/out mocking.
+    /// </summary>
     [ExportCodeFixProvider(LanguageNames.CSharp, LanguageNames.VisualBasic, Name = "CustomDelegate")]
     public class CustomDelegateCodeFix : CodeFixProvider
     {
+        /// <inheritdoc />
         public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
             "CS1503",  // cannot convert from 'method group' to 'Action<...>'
             "CS1593",  // Delegate 'Action<...>' does not take 0 arguments
@@ -26,6 +30,7 @@ namespace Moq
             "BC30581"  //'AddressOf' expression cannot be converted to 'Object' because 'Object' is not a delegate type.
             );
 
+        /// <inheritdoc />
         public override async Task RegisterCodeFixesAsync(CodeFixContext context)
         {
             var document = context.Document;
@@ -113,13 +118,14 @@ namespace Moq
                 context.RegisterCodeFix(new SetupDelegateCodeAction(document, setup, targetMethod), context.Diagnostics);
         }
 
+        /// <inheritdoc />
         public sealed override FixAllProvider GetFixAllProvider() => null;
 
-        public class SetupDelegateCodeAction : CodeAction
+        class SetupDelegateCodeAction : CodeAction
         {
             readonly Document document;
             readonly IMethodSymbol symbol;
-            SyntaxNode setup;
+            readonly SyntaxNode setup;
 
             public SetupDelegateCodeAction(Document document, SyntaxNode setup, IMethodSymbol symbol)
             {

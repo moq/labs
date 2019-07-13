@@ -15,15 +15,18 @@ namespace Moq.Sdk
     /// <typeparam name="T">Type of argument being conditioned.</typeparam>
     public class ConditionalMatcher<T> : IArgumentMatcher, IEquatable<ConditionalMatcher<T>>
     {
-        static bool IsValueType = typeof(T).GetTypeInfo().IsValueType;
-        static bool IsNullable = typeof(T).GetTypeInfo().IsGenericType &&
+        static readonly bool IsValueType = typeof(T).GetTypeInfo().IsValueType;
+        static readonly bool IsNullable = typeof(T).GetTypeInfo().IsGenericType &&
             typeof(T).GetGenericTypeDefinition() == typeof(Nullable<>);
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        string name;
+        readonly string name;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        Func<T, bool> condition;
+        readonly Func<T, bool> condition;
 
+        /// <summary>
+        /// Initializes the matcher with the condition and optional friendly name.
+        /// </summary>
         public ConditionalMatcher(Func<T, bool> condition, string name = "condition")
         {
             this.condition = condition ?? throw new ArgumentNullException(nameof(condition));
@@ -63,11 +66,18 @@ namespace Moq.Sdk
 
         #region Equality
 
+        /// <summary>
+        /// Checks whether <paramref name="other"/> has the same condition and friendly name.
+        /// </summary>
         public bool Equals(ConditionalMatcher<T> other)
             => other != null && ReferenceEquals(condition, other.condition) && name.Equals(other.name);
 
-        public override bool Equals(object obj) => Equals(obj as ConditionalMatcher<T>);
+        /// <summary>
+        /// Checks whether <paramref name="other"/> has the same condition and friendly name.
+        /// </summary>
+        public override bool Equals(object other) => Equals(other as ConditionalMatcher<T>);
 
+        /// <inheritdoc />
         public override int GetHashCode() => new HashCode().Add(condition).Add(name).ToHashCode();
 
         #endregion

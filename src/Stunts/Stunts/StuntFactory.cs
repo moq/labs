@@ -18,7 +18,7 @@ namespace Stunts
         private StuntFactory() { }
 
         /// <summary>
-        /// See <see cref="IStuntFactory.CreateStunt(Assembly, Type, IEnumerable{Type}, object[])"/>
+        /// See <see cref="IStuntFactory.CreateStunt(Assembly, Type, Type[], object[])"/>
         /// </summary>
         public object CreateStunt(Assembly stuntsAssembly, Type baseType, Type[] implementedInterfaces, object[] construtorArguments)
         {

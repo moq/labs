@@ -4,6 +4,9 @@ using Microsoft.CodeAnalysis;
 
 namespace Stunts
 {
+    /// <summary>
+    /// Helper extension methods useful when authoring diagnostics.
+    /// </summary>
     public static class DiagnosticsExtensions
     {
         static readonly HashSet<string> compilationErrorIds = new HashSet<string>

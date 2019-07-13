@@ -72,7 +72,10 @@ namespace Stunts
 
             using (var output = new StreamWriter(@"..\..\..\Stunts.Sdk\Processors\CodeFixNames.g.cs", false))
             {
+                output.WriteLine("#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member");
                 ns.NormalizeWhitespace().WriteTo(output);
+                output.WriteLine();
+                output.WriteLine("#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member");
             }
         }
     }

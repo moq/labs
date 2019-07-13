@@ -33,9 +33,9 @@ namespace Moq
 
     /// <summary>
     /// A verification failed to match a mock's invocations 
-    /// against a given <see cref="Expected"/> setup.
+    /// against a given expected <see cref="IMockSetup"/> setup.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The type of the mocked instance.</typeparam>
     public class VerifyException<T> : VerifyException
     {
         /// <summary>

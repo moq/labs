@@ -1,4 +1,6 @@
-﻿namespace Stunts
+﻿using System;
+
+namespace Stunts
 {
     /// <summary>
     /// The phase at which an <see cref="IDocumentProcessor"/> acts.

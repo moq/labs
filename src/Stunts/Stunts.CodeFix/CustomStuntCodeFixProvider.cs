@@ -13,10 +13,15 @@ using Stunts.Properties;
 
 namespace Stunts
 {
+    /// <summary>
+    /// Adds support for generating stunt implementations for a custom stunt manually created 
+    /// by the user.
+    /// </summary>
     [ExportCodeFixProvider(LanguageNames.CSharp, LanguageNames.VisualBasic, Name = "CustomStunt")]
     [ExtensionOrder(Before = "ImplementInterface")]
     public class CustomStuntCodeFixProvider : CodeFixProvider
     {
+        /// <inheritdoc />
         public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
             // See http://source.roslyn.io/#Microsoft.CodeAnalysis.CSharp.Features/ImplementAbstractClass/CSharpImplementAbstractClassCodeFixProvider.cs,15
             "CS0534",
@@ -27,6 +32,7 @@ namespace Stunts
             // See http://source.roslyn.io/#Microsoft.CodeAnalysis.VisualBasic.Features/ImplementInterface/VisualBasicImplementInterfaceCodeFixProvider.vb,16
             "BC30149");
 
+        /// <inheritdoc />
         public override async Task RegisterCodeFixesAsync(CodeFixContext context)
         {
             var document = context.Document;
@@ -85,6 +91,10 @@ namespace Stunts
             }
         }
 
+        /// <summary>
+        /// Returns <see langword="null"/> since this provider does not support batch-fixing.
+        /// </summary>
+        /// <returns></returns>
         public sealed override FixAllProvider GetFixAllProvider() => null;
 
         class ImplementStuntCodeAction : CodeAction

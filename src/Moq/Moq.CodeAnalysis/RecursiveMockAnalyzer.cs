@@ -21,9 +21,14 @@ namespace Moq
         static readonly NamingConvention naming = new MockNamingConvention();
         static readonly Type generatorAttribute = typeof(MockGeneratorAttribute);
 
+        /// <summary>
+        /// Gest the supported diagnostics, which are <see cref="MockDiagnostics.Missing"/> 
+        /// <see cref="MockDiagnostics.Outdated"/>.
+        /// </summary>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
             => ImmutableArray.Create(MockDiagnostics.Missing, MockDiagnostics.Outdated);
 
+        /// <inheritdoc />
         public override void Initialize(AnalysisContext context)
         {
             context.RegisterSyntaxNodeAction(AnalyzeSyntaxNode, Microsoft.CodeAnalysis.CSharp.SyntaxKind.SimpleMemberAccessExpression);

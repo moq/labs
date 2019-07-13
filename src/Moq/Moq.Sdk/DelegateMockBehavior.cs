@@ -45,7 +45,7 @@ namespace Moq.Sdk
 
         /// <summary>
         /// A friendly display name that describes what invoking the 
-        /// <see cref="Invoke"/> delegate will do.
+        /// provided <see cref="ExecuteMockDelegate"/> delegate does.
         /// </summary>
         public string DisplayName => displayName.Value;
 

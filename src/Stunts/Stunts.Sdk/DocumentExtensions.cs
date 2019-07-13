@@ -13,6 +13,9 @@ using Stunts;
 
 namespace Microsoft.CodeAnalysis
 {
+    /// <summary>
+    /// Extensions methods for to <see cref="Document"/>.
+    /// </summary>
     public static class DocumentExtensions
     {
         static Lazy<ImmutableArray<DiagnosticAnalyzer>> builtInAnalyzers = new Lazy<ImmutableArray<DiagnosticAnalyzer>>(() =>
@@ -26,6 +29,9 @@ namespace Microsoft.CodeAnalysis
                 .Concat(new[] { new OverridableMembersAnalyzer() })
                 .ToImmutableArray());
 
+        /// <summary>
+        /// Exposes the built-in analyzers, discovered via reflection.
+        /// </summary>
         // TODO: see if this should be moved elsewhere.
         public static ImmutableArray<DiagnosticAnalyzer> BuiltInAnalyzers => builtInAnalyzers.Value;
 
@@ -63,6 +69,9 @@ namespace Microsoft.CodeAnalysis
             return document;
         }
 
+        /// <summary>
+        /// Forces recreation of the text of a document.
+        /// </summary>
         public static async Task<Document> RecreateDocumentAsync(this Document document, CancellationToken cancellationToken)
         {
             var newText = await document.GetTextAsync(cancellationToken);

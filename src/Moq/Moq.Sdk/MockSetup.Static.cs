@@ -7,13 +7,14 @@ namespace Moq.Sdk
     public partial class MockSetup
     {
         /// <summary>
-        /// Pushes an argument matcher in the current <see cref="CallContext{Queue{IArgumentMatcher}}"/>.
+        /// Pushes an argument matcher in the current <see cref="CallContext{T}"/> with a 
+        /// key of <see cref="Queue{IArgumentMatcher}"/>.
         /// </summary>
         public static void Push(IArgumentMatcher matcher) => Push<object>(matcher);
 
         /// <summary>
-        /// Pushes an argument matcher in the current <see cref="CallContext{Queue{IArgumentMatcher}}"/> 
-        /// and returns a default value for <typeparamref name="T"/>.
+        /// Pushes an argument matcher in the current <see cref="CallContext{T}"/> with a 
+        /// key of <see cref="Queue{IArgumentMatcher}"/> and returns a default value for <typeparamref name="T"/>.
         /// </summary>
         public static T Push<T>(IArgumentMatcher matcher)
         {
@@ -23,6 +24,12 @@ namespace Moq.Sdk
             return default;
         }
 
+        /// <summary>
+        /// Freezes the argument matchers for the given method invocation, taking the collected 
+        /// matchers so far in the <see cref="CallContext{T}"/> with the key <see cref="Queue{IArgumentMatcher}"/>.
+        /// </summary>
+        /// <param name="invocation">The invocation to freeze.</param>
+        /// <returns>An <see cref="IMockSetup"/> that can be used to filter invocations in a behavior pipeline.</returns>
         internal static IMockSetup Freeze(IMethodInvocation invocation)
         {
             var currentMatchers = CallContext<Queue<IArgumentMatcher>>.GetData(() => new Queue<IArgumentMatcher>());

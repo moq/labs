@@ -18,6 +18,10 @@ namespace Moq.Sdk
         public bool AppliesTo(IMethodInvocation invocation)
             => SetupScope.IsActive;
 
+        /// <summary>
+        /// Ensures that a recursive mock invocation during a setup returns a 
+        /// new mock instead of null.
+        /// </summary>
         public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next)
         {
             if (invocation.MethodBase is MethodInfo info &&

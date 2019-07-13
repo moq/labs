@@ -23,6 +23,9 @@ namespace Moq.Sdk
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly ConcurrentDictionary<IMockSetup, IMockBehaviorPipeline> setupBehaviorMap = new ConcurrentDictionary<IMockSetup, IMockBehaviorPipeline>();
 
+        /// <summary>
+        /// Initializes the default <see cref="IMock"/> implementation for the given <paramref name="stunt"/>.
+        /// </summary>
         public DefaultMock(IStunt stunt)
         {
             this.stunt = stunt ?? throw new ArgumentNullException(nameof(stunt));
@@ -49,6 +52,7 @@ namespace Moq.Sdk
         /// <inheritdoc />
         public IEnumerable<IMockBehaviorPipeline> Setups => setupBehaviorMap.Values;
 
+        /// <inheritdoc />
         public IMockBehaviorPipeline GetPipeline(IMockSetup setup)
             => setupBehaviorMap.GetOrAdd(setup, x =>
             {

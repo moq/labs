@@ -93,6 +93,12 @@ namespace Stunts
             return (baseType, additionalInterfaces.OrderBy(x => x.Name).ToImmutableArray());
         }
 
+        /// <summary>
+        /// Validates the specified generator method type parameters, checking for base type 
+        /// and implemented interfaces.
+        /// </summary>
+        /// <param name="types">The types in use by the generator.</param>
+        /// <param name="result">The result of splitting the base type and the additional interfaces from the <paramref name="types"/>.</param>
         public static bool TryValidateGeneratorTypes(this IEnumerable<ITypeSymbol> types, 
             out (INamedTypeSymbol baseType, ImmutableArray<INamedTypeSymbol> additionalInterfaces) result)
         {

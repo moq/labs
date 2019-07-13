@@ -15,6 +15,9 @@ namespace Stunts
         ExecuteDelegate behavior;
         string name;
 
+        /// <summary>
+        /// Creates the behavior from the given delegates.
+        /// </summary>
         public DelegateStuntBehavior(ExecuteDelegate behavior, AppliesToDelegate appliesTo = null, string name = null)
         {
             this.behavior = behavior;

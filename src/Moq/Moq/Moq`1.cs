@@ -13,8 +13,16 @@ namespace Moq
     [EditorBrowsable(EditorBrowsableState.Never)]
     public class Moq<T> : MockDecorator<T>, IMoq<T>
     {
+        /// <summary>
+        /// Decorates the given <see cref="IMock{T}"/> with Moq specific 
+        /// properties.
+        /// </summary>
         public Moq(IMock<T> mock) : base(mock) { }
 
+        /// <summary>
+        /// Gets or sets the <see cref="MockBehavior"/> for the 
+        /// mock.
+        /// </summary>
         // NOTE: the setter is somewhat duplicating behavior in Initialize...
         public MockBehavior Behavior
         {
@@ -63,6 +71,10 @@ namespace Moq
             }
         }
 
+        /// <summary>
+        /// Gets or sets the <see cref="DefaultValueProvider"/> provider of 
+        /// default values for the mock.
+        /// </summary>
         public DefaultValueProvider DefaultValue
         {
             get => State.GetOrAdd(() => new DefaultValueProvider());

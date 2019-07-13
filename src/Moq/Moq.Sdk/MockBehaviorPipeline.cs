@@ -15,11 +15,14 @@ namespace Moq.Sdk
     [DebuggerDisplay("{Setup}")]
     public class MockBehaviorPipeline : IMockBehaviorPipeline
     {
+        /// <inheritdoc />
         public MockBehaviorPipeline(IMockSetup setup) => Setup = setup;
 
+        /// <inheritdoc />
         [DebuggerBrowsable(DebuggerBrowsableState.Collapsed)]
         public ObservableCollection<IMockBehavior> Behaviors { get; } = new ObservableCollection<IMockBehavior>();
 
+        /// <inheritdoc />
         public IMockSetup Setup { get; }
 
         /// <summary>
@@ -28,6 +31,14 @@ namespace Moq.Sdk
         /// </summary>
         public bool AppliesTo(IMethodInvocation invocation) => Setup.AppliesTo(invocation);
 
+        /// <summary>
+        /// Executes the effective sub-pipeline that a <see cref="IMockBehavior"/> provides, 
+        /// where all sub-pipeline behaviors automatically apply to the invocation, since they 
+        /// are filtered as a whole according to the <see cref="Setup"/>.
+        /// </summary>
+        /// <param name="invocation"></param>
+        /// <param name="next"></param>
+        /// <returns></returns>
         public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next)
         {
             var mock = (invocation.Target as IMocked)?.Mock ?? throw new ArgumentException(Resources.TargetNotMock);

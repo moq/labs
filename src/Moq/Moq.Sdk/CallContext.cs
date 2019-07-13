@@ -30,14 +30,12 @@ namespace Moq.Sdk
         /// <summary>
         /// Retrieves an object from the <see cref="CallContext"/>.
         /// </summary>
-        /// <typeparam name="T">The type of the data being retrieved. Must match the type used when the <paramref name="name"/> was set via <see cref="SetData{T}(string, T)"/>.</typeparam>
         /// <returns>The object in the call context associated with the specified name, or a default value for <typeparamref name="T"/> if none is found.</returns>
         public static T GetData() => GetData(defaultName);
 
         /// <summary>
         /// Retrieves an object with the specified name from the <see cref="CallContext"/>.
         /// </summary>
-        /// <typeparam name="T">The type of the data being retrieved. Must match the type used when the <paramref name="name"/> was set via <see cref="SetData{T}(string, T)"/>.</typeparam>
         /// <param name="name">The name of the item in the call context.</param>
         /// <returns>The object in the call context associated with the specified name, or a default value for <typeparamref name="T"/> if none is found.</returns>
         public static T GetData(string name) =>
@@ -47,7 +45,7 @@ namespace Moq.Sdk
         /// Retrieves an object from the <see cref="CallContext"/>, and 
         /// sets an initial value if it was not found.
         /// </summary>
-        /// <typeparam name="T">The type of the data being retrieved. Must match the type used when the <paramref name="name"/> was set via <see cref="SetData{T}(string, T)"/>.</typeparam>
+        /// <param name="setInitialValue">A function that will set the initial value of the given parameter, if it doesn't have a value already in the context.</param>
         /// <returns>The object in the call context associated with the specified name, or the initial value returned from <paramref name="setInitialValue"/>.</returns>
         public static T GetData(Func<T> setInitialValue) => GetData(defaultName, setInitialValue);
 
@@ -55,8 +53,8 @@ namespace Moq.Sdk
         /// Retrieves an object with the specified name from the <see cref="CallContext"/>, and 
         /// sets an initial value if it was not found.
         /// </summary>
-        /// <typeparam name="T">The type of the data being retrieved. Must match the type used when the <paramref name="name"/> was set via <see cref="SetData{T}(string, T)"/>.</typeparam>
         /// <param name="name">The name of the item in the call context.</param>
+        /// <param name="setInitialValue">A function that will set the initial value of the given parameter, if it doesn't have a value already in the context.</param>
         /// <returns>The object in the call context associated with the specified name, or the initial value returned from <paramref name="setInitialValue"/>.</returns>
         public static T GetData(string name, Func<T> setInitialValue)
         {

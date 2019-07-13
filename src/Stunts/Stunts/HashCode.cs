@@ -53,7 +53,9 @@ namespace Stunts
 {
     // xxHash32 is used for the hash code.
     // https://github.com/Cyan4973/xxHash
-
+    /// <summary>
+    /// Hashing helper class from corefx. 
+    /// </summary>
     public struct HashCode
     {
         private static readonly uint s_seed = (uint)new Random().Next();
@@ -119,6 +121,9 @@ namespace Stunts
             return hash;
         }
 
+        /// <summary>
+        /// Adds the given values to the hash.
+        /// </summary>
         public HashCode AddRange(IEnumerable<object> values)
         {
             foreach (var value in values)
@@ -129,14 +134,23 @@ namespace Stunts
             return this;
         }
 
+        /// <summary>
+        /// Adds the given values to the hash.
+        /// </summary>
         public HashCode AddRange(params object[] values) => AddRange((IEnumerable<object>)values);
 
+        /// <summary>
+        /// Adds the given value to the hash.
+        /// </summary>
         public HashCode Add<T>(T value)
         {
             Combine(value?.GetHashCode() ?? 0);
             return this;
         }
 
+        /// <summary>
+        /// Combines the current hash with the given hash code.
+        /// </summary>
         public HashCode Combine(int hashCode)
         {
             // The original xxHash works as follows:
@@ -189,6 +203,10 @@ namespace Stunts
             return this;
         }
 
+        /// <summary>
+        /// Converts the hash code to an <see langword="int"/>.
+        /// </summary>
+        /// <returns></returns>
         public int ToHashCode()
         {
             // Storing the value of _length locally shaves of quite a few bytes
@@ -244,10 +262,16 @@ namespace Stunts
         //   implementation has to change in the future we don't want to worry
         //   about people who might have incorrectly used this type.
 
+        /// <summary>
+        /// Obsolete member, replaced with <see cref="ToHashCode"/>.
+        /// </summary>
         [Obsolete("HashCode is a mutable struct and should not be compared with other HashCodes. Use ToHashCode to retrieve the computed hash code.", error: true)]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override int GetHashCode() => throw new NotSupportedException();
 
+        /// <summary>
+        /// Obsolete member, replaced with <see cref="ToHashCode"/> comparisons.
+        /// </summary>
         [Obsolete("HashCode is a mutable struct and should not be compared with other HashCodes.", error: true)]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => throw new NotSupportedException();

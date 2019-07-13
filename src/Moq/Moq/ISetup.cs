@@ -12,13 +12,12 @@ namespace Moq
 
     /// <summary>
     /// Extension point interface for extension methods 
-    /// that act on delegates via <see cref="SetupExtension.Setup{TDelegate}(TDelegate)"/>.
+    /// that act on delegates via <see cref="SetupExtension.Setup{TDelegate}(object, TDelegate)"/>.
     /// </summary>
     public interface ISetup<TDelegate> : IFluentInterface
     {
         /// <summary>
-        /// The delegate passed to the <see cref="SetupExtension.Setup{TDelegate}(TDelegate)"/>
-        /// call.
+        /// The delegate passed to the <see cref="SetupExtension.Setup{TDelegate}(object, TDelegate)"/> call.
         /// </summary>
         Delegate Delegate { get; }
     }

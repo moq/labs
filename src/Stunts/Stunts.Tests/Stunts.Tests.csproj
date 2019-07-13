@@ -2,7 +2,7 @@
   <Sdk Name="Microsoft.Build.CentralPackageVersions" />
 
   <PropertyGroup>
-    <TargetFramework>net471</TargetFramework>
+    <TargetFramework>net472</TargetFramework>
     <LangVersion>Latest</LangVersion>
     <IncludeXunit>true</IncludeXunit>
     <IncludeRoslyn>true</IncludeRoslyn>

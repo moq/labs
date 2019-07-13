@@ -42,7 +42,6 @@ namespace Moq
         /// <summary>
         /// Matches any value that is not equal to the provided constant value.
         /// </summary>
-        /// <typeparam name="T">The type of the argument.</typeparam>
         public static T Not(T value) => MockSetup.Push<T>(new NotMatcher<T>(value));
     }
 }
