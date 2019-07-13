@@ -1,5 +1,9 @@
 <Project>
 
+  <PropertyGroup>
+    <DocumentationFile />
+  </PropertyGroup>
+
   <ItemDefinitionGroup>
     <ReferencePath>
       <FrameworkFile/>

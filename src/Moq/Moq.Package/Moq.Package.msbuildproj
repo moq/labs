@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.Build.NoTargets">
+﻿<Project Sdk="Microsoft.Build.NoTargets" DefaultTargets="Pack">
   <Sdk Name="Microsoft.Build.CentralPackageVersions" />
 
   <PropertyGroup>
@@ -10,7 +10,6 @@
     <Summary>The most popular and friendly mocking framework for .NET</Summary>
     <Description>The most popular and friendly mocking framework for .NET</Description>
     <PackageTags>moq mocking mock</PackageTags>
-
     <PackOnBuild Condition="'$(PackOnBuild)' == '' and '$(Configuration)' == 'Release'">true</PackOnBuild>
   </PropertyGroup>
 
@@ -20,6 +19,10 @@
     <ProjectReference Include="..\Moq.Sdk\Moq.Sdk.csproj" />
     <ProjectReference Include="..\Moq\Moq.csproj" />
     <ProjectReference Include="..\..\Stunts\Stunts.Package\Stunts.Package.msbuildproj" IncludeAssets="all" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageFile Include="AutoCodeFix" Version="2.10-alpha" Kind="Dependency" />
   </ItemGroup>
 
   <Target Name="FixPackageFileFramework" BeforeTargets="Pack" AfterTargets="$(GetPackageContents)" Returns="@(_PackageContent)">
@@ -31,8 +34,7 @@
       </_PackageContent>
     </ItemGroup>
   </Target>
-
+  
   <Target Name="CompileDesignTime" />
-
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\Managed\Microsoft.Managed.DesignTime.targets" Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\Managed\Microsoft.Managed.DesignTime.targets')" />
 </Project>

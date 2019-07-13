@@ -16,7 +16,6 @@
     <!-- TODO: since we can't get Roslyn to compile code during test run, we must generate mocks at design-time  -->
     <Analyzer Include="$(RootPath)\src\Stunts\Stunts\bin\$(Configuration)\Stunts.dll" />
     <Analyzer Include="$(RootPath)\src\Stunts\Stunts.Sdk\bin\$(Configuration)\Stunts.Sdk.dll" />
-    <Analyzer Include="$(RootPath)\src\Stunts\Stunts.Internal\bin\$(Configuration)\Roslyn.Services.Test.Utilities.dll" />
     <Analyzer Include="$(RootPath)\src\Stunts\Stunts.CodeAnalysis\bin\$(Configuration)\Stunts.CodeAnalysis.dll" />
     <Analyzer Include="$(RootPath)\src\Stunts\Stunts.CodeFix\bin\$(Configuration)\Stunts.CodeFix.dll" />
     <Analyzer Include="$(RootPath)\src\Stunts\Stunts.CodeFix\bin\$(Configuration)\netstandard.dll" />

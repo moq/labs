@@ -37,4 +37,11 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <Target Name="IncludeRoslynVisualBasic" AfterTargets="ResolveAssemblyReferences" BeforeTargets="GetPackageContents" DependsOnTargets="ResolveAssemblyReferences">
+    <ItemGroup>
+      <_RoslynVisualBasic Include="@(ReferencePath -> WithMetadataValue('NuGetPackageId', 'Microsoft.CodeAnalysis.VisualBasic'))" />
+      <PackageFile Include="@(_RoslynVisualBasic -> '%(FullPath)')" Kind="Analyzer" FrameworkSpecific="true" TargetFramework="$(TargetFramework)" />
+    </ItemGroup>
+  </Target>
+
 </Project>
