@@ -28,7 +28,7 @@ namespace Moq
                 {
                     var wrapped = behavior.Behaviors[behavior.Behaviors.Count - 1];
                     behavior.Behaviors.RemoveAt(behavior.Behaviors.Count - 1);
-                    behavior.Behaviors.Add(Sdk.MockBehavior.Create(
+                    behavior.Behaviors.Add(new DelegateMockBehavior(
                         (m, i, next) =>
                         {
                             // If the wrapped target does not invoke the next 
@@ -56,7 +56,7 @@ namespace Moq
                 }
                 else
                 {
-                    behavior.Behaviors.Add(Sdk.MockBehavior.Create(
+                    behavior.Behaviors.Add(new DelegateMockBehavior(
                         (m, i, next) =>
                         {
                             callback(i.Arguments);

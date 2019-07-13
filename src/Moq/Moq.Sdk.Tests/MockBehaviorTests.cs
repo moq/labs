@@ -9,21 +9,21 @@ namespace Moq.Sdk.Tests
     {
         [Fact]
         public void CreatesBehaviorWithNullDisplayName()
-            => Assert.Equal("<unnamed>", MockBehavior.Create((m, i, n) => n().Invoke(m, i, n), default(string)).ToString());
+            => Assert.Equal("<unnamed>", new DelegateMockBehavior((m, i, n) => n().Invoke(m, i, n), default(string)).ToString());
 
         [Fact]
         public void CreatesBehaviorWithDisplayName()
-            => Assert.Equal("test", MockBehavior.Create((m, i, n) => n().Invoke(m, i, n), "test").ToString());
+            => Assert.Equal("test", new DelegateMockBehavior((m, i, n) => n().Invoke(m, i, n), "test").ToString());
 
         [Fact]
         public void CreatesBehaviorWithLazyDisplayName()
-            => Assert.Equal("test", MockBehavior.Create((m, i, n) => n().Invoke(m, i, n), new Lazy<string>(() => "test")).ToString());
+            => Assert.Equal("test", new DelegateMockBehavior((m, i, n) => n().Invoke(m, i, n), new Lazy<string>(() => "test")).ToString());
 
         [Fact]
         public void ExecutesAnonymousBehavior()
         {
             var called = false;
-            var behavior = MockBehavior.Create((m, i, n) => { called = true; return i.CreateValueReturn(null); }, "test");
+            var behavior = new DelegateMockBehavior((m, i, n) => { called = true; return i.CreateValueReturn(null); }, "test");
             var mock = new FakeMock();
 
             behavior.Execute(mock.Mock, new MethodInvocation(mock, typeof(object).GetMethod(nameof(object.ToString))), () => null);

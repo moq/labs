@@ -43,7 +43,7 @@ namespace Moq.Sdk.Tests
             var behavior = new MockBehaviorPipeline(setup);
 
             stunt.AddBehavior(behavior);
-            stunt.AddBehavior(StuntBehavior.Create((m, n) => n().Invoke(m, n)));
+            stunt.AddBehavior(new DelegateStuntBehavior((m, n) => n().Invoke(m, n)));
             Assert.Equal(3, stunt.Behaviors.Count);
 
             Assert.Single(stunt.Mock.Setups);

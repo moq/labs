@@ -38,8 +38,8 @@
 
     /// <summary>
     /// Method signature of <see cref="IStuntBehavior.AppliesTo"/> for use in 
-    /// <see cref="StuntBehavior.Create(ExecuteDelegate, AppliesTo, string)"/> for anonymous 
+    /// <see cref="StuntBehavior.Create(ExecuteDelegate, AppliesToDelegate, string)"/> for anonymous 
     /// behaviors.
     /// </summary>
-    public delegate bool AppliesTo(IMethodInvocation invocation);
+    public delegate bool AppliesToDelegate(IMethodInvocation invocation);
 }

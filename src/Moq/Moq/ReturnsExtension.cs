@@ -133,7 +133,7 @@ namespace Moq
                 mock.Invocations.Remove(setup.Invocation);
                 var mockBehavior = mock.GetPipeline(setup);
 
-                mockBehavior.Behaviors.Add(Sdk.MockBehavior.Create(behavior, "Returns(() => ...)"));
+                mockBehavior.Behaviors.Add(new DelegateMockBehavior(behavior, "Returns(() => ...)"));
             }
 
             return default;

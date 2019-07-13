@@ -35,7 +35,7 @@ namespace Moq.Sdk.Tests
         {
             var mock = new EventfulMock();
             mock.Behaviors.Add(new EventBehavior());
-            mock.Behaviors.Add(StuntBehavior.Create((m, n) => m.CreateValueReturn(null)));
+            mock.Behaviors.Add(new DelegateStuntBehavior((m, n) => m.CreateValueReturn(null)));
 
             EventHandler handler = (_, __) => { };
             mock.Empty += handler;
@@ -49,7 +49,7 @@ namespace Moq.Sdk.Tests
         {
             var mock = new EventfulMock();
             mock.Behaviors.Add(new EventBehavior());
-            mock.Behaviors.Add(StuntBehavior.Create((m, n) => m.CreateValueReturn(null)));
+            mock.Behaviors.Add(new DelegateStuntBehavior((m, n) => m.CreateValueReturn(null)));
 
             EventHandler handler = (_, __) => { };
             mock.Empty += handler;
@@ -69,7 +69,7 @@ namespace Moq.Sdk.Tests
         {
             var mock = new EventfulMock();
             mock.Behaviors.Add(new EventBehavior());
-            mock.Behaviors.Add(StuntBehavior.Create((m, n) => m.CreateValueReturn(null)));
+            mock.Behaviors.Add(new DelegateStuntBehavior((m, n) => m.CreateValueReturn(null)));
 
             var called = false;
             EventHandler handler = (_, __) => called = true;
@@ -86,7 +86,7 @@ namespace Moq.Sdk.Tests
         {
             var mock = new EventfulMock();
             mock.Behaviors.Add(new EventBehavior());
-            mock.Behaviors.Add(StuntBehavior.Create((m, n) => m.CreateValueReturn(null)));
+            mock.Behaviors.Add(new DelegateStuntBehavior((m, n) => m.CreateValueReturn(null)));
 
             var expected = new Args();
             var actual = default(Args);
@@ -104,7 +104,7 @@ namespace Moq.Sdk.Tests
         {
             var mock = new EventfulMock();
             mock.Behaviors.Add(new EventBehavior());
-            mock.Behaviors.Add(StuntBehavior.Create((m, n) => m.CreateValueReturn(null)));
+            mock.Behaviors.Add(new DelegateStuntBehavior((m, n) => m.CreateValueReturn(null)));
 
             var expected = new PropertyChangedEventArgs("Foo");
             var actual = default(PropertyChangedEventArgs);
@@ -122,7 +122,7 @@ namespace Moq.Sdk.Tests
         {
             var mock = new EventfulMock();
             mock.Behaviors.Add(new EventBehavior());
-            mock.Behaviors.Add(StuntBehavior.Create((m, n) => m.CreateValueReturn(null)));
+            mock.Behaviors.Add(new DelegateStuntBehavior((m, n) => m.CreateValueReturn(null)));
 
             var expected = 5;
             var actual = 0;
@@ -140,7 +140,7 @@ namespace Moq.Sdk.Tests
         {
             var mock = new EventfulMock();
             mock.Behaviors.Add(new EventBehavior());
-            mock.Behaviors.Add(StuntBehavior.Create((m, n) => m.CreateValueReturn(null)));
+            mock.Behaviors.Add(new DelegateStuntBehavior((m, n) => m.CreateValueReturn(null)));
 
             var (id, name) = (5, "foo");
             var (id2, name2) = (0, "");

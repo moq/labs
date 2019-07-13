@@ -50,8 +50,8 @@ namespace Stunts.Tests
             var targetCalled = false;
 
             var pipeline = new BehaviorPipeline(
-                StuntBehavior.Create((m, n) => { firstCalled = true; return n().Invoke(m, n); }, m => false),
-                StuntBehavior.Create((m, n) => { secondCalled = true; return n().Invoke(m, n); }, m => false));
+                new DelegateStuntBehavior((m, n) => { firstCalled = true; return n().Invoke(m, n); }, m => false),
+                new DelegateStuntBehavior((m, n) => { secondCalled = true; return n().Invoke(m, n); }, m => false));
 
             Action a = WhenInvokingPipelineWithNoApplicableBehaviors_ThenInvokesTarget;
 
@@ -71,8 +71,8 @@ namespace Stunts.Tests
             var targetCalled = false;
 
             var pipeline = new BehaviorPipeline(
-                StuntBehavior.Create((m, n) => { firstCalled = true; return n().Invoke(m, n); }),
-                StuntBehavior.Create((m, n) => { secondCalled = true; return n().Invoke(m, n); }, m => false));
+                new DelegateStuntBehavior((m, n) => { firstCalled = true; return n().Invoke(m, n); }),
+                new DelegateStuntBehavior((m, n) => { secondCalled = true; return n().Invoke(m, n); }, m => false));
 
             Action a = WhenInvokingPipeline_ThenInvokesAllBehaviorsAndTarget;
 

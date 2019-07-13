@@ -26,7 +26,7 @@ namespace Stunts
         /// </summary>
         /// <param name="behaviors">Behaviors to add to the pipeline.</param>
         public BehaviorPipeline(IEnumerable<ExecuteDelegate> behaviors)
-            : this(behaviors.Select(behavior => StuntBehavior.Create(behavior)))
+            : this(behaviors.Select(behavior => new DelegateStuntBehavior(behavior)))
         {
         }
 
