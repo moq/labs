@@ -12,7 +12,7 @@ This repository supports [corebuild](http://www.corebuild.io) for configure/buil
 
 > **IMPORTANT**: this repository is for the *upcoming* version of Moq. Issues and source for the current stable Moq v4.x are at https://github.com/moq/moq4
 
-CI package feed: https://kzu.blob.core.windows.net/nuget/index.json
+CI package feed: http://kzu.nuget.cloud/index.json (CDN) or https://kzu.blob.core.windows.net/nuget/index.json (blob).
 
 ## Building the repository
 
