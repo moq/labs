@@ -1,5 +1,9 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
+  <PropertyGroup>
+    <UsesStunts>true</UsesStunts>
+  </PropertyGroup>
+
   <ItemGroup>
     <!-- Auto-generate stunts flagged by these two analyers. -->
     <AutoCodeFix Include="ST001;ST002" />

@@ -1,5 +1,9 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
+  <PropertyGroup>
+    <UsesMoq>true</UsesMoq>
+  </PropertyGroup>
+
   <ItemGroup>
     <!-- Auto-generate mocks flagged by these two analyers. -->
     <AutoCodeFix Include="MOQ001;MOQ002" />
