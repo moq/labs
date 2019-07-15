@@ -1,6 +1,13 @@
 ﻿using System;
 using Stunts;
 using System.Diagnostics;
+using System.Linq;
+using System.Collections.Generic;
+using System.Reflection;
+using System.IO;
+using System.Runtime.Versioning;
+using System.Runtime.InteropServices;
+using System.Text;
 
 namespace Moq.Sdk
 {
@@ -43,7 +50,7 @@ namespace Moq.Sdk
             // While debugging, capture invocation stack traces for easier 
             // troubleshooting
             if (Debugger.IsAttached)
-                invocation.Context[nameof(Environment.StackTrace)] = Environment.StackTrace;
+                invocation.Context[nameof(Environment.StackTrace)] = invocation.GetStackTrace();
 
             return next().Invoke(invocation, next);
         }

@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <PackageReference Include="TypeNameFormatter.Sources" PrivateAssets="all" />
+    <PackageReference Include="Ben.Demystifier" />
   </ItemGroup>
 
 </Project>
