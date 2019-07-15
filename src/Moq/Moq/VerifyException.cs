@@ -7,13 +7,14 @@ namespace Moq
     /// A verification failed to match a mock's invocations 
     /// against a given <see cref="Setup"/> setup.
     /// </summary>
-    public class VerifyException : Exception
+    public class VerifyException : MockException
     {
         /// <summary>
         /// Initializes the exception with the target 
         /// mock and setup that failed to match invocations.
         /// </summary>
         public VerifyException(IMock mock, IMockSetup setup)
+            : base(setup.ToString())
         {
             Mock = mock;
             Setup = setup;

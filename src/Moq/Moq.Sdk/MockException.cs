@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Reflection;
 
 namespace Moq.Sdk
 {
@@ -7,5 +9,16 @@ namespace Moq.Sdk
     /// </summary>
     public abstract class MockException : Exception
     {
+        /// <summary>
+        /// Initializes the exception with no message.
+        /// </summary>
+        protected MockException() { }
+
+        /// <summary>
+        /// Initializes the exception with the specified message.
+        /// </summary>
+        /// <param name="message"></param>
+        protected MockException(string message)
+            : base(message) { }
     }
 }
