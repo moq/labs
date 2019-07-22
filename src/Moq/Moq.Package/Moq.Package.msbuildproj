@@ -34,7 +34,4 @@
       </_PackageContent>
     </ItemGroup>
   </Target>
-  
-  <Target Name="CompileDesignTime" />
-  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\Managed\Microsoft.Managed.DesignTime.targets" Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\Managed\Microsoft.Managed.DesignTime.targets')" />
 </Project>
