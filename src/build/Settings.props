@@ -14,7 +14,6 @@
     <GitBaseVersionMinor>42</GitBaseVersionMinor>
     <GitBaseVersionPatch>42</GitBaseVersionPatch>
     <GitCommits>0</GitCommits>
-    <GitBranch>local</GitBranch>
     <PackageVersion>42.42.42</PackageVersion>
 
     <PackageProjectUrl>https://github.com/moq/moq/</PackageProjectUrl>
@@ -29,7 +28,7 @@
   <PropertyGroup>
     <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
-    <LangVersion>Latest</LangVersion>
+    <LangVersion>preview</LangVersion>
 
     <!-- We always target a single framework, so we don't need the added subdir -->
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
