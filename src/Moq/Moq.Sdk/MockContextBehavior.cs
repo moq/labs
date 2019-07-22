@@ -1,19 +1,11 @@
 ﻿using System;
 using Stunts;
 using System.Diagnostics;
-using System.Linq;
-using System.Collections.Generic;
-using System.Reflection;
-using System.IO;
-using System.Runtime.Versioning;
-using System.Runtime.InteropServices;
-using System.Text;
 
 namespace Moq.Sdk
 {
     /// <summary>
-    /// Core behavior that allows tracking invocations and 
-    /// building setups from them. 
+    /// Core behavior that allows tracking invocations and building setups from them. 
     /// <para>
     /// Sets the <see cref="CallContext{IMethodInvocation}"/> 
     /// as well as the <see cref="CallContext{IMockSetup}"/>, used in 
@@ -21,7 +13,7 @@ namespace Moq.Sdk
     /// respectively.
     /// </para>
     /// </summary>
-    public class MockTrackingBehavior : IStuntBehavior
+    public class MockContextBehavior : IStuntBehavior
     {
         /// <summary>
         /// Returns <see langword="true"/> since it tracks all invocations.
@@ -42,10 +34,6 @@ namespace Moq.Sdk
             // Allows subsequent extension methods on the fluent API to retrieve the 
             // current setup being performed via the MockContext.
             MockContext.CurrentSetup = MockSetup.Freeze(invocation);
-
-            // Only record the invocation if it's *not* performed within a setup scope.
-            if (!SetupScope.IsActive)
-                invocation.Target.AsMock().Invocations.Add(invocation);
 
             // While debugging, capture invocation stack traces for easier 
             // troubleshooting

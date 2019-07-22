@@ -21,6 +21,17 @@ namespace Moq.Sdk
         IArgumentMatcher[] Matchers { get; }
 
         /// <summary>
+        /// Gets or sets an occurrence constraint placed on the setup, for matching 
+        /// or verification purposes.
+        /// </summary>
+        Times? Occurrence { get; set; }
+
+        /// <summary>
+        /// Arbitrary state associated with a setup.
+        /// </summary>
+        StateBag State { get; }
+
+        /// <summary>
         /// Tests whether the setup applies to an actual invocation.
         /// </summary>
         /// <param name="actualInvocation">An actual invocation performed on the mock.

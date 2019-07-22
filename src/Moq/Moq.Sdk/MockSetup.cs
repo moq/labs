@@ -37,6 +37,12 @@ namespace Moq.Sdk
         public IArgumentMatcher[] Matchers => matchers;
 
         /// <inheritdoc />
+        public Times? Occurrence { get; set; }
+
+        /// <inheritdoc />
+        public StateBag State { get; } = new StateBag();
+
+        /// <inheritdoc />
         public bool AppliesTo(IMethodInvocation actualInvocation)
         {
             if (actualInvocation == null)

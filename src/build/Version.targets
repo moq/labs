@@ -29,9 +29,13 @@ AssemblyVersion=$(AssemblyVersion)" />
           Returns="$(Version)"
           Condition="'$(GitInfoImported)' == 'true' And '$(ExcludeRestorePackageImports)' != 'true'">
 
+    <PropertyGroup>
+      <GitBranch Condition="$(CI)">$(GitBranch.Replace('/', '_'))</GitBranch>
+    </PropertyGroup>
+
     <ItemGroup>
       <LabelMetadata Include="$(GitSemVerLabel)" Condition="'$(GitSemVerLabel)' != ''" />
-      <LabelMetadata Include="$(GitBranch)" Condition="'$(GitBranch)' != 'master' and '$(GitSemVerSource)' != 'Branch' and '$(GitSemVerLabel)' != '$(GitBranch)'" />
+      <LabelMetadata Include="$(GitBranch)" Condition="$(CI) and '$(GitBranch)' != 'master' and '$(GitSemVerSource)' != 'Branch' and '$(GitSemVerLabel)' != '$(GitBranch)'" />
       <LabelMetadata Include="pr$(SYSTEM_PULLREQUEST_PULLREQUESTNUMBER)" Condition="'$(SYSTEM_PULLREQUEST_PULLREQUESTNUMBER)' != ''" />
 
       <VersionMetadata Include="$(GitCommits)" Condition="'$(GitSemVerLabel)' == '' and '$(GitCommits)' != '0'" />

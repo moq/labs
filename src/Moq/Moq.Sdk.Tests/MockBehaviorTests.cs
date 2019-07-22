@@ -34,7 +34,7 @@ namespace Moq.Sdk.Tests
         [Fact]
         public void RecordsInvocation()
         {
-            var behavior = new MockTrackingBehavior();
+            var behavior = new MockRecordingBehavior();
             var mock = new Mocked();
 
             behavior.Execute(new MethodInvocation(mock, typeof(object).GetMethod(nameof(object.ToString))),
@@ -46,12 +46,12 @@ namespace Moq.Sdk.Tests
         [Fact]
         public void ThrowsForNonIMocked()
         {
-            var behavior = new MockTrackingBehavior();
+            var behavior = new MockRecordingBehavior();
 
             Assert.Throws<ArgumentException>(() => behavior.Execute(new MethodInvocation(
                 new object(),
                 typeof(Mocked).GetProperty(nameof(IMocked.Mock)).GetGetMethod()),
-                null));
+                () => (m, n) => m.CreateValueReturn(null)));
         }
 
         [Fact]

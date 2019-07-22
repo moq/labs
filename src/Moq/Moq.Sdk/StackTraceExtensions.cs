@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Stunts;
@@ -16,13 +17,16 @@ namespace Moq.Sdk
         public static string GetStackTrace(this IMethodInvocation invocation)
         {
             var allFrames = EnhancedStackTrace.Current();
-            var invocationFrame = allFrames.First(x => x.GetMethod() == invocation.MethodBase);
+            var invocationFrame = allFrames.FirstOrDefault(x => x.GetMethod() == invocation.MethodBase);
+            //if (invocationFrame == null)
+
             // We know that the generated proxies live in the same assembly as the tests, so we use that 
             // to scope the stack trace from the current invocation method up to the top call (test method)
             var testFrame = allFrames.LastOrDefault(x => x.GetMethod().DeclaringType.Assembly == invocation.MethodBase.DeclaringType.Assembly);
 
             var sb = new StringBuilder();
-            var appendLine = false;
+            // Always append if we didn't find the tip invocation frame
+            var appendLine = invocationFrame == null;
             foreach (var frame in allFrames)
             {
                 if (!appendLine && frame == invocationFrame)
@@ -34,7 +38,7 @@ namespace Moq.Sdk
                     var filePath = frame.GetFileName();
                     if (!string.IsNullOrEmpty(filePath))
                     {
-                        sb.Append(EnhancedStackTrace.TryGetFullPath(filePath));
+                        sb.Append(EnhancedStackTrace.TryGetFullPath(filePath).Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar));
                         var lineNo = frame.GetFileLineNumber();
                         var colNo = frame.GetFileColumnNumber();
                         if (lineNo != 0 && colNo != 0)

@@ -30,7 +30,11 @@ namespace Moq.Sdk
         /// <summary>
         /// See <see cref="IMock.State"/>.
         /// </summary>
-        public virtual MockState State => mock.State;
+        public virtual StateBag State
+        {
+            get => mock.State;
+            set => mock.State = value;
+        }
 
         /// <summary>
         /// See <see cref="IMock.Setups"/>.

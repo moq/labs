@@ -7,11 +7,26 @@ namespace Moq.Sdk
     /// <summary>
     /// A typed state bag for holding arbitrary mock state. All members are thread-safe.
     /// </summary>
-    [DebuggerDisplay("Count = {state.Count}", Name = "State", Type = nameof(MockState))]
-    public class MockState
+    [DebuggerDisplay("Count = {state.Count}", Name = "State", Type = nameof(StateBag))]
+    public class StateBag
     {
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-        ConcurrentDictionary<object, object> state = new ConcurrentDictionary<object, object>();
+        ConcurrentDictionary<object, object> state;
+
+        /// <summary>
+        /// Creates a new instance of the state bag.
+        /// </summary>
+        public StateBag()
+            : this(new ConcurrentDictionary<object, object>())
+        {
+        }
+
+        private StateBag(ConcurrentDictionary<object, object> initialState) => state = new ConcurrentDictionary<object, object>(initialState);
+
+        /// <summary>
+        /// Creates a copy of the state bag.
+        /// </summary>
+        public StateBag Clone() => new StateBag(state);
 
         /// <summary>
         /// Clears the state.
@@ -95,7 +110,10 @@ namespace Moq.Sdk
         public bool TryGetValue<T>(out T value)
         {
             var result = state.TryGetValue(typeof(T), out var _value);
-            value = (T)_value;
+            value = default;
+            if (result && _value != null)
+                value = (T)_value;
+
             return result;
         }
 
@@ -111,7 +129,10 @@ namespace Moq.Sdk
         public bool TryGetValue<T>(object key, out T value)
         {
             var result = state.TryGetValue(Key<T>(key), out var _value);
-            value = (T)_value;
+            value = default;
+            if (result && _value != null)
+                value = (T)_value;
+
             return result;
         }
 
@@ -126,7 +147,10 @@ namespace Moq.Sdk
         public bool TryRemove<T>(out T value)
         {
             var result = state.TryRemove(typeof(T), out var _value);
-            value = (T)_value;
+            value = default;
+            if (result && _value != null)
+                value = (T)_value;
+
             return result;
         }
 
@@ -142,7 +166,10 @@ namespace Moq.Sdk
         public bool TryRemove<T>(object key, out T value)
         {
             var result = state.TryRemove(Key<T>(key), out var _value);
-            value = (T)_value;
+            value = default;
+            if (result && _value != null)
+                value = (T)_value;
+
             return result;
         }
 
@@ -178,6 +205,6 @@ namespace Moq.Sdk
         /// <summary>
         /// Gets the key to use depending on the received <typeparamref name="T"/>.
         /// </summary>
-        object Key<T>(object key) => typeof(T) == typeof(object) ? key : Tuple.Create(typeof(T), key);
+        object Key<T>(object key) => typeof(T) == typeof(object) ? key : (Key: key, Type: typeof(T));
     }
 }

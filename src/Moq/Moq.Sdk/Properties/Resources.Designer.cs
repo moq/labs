@@ -19,7 +19,7 @@ namespace Moq.Sdk.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -61,11 +61,20 @@ namespace Moq.Sdk.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The mock already contains a tracking behavior..
+        ///   Looks up a localized string similar to The mock already contains a context behavior..
         /// </summary>
-        internal static string DuplicateTrackingBehavior {
+        internal static string DuplicateContextBehavior {
             get {
-                return ResourceManager.GetString("DuplicateTrackingBehavior", resourceCulture);
+                return ResourceManager.GetString("DuplicateContextBehavior", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The mock already contains a recording behavior..
+        /// </summary>
+        internal static string DuplicateRecordingBehavior {
+            get {
+                return ResourceManager.GetString("DuplicateRecordingBehavior", resourceCulture);
             }
         }
         
