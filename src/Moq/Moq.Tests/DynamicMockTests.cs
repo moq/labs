@@ -12,7 +12,7 @@ namespace Moq.Sdk.Tests
         public async Task WhenAddingMockBehavior_ThenCanInterceptSelectively()
         {
             var calculator = await new DynamicMock(LanguageNames.CSharp).CreateAsync<ICalculator>();
-            var behavior = new MockTrackingBehavior();
+            var behavior = new MockContextBehavior();
 
             calculator.AddBehavior(behavior);
             calculator.AddBehavior((m, n) => m.CreateValueReturn(CalculatorMode.Scientific), m => m.MethodBase.Name == "get_Mode");

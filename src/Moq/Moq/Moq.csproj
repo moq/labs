@@ -21,6 +21,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Legacy\Mock`1.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Legacy\Mock`1.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

@@ -14,19 +14,35 @@ namespace Moq.Sdk.Tests
             => Assert.Throws<ArgumentNullException>(() => new DefaultMock(null));
 
         [Fact]
-        public void AddsMockTrackingBehavior()
+        public void AddsMockContextBehavior()
         {
             var mock = new DefaultMock(new FakeStunt());
 
-            Assert.Collection(mock.Behaviors, x => Assert.IsType<MockTrackingBehavior>(x));
+            Assert.Contains(mock.Behaviors, x => x is MockContextBehavior);
         }
 
         [Fact]
-        public void PreventsDuplicateMockTrackingBehavior()
+        public void AddsMockRecordingBehavior()
         {
             var mock = new DefaultMock(new FakeStunt());
 
-            Assert.Throws<InvalidOperationException>(() => mock.Behaviors.Add(new MockTrackingBehavior()));
+            Assert.Contains(mock.Behaviors, x => x is MockRecordingBehavior);
+        }
+
+        [Fact]
+        public void PreventsDuplicateMockContextBehavior()
+        {
+            var mock = new DefaultMock(new FakeStunt());
+
+            Assert.Throws<InvalidOperationException>(() => mock.Behaviors.Add(new MockContextBehavior()));
+        }
+
+        [Fact]
+        public void PreventsDuplicateMockRecordingBehavior()
+        {
+            var mock = new DefaultMock(new FakeStunt());
+
+            Assert.Throws<InvalidOperationException>(() => mock.Behaviors.Add(new MockRecordingBehavior()));
         }
 
         [Fact]
@@ -40,18 +56,19 @@ namespace Moq.Sdk.Tests
                 new MethodInvocation(stunt, typeof(FakeStunt).GetMethod("Do")),
                 Array.Empty<IArgumentMatcher>());
 
+            var initialBehaviors = stunt.Behaviors.Count;
             var behavior = new MockBehaviorPipeline(setup);
 
             stunt.AddBehavior(behavior);
             stunt.AddBehavior(new DelegateStuntBehavior((m, n) => n().Invoke(m, n)));
-            Assert.Equal(3, stunt.Behaviors.Count);
+            Assert.Equal(initialBehaviors + 2, stunt.Behaviors.Count);
 
             Assert.Single(stunt.Mock.Setups);
             Assert.Same(behavior, stunt.Mock.GetPipeline(setup));
 
             stunt.Behaviors.Remove(behavior);
 
-            Assert.Equal(2, stunt.Behaviors.Count);
+            Assert.Equal(initialBehaviors + 1, stunt.Behaviors.Count);
             Assert.Empty(stunt.Mock.Setups);
         }
 
@@ -59,6 +76,10 @@ namespace Moq.Sdk.Tests
         public void AddPipelineForSetupIfMissing()
         {
             var stunt = new FakeStunt();
+            // Forces initialization of the default mock.
+            Assert.NotNull(stunt.Mock);
+
+            var initialBehaviors = stunt.Behaviors.Count;
             var setup = new MockSetup(
                 new MethodInvocation(stunt, typeof(FakeStunt).GetMethod("Do")),
                 Array.Empty<IArgumentMatcher>());
@@ -66,7 +87,7 @@ namespace Moq.Sdk.Tests
             var behavior = stunt.Mock.GetPipeline(setup);
 
             Assert.NotNull(behavior);
-            Assert.Equal(2, stunt.Behaviors.Count);
+            Assert.Equal(initialBehaviors + 1, stunt.Behaviors.Count);
             Assert.Single(stunt.Mock.Setups);
         }
 

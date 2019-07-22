@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using Stunts;
 
 namespace Moq.Sdk
 {
@@ -20,12 +21,31 @@ namespace Moq.Sdk
         /// <summary>
         /// See <see cref="IMockFactory.CreateMock(Assembly, Type, Type[], object[])"/>
         /// </summary>
-        public object CreateMock(Assembly mocksAssembly, Type baseType, Type[] implementedInterfaces, object[] construtorArguments)
+        public object CreateMock(Assembly mocksAssembly, Type baseType, Type[] implementedInterfaces, object[] constructorArguments)
+        {
+            var type = GetMockType(mocksAssembly, baseType, implementedInterfaces, constructorArguments);
+            var mocked = CreateMock(type, constructorArguments);
+
+            // Save for cloning purposes.
+            mocked.Mock.State.Set(".ctor", constructorArguments);
+
+            return mocked;
+        }
+
+        /// <summary>
+        /// Creates an instance of the mock, which must implement <see cref="IMocked"/> interface.
+        /// </summary>
+        protected IMocked CreateMock(Type type, object[] constructorArguments)
+            => (IMocked)Activator.CreateInstance(type, constructorArguments);
+
+        /// <summary>
+        /// Default implementation for locating mock types will use <see cref="MockNaming.GetFullName(Type, Type[])"/> to 
+        /// create a candidate mock type name, then get it from the <paramref name="mocksAssembly"/>.
+        /// </summary>
+        protected virtual Type GetMockType(Assembly mocksAssembly, Type baseType, Type[] implementedInterfaces, object[] constructorArguments)
         {
             var name = MockNaming.GetFullName(baseType, implementedInterfaces);
-            var type = mocksAssembly.GetType(name, true, false);
-
-            return  (IMocked)Activator.CreateInstance(type, construtorArguments);
+            return mocksAssembly.GetType(name, true, false);
         }
     }
 }

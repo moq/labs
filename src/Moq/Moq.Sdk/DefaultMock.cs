@@ -13,7 +13,7 @@ namespace Moq.Sdk
     /// <summary>
     /// Default implementation of the mock introspection API <see cref="IMock"/>, 
     /// which also ensures that the <see cref="IStunt.Behaviors"/> contains 
-    /// the <see cref="MockTrackingBehavior"/> when initially created.
+    /// the <see cref="MockContextBehavior"/> when initially created.
     /// </summary>
     [DebuggerDisplay("Invocations = {Invocations.Count}", Name = nameof(IMocked) + "." + nameof(IMocked.Mock))]
     public class DefaultMock : IMock
@@ -30,8 +30,11 @@ namespace Moq.Sdk
         {
             this.stunt = stunt ?? throw new ArgumentNullException(nameof(stunt));
 
-            if (!stunt.Behaviors.OfType<MockTrackingBehavior>().Any())
-                stunt.Behaviors.Insert(0, new MockTrackingBehavior());
+            if (!stunt.Behaviors.OfType<MockContextBehavior>().Any())
+                stunt.Behaviors.Insert(0, new MockContextBehavior());
+
+            if (!stunt.Behaviors.OfType<MockRecordingBehavior>().Any())
+                stunt.Behaviors.Insert(1, new MockRecordingBehavior());
 
             stunt.Behaviors.CollectionChanged += OnBehaviorsChanged;
         }
@@ -40,14 +43,14 @@ namespace Moq.Sdk
         public ObservableCollection<IStuntBehavior> Behaviors => stunt.Behaviors;
 
         /// <inheritdoc />
-        public ICollection<IMethodInvocation> Invocations { get; } = new HashSet<IMethodInvocation>();
+        public ICollection<IMethodInvocation> Invocations { get; } = new List<IMethodInvocation>();
 
         /// <inheritdoc />
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public object Object => stunt;
 
         /// <inheritdoc />
-        public MockState State { get; } = new MockState();
+        public StateBag State { get; set; } = new StateBag();
 
         /// <inheritdoc />
         public IEnumerable<IMockBehaviorPipeline> Setups => setupBehaviorMap.Values;
@@ -58,10 +61,16 @@ namespace Moq.Sdk
             {
                 var behavior = new MockBehaviorPipeline(x);
                 // The tracking behavior must appear before the mock behaviors.
-                var tracking = Behaviors.OfType<MockTrackingBehavior>().FirstOrDefault();
+                var context = Behaviors.OfType<MockContextBehavior>().FirstOrDefault();
+                // If there is a recording behavior, it must be before mock behaviors too.
+                var recording = Behaviors.OfType<MockRecordingBehavior>().FirstOrDefault();
+
+                var index = context == null ? 0 : Behaviors.IndexOf(context);
+                if (recording != null)
+                    index = Math.Max(index, Behaviors.IndexOf(recording));
+
                 // NOTE: latest setup wins, since it goes to the top of the list.
-                var index = tracking == null ? 0 : (Behaviors.IndexOf(tracking) + 1);
-                Behaviors.Insert(index, behavior);
+                Behaviors.Insert(++index, behavior);
                 return behavior;
             });
 
@@ -70,9 +79,12 @@ namespace Moq.Sdk
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    // Can't have more than one of MockTrackingBehavior, since that causes problems.
-                    if (Behaviors.OfType<MockTrackingBehavior>().Skip(1).Any())
-                        throw new InvalidOperationException(Resources.DuplicateTrackingBehavior);
+                    // Can't have more than one of MockContextBehavior, since that causes problems.
+                    if (Behaviors.OfType<MockContextBehavior>().Skip(1).Any())
+                        throw new InvalidOperationException(Resources.DuplicateContextBehavior);
+                    // Can't have more than one of MockRecordingBehavior, since that causes problems.
+                    if (Behaviors.OfType<MockRecordingBehavior>().Skip(1).Any())
+                        throw new InvalidOperationException(Resources.DuplicateRecordingBehavior);
 
                     foreach (var behavior in e.NewItems.OfType<IMockBehaviorPipeline>())
                         setupBehaviorMap.TryAdd(behavior.Setup, behavior);

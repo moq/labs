@@ -10,7 +10,7 @@ namespace Moq.Sdk
     {
         /// <summary>
         /// The most recent invocation performed on the mock, tracked 
-        /// by the <see cref="MockTrackingBehavior"/>.
+        /// by the <see cref="MockContextBehavior"/>.
         /// </summary>
         public static IMethodInvocation CurrentInvocation
         {
@@ -26,7 +26,7 @@ namespace Moq.Sdk
         /// </summary>
         /// <remarks>
         /// This property is also tracked and populated by the 
-        /// <see cref="MockTrackingBehavior"/>.
+        /// <see cref="MockContextBehavior"/>.
         /// </remarks>
         public static IMockSetup CurrentSetup
         {

@@ -27,7 +27,7 @@ namespace Moq.Sdk
         /// <summary>
         /// Arbitrary state associated with a mock instance.
         /// </summary>
-        MockState State { get; }
+        StateBag State { get; set; }
 
         /// <summary>
         /// The list of mock behavior pipelines configured for this mock.

@@ -121,9 +121,13 @@ $@"<Project Sdk='Microsoft.NET.Sdk'>
             var resource = repo.GetResourceAsync<PackageMetadataResource>().Result;
             var metadata = resource.GetMetadataAsync("Microsoft.CodeAnalysis.Workspaces.Common", true, false, new Logger(null), CancellationToken.None).Result;
 
+            // 3.1.0 is already stable and we verified we work with it
+            // Older versions are guaranteed to not change either, so we 
+            // can rely on it working too, since this test passed at some 
+            // point too.
             return metadata
                 .Select(m => m.Identity)
-                .Where(m => m.Version >= new NuGetVersion("2.9.0"))
+                .Where(m => m.Version >= new NuGetVersion("3.1.0"))
                 .Select(v => new object[] { v });
         }
 

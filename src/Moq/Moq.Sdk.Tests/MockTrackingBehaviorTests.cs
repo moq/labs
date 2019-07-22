@@ -13,7 +13,7 @@ namespace Moq.Sdk.Tests
         {
             var target = new TrackingMock();
             var invocation = new MethodInvocation(target, typeof(TrackingMock).GetMethod(nameof(TrackingMock.Do)));
-            var tracking = new MockTrackingBehavior();
+            var tracking = new MockContextBehavior();
 
             Assert.NotNull(tracking.Execute(invocation, () => (m, n) => m.CreateValueReturn(null)));
 
@@ -27,9 +27,9 @@ namespace Moq.Sdk.Tests
         {
             var target = new TrackingMock();
             var invocation = new MethodInvocation(target, typeof(TrackingMock).GetMethod(nameof(TrackingMock.Do)));
-            var tracking = new MockTrackingBehavior();
+            var recording = new MockRecordingBehavior();
 
-            Assert.NotNull(tracking.Execute(invocation, () => (m, n) => m.CreateValueReturn(null)));
+            Assert.NotNull(recording.Execute(invocation, () => (m, n) => m.CreateValueReturn(null)));
 
             Assert.Single(target.Mock.Invocations);
         }
@@ -39,7 +39,7 @@ namespace Moq.Sdk.Tests
         {
             var target = new TrackingMock();
             var invocation = new MethodInvocation(target, typeof(TrackingMock).GetMethod(nameof(TrackingMock.Do)));
-            var tracking = new MockTrackingBehavior();
+            var tracking = new MockContextBehavior();
 
             using (new SetupScope())
             {

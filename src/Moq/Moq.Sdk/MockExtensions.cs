@@ -22,6 +22,33 @@ namespace Moq.Sdk
             => (instance as IMocked)?.Mock.As(instance) ?? throw new ArgumentException(Strings.TargetNotMock, nameof(instance));
 
         /// <summary>
+        /// Clones a mock by creating a new instance of the <see cref="IMock.Object"/> 
+        /// from <paramref name="mock"/> and copying its behaviors, invocations and state.
+        /// </summary>
+        public static IMock<T> Clone<T>(this IMock<T> mock)
+        {
+            if (!mock.State.TryGetValue<object[]>(".ctor", out var ctor))
+                throw new ArgumentException("No constructor state found for cloning.");
+
+            var clone = ((IMocked)Activator.CreateInstance(mock.Object.GetType(), ctor)).Mock;
+            clone.State = mock.State.Clone();
+
+            clone.Behaviors.Clear();
+            foreach (var behavior in mock.Behaviors)
+            {
+                clone.Behaviors.Add(behavior);
+            }
+
+            clone.Invocations.Clear();
+            foreach (var invocation in mock.Invocations)
+            {
+                clone.Invocations.Add(invocation);
+            }
+
+            return ((T)clone.Object).AsMock();
+        }
+
+        /// <summary>
         /// Gets the invocations performed on the mock so far that match the given 
         /// setup lambda.
         /// </summary>
@@ -68,7 +95,11 @@ namespace Moq.Sdk
 
             public ICollection<IMethodInvocation> Invocations => mock.Invocations;
 
-            public MockState State => mock.State;
+            public StateBag State
+            {
+                get => mock.State;
+                set => mock.State = value;
+            }
 
             public IEnumerable<IMockBehaviorPipeline> Setups => mock.Setups;
 

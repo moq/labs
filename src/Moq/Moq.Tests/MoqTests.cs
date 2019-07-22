@@ -5,11 +5,17 @@ using Moq.Sdk;
 using static Moq.Syntax;
 using Stunts;
 using Sample;
+using System.Linq;
+using Xunit.Abstractions;
 
 namespace Moq.Tests
 {
     public class MoqTests
     {
+        ITestOutputHelper output;
+
+        public MoqTests(ITestOutputHelper output) => this.output = output;
+
         [Fact]
         public void CanRaiseEvents()
         {

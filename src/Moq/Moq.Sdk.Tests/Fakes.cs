@@ -28,6 +28,10 @@ namespace Moq.Sdk.Tests
 
         public IArgumentMatcher[] Matchers { get; set; } = new IArgumentMatcher[0];
 
+        public Times? Occurrence { get; set; }
+
+        public StateBag State { get; } = new StateBag();
+
         IMethodInvocation IMockSetup.Invocation => Invocation;
 
         public bool Equals(IMockSetup other) => base.Equals(other);

@@ -1,8 +1,5 @@
-﻿using System;
-using System.ComponentModel;
-using System.Diagnostics;
+﻿using System.ComponentModel;
 using System.Linq;
-using Moq.Properties;
 using Moq.Sdk;
 using Stunts;
 
@@ -10,7 +7,7 @@ namespace Moq
 {
     /// <summary>
     /// Provides the <see cref="Initialize"/> method for configuring the initial 
-    /// behaviors set of behaviors for a given <see cref="MockBehavior"/>.
+    /// set of behaviors for a given <see cref="MockBehavior"/>.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static class MockInitializer
@@ -29,7 +26,8 @@ namespace Moq
         {
             mocked.Mock.Behaviors.Clear();
 
-            mocked.Mock.Behaviors.Add(new MockTrackingBehavior());
+            mocked.Mock.Behaviors.Add(new MockContextBehavior());
+            mocked.Mock.Behaviors.Add(new MockRecordingBehavior());
             mocked.Mock.Behaviors.Add(new EventBehavior());
             mocked.Mock.Behaviors.Add(new PropertyBehavior { SetterRequiresSetup = behavior == MockBehavior.Strict });
             mocked.Mock.Behaviors.Add(new DefaultEqualityBehavior());
