@@ -1,5 +1,13 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
+  <PropertyGroup>
+    <StuntsIntermediateCodeGenPath>$([MSBuild]::MakeRelative($(MSBuildProjectDirectory), $([MSBuild]::NormalizePath('$(IntermediateOutputPath)Stunts/'))))</StuntsIntermediateCodeGenPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+     <Clean Include="$(StuntsIntermediateCodeGenPath)*$(DefaultLanguageSourceExtension)" /> 
+  </ItemGroup>
+
   <Target Name="_AddStuntsDesignTimeAnalyzers" BeforeTargets="CoreCompile" Condition="'$(DesignTimeBuild)' == 'true'">
     <ItemGroup>
       <!-- CodeFix analyzers should only be added to DTBs since they depend on 
@@ -8,26 +16,10 @@
     </ItemGroup>
   </Target>
 
-  <!-- Implements Clean support, see https://github.com/Microsoft/msbuild/issues/2408#issuecomment-321082997 -->
-  <Target Name="_EnsureDeleteCodeGenOnClean"
-          BeforeTargets="_CleanRecordFileWrites"
-          DependsOnTargets="_CleanGetCurrentAndPriorFileWrites">
+  <Target Name="_AddStuntsToCoreCompile" BeforeTargets="CoreCompile">
     <ItemGroup>
-      <_CleanCurrentFileWrites Include="%(IntermediateCodeGenPath.Identity)*$(DefaultLanguageSourceExtension)" />
-    </ItemGroup>
-  </Target>
-
-  <Target Name="_RemoveCleanedFilesFromCompile" BeforeTargets="CoreCompile">
-    <ItemGroup>
-      <Compile Remove="@(Compile -> WithMetadataValue('IsIntermediateCodeGen', 'true'))" Condition="!Exists('%(FullPath)')" />
-    </ItemGroup>
-  </Target>
-
-  <Target Name="AddGeneratedFilesToCompile" AfterTargets="AfterAutoCodeFix">
-    <ItemGroup>
-      <Compile Remove="@(Compile -> WithMetadataValue('IsIntermediateCodeGen', 'true'))" />
-      <_NewCodeGen Include="%(IntermediateCodeGenPath.Identity)*$(DefaultLanguageSourceExtension)" />
-      <Compile Include="@(_NewCodeGen)" />
+      <Compile Remove="@(Compile)" Condition="$([MSBuild]::ValueOrDefault('%(RelativeDir)', '').StartsWith($(StuntsIntermediateCodeGenPath)))" />
+      <Compile Include="$(StuntsIntermediateCodeGenPath)*$(DefaultLanguageSourceExtension)" />
     </ItemGroup>
   </Target>
 

@@ -15,21 +15,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Include generated mocks from intermediate output -->
-    <Compile Include="$(IntermediateOutputPath)Mocks/*$(DefaultLanguageSourceExtension)">
-      <!-- Even with this metadata, the obj/Debug/... folder structure is shown :( -->
-      <Visible>false</Visible>
-      <!-- We basically need to link to outside the project cone -->
-      <Link>../Mocks/%(RecursiveDir)%(Filename)%(Extension)</Link>
-      <IsIntermediateCodeGen>true</IsIntermediateCodeGen>
-    </Compile>
     <!-- Ensure nuget-linked source content files are not shown in the project -->
     <Compile Update="$(NuGetPackageRoot)moq/*/contentFiles/**/*$(DefaultLanguageSourceExtension)">
       <!-- Since these are not under the project directory, without a link, they do dissapear -->
       <Visible>false</Visible>
       <Link />
     </Compile>
-    <IntermediateCodeGenPath Include="$(IntermediateOutputPath)Mocks/" />
   </ItemGroup>
 
 </Project>
