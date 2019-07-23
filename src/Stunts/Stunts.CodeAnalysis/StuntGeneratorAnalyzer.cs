@@ -65,6 +65,7 @@ namespace Stunts
         public override void Initialize(AnalysisContext context)
         {
             context.RegisterSyntaxNodeAction(AnalyzeSyntaxNode, Microsoft.CodeAnalysis.CSharp.SyntaxKind.InvocationExpression);
+            context.RegisterSyntaxNodeAction(AnalyzeSyntaxNode, Microsoft.CodeAnalysis.CSharp.SyntaxKind.ObjectCreationExpression);
             context.RegisterSyntaxNodeAction(AnalyzeSyntaxNode, Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.SimpleMemberAccessExpression);
         }
 
@@ -87,19 +88,41 @@ namespace Stunts
             }
 
             var method = (IMethodSymbol)symbol.Symbol;
+            ImmutableArray<ITypeSymbol> typeArguments = default;
+            if (!method.GetAttributes().Any(x => x.AttributeClass == generator))
+                return;
+
+            if (method.MethodKind == MethodKind.Constructor)
+            {
+                if (method.ReceiverType is INamedTypeSymbol owner &&
+                    owner.IsGenericType)
+                {
+                    typeArguments = owner.TypeArguments;
+                }
+                else
+                {
+                    return;
+                }
+            }
+            else
+            {
+
+                typeArguments = method.TypeArguments;
+            }
+
             if (method.GetAttributes().Any(x => x.AttributeClass == generator) &&
                 // We don't generate anything if generator is applied to a non-generic method.
-                !method.TypeArguments.IsDefaultOrEmpty &&
-                method.TypeArguments.TryValidateGeneratorTypes(out _))
+                !typeArguments.IsDefaultOrEmpty &&
+                typeArguments.TryValidateGeneratorTypes(out _))
             {
-                var name = naming.GetFullName(method.TypeArguments.OfType<INamedTypeSymbol>());
+                var name = naming.GetFullName(typeArguments.OfType<INamedTypeSymbol>());
                 var compilationErrors = new Lazy<Diagnostic[]>(() => context.Compilation.GetCompilationErrors());
                 HashSet<string> recursiveSymbols;
 
                 if (recursive)
                 {
                     // Collect recursive symbols to generate/update as needed.
-                    recursiveSymbols = new HashSet<string>(method.TypeArguments.OfType<INamedTypeSymbol>().InterceptableRecursively()
+                    recursiveSymbols = new HashSet<string>(typeArguments.OfType<INamedTypeSymbol>().InterceptableRecursively()
                         .Where(x =>
                         {
                             var candidate = context.Compilation.GetTypeByMetadataName(naming.GetFullName(new[] { x }));
@@ -122,7 +145,7 @@ namespace Stunts
                         new Dictionary<string, string>
                         {
                             { "TargetFullName", name },
-                            { "Symbols", string.Join("|", method.TypeArguments
+                            { "Symbols", string.Join("|", typeArguments
                                 .OfType<INamedTypeSymbol>().Select(x => x.ToFullMetadataName())) },
                             // By passing the detected recursive symbols to update/generate, 
                             // we avoid doing all the work we already did during analysis. 
@@ -174,7 +197,7 @@ namespace Stunts
                             {
                                 { "TargetFullName", name },
                                 { "Location", location },
-                                { "Symbols", string.Join("|", method.TypeArguments
+                                { "Symbols", string.Join("|", typeArguments
                                     .OfType<INamedTypeSymbol>().Select(x => x.ToFullMetadataName())) },
                                 // We pass the same recursive symbols in either case. The 
                                 // Different diagnostics exist only to customize the message 
