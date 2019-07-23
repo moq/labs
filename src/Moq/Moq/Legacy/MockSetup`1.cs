@@ -20,6 +20,7 @@ namespace Moq
             this.target = target;
             this.mock = mock;
             this.action = action;
+            target.Setup(action);
         }
 
         #region Callback
