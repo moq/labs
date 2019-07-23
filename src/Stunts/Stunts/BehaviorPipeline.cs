@@ -71,9 +71,13 @@ namespace Stunts
         /// <returns>Return value from the pipeline.</returns>
         public IMethodReturn Invoke(IMethodInvocation invocation, ExecuteDelegate target, bool throwOnException = false)
         {
-            var behaviors = Behaviors.ToArray();
-            if (behaviors.Length == 0)
+            if (Behaviors.Count == 0)
                 return target(invocation, null);
+            
+            // We convert to array so that the collection of behaviors can potentially 
+            // be modified by behaviors themselves for a subsequent pipeline execution. 
+            // The current pipeline execution, once started, cannot be modified, though.
+            var behaviors = Behaviors.ToArray();
 
             var index = -1;
             for (var i = 0; i < behaviors.Length; i++)
