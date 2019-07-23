@@ -222,8 +222,6 @@ namespace Moq.Tests
             Assert.Throws<VerifyException>(() => calculator.Verify(x => x.TurnOn(), "Should have been called!"));
             // Once with message
             Assert.Throws<VerifyException>(() => calculator.Verify(x => x.TurnOn(), 1, "Should have been called!"));
-            // Times.Once with message
-            Assert.Throws<VerifyException>(() => calculator.Verify(x => x.TurnOn(), Times.Once, "Should have been called!"));
 
             calculator.TurnOn();
 
@@ -235,8 +233,6 @@ namespace Moq.Tests
             calculator.Verify(x => x.TurnOn(), "Should have been called!");
             // Once with message
             calculator.Verify(x => x.TurnOn(), 1, "Should have been called!");
-            // Times.Once with message
-            calculator.Verify(x => x.TurnOn(), Times.Once, "Should have been called!");
         }
 
         [Fact]
@@ -253,7 +249,7 @@ namespace Moq.Tests
             // Once with message
             Assert.Throws<VerifyException>(() => calculator.Verify(x => x.Add(2, 3), 1, "Should have been called!"));
             // Times.Once with message
-            Assert.Throws<VerifyException>(() => calculator.Verify(x => x.Add(2, 3), Times.Once, "Should have been called!"));
+            Assert.Throws<VerifyException>(() => calculator.Verify(x => x.Add(2, 3).Once(), "Should have been called!"));
 
             calculator.Add(2, 3);
 
@@ -266,7 +262,7 @@ namespace Moq.Tests
             // Once with message
             calculator.Verify(x => x.Add(2, 3), 1, "Should have been called!");
             // Times.Once with message
-            calculator.Verify(x => x.Add(2, 3), Times.Once, "Should have been called!");
+            calculator.Verify(x => x.Add(2, 3).Once(), "Should have been called!");
         }
 
         //[Fact]

@@ -31,7 +31,7 @@ namespace Moq
         /// </summary>
         /// <param name="function">The method invocation to match against actual calls.</param>
         /// <param name="times">Number of times the method should have been called.</param>
-        public static void Called<T>(Func<T> function, int times) => Called(function, (Times)times);
+        public static void Called<T>(Func<T> function, int times) => CalledImpl(function, times);
 
         /// <summary>
         /// Verifies a method invocation matching the <paramref name="function"/> was called at 
@@ -39,7 +39,7 @@ namespace Moq
         /// </summary>
         /// <param name="function">The method invocation to match against actual calls.</param>
         /// <param name="message">User message to show.</param>
-        public static void Called<T>(Func<T> function, string message) => Called(function, default, message: message);
+        public static void Called<T>(Func<T> function, string message) => CalledImpl(function, default, message: message);
 
         /// <summary>
         /// Verifies a method invocation matching the <paramref name="function"/> was executed at 
@@ -49,7 +49,17 @@ namespace Moq
         /// <param name="times">Optional number of times the method should have been called. Defaults to <see cref="Times.AtLeastOnce"/>.
         /// An integer value can also be specificed since there is built-in conversion support from integer to <see cref="Times"/>.</param>
         /// <param name="message">Optional user message to show.</param>
-        public static void Called<T>(Func<T> function, Times times = default, string message = null)
+        public static void Called<T>(Func<T> function, int times = -1, string message = null) => CalledImpl(function, times, message);
+
+        /// <summary>
+        /// Verifies a method invocation matching the <paramref name="function"/> was executed at 
+        /// least once. If <paramref name="times"/> is provided, the number of calls is verified too.
+        /// </summary>
+        /// <param name="function">The method invocation to match against actual calls.</param>
+        /// <param name="times">Optional number of times the method should have been called. Defaults to <see cref="Times.AtLeastOnce"/>.
+        /// An integer value can also be specificed since there is built-in conversion support from integer to <see cref="Times"/>.</param>
+        /// <param name="message">Optional user message to show.</param>
+        internal static void CalledImpl<T>(Func<T> function, Sdk.Times times = default, string message = null)
         {
             using (new SetupScope())
             {
@@ -68,7 +78,7 @@ namespace Moq
         /// </summary>
         /// <param name="action">The method invocation to match against actual calls.</param>
         /// <param name="times">Number of times the method should have been called.</param>
-        public static void Called(Action action, int times) => Called(action, (Times)times);
+        public static void Called(Action action, int times) => CalledImpl(action, times);
 
         /// <summary>
         /// Verifies a method invocation matching the <paramref name="action"/> was executed at 
@@ -76,7 +86,7 @@ namespace Moq
         /// </summary>
         /// <param name="action">The method invocation to match against actual calls.</param>
         /// <param name="message">Optional user message to show.</param>
-        public static void Called(Action action, string message) => Called(action, default, message: message);
+        public static void Called(Action action, string message) => CalledImpl(action, default, message: message);
 
         /// <summary>
         /// Verifies a method invocation matching the <paramref name="action"/> was executed at 
@@ -86,7 +96,17 @@ namespace Moq
         /// <param name="times">Optional number of times the method should have been called. Defaults to <see cref="Times.AtLeastOnce"/>. 
         /// An integer value can also be specificed since there is built-in conversion support from integer to <see cref="Times"/>.</param>
         /// <param name="message">Optional user message to show.</param>
-        public static void Called(Action action, Times times = default, string message = null)
+        public static void Called(Action action, int times = -1, string message = null) => CalledImpl(action, times, message);
+
+        /// <summary>
+        /// Verifies a method invocation matching the <paramref name="action"/> was executed at 
+        /// least once. If <paramref name="times"/> is provided, the number of calls is verified too.
+        /// </summary>
+        /// <param name="action">The method invocation to match against actual calls.</param>
+        /// <param name="times">Optional number of times the method should have been called. Defaults to <see cref="Times.AtLeastOnce"/>. 
+        /// An integer value can also be specificed since there is built-in conversion support from integer to <see cref="Times"/>.</param>
+        /// <param name="message">Optional user message to show.</param>
+        internal static void CalledImpl(Action action, Sdk.Times times = default, string message = null)
         {
             using (new SetupScope())
             {
@@ -112,14 +132,14 @@ namespace Moq
         /// </summary>
         /// <param name="function">The method invocation to match against actual calls.</param>
         /// <param name="message">Optional user message to show.</param>
-        public static void NotCalled<T>(Func<T> function, string message = null) => Called(function, Times.Never, message);
+        public static void NotCalled<T>(Func<T> function, string message = null) => CalledImpl(function, Sdk.Times.Never, message);
 
         /// <summary>
         /// Verifies a method invocation matching the <paramref name="action"/> was never called.
         /// </summary>
         /// <param name="action">The method invocation to match against actual calls.</param>
         /// <param name="message">Optional user message to show.</param>
-        public static void NotCalled(Action action, string message = null) => Called(action, Times.Never, message);
+        public static void NotCalled(Action action, string message = null) => CalledImpl(action, Sdk.Times.Never, message);
 
         /// <summary>
         /// Verifies all setups that had an occurrence constraint applied, 
@@ -252,8 +272,6 @@ namespace Moq
             public bool AppliesTo(IMethodInvocation invocation) => true;
 
             public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next) => next().Invoke(invocation, next);
-            //public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next)
-            //    => next().Invoke(new MethodInvocation(target, invocation.MethodBase, invocation.Arguments.ToArray()), next);
         }
     }
 }

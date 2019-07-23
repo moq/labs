@@ -26,7 +26,7 @@ namespace Moq
             var setup = MockContext.CurrentSetup;
             if (setup != null)
             {
-                setup.Occurrence = Times.AtLeastOnce;
+                setup.Occurrence = Sdk.Times.AtLeastOnce;
                 var mock = setup.Invocation.Target.AsMock();
                 if (Verify.IsVerifying(mock))
                 {
@@ -52,7 +52,7 @@ namespace Moq
             var setup = MockContext.CurrentSetup;
             if (setup != null)
             {
-                setup.Occurrence = Times.Once;
+                setup.Occurrence = Sdk.Times.Once;
                 var mock = setup.Invocation.Target.AsMock();
                 if (Verify.IsVerifying(mock))
                 {
@@ -78,7 +78,7 @@ namespace Moq
             var setup = MockContext.CurrentSetup;
             if (setup != null)
             {
-                setup.Occurrence = Times.Never;
+                setup.Occurrence = Sdk.Times.Never;
                 var mock = setup.Invocation.Target.AsMock();
                 if (Verify.IsVerifying(mock))
                 {
@@ -103,7 +103,7 @@ namespace Moq
             var setup = MockContext.CurrentSetup;
             if (setup != null)
             {
-                setup.Occurrence = Times.Exactly(callCount);
+                setup.Occurrence = Sdk.Times.Exactly(callCount);
                 var mock = setup.Invocation.Target.AsMock();
                 if (Verify.IsVerifying(mock))
                 {

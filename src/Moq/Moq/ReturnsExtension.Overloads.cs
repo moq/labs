@@ -55,6 +55,15 @@ namespace Moq
         /// be evaluated dynamically using the given function on every 
         /// call.
         /// </summary>
+        public static TResult Returns<T1, T2, T3, T4, T5, T6, TResult>(this TResult target, Func<T1, T2, T3, T4, T5, T6, TResult> value)
+            => Returns<TResult>(value, (m, i, next)
+                => i.CreateValueReturn(value((T1)i.Arguments[0], (T2)i.Arguments[1], (T3)i.Arguments[2], (T4)i.Arguments[3], (T5)i.Arguments[4], (T6)i.Arguments[5]), i.Arguments.ToArray()));
+
+        /// <summary>
+        /// Sets the return value for a property or non-void method to 
+        /// be evaluated dynamically using the given function on every 
+        /// call.
+        /// </summary>
         public static TResult Returns<T1, T2, T3, T4, T5, T6, T7, TResult>(this TResult target, Func<T1, T2, T3, T4, T5, T6, T7, TResult> value)
             => Returns<TResult>(value, (m, i, next)
                 => i.CreateValueReturn(value((T1)i.Arguments[0], (T2)i.Arguments[1], (T3)i.Arguments[2], (T4)i.Arguments[3], (T5)i.Arguments[4], (T6)i.Arguments[5], (T7)i.Arguments[6]), i.Arguments.ToArray()));
