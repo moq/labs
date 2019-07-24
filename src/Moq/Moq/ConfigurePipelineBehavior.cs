@@ -28,6 +28,11 @@ namespace Moq
                 invocation.SkipBehaviors.Add(typeof(StrictMockBehavior));
             }
 
+            // Ensure the Mock pipeline is always created for the matching setup
+            // We need this to skip the StrictBehavior in the CallBaseBehavior
+            if (SetupScope.IsActive)
+                invocation.Target.AsMock().GetPipeline(MockContext.CurrentSetup);
+
             return next().Invoke(invocation, next);
         }
     }

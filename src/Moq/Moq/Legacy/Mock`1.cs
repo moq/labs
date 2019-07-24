@@ -58,6 +58,14 @@ namespace Moq
 
         /// <summary>Supports the legacy API.</summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
+        public bool CallBase
+        {
+            get => mock.AsMoq().CallBase;
+            set => mock.AsMoq().CallBase = value;
+        }
+
+        /// <summary>Supports the legacy API.</summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public Mock<TInterface> As<TInterface>()
         {
             var mocked = (IMocked)MockFactory.Default.CreateMock(Assembly.GetCallingAssembly(), typeof(T), new Type[] { typeof(TInterface) }, new object[0]);

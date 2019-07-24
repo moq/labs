@@ -30,13 +30,14 @@ namespace Moq
             mocked.AsMoq().Behavior = behavior;
 
             mocked.Mock.Behaviors.Add(new SetupScopeBehavior());
-            mocked.Mock.Behaviors.Add(new ConfigurePipelineBehavior());
             mocked.Mock.Behaviors.Add(new MockContextBehavior());
+            mocked.Mock.Behaviors.Add(new ConfigurePipelineBehavior());
             mocked.Mock.Behaviors.Add(new MockRecordingBehavior());
             mocked.Mock.Behaviors.Add(new EventBehavior());
             mocked.Mock.Behaviors.Add(new PropertyBehavior { SetterRequiresSetup = behavior == MockBehavior.Strict });
             mocked.Mock.Behaviors.Add(new DefaultEqualityBehavior());
             mocked.Mock.Behaviors.Add(new RecursiveMockBehavior());
+            mocked.Mock.Behaviors.Add(new CallBaseBehavior());
 
             // Dynamically configured by the ConfigurePipelineBehavior.
             mocked.Mock.Behaviors.Add(new StrictMockBehavior());

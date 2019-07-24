@@ -18,6 +18,7 @@ namespace Moq
             typeof(DefaultValueBehavior), 
             typeof(MockContextBehavior),
             typeof(RecursiveMockBehavior),
+            typeof(ConfigurePipelineBehavior)
         };
 
         /// <summary>
