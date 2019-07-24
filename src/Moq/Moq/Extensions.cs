@@ -1,6 +1,7 @@
 ﻿using Stunts;
 using System.Reflection;
 using System;
+using Moq.Sdk;
 
 namespace Moq
 {
@@ -22,5 +23,7 @@ namespace Moq
                !type.FullName.StartsWith(TaskFullName, StringComparison.Ordinal) &&
                (type.GetTypeInfo().IsInterface ||
                (type.GetTypeInfo().IsClass && !type.GetTypeInfo().IsSealed));
+
+        public static IMoq<T> AsMoq<T>(this T instance) => new Moq<T>(instance.AsMock());
     }
 }
