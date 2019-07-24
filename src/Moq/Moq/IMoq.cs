@@ -17,5 +17,11 @@ namespace Moq
         /// Only available for <see cref="MockBehavior.Loose"/> mocks.
         /// </summary>
         DefaultValueProvider DefaultValue { get; set; }
+
+        /// <summary>
+		/// Whether the base member virtual implementation will be called for mocked classes if no setup is matched.
+		/// Defaults to <see langword="false"/>.
+        /// </summary>
+        bool CallBase { get; set; }
     }
 }

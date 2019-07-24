@@ -5,6 +5,8 @@ using Moq.Sdk;
 
 namespace Moq
 {
+
+
     /// <summary>
     /// Provides the Moq specific configurations on top of an <see cref="Sdk.IMock{T}"/> that 
     /// the Moq API provides beyond the SDK.
@@ -50,6 +52,13 @@ namespace Moq
 
                 State.Set(value);
             }
+        }
+
+        /// <inheritdoc />
+        public bool CallBase
+        {
+            get => State.GetOrAdd(nameof(IMoq) + "." + nameof(CallBase), () => false);
+            set => State.Set(nameof(IMoq) + "." + nameof(CallBase), value);
         }
     }
 }

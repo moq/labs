@@ -1,11 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Threading;
+using Moq.Sdk;
+using Sample;
 using Stunts;
 
-namespace Sample
+namespace Mocks
 {
-    public class CalculatorClassStunt : Calculator, IStunt
+    public partial class CalculatorMock : Calculator, IMocked, IStunt
     {
         BehaviorPipeline pipeline = new BehaviorPipeline();
 
@@ -31,10 +37,10 @@ namespace Sample
 
         public override bool IsOn => pipeline.Execute<bool>(new MethodInvocation(this, MethodBase.GetCurrentMethod()), (m, n) => m.CreateValueReturn(base.IsOn));
 
-        public override int Add(int x, int y) => 
+        public override int Add(int x, int y) =>
             pipeline.Execute<int>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), x, y), (m, n) => m.CreateValueReturn(base.Add(x, y), x, y));
 
-        public override int Add(int x, int y, int z) => 
+        public override int Add(int x, int y, int z) =>
             pipeline.Execute<int>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), x, y, z), (m, n) => m.CreateValueReturn(base.Add(x, y, z), x, y, z));
 
         public override bool TryAdd(ref int x, ref int y, out int z)
@@ -73,5 +79,15 @@ namespace Sample
         {
             get => pipeline.Execute<ICalculatorMemory>(new MethodInvocation(this, MethodBase.GetCurrentMethod()), (m, n) => m.CreateValueReturn(base.Memory));
         }
+
+        #region IMocked
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        IMock mock;
+
+        [DebuggerDisplay("Invocations = {Invocations.Count}", Name = nameof(IMocked.Mock))]
+        [DebuggerBrowsable(DebuggerBrowsableState.Collapsed)]
+        [CompilerGenerated]
+        IMock IMocked.Mock => LazyInitializer.EnsureInitialized(ref mock, () => new DefaultMock(this));
+        #endregion
     }
 }

@@ -10,6 +10,8 @@ namespace Sample
 
         public virtual event EventHandler TurnedOn;
 
+        public bool TurnOnCalled { get; set; }
+
         public virtual bool IsOn { get; private set; }
 
         public virtual CalculatorMode Mode { get; set; }
@@ -22,6 +24,7 @@ namespace Sample
         {
             TurnedOn?.Invoke(this, EventArgs.Empty);
             IsOn = true;
+            TurnOnCalled = true;
         }
 
         public virtual int? this[string name]
