@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Moq.Sdk;
 using Stunts;
 
@@ -26,7 +27,10 @@ namespace Moq
         {
             mocked.Mock.Behaviors.Clear();
 
+            mocked.AsMoq().Behavior = behavior;
+
             mocked.Mock.Behaviors.Add(new SetupScopeBehavior());
+            mocked.Mock.Behaviors.Add(new ConfigurePipelineBehavior());
             mocked.Mock.Behaviors.Add(new MockContextBehavior());
             mocked.Mock.Behaviors.Add(new MockRecordingBehavior());
             mocked.Mock.Behaviors.Add(new EventBehavior());
@@ -34,20 +38,12 @@ namespace Moq
             mocked.Mock.Behaviors.Add(new DefaultEqualityBehavior());
             mocked.Mock.Behaviors.Add(new RecursiveMockBehavior());
 
-            if (behavior == MockBehavior.Strict)
-            {
-                mocked.Mock.Behaviors.Add(new StrictMockBehavior());
-            }
-            else
-            {
-                var defaultValue = mocked.Mock.State.GetOrAdd(() => new DefaultValueProvider());
-                mocked.Mock.Behaviors.Add(new DefaultValueBehavior(defaultValue));
-                mocked.Mock.State.Set(defaultValue);
-            }
+            // Dynamically configured by the ConfigurePipelineBehavior.
+            mocked.Mock.Behaviors.Add(new StrictMockBehavior());
 
-            mocked.Mock.State.Set(behavior);
-            // Saves the initial set of behaviors, which allows resetting the mock.
-            mocked.Mock.State.Set(mocked.Mock.Behaviors.ToArray());
+            var defaultValue = mocked.Mock.State.GetOrAdd(() => new DefaultValueProvider());
+            mocked.Mock.Behaviors.Add(new DefaultValueBehavior(defaultValue));
+            mocked.Mock.State.Set(defaultValue);
         }
     }
 }

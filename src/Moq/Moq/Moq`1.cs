@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
-using Moq.Properties;
 using Moq.Sdk;
 
 namespace Moq
@@ -20,55 +19,13 @@ namespace Moq
         public Moq(IMock<T> mock) : base(mock) { }
 
         /// <summary>
-        /// Gets or sets the <see cref="MockBehavior"/> for the 
-        /// mock.
+        /// Gets or sets the <see cref="MockBehavior"/> for the mock.
         /// </summary>
         // NOTE: the setter is somewhat duplicating behavior in Initialize...
         public MockBehavior Behavior
         {
-            get => Behaviors.Any(x => x is StrictMockBehavior) ? MockBehavior.Strict :
-                Behaviors.Any(x => x is DefaultValueBehavior) ? MockBehavior.Loose :
-                throw new NotSupportedException(Strings.TargetNotLooseOrStrict(nameof(StrictMockBehavior), nameof(DefaultValueBehavior)));
-            set
-            {
-                if (value == MockBehavior.Loose)
-                {
-                    var defaultValue = State.GetOrAdd(() => new DefaultValueProvider());
-                    var strict = Behaviors.FirstOrDefault(x => x is StrictMockBehavior);
-                    if (strict != null)
-                    {
-                        var index = Behaviors.IndexOf(strict);
-                        Behaviors.Remove(strict);
-                        Behaviors.Insert(index, new DefaultValueBehavior(defaultValue));
-                    }
-                    else if (!Behaviors.Any(x => x is DefaultValueBehavior))
-                    {
-                        Behaviors.Add(new DefaultValueBehavior(defaultValue));
-                    }
-
-                    var propertyBehavior = Behaviors.OfType<PropertyBehavior>().FirstOrDefault();
-                    if (propertyBehavior != null)
-                        propertyBehavior.SetterRequiresSetup = false;
-                }
-                else if (value == MockBehavior.Strict)
-                {
-                    var loose = Behaviors.FirstOrDefault(x => x is DefaultValueBehavior);
-                    if (loose != null)
-                    {
-                        var index = Behaviors.IndexOf(loose);
-                        Behaviors.Remove(loose);
-                        Behaviors.Insert(index, new StrictMockBehavior());
-                    }
-                    else if (!Behaviors.Any(x => x is StrictMockBehavior))
-                    {
-                        Behaviors.Add(new StrictMockBehavior());
-                    }
-
-                    var propertyBehavior = Behaviors.OfType<PropertyBehavior>().FirstOrDefault();
-                    if (propertyBehavior != null)
-                        propertyBehavior.SetterRequiresSetup = true;
-                }
-            }
+            get => State.GetOrAdd(nameof(IMoq) + "." + nameof(Behavior), () => MockBehavior.Default);
+            set => State.Set(nameof(IMoq) + "." + nameof(Behavior), value);
         }
 
         /// <summary>

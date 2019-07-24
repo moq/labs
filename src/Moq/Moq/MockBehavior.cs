@@ -9,18 +9,18 @@ namespace Moq
 	{
         /// <summary>Obsolete</summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        Default = 1,
+        Default = 0,
         /// <summary>
         /// Will never throw exceptions, returning default  
         /// values when necessary (null for reference types, 
         /// zero for value types and empty enumerables and arrays).
         /// </summary>
-        Loose = 1,
+        Loose = 0,
         /// <summary>
         /// Causes the mock to always throw 
         /// an exception for invocations that don't have a 
         /// corresponding setup.
         /// </summary>
-        Strict = 0,
+        Strict = 1,
 	}
 }
