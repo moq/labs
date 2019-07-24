@@ -718,7 +718,9 @@ End Namespace
             var doc = project.AddDocument("code.cs", SourceText.From(code));
             var compilation = await doc.Project.GetCompilationAsync(TimeoutToken(4));
             var diagnostic = compilation.GetDiagnostics(TimeoutToken(5))
-                .First(d => provider.FixableDiagnosticIds.Any(fixable => d.Id == fixable));
+                .FirstOrDefault(d => provider.FixableDiagnosticIds.Any(fixable => d.Id == fixable));
+
+            Assert.True(diagnostic != null, $"Could not find any diagnostics with IDs {string.Join(", ", provider.FixableDiagnosticIds)}");
 
             var actions = new List<CodeAction>();
             var context = new CodeFixContext(doc, diagnostic, (a, d) => actions.Add(a), TimeoutToken(5));
