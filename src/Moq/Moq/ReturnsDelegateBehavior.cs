@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using Moq.Sdk;
@@ -7,7 +8,8 @@ using Stunts;
 namespace Moq
 {
     [DebuggerDisplay("{@delegate}", Name = "Returns", Type = nameof(ReturnsDelegateBehavior))]
-    class ReturnsDelegateBehavior : IMockBehavior
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    internal class ReturnsDelegateBehavior : IMockBehavior
     {
         [DebuggerDisplay("<function>")]
         Delegate @delegate;

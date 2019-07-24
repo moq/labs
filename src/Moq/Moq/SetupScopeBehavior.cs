@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Moq.Sdk;
 using Stunts;
@@ -9,7 +10,8 @@ namespace Moq
     /// <summary>
     /// A behavior that skips all behaviors that do not apply during a setup scope.
     /// </summary>
-    public class SetupScopeBehavior : IStuntBehavior
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    internal class SetupScopeBehavior : IStuntBehavior
     {
         static readonly HashSet<Type> setupScopeBehaviors = new HashSet<Type>
         {

@@ -3,6 +3,7 @@ using Stunts;
 using Moq.Sdk;
 using System.Diagnostics;
 using System.Linq;
+using System.ComponentModel;
 
 namespace Moq
 {
@@ -12,7 +13,8 @@ namespace Moq
     /// <see cref="ReturnsExtension"/> method calls.
     /// </summary>
     [DebuggerDisplay("{DebuggerValue}", Name = "Returns", Type = nameof(ReturnsBehavior))]
-    class ReturnsBehavior : IMockBehavior
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    internal class ReturnsBehavior : IMockBehavior
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         Func<IArgumentCollection, object> getter;

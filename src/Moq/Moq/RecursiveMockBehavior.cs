@@ -1,15 +1,18 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using Moq.Sdk;
 using Stunts;
 
-namespace Moq.Sdk
+namespace Moq
 {
     /// <summary>
     /// Adds support for recursive mocks invoked during a setup, 
     /// so that types that can be intercepted (see <see cref="Extensions.CanBeIntercepted(Type)"/>)
     /// are turned into mocks automatically.
     /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public class RecursiveMockBehavior : IStuntBehavior
     {
         /// <summary>
