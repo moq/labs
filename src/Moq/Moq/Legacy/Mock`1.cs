@@ -18,16 +18,27 @@ namespace Moq
         /// <summary>Supports the legacy API.</summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MockGenerator]
-        public Mock() : this(MockBehavior.Loose)
+        public Mock() : this(Assembly.GetCallingAssembly(), MockBehavior.Loose, new object[0])
         {
         }
 
         /// <summary>Supports the legacy API.</summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MockGenerator]
-        public Mock(MockBehavior behavior)
+        public Mock(params object[] args) : this(Assembly.GetCallingAssembly(), MockBehavior.Loose, args)
         {
-            var mocked = (IMocked)MockFactory.Default.CreateMock(Assembly.GetCallingAssembly(), typeof(T), new Type[0], new object[0]);
+        }
+
+        /// <summary>Supports the legacy API.</summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MockGenerator]
+        public Mock(MockBehavior behavior, params object[] args) : this(Assembly.GetCallingAssembly(), behavior, args) 
+        {
+        }
+
+        Mock(Assembly callingAssembly, MockBehavior behavior, params object[] args)
+        {
+            var mocked = (IMocked)MockFactory.Default.CreateMock(callingAssembly, typeof(T), new Type[0], args);
             mocked.Initialize(behavior);
 
             target = (T)mocked;
