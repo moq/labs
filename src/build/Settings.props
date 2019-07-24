@@ -35,6 +35,7 @@
     <!-- We never emit runtime-specific assemblies, so opt-out of this. -->
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 
+    <AllowedReferenceRelatedFileExtensions>$(AllowedReferenceRelatedFileExtensions);*.pdb;*.xml</AllowedReferenceRelatedFileExtensions>
     <AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
 
     <DefaultItemExcludes>$(DefaultExcludeItems);*.binlog</DefaultItemExcludes>

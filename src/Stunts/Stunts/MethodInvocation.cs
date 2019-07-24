@@ -29,43 +29,26 @@ namespace Stunts
             Context = new Dictionary<string, object>();
         }
 
-        /// <summary>
-        /// The arguments of the method invocation.
-        /// </summary>
+        /// <inheritdoc />
         public IArgumentCollection Arguments { get; }
 
-        /// <summary>
-        /// An arbitrary property bag used during the invocation.
-        /// </summary>
+        /// <inheritdoc />
         public IDictionary<string, object> Context { get; }
 
-        /// <summary>
-        /// The runtime method being invoked.
-        /// </summary>
+        /// <inheritdoc />
         public MethodBase MethodBase { get; }
 
-        /// <summary>
-        /// The ultimate target of the method invocation, typically 
-        /// a stunt object.
-        /// </summary>
+        /// <inheritdoc />
         public object Target { get; }
 
-        /// <summary>
-        /// Creates the method invocation return that ends the 
-        /// current invocation with an exception.
-        /// </summary>
-        /// <param name="exception">The exception to throw from the method invocation.</param>
-        /// <returns>The <see cref="IMethodReturn"/> for the current invocation.</returns>
+        /// <inheritdoc />
+        public HashSet<Type> SkipBehaviors { get; } = new HashSet<Type>();
+
+        /// <inheritdoc />
         public IMethodReturn CreateExceptionReturn(Exception exception) 
             => new MethodReturn(this, exception);
 
-        /// <summary>
-        /// Creates a method invocation return that represents 
-        /// a thrown exception.
-        /// </summary>
-        /// <param name="returnValue">Optional return value from the method invocation. <see langword="null"/> for <see langword="void"/> methods.</param>
-        /// <param name="allArguments">Ordered list of all arguments to the method invocation, including ref/out arguments.</param>
-        /// <returns>The <see cref="IMethodReturn"/> for the current invocation.</returns>
+        /// <inheritdoc />
         public IMethodReturn CreateValueReturn(object returnValue, params object[] allArguments) 
             => new MethodReturn(this, returnValue, allArguments);
 

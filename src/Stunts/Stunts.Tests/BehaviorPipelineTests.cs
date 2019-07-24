@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using Moq.Sdk;
 using Xunit;
 
 namespace Stunts.Tests
@@ -318,6 +319,20 @@ namespace Stunts.Tests
 
             Assert.Throws<NotImplementedException>(()
                 => pipeline.Execute<object>(new MethodInvocation(this, f.GetMethodInfo())));
+        }
+
+        [Fact]
+        public void WhenSkippingBehavior_ThenBehaviorIsNotExecuted()
+        {
+            var pipeline = new BehaviorPipeline();
+
+            pipeline.Behaviors.Add(new DefaultValueBehavior());
+
+            var invocation = new MethodInvocation(new object(), typeof(object).GetMethod("ToString"));
+            invocation.SkipBehaviors.Add(typeof(DefaultValueBehavior));
+
+            Assert.Throws<NotImplementedException>(()
+                => pipeline.Execute<string>(invocation));
         }
 
         delegate object NonVoidMethodWithArgRefDelegate(object arg1, ref object arg2);
