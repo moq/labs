@@ -31,13 +31,18 @@ namespace Stunts
 		object Target { get; }
 
         /// <summary>
+        /// Behaviors in the pipeline that should be skipped during this invocation.
+        /// </summary>
+        HashSet<Type> SkipBehaviors { get; }
+
+        /// <summary>
         /// Creates the method invocation return that ends the 
         /// current invocation.
         /// </summary>
         /// <param name="returnValue">Optional return value from the method invocation. <see langword="null"/> for <see langword="void"/> methods.</param>
         /// <param name="allArguments">Ordered list of all arguments to the method invocation, including ref/out arguments.</param>
         /// <returns>The <see cref="IMethodReturn"/> for the current invocation.</returns>
-		IMethodReturn CreateValueReturn(object returnValue, params object[] allArguments);
+        IMethodReturn CreateValueReturn(object returnValue, params object[] allArguments);
 
         /// <summary>
         /// Creates a method invocation return that represents 

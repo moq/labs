@@ -82,7 +82,7 @@ namespace Stunts
             var index = -1;
             for (var i = 0; i < behaviors.Length; i++)
             {
-                if (behaviors[i].AppliesTo(invocation))
+                if (!invocation.SkipBehaviors.Contains(behaviors[i].GetType()) && behaviors[i].AppliesTo(invocation))
                 {
                     index = i;
                     break;
@@ -96,7 +96,7 @@ namespace Stunts
             {
                 for (index++; index < behaviors.Length; index++)
                 {
-                    if (behaviors[index].AppliesTo(invocation))
+                    if (!invocation.SkipBehaviors.Contains(behaviors[index].GetType()) && behaviors[index].AppliesTo(invocation))
                         break;
                 }
 
