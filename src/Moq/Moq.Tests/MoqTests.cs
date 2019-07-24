@@ -5,7 +5,6 @@ using Moq.Sdk;
 using static Moq.Syntax;
 using Stunts;
 using Sample;
-using System.Linq;
 using Xunit.Abstractions;
 
 namespace Moq.Tests
@@ -15,6 +14,16 @@ namespace Moq.Tests
         ITestOutputHelper output;
 
         public MoqTests(ITestOutputHelper output) => this.output = output;
+
+        [Fact]
+        public void SetupDoesNotRecordCalls()
+        {
+            var calculator = Mock.Of<ICalculator>();
+
+            calculator.Setup(() => calculator.TurnOn());
+
+            Assert.Empty(calculator.AsMock().Invocations);
+        }
 
         [Fact]
         public void CanRaiseEvents()

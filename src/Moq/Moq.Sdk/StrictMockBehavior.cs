@@ -10,8 +10,6 @@ namespace Moq.Sdk
     /// </summary>
     public class StrictMockBehavior : IStuntBehavior
     {
-        IStuntBehavior fallback = new DefaultValueBehavior();
-
         /// <summary>
         /// Always returns <see langword="true" />
         /// </summary>
@@ -20,16 +18,6 @@ namespace Moq.Sdk
         /// <summary>
         /// Throws <see cref="StrictMockException"/>.
         /// </summary>
-        public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next)
-        {
-            if (invocation == null) throw new ArgumentNullException(nameof(invocation));
-
-            if (!SetupScope.IsActive)
-                throw new StrictMockException();
-
-            // Otherwise, fallback to returning default values so that 
-            // the fluent setup API can do its work.
-            return fallback.Execute(invocation, next);
-        }
+        public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next) => throw new StrictMockException();
     }
 }

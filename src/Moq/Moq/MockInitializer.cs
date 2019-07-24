@@ -26,6 +26,7 @@ namespace Moq
         {
             mocked.Mock.Behaviors.Clear();
 
+            mocked.Mock.Behaviors.Add(new SetupScopeBehavior());
             mocked.Mock.Behaviors.Add(new MockContextBehavior());
             mocked.Mock.Behaviors.Add(new MockRecordingBehavior());
             mocked.Mock.Behaviors.Add(new EventBehavior());
