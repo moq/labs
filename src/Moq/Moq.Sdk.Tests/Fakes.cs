@@ -42,7 +42,7 @@ namespace Moq.Sdk.Tests
     public class FakeInvocation : IMethodInvocation
     {
         public FakeInvocation() => Target = new Mocked();
-
+        
         public IArgumentCollection Arguments { get; set; } 
 
         public IDictionary<string, object> Context { get; set; }
@@ -50,6 +50,8 @@ namespace Moq.Sdk.Tests
         public MethodBase MethodBase { get; set; }
 
         public object Target { get; set; }
+
+        public HashSet<Type> SkipBehaviors { get; } = new HashSet<Type>();
 
         public IMethodReturn CreateExceptionReturn(Exception exception) => new FakeReturn { Exception = exception };
 

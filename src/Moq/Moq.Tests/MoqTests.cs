@@ -20,7 +20,7 @@ namespace Moq.Tests
         {
             var calculator = Mock.Of<ICalculator>();
 
-            calculator.Setup(() => calculator.TurnOn());
+            calculator.Setup(c => c.TurnOn());
 
             Assert.Empty(calculator.AsMock().Invocations);
         }
@@ -273,7 +273,7 @@ namespace Moq.Tests
         {
             var calculator = Mock.Of<ICalculator>(MockBehavior.Strict);
 
-            calculator.Setup(c => c.Mode = CalculatorMode.Scientific);
+            calculator.Setup(c => c.Mode).Returns(CalculatorMode.Scientific);
 
             var mode = calculator.Mode;
 
