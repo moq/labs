@@ -10,8 +10,8 @@
 
     <!-- CodeFix analyzers should only be added to DTBs since they depend on 
          editor features that are not available from csc/vbc -->
-    <CodeFix Include="$(MSBuildThisFileDirectory)netstandard.dll" />
-    <CodeFix Include="$(MSBuildThisFileDirectory)Moq.CodeFix.dll" />
+    <CodeFix Include="$(MSBuildThisFileDirectory)netstandard.dll" NuGetPackageId="Moq" />
+    <CodeFix Include="$(MSBuildThisFileDirectory)Moq.CodeFix.dll" NuGetPackageId="Moq" />
   </ItemGroup>
 
   <ItemGroup>
