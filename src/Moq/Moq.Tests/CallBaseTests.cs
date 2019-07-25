@@ -10,7 +10,7 @@ namespace Moq.Tests
     public class CallBaseTests
     {
         [Fact]
-        public void callbase1()
+        public void CallBaseNotCalled()
         {
             var mock = Mock.Of<Calculator>();
 
@@ -20,7 +20,7 @@ namespace Moq.Tests
         }
 
         [Fact]
-        public void callbase2()
+        public void CallBaseCalledForMockConfig()
         {
             var mock = Mock.Of<Calculator>().CallBase();
 
@@ -30,7 +30,7 @@ namespace Moq.Tests
         }
 
         [Fact]
-        public void callbase3()
+        public void CallBaseCalledForInvocationConfig()
         {
             var mock = Mock.Of<Calculator>();
 
@@ -42,16 +42,18 @@ namespace Moq.Tests
         }
 
         [Fact]
-        public void callbase4()
+        public void ThrowsForStrictMockAndMissingSetup()
         {
+            // Configure CallBase at the Mock level
             var mock = Mock.Of<Calculator>(MockBehavior.Strict).CallBase();
 
             Assert.Throws<StrictMockException>(() => mock.TurnOn());
         }
 
         [Fact]
-        public void callbase5()
+        public void CallBaseCalledForStrictMockAndMockConfig()
         {
+            // Configure CallBase at the Mock level
             var mock = Mock.Of<Calculator>(MockBehavior.Strict).CallBase();
 
             mock.Setup(x => x.TurnOn());
@@ -59,19 +61,24 @@ namespace Moq.Tests
             mock.TurnOn();
 
             Assert.True(mock.TurnOnCalled);
+
+            // And we make sure we throw for other missing setups
             Assert.Throws<StrictMockException>(() => mock.Recall(""));
         }
 
         [Fact]
-        public void callbase6()
+        public void CallBaseCalledForStrickMockAndInvocationConfig()
         {
             var mock = Mock.Of<Calculator>(MockBehavior.Strict);
 
+            // Configure CallBase at the invocation level
             mock.Setup(x => x.TurnOn()).CallBase();
 
             mock.TurnOn();
 
             Assert.True(mock.TurnOnCalled);
+
+            // And we make sure we throw for other missing setups
             Assert.Throws<StrictMockException>(() => mock.Recall(""));
         }
     }
