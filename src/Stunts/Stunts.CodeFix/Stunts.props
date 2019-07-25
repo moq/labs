@@ -10,8 +10,8 @@
 
     <!-- CodeFix analyzers should only be added to DTBs since they depend on 
          editor features that are not available from csc/vbc -->
-    <CodeFix Include="$(MSBuildThisFileDirectory)Stunts.Sdk.dll" />
-    <CodeFix Include="$(MSBuildThisFileDirectory)Stunts.CodeFix.dll" />
+    <CodeFix Include="$(MSBuildThisFileDirectory)Stunts.Sdk.dll" NuGetPackageId="Stunts" />
+    <CodeFix Include="$(MSBuildThisFileDirectory)Stunts.CodeFix.dll" NuGetPackageId="Stunts" />
   </ItemGroup>
 
   <ItemGroup>
