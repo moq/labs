@@ -141,9 +141,6 @@
   <data name="DuplicateBaseType_Title" xml:space="preserve">
     <value>Multiple base types specified</value>
   </data>
-  <data name="GenerateStuntCodeFix_FixAllTitle" xml:space="preserve">
-    <value>Generate all stunts in {0} {1}</value>
-  </data>
   <data name="GenerateStuntCodeFix_Title" xml:space="preserve">
     <value>Generate Stunt</value>
   </data>
@@ -183,6 +180,12 @@
   <data name="SealedBaseType_Title" xml:space="preserve">
     <value>Invalid sealed base type</value>
   </data>
+  <data name="StuntCodeAction_Title" xml:space="preserve">
+    <value>Fix {0}</value>
+  </data>
+  <data name="StuntFixAllProvider_Title" xml:space="preserve">
+    <value>Fix all {0} in {1}</value>
+  </data>
   <data name="UnsupportedNestedTypeAnalyzer_Description" xml:space="preserve">
     <value>Generating code for nested types is not supported yet.</value>
   </data>
@@ -191,9 +194,6 @@
   </data>
   <data name="UnsupportedNestedTypeAnalyzer_Title" xml:space="preserve">
     <value>Unsupported nested type</value>
-  </data>
-  <data name="UpdateStuntCodeFix_FixAllTitle" xml:space="preserve">
-    <value>Update all stunts in {0} {1}</value>
   </data>
   <data name="UpdateStuntCodeFix_Title" xml:space="preserve">
     <value>Update Stunt</value>

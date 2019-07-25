@@ -19,7 +19,7 @@ namespace Stunts.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -129,15 +129,6 @@ namespace Stunts.Properties {
         internal static string DuplicateBaseType_Title {
             get {
                 return ResourceManager.GetString("DuplicateBaseType_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Generate all stunts in {0} {1}.
-        /// </summary>
-        internal static string GenerateStuntCodeFix_FixAllTitle {
-            get {
-                return ResourceManager.GetString("GenerateStuntCodeFix_FixAllTitle", resourceCulture);
             }
         }
         
@@ -259,6 +250,24 @@ namespace Stunts.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fix {0}.
+        /// </summary>
+        internal static string StuntCodeAction_Title {
+            get {
+                return ResourceManager.GetString("StuntCodeAction_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fix all {0} in {1}.
+        /// </summary>
+        internal static string StuntFixAllProvider_Title {
+            get {
+                return ResourceManager.GetString("StuntFixAllProvider_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Generating code for nested types is not supported yet..
         /// </summary>
         internal static string UnsupportedNestedTypeAnalyzer_Description {
@@ -282,15 +291,6 @@ namespace Stunts.Properties {
         internal static string UnsupportedNestedTypeAnalyzer_Title {
             get {
                 return ResourceManager.GetString("UnsupportedNestedTypeAnalyzer_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Update all stunts in {0} {1}.
-        /// </summary>
-        internal static string UpdateStuntCodeFix_FixAllTitle {
-            get {
-                return ResourceManager.GetString("UpdateStuntCodeFix_FixAllTitle", resourceCulture);
             }
         }
         
