@@ -32,7 +32,7 @@ namespace Stunts.Processors
         public async Task<Document> ProcessAsync(Document document, CancellationToken cancellationToken = default)
         {
             // This codefix is available for both C# and VB
-            document = await document.ApplyCodeFixAsync(CodeFixNames.All.RemoveUnnecessaryImports);
+            //document = await document.ApplyCodeFixAsync(CodeFixNames.All.RemoveUnnecessaryImports);
 
             var generator = SyntaxGenerator.GetGenerator(document);
             var syntax = await document.GetSyntaxRootAsync();
