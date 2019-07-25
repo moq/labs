@@ -20,7 +20,7 @@ namespace Moq
                 {
                     new DefaultImports(typeof(LazyInitializer).Namespace, typeof(IMocked).Namespace),
                 }
-                .Concat(GetDefaultProcessors())
+                .Concat(GetDefaultProcessors().Where(p => !(p is FixupImports)))
                 .Concat(new IDocumentProcessor[]
                 {
                     new CSharpMocked(),
@@ -30,4 +30,5 @@ namespace Moq
         {
         }
     }
+
 }
