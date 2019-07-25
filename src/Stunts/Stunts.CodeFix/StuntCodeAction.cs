@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.Editing;
 using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.CodeAnalysis.Simplification;
+using Stunts.Properties;
 
 namespace Stunts
 {
@@ -25,6 +26,14 @@ namespace Stunts
         /// <summary>
         /// Initializes the action.
         /// </summary>
+        public StuntCodeAction(Document document, Diagnostic diagnostic, NamingConvention naming)
+            : this(Resources.StuntCodeAction_Title, document, diagnostic, naming)
+        {
+        }
+
+        /// <summary>
+        /// Initializes the action.
+        /// </summary>
         public StuntCodeAction(string title, Document document, Diagnostic diagnostic, NamingConvention naming)
         {
             this.title = title;
@@ -34,7 +43,9 @@ namespace Stunts
         }
 
         /// <inheritdoc />
-        public override string EquivalenceKey => diagnostic.Id + ":" + diagnostic.Properties["TargetFullName"];
+        //public override string EquivalenceKey => diagnostic.Id + ":" + diagnostic.Properties["TargetFullName"];
+
+        public override string EquivalenceKey => diagnostic.Id;
 
         /// <inheritdoc />
         public override string Title => title;
@@ -61,6 +72,12 @@ namespace Stunts
                 .Select(compilation.GetTypeByMetadataName)
                 .Where(t => t != null)
                 .ToArray();
+
+            var name = naming.GetFullName(symbols);
+            // Check if the compilation already contains the type, which will be 
+            // the case in batch fixing
+            if (compilation.GetTypeByMetadataName(name) != null)
+                return document;
 
             var generator = SyntaxGenerator.GetGenerator(document.Project);
             var stunts = CreateGenerator(naming);

@@ -1,10 +1,8 @@
 ﻿using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Shared.Extensions;
 
 namespace Stunts
 {

@@ -78,6 +78,7 @@ namespace Stunts
         /// <returns></returns>
         // See https://github.com/dotnet/roslyn/blob/master/docs/analyzers/FixAllProvider.md for more information on Fix All Providers
         //public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
-        public override FixAllProvider GetFixAllProvider() => null;
+        public override FixAllProvider GetFixAllProvider()
+            => new StuntFixAllProvider(FixableDiagnosticIds.First(), CreateCodeAction);
     }
 }

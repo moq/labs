@@ -93,8 +93,24 @@ namespace Microsoft.CodeAnalysis
             if (analyzers.IsDefaultOrEmpty)
                 analyzers = builtInAnalyzers.Value;
 
-            var analyerCompilation = compilation.WithAnalyzers(analyzers, cancellationToken: cancellationToken);
-            var allDiagnostics = await analyerCompilation.GetAllDiagnosticsAsync(cancellationToken);
+            var supportedAnalyers = analyzers
+                .Where(a => a.SupportedDiagnostics.Any(d => provider.FixableDiagnosticIds.Contains(d.Id)))
+                .ToImmutableArray();
+
+            var allDiagnostics = default(ImmutableArray<Diagnostic>);
+
+            // This may be a compiler warning/error, not an analyzer-produced one, such as 
+            // the missing abstract method implementations.
+            if (supportedAnalyers.IsEmpty)
+            {
+                allDiagnostics = compilation.GetDiagnostics(cancellationToken);
+            }
+            else
+            {
+                var analyerCompilation = compilation.WithAnalyzers(supportedAnalyers, cancellationToken: cancellationToken);
+                allDiagnostics = await analyerCompilation.GetAllDiagnosticsAsync(cancellationToken);
+            }
+
             var diagnostics = allDiagnostics
                 .Where(x => provider.FixableDiagnosticIds.Contains(x.Id))
                 // Only consider the diagnostics raised by the target document.
@@ -111,9 +127,21 @@ namespace Microsoft.CodeAnalysis
                     cancellationToken));
             }
 
-            return codeFixes.ToImmutableArray();
+            var finalFixes = new List<ICodeFix>();
+
+            // All code actions without equivalence keys must be applied individually.
+            finalFixes.AddRange(codeFixes.Where(x => x.Action.EquivalenceKey == null));
+            // All code actions with the same equivalence key should be applied only once.
+            finalFixes.AddRange(codeFixes
+                .Where(x => x.Action.EquivalenceKey != null)
+                .GroupBy(x => x.Action.EquivalenceKey)
+                .Select(x => x.First()));
+
+            return finalFixes.ToImmutableArray();
         }
 
+        // Debug view of all available providers and their metadata
+        // document.Project.Solution.Workspace.Services.HostServices.GetExports<CodeFixProvider, IDictionary<string, object>>().OrderBy(x => x.Metadata["Name"]?.ToString()).Select(x => $"{x.Metadata["Name"]}: {string.Join(", ", (string[])x.Metadata["Languages"])}"  ).ToList()
         static CodeFixProvider GetCodeFixProvider(Document document, string codeFixName)
             => codeFixName == nameof(OverrideAllMembersCodeFix) ? new OverrideAllMembersCodeFix() :
                 document.Project.Solution.Workspace.Services.HostServices
