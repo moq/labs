@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Sdk Name="Microsoft.Build.CentralPackageVersions" />
+  
   <PropertyGroup>
     <TargetFramework>net471</TargetFramework>
     <IncludeXunit>true</IncludeXunit>
@@ -9,9 +10,11 @@
     <!-- We declare the Analyzer to be a dependency for IDE build order -->
     <AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
   </PropertyGroup>
+  
   <ItemGroup>
     <Compile Include="..\Moq\contentFiles\cs\**" Visible="false" />
   </ItemGroup>
+  
   <ItemGroup Condition="'$(DesignTimeBuild)' == 'true'">
     <!-- TODO: since we can't get Roslyn to compile code during test run, we must generate mocks at design-time  -->
     <Analyzer Include="$(RootPath)\src\Stunts\Stunts\bin\$(Configuration)\Stunts.dll" />
@@ -23,11 +26,13 @@
     <Analyzer Include="$(RootPath)\src\Moq\Moq.CodeAnalysis\bin\$(Configuration)\Moq.CodeAnalysis.dll" />
     <Analyzer Include="$(RootPath)\src\Moq\Moq.CodeFix\bin\$(Configuration)\Moq.CodeFix.dll" />
   </ItemGroup>
+  
   <ItemGroup>
     <IncludeReferenceFilter Include="Moq" />
     <ExcludeReferenceFilter Include="Moq.CodeAnalysis" />
     <ExcludeReferenceFilter Include="Moq.CodeFix" />
   </ItemGroup>
+  
   <ItemGroup>
     <ProjectReference Include="..\Moq.CodeAnalysis\Moq.CodeAnalysis.csproj" />
     <ProjectReference Include="..\Moq.CodeFix\Moq.CodeFix.csproj" />
@@ -37,5 +42,10 @@
     <ProjectReference Include="..\..\Stunts\Stunts.Sdk\Stunts.Sdk.csproj" />
     <ProjectReference Include="..\..\Samples\Sample\Sample.csproj" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <Reference Include="System.ComponentModel.Composition" />
+  </ItemGroup>
+  
   <Import Project="..\..\Testing\Moq.Testing.projitems" Label="Shared" />
 </Project>

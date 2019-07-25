@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Composition.Hosting;
 using System.IO;
 using System.Linq;
@@ -18,13 +17,8 @@ namespace Stunts
         // Re-run this method with TD.NET AdHoc runner to regenerate CodeFixNames.g.cs as needed.
         public void GenerateCodeFixNames()
         {
-            var composition = new ContainerConfiguration()
-                .WithAssemblies(MefHostServices
-                    .DefaultAssemblies
-                    .Add(typeof(CodeFixNamesGenerator).Assembly))
-                .CreateContainer();
-
-            var providers = composition.GetExports<Lazy<CodeFixProvider, IDictionary<string, object>>>();
+            var host = MefHostServices.Create(MefHostServices.DefaultAssemblies.Concat(new[] { typeof(CodeFixNamesGenerator).Assembly }));
+            var providers = host.GetExports<CodeFixProvider, IDictionary<string, object>>();
 
             var allFixes = new HashSet<string>();
             var codeFixes = new Dictionary<string, HashSet<string>>
