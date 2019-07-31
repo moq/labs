@@ -3,7 +3,8 @@
 The most popular and friendly mocking framework for .NET
 
 [![CoreBuild Standard](https://img.shields.io/badge/√_corebuild-standard-blue.svg)](http://www.corebuild.io)
-[![Build Status](https://kzu.visualstudio.com/builds/_apis/build/status/moq?branchName=master)](https://kzu.visualstudio.com/builds/_build/latest?definitionId=20?branchName=master)
+[![Build Status](https://dev.azure.com/kzu/oss/_apis/build/status/moq?branchName=master)](https://dev.azure.com/kzu/oss/_build/latest?definitionId=20&branchName=master)
+[![Tests](https://img.shields.io/azure-devops/tests/kzu/oss/20.svg?compact_message&logo=azure-pipelines)](https://dev.azure.com/kzu/oss/_build/latest?definitionId=20&branchName=master&view=results)
 [![License](https://img.shields.io/github/license/moq/moq.svg)](https://github.com/moq/moq/blob/master/LICENSE)
 [![Join the chat at https://gitter.im/moq/moq](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/moq/moq?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Follow on Twitter](https://img.shields.io/twitter/follow/moqthis.svg?style=social&label=Follow)](http://twitter.com/intent/user?screen_name=moqthis)
