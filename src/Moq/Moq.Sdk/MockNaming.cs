@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Moq.Sdk
 {
@@ -24,9 +25,10 @@ namespace Moq.Sdk
         /// </summary>
         public static string GetName(Type baseType, Type[] implementedInterfaces)
         {
-            Array.Sort(implementedInterfaces, Comparer<Type>.Create((x, y) => x.Name.CompareTo(y.Name)));
-
-            return baseType.Name + string.Join("", implementedInterfaces.Select(x => x.Name)) + NameSuffix;
+            var builder = new StringBuilder();
+            AddNames(builder, new[] { baseType });
+            AddNames(builder, implementedInterfaces.OrderBy(x => x.Name));
+            return builder.Append(NameSuffix).ToString();
         }
 
         /// <summary>
@@ -34,5 +36,23 @@ namespace Moq.Sdk
         /// </summary>
         public static string GetFullName(Type baseType, Type[] implementedInterfaces)
             => Namespace + "." + GetName(baseType, implementedInterfaces);
+
+        static void AddNames(StringBuilder builder, IEnumerable<Type> symbols)
+        {
+            foreach (var symbol in symbols)
+            {
+                if (!symbol.IsGenericType)
+                {
+                    builder.Append(symbol.Name);
+                }
+                else
+                {
+                    // Remove the arity of the generic type
+                    builder.Append(symbol.Name.Substring(0, symbol.Name.IndexOf('`')));
+                    builder.Append("Of");
+                    AddNames(builder, symbol.GenericTypeArguments);
+                }
+            }
+        }
     }
 }

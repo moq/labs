@@ -36,7 +36,7 @@ namespace Stunts.Tests
                 .Select(d => d.ToString())
                 .ToArray();
 
-            var symbols = types.Select(t => compilation.GetTypeByMetadataName(t.FullName)).ToArray();
+            var symbols = types.Select(t => GetSymbolFromType(compilation, t)).ToArray();
             var document = await generator.GenerateDocumentAsync(project, symbols, TimeoutToken(5));
 
             var syntax = await document.GetSyntaxRootAsync();
@@ -62,6 +62,16 @@ namespace Stunts.Tests
             }
 
             return project;
+        }
+
+        static ITypeSymbol GetSymbolFromType(Compilation compilation, Type type)
+        {
+            if (!type.IsConstructedGenericType)
+                return compilation.GetTypeByMetadataName(type.FullName);
+
+            return compilation
+                .GetTypeByMetadataName(type.GetGenericTypeDefinition().FullName)
+                .Construct(type.GenericTypeArguments.Select(t => GetSymbolFromType(compilation, t)).ToArray());
         }
     }
 }
