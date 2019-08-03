@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Editing;
 using Microsoft.CodeAnalysis.Text;
+using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 using Stunts.Processors;
 
 namespace Stunts
@@ -154,12 +156,10 @@ namespace Stunts
             var imports = new HashSet<string>();
             var (baseType, implementedInterfaces) = symbols.ValidateGeneratorTypes();
 
-            if (baseType != null && baseType.ContainingNamespace != null && baseType.ContainingNamespace.CanBeReferencedByName)
-                imports.Add(baseType.ContainingNamespace.ToDisplayString());
-
-            foreach (var iface in implementedInterfaces.Where(i => i.ContainingNamespace != null && i.ContainingNamespace.CanBeReferencedByName))
+            AddImports(imports, baseType);
+            foreach (var iface in implementedInterfaces)
             {
-                imports.Add(iface.ContainingNamespace.ToDisplayString());
+                AddImports(imports, iface);
             }
 
             var syntax = generator.CompilationUnit(imports
@@ -171,17 +171,38 @@ namespace Stunts
                             generator.ClassDeclaration(name,
                                 accessibility: Accessibility.Public,
                                 modifiers: DeclarationModifiers.Partial,
-                                baseType: baseType == null ? null : generator.IdentifierName(baseType.Name),
+                                baseType: baseType == null ? null : AsSyntaxNode(generator, baseType),
                                 interfaceTypes: implementedInterfaces
-                                    .Select(x => generator.IdentifierName(x.ContainingType != null 
-                                        ? x.ContainingType.Name + "." + x.Name 
-                                        : x.Name))
+                                    .Select(x => AsSyntaxNode(generator, x))
                             )
                         )
                     )
                 }));
 
             return (name, syntax);
+        }
+
+        void AddImports(HashSet<string> imports, ITypeSymbol symbol)
+        {
+            if (symbol != null && symbol.ContainingNamespace != null && symbol.ContainingNamespace.CanBeReferencedByName)
+                imports.Add(symbol.ContainingNamespace.ToDisplayString());
+
+            if (symbol is INamedTypeSymbol named && named.IsGenericType)
+            {
+                foreach (var typeArgument in named.TypeArguments)
+                {
+                    AddImports(imports, typeArgument);
+                }
+            }
+        }
+
+        SyntaxNode AsSyntaxNode(SyntaxGenerator generator, ITypeSymbol symbol)
+        {
+            var prefix = symbol.ContainingType == null ? "" : symbol.ContainingType.Name + ".";
+            if (symbol is INamedTypeSymbol named && named.IsGenericType)
+                return generator.GenericName(prefix + symbol.Name, named.TypeArguments.Select(arg => AsSyntaxNode(generator, arg)));
+
+            return generator.IdentifierName(prefix = symbol.Name);
         }
 
         /// <summary>

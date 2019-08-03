@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Xml;
 using Microsoft.CodeAnalysis;
 
 namespace Stunts
@@ -22,18 +24,28 @@ namespace Stunts
         /// <summary>
         /// The type name to generate for the given (optional) base type and implemented interfaces.
         /// </summary>
-        public string GetName(IEnumerable<INamedTypeSymbol> symbols)
-            // NOTE: we sort the names the same way the StuntGenerator.ValidateTypes does.
-            // There should be another analyzer that forces the first T to be the one with 
-            // a class type, if any.
-            => string.Join("", symbols
-                .Where(x => x?.TypeKind == TypeKind.Class)
-                .Concat(symbols
-                    .Where(x => x?.TypeKind == TypeKind.Interface)
-                    .OrderBy(x => x.Name))
-                .Select(x => x?.Name)
-                .Where(x => x != null)) + 
-                NameSuffix;
+        public string GetName(IEnumerable<ITypeSymbol> symbols)
+        {
+            var builder = new StringBuilder();
+            // First add the base class
+            AddNames(builder, symbols.Where(x => x.TypeKind == TypeKind.Class));
+            // Then the interfaces
+            AddNames(builder, symbols.Where(x => x.TypeKind == TypeKind.Interface).OrderBy(x => x.Name));
+            return builder.Append(NameSuffix).ToString();
+        }
+
+        static void AddNames(StringBuilder builder,  IEnumerable<ITypeSymbol> symbols)
+        {
+            foreach (var symbol in symbols)
+            {
+                builder.Append(symbol.Name);
+                if (symbol is INamedTypeSymbol named && named.IsGenericType)
+                {
+                    builder.Append("Of");
+                    AddNames(builder, named.TypeArguments);
+                }
+            }
+        }
 
         /// <summary>
         /// The full type name for the given (optional) base type and implemented interfaces.

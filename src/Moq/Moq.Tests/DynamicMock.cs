@@ -11,7 +11,6 @@ using static TestHelpers;
 
 namespace Moq
 {
-    // TODO: can't get Roslyn to compile generated code while running the tests :(
     class DynamicMock
     {
         MockGenerator generator = new MockGenerator();
@@ -34,12 +33,13 @@ namespace Moq
         {
             var project = await GetProjectAsync();
             var compilation = await project.GetCompilationAsync();
-            var symbols = types.Select(t => compilation.GetTypeByMetadataName(t.FullName)).ToArray();
+            var symbols = types.Select(t => GetSymbolFromType(compilation, t)).ToArray();
+
             var document = await generator.GenerateDocumentAsync(project, symbols, TimeoutToken(5));
 
             var syntax = await document.GetSyntaxRootAsync();
-            document = project.AddDocument(MockNaming.GetName(types[0], types.Skip(1).ToArray()) + (language == LanguageNames.CSharp ? ".cs" : ".vb"), 
-                syntax, 
+            document = project.AddDocument(MockNaming.GetName(types[0], types.Skip(1).ToArray()) + (language == LanguageNames.CSharp ? ".cs" : ".vb"),
+                syntax,
                 filePath: document.FilePath);
 
             await AssertCode.NoErrorsAsync(document);
@@ -60,6 +60,16 @@ namespace Moq
             }
 
             return project;
+        }
+
+        static ITypeSymbol GetSymbolFromType(Compilation compilation, Type type)
+        {
+            if (!type.IsConstructedGenericType)
+                return compilation.GetTypeByMetadataName(type.FullName);
+
+            return compilation
+                .GetTypeByMetadataName(type.GetGenericTypeDefinition().FullName)
+                .Construct(type.GenericTypeArguments.Select(t => GetSymbolFromType(compilation, t)).ToArray());
         }
     }
 }

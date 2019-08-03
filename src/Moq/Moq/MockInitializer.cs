@@ -23,7 +23,7 @@ namespace Moq
         /// This method can be used by custom mocks to ensure they have the 
         /// same default behaviors as a mock created using <c>Mock.Of{T}</c>.
         /// </remarks>
-        public static void Initialize(this IMocked mocked, MockBehavior behavior)
+        public static void Initialize(this IMocked mocked, MockBehavior behavior = MockBehavior.Loose)
         {
             mocked.Mock.Behaviors.Clear();
 
