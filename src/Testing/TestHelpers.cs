@@ -14,15 +14,17 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Emit;
+using Microsoft.CodeAnalysis.Host.Mef;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.CodeAnalysis.VisualBasic;
+using Stunts;
 using Xunit;
 
 static partial class TestHelpers
 {
     public static (AdhocWorkspace workspace, Project project) CreateWorkspaceAndProject(string language, string assemblyName = "Code", bool includeStuntApi = true, bool includeMockApi = false)
     {
-        var workspace = new AdhocWorkspace();
+        var workspace = new AdhocWorkspace(MefHostServices.Create(MefHostServices.DefaultAssemblies.Concat(new[] { typeof(StuntCodeFixProvider).Assembly })));
         var projectInfo = CreateProjectInfo(language, assemblyName, includeStuntApi, includeMockApi);
         var project = workspace.AddProject(projectInfo);
 
