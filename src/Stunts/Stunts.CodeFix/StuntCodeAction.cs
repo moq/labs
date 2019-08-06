@@ -69,7 +69,7 @@ namespace Stunts
             var compilation = await document.Project.GetCompilationAsync(cancellationToken);
             var symbols = diagnostic.Properties["Symbols"]
                 .Split('|')
-                .Select(compilation.GetTypeByMetadataName)
+                .Select(x => (INamedTypeSymbol)compilation.GetTypeByFullName(x))
                 .Where(t => t != null)
                 .ToArray();
 

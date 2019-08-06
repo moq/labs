@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Linq;
+using System.Text;
+using System.Xml;
 using Microsoft.CodeAnalysis;
 using Stunts.Properties;
 
@@ -107,6 +110,8 @@ namespace Stunts
             if (symbols.Length == 0)
                 return false;
 
+            Debug.Assert(!symbols.Any(x => x.TypeKind == TypeKind.Error), "Symbol(s) contain errors.");
+
             var baseType = default(INamedTypeSymbol);
             var additionalInterfaces = default(IEnumerable<INamedTypeSymbol>);
             if (symbols[0].TypeKind == TypeKind.Class)
@@ -136,24 +141,14 @@ namespace Stunts
         }
 
         /// <summary>
-        /// Whether the given type symbol is either an interface or a non-sealed class.
+        /// Whether the given type symbol is either an interface or a non-sealed class, and not a generic task.
         /// </summary>
         public static bool CanBeIntercepted(this ITypeSymbol symbol)
             => symbol != null &&
                symbol.CanBeReferencedByName &&
               !symbol.IsValueType &&
-              !symbol.ToString().StartsWith(TaskFullName, StringComparison.Ordinal) &&
+              !symbol.MetadataName.StartsWith(TaskFullName, StringComparison.Ordinal) &&
               (symbol.TypeKind == TypeKind.Interface ||
               (symbol.TypeKind == TypeKind.Class && symbol.IsSealed == false));
-
-        /// <summary>
-        /// Gets the full metadata name of the given symbol.
-        /// </summary>
-        public static string ToFullMetadataName(this INamedTypeSymbol symbol)
-            => (symbol.ContainingNamespace == null || symbol.ContainingNamespace.IsGlobalNamespace ?
-                "" : symbol.ContainingNamespace + ".") +
-                (symbol.ContainingType != null ?
-                 symbol.ContainingType.MetadataName + "+" : "") +
-                symbol.MetadataName;
     }
 }
