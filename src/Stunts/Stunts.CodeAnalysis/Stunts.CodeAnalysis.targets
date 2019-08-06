@@ -1,0 +1,19 @@
+﻿<Project>
+
+  <Target Name="IncludeCopyToOutputFromPackage" 
+          Inputs="@(PackageReference -> WithMetadataValue('CopyToOutput', 'runtime'))" 
+          Outputs="%(PackageReference.Identity)"
+          DependsOnTargets="ResolvePackageAssets"
+          AfterTargets="ResolveReferences">
+    <PropertyGroup>
+      <CopyToOutputPackageId>%(PackageReference.Identity)</CopyToOutputPackageId>
+    </PropertyGroup>
+    <ItemGroup>
+      <CopyLocalPackageFile Include="@(RuntimeCopyLocalItems)"
+               Condition="'%(RuntimeCopyLocalItems.NuGetPackageId)' == '$(CopyToOutputPackageId)'" />
+      <ReferenceCopyLocalPaths Include="@(CopyLocalPackageFile)" />
+      <PackageFile Include="@(CopyLocalPackageFile)" Kind="$(PrimaryOutputKind) " />
+    </ItemGroup>
+  </Target>
+
+</Project>

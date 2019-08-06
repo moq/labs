@@ -70,8 +70,8 @@ namespace Stunts
                 return
                     symbol.Symbol != null &&
                     symbol.Symbol.GetAttributes().Any(attr =>
-                        attr.AttributeClass.ToFullMetadataName() == typeof(GeneratedCodeAttribute).FullName ||
-                        attr.AttributeClass.ToFullMetadataName() == typeof(CompilerGeneratedAttribute).FullName);
+                        attr.AttributeClass.ToFullName() == typeof(GeneratedCodeAttribute).FullName ||
+                        attr.AttributeClass.ToFullName() == typeof(CompilerGeneratedAttribute).FullName);
             }
 
             // If we find a symbol that happens to be IStunt, implement the core interface.

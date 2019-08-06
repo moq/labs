@@ -119,7 +119,7 @@ namespace Moq
                     new Dictionary<string, string>
                     {
                             { "TargetFullName", name },
-                            { "Symbols", type.ToFullMetadataName() },
+                            { "Symbols", type.ToFullName() },
                             { "RecursiveSymbols", "" },
                     }.ToImmutableDictionary(),
                     name));
@@ -136,7 +136,7 @@ namespace Moq
                         new Dictionary<string, string>
                         {
                                 { "TargetFullName", name },
-                                { "Symbols", type.ToFullMetadataName() },
+                                { "Symbols", type.ToFullName() },
                                 { "RecursiveSymbols", "" },
                         }.ToImmutableDictionary(),
                         name));

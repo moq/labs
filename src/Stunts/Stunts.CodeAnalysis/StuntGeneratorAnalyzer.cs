@@ -91,7 +91,7 @@ namespace Stunts
             ImmutableArray<ITypeSymbol> typeArguments = default;
             if (!method.GetAttributes().Any(x => x.AttributeClass == generator))
                 return;
-
+            
             if (method.MethodKind == MethodKind.Constructor)
             {
                 if (method.ReceiverType is INamedTypeSymbol owner &&
@@ -128,7 +128,7 @@ namespace Stunts
                             var candidate = context.Compilation.GetTypeByMetadataName(naming.GetFullName(new[] { x }));
                             return candidate == null || candidate.HasDiagnostic(compilationErrors.Value);
                         })
-                        .Select(x => x.ToFullMetadataName()));
+                        .Select(x => x.ToFullName()));
                 }
                 else
                 {
@@ -146,7 +146,7 @@ namespace Stunts
                         {
                             { "TargetFullName", name },
                             { "Symbols", string.Join("|", typeArguments
-                                .OfType<INamedTypeSymbol>().Select(x => x.ToFullMetadataName())) },
+                                .OfType<INamedTypeSymbol>().Select(x => x.ToFullName())) },
                             // By passing the detected recursive symbols to update/generate, 
                             // we avoid doing all the work we already did during analysis. 
                             // The code action can therefore simply act on them, without 
@@ -198,7 +198,7 @@ namespace Stunts
                                 { "TargetFullName", name },
                                 { "Location", location },
                                 { "Symbols", string.Join("|", typeArguments
-                                    .OfType<INamedTypeSymbol>().Select(x => x.ToFullMetadataName())) },
+                                    .OfType<INamedTypeSymbol>().Select(x => x.ToFullName())) },
                                 // We pass the same recursive symbols in either case. The 
                                 // Different diagnostics exist only to customize the message 
                                 // displayed to the user.

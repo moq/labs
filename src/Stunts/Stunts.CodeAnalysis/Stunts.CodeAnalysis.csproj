@@ -6,6 +6,7 @@
     <RootNamespace>Stunts</RootNamespace>
     <IncludeRoslyn>true</IncludeRoslyn>
     <PrimaryOutputKind Condition="'$(PrimaryOutputKind)' == ''">Analyzers</PrimaryOutputKind>
+    <EnforceCopyLocalAssets>true</EnforceCopyLocalAssets>
   </PropertyGroup>
 
   <ItemDefinitionGroup>
@@ -19,6 +20,10 @@
     <ProjectReference Include="..\Stunts\Stunts.csproj">
       <AdditionalProperties>IncludeApi=false</AdditionalProperties>
     </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Superpower" Pack="false" CopyToOutput="runtime" CopyLocal="true" />
   </ItemGroup>
 
   <ItemGroup>
