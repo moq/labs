@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
-using Microsoft.CodeAnalysis.Text;
 using Stunts.Properties;
 
 namespace Stunts
@@ -123,31 +122,8 @@ namespace Stunts
                         
                         Debug.Assert(document != null, "Failed to locate document from diagnostic.");
 
-                        fixerTasks.Add(Task.Run(async () =>
-                        {
-                            // NOTE: stunts don't need to update the source document where the diagnostic 
-                            // was reported, so we don't need any of the document updating stuff that 
-                            // we need when applying code fixers in the moq/stunt codegen itself on its own 
-                            // document. So we just apply the workspace changes and that's it.
-                            var codeAction = codeActionFactory(document, diagnostic);
-                            var operations = await codeAction.GetOperationsAsync(cancellationToken);
-                            var applyChanges = operations.OfType<ApplyChangesOperation>().FirstOrDefault();
-                            if (applyChanges != null)
-                            {
-                                var changes = applyChanges.ChangedSolution.GetChanges(currentSolution);
-                                foreach (var change in changes.GetProjectChanges())
-                                {
-                                    foreach (var addedId in change.GetAddedDocuments())
-                                    {
-                                        addedDocs.Add(applyChanges.ChangedSolution.GetDocument(addedId));
-                                    }
-                                    foreach (var changedId in change.GetChangedDocuments(true))
-                                    {
-                                        updatedDocs.Add(applyChanges.ChangedSolution.GetDocument(changedId));
-                                    }
-                                }
-                            }
-                        }));
+                        fixerTasks.Add(new CodeFixer(document, diagnostic, addedDocs, updatedDocs, codeActionFactory)
+                            .RunAsync(cancellationToken));
                     }
                 }
 
@@ -171,6 +147,50 @@ namespace Stunts
                 }
 
                 return currentSolution;
+            }
+
+            class CodeFixer
+            {
+                private readonly Document document;
+                private readonly Diagnostic diagnostic;
+                private readonly ConcurrentBag<Document> addedDocs;
+                private readonly ConcurrentBag<Document> updatedDocs;
+                private readonly Func<Document, Diagnostic, CodeAction> codeActionFactory;
+
+                public CodeFixer(Document document, Diagnostic diagnostic, ConcurrentBag<Document> addedDocs, ConcurrentBag<Document> updatedDocs, Func<Document, Diagnostic, CodeAction> codeActionFactory)
+                {
+                    this.document = document;
+                    this.diagnostic = diagnostic;
+                    this.addedDocs = addedDocs;
+                    this.updatedDocs = updatedDocs;
+                    this.codeActionFactory = codeActionFactory;
+                }
+
+                public async Task RunAsync(CancellationToken cancellationToken)
+                {
+                    // NOTE: stunts don't need to update the source document where the diagnostic 
+                    // was reported, so we don't need any of the document updating stuff that 
+                    // we need when applying code fixers in the moq/stunt codegen itself on its own 
+                    // document. So we just apply the workspace changes and that's it.
+                    var codeAction = codeActionFactory(document, diagnostic);
+                    var operations = await codeAction.GetOperationsAsync(cancellationToken).ConfigureAwait(false);
+                    var applyChanges = operations.OfType<ApplyChangesOperation>().FirstOrDefault();
+                    if (applyChanges != null)
+                    {
+                        var changes = applyChanges.ChangedSolution.GetChanges(document.Project.Solution);
+                        foreach (var change in changes.GetProjectChanges())
+                        {
+                            foreach (var addedId in change.GetAddedDocuments())
+                            {
+                                addedDocs.Add(applyChanges.ChangedSolution.GetDocument(addedId));
+                            }
+                            foreach (var changedId in change.GetChangedDocuments(true))
+                            {
+                                updatedDocs.Add(applyChanges.ChangedSolution.GetDocument(changedId));
+                            }
+                        }
+                    }
+                }
             }
         }
     }
