@@ -56,6 +56,12 @@
     <None Remove="*.binlog" />
   </ItemGroup>
 
+  <ItemDefinitionGroup>
+    <PackageReference>
+      <GeneratePathProperty>true</GeneratePathProperty>
+    </PackageReference>
+  </ItemDefinitionGroup>
+
   <!-- IsTestProject is set by xunit  -->
   <Import Project="Settings.Tests.props" Condition="'$(IsTestProject)' == 'true'" />
 

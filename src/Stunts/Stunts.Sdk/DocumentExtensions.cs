@@ -143,8 +143,7 @@ namespace Microsoft.CodeAnalysis
         // Debug view of all available providers and their metadata
         // document.Project.Solution.Workspace.Services.HostServices.GetExports<CodeFixProvider, IDictionary<string, object>>().OrderBy(x => x.Metadata["Name"]?.ToString()).Select(x => $"{x.Metadata["Name"]}: {string.Join(", ", (string[])x.Metadata["Languages"])}"  ).ToList()
         static CodeFixProvider GetCodeFixProvider(Document document, string codeFixName)
-            => codeFixName == nameof(OverrideAllMembersCodeFix) ? new OverrideAllMembersCodeFix() :
-                document.Project.Solution.Workspace.Services.HostServices
+            => document.Project.Solution.Workspace.Services.HostServices
                     .GetExports<CodeFixProvider, IDictionary<string, object>>()
                     .Where(x =>
                         x.Metadata.ContainsKey("Languages") && x.Metadata.ContainsKey("Name") &&

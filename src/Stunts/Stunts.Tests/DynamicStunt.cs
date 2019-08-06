@@ -9,9 +9,10 @@ using static TestHelpers;
 
 namespace Stunts.Tests
 {
-    class DynamicStunt
+    class DynamicStunt : IDisposable
     {
         StuntGenerator generator = new StuntGenerator();
+        Workspace workspace;
         Project project;
         readonly string language;
 
@@ -53,8 +54,8 @@ namespace Stunts.Tests
         {
             if (project == null)
             {
-                var (workspace, project) = CreateWorkspaceAndProject(language);
-                this.project = project.AddAnalyzerReference(new AnalyzerImageReference(new DiagnosticAnalyzer[] { new OverridableMembersAnalyzer() }.ToImmutableArray()));
+                (workspace, project) = CreateWorkspaceAndProject(language);
+                project = project.AddAnalyzerReference(new AnalyzerImageReference(new DiagnosticAnalyzer[] { new OverridableMembersAnalyzer() }.ToImmutableArray()));
                 var compilation = await project.GetCompilationAsync(TimeoutToken(5));
 
                 Assert.False(compilation.GetDiagnostics().Any(d => d.Severity == DiagnosticSeverity.Error),
@@ -73,5 +74,7 @@ namespace Stunts.Tests
                 .GetTypeByMetadataName(type.GetGenericTypeDefinition().FullName)
                 .Construct(type.GenericTypeArguments.Select(t => GetSymbolFromType(compilation, t)).ToArray());
         }
+
+        public void Dispose() => workspace.Dispose();
     }
 }

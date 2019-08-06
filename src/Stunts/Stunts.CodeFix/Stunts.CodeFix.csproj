@@ -15,6 +15,10 @@
       <AdditionalProperties>PrimaryOutputKind=$(PrimaryOutputKind);IncludeApi=false</AdditionalProperties>
     </ProjectReference>
   </ItemDefinitionGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Stunts.Sdk\RoslynInternals.cs" Link="RoslynInternals.cs" />
+  </ItemGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\Stunts\Stunts.csproj" />
