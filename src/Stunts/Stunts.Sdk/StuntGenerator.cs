@@ -110,6 +110,7 @@ namespace Stunts
             // In debug builds, we persist the file so we can inspect the generated code
             // for troubleshooting.
             File.WriteAllText(filePath, code);
+            Debug.WriteLine(filePath);
 #endif
 
             Document document;
@@ -169,7 +170,6 @@ namespace Stunts
                     generator.NamespaceDeclaration(naming.Namespace,
                         generator.AddAttributes(
                             generator.ClassDeclaration(name,
-                                accessibility: Accessibility.Public,
                                 modifiers: DeclarationModifiers.Partial,
                                 baseType: baseType == null ? null : AsSyntaxNode(generator, baseType),
                                 interfaceTypes: implementedInterfaces
