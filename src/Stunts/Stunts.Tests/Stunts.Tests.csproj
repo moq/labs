@@ -38,6 +38,9 @@
   <ItemGroup>
     <Compile Include="..\..\Moq\Moq.Sdk\DefaultValueBehavior.cs" Link="DefaultValueBehavior.cs" />
     <Compile Include="..\..\Moq\Moq.Sdk\DefaultValueProvider.cs" Link="DefaultValueProvider.cs" />
+    <None Include="..\Stunts.Sdk\RoslynInternals.cs" Link="RoslynInternals.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

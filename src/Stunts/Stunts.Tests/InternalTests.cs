@@ -30,7 +30,7 @@ namespace Stunts.Tests
 $@"<Project Sdk='Microsoft.NET.Sdk'>
     <PropertyGroup>    
         <OutputType>Exe</OutputType>
-        <TargetFramework>net461</TargetFramework>
+        <TargetFramework>net472</TargetFramework>
         <EnableDefaultItems>false</EnableDefaultItems>
         <OutputPath>bin\{package.Version}</OutputPath>
     </PropertyGroup>
@@ -92,6 +92,9 @@ $@"<Project Sdk='Microsoft.NET.Sdk'>
                 {
                     { "Configuration", "Debug" }
                 }, null, new[] { "Build" }, null));
+
+            if (result.OverallResult != BuildResultCode.Success)
+                Process.Start(Path.ChangeExtension(projectFile, "-build.binlog"));
 
             Assert.Equal(BuildResultCode.Success, result.OverallResult);
 
