@@ -5,7 +5,7 @@ using Moq.Sdk;
 
 namespace Moq.Linq
 {
-    internal class MockSetupsBuilder : ExpressionVisitor
+    public class MockSetupsBuilder : ExpressionVisitor
     {
         private readonly IMocked mock;
         private ParameterExpression parameter;
