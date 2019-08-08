@@ -10,13 +10,13 @@ namespace Moq
     public class MockNamingConvention : NamingConvention
     {
         /// <summary>
-        /// Gets the generated code namespace, which is <see cref="MockNaming.Namespace"/>.
+        /// Gets the generated code namespace, which is <see cref="MockNaming.DefaultNamespace"/>.
         /// </summary>
-        public override string Namespace => MockNaming.Namespace;
+        public override string Namespace => MockNaming.DefaultNamespace;
 
         /// <summary>
-        /// Gets the generated type names suffix, which is <see cref="MockNaming.NameSuffix"/>.
+        /// Gets the generated type names suffix, which is <see cref="MockNaming.DefaultSuffix"/>.
         /// </summary>
-        public override string NameSuffix => MockNaming.NameSuffix;
+        public override string NameSuffix => MockNaming.DefaultSuffix;
     }
 }

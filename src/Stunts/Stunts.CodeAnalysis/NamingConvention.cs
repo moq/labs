@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Xml;
 using Microsoft.CodeAnalysis;
 
 namespace Stunts
@@ -14,12 +13,12 @@ namespace Stunts
         /// <summary>
         /// The namespace of the generated code.
         /// </summary>
-        public virtual string Namespace => StuntNaming.Namespace;
+        public virtual string Namespace => StuntNaming.DefaultNamespace;
 
         /// <summary>
         /// Suffix appended to the type name, i.e. <c>IFooStunt</c>.
         /// </summary>
-        public virtual string NameSuffix => StuntNaming.NameSuffix;
+        public virtual string NameSuffix => StuntNaming.DefaultSuffix;
 
         /// <summary>
         /// The type name to generate for the given (optional) base type and implemented interfaces.

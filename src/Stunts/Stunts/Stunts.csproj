@@ -2,7 +2,7 @@
   <Sdk Name="Microsoft.Build.CentralPackageVersions" />
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.3</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
 
     <!-- Avoid restore graph errors since the main packaging project also has implicit PackageId=Stunts -->
     <PackageId>Stunts.Core</PackageId>

@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Stunts.Tests
@@ -19,27 +15,26 @@ namespace Stunts.Tests
                 new[] { typeof(IDisposable) }, 
                 Array.Empty<object>());
 
-            Assert.IsType<IStuntFactoryIDisposableStunt>(stunt);
+            Assert.IsType<IDisposableIStuntFactoryStunt>(stunt);
         }
 
         [Fact]
         public void CanReplaceDefaultFactory()
         {
             var existing = StuntFactory.Default;
-            var factory = new IStuntFactoryIDisposableStunt();
+            var factory = new IDisposableIStuntFactoryStunt();
             StuntFactory.Default = factory;
 
             Assert.Same(factory, StuntFactory.Default);
 
             StuntFactory.Default = existing;
         }
-
     }
 }
 
 namespace Stunts
 {
-    public class IStuntFactoryIDisposableStunt : IStuntFactory, IDisposable
+    public class IDisposableIStuntFactoryStunt : IStuntFactory, IDisposable
     {
         public object CreateStunt(Assembly stuntsAssembly, Type baseType, Type[] implementedInterfaces, object[] construtorArguments)
             => throw new NotImplementedException();

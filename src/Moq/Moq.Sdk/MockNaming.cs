@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Stunts;
 
 namespace Moq.Sdk
 {
@@ -11,48 +9,46 @@ namespace Moq.Sdk
     public static class MockNaming
     {
         /// <summary>
-        /// The namespace where generated mocks are declared.
+        /// The default namespace where generated mocks are declared.
         /// </summary>
-        public const string Namespace = "Mocks";
+        public const string DefaultNamespace = "Mocks";
 
         /// <summary>
-        /// The suffix added to mock type names.
+        /// The default suffix added to mock type names.
         /// </summary>
-        public const string NameSuffix = "Mock";
+        public const string DefaultSuffix = "Mock";
 
         /// <summary>
-        /// Gets the runtime mock name from its base type and implemented interfaces.
+        /// Gets the runtime mock name from its base type and optional additional 
+        /// interfaces, using the <see cref="DefaultSuffix"/>.
         /// </summary>
-        public static string GetName(Type baseType, Type[] implementedInterfaces)
-        {
-            var builder = new StringBuilder();
-            AddNames(builder, new[] { baseType });
-            AddNames(builder, implementedInterfaces.OrderBy(x => x.Name));
-            return builder.Append(NameSuffix).ToString();
-        }
+        public static string GetName(Type baseType, Type[] additionalInterfaces)
+            => GetName(DefaultSuffix, baseType, additionalInterfaces);
+
+        /// <summary>
+        /// Gets the runtime mock name from its base type and optional additional interfaces 
+        /// and the given <paramref name="suffix"/> appended to the type name.
+        /// </summary>
+        public static string GetName(string suffix, Type baseType, Type[] additionalInterfaces)
+            => StuntNaming.GetName(suffix, baseType, additionalInterfaces);
+
+        /// <summary>
+        /// Gets the runtime mock full name from its base type and optional additional interfaces,
+        /// using the <see cref="DefaultNamespace"/> and <see cref="DefaultSuffix"/>.
+        /// </summary>
+        public static string GetFullName(Type baseType, params Type[] additionalInterfaces)
+            => GetFullName(DefaultNamespace, DefaultSuffix, baseType, additionalInterfaces);
 
         /// <summary>
         /// Gets the runtime mock full name from its base type and implemented interfaces.
         /// </summary>
-        public static string GetFullName(Type baseType, Type[] implementedInterfaces)
-            => Namespace + "." + GetName(baseType, implementedInterfaces);
+        public static string GetFullName(string @namespace, Type baseType, params Type[] additionalInterfaces)
+            => GetFullName(@namespace, DefaultSuffix, baseType, additionalInterfaces);
 
-        static void AddNames(StringBuilder builder, IEnumerable<Type> symbols)
-        {
-            foreach (var symbol in symbols)
-            {
-                if (!symbol.IsGenericType)
-                {
-                    builder.Append(symbol.Name);
-                }
-                else
-                {
-                    // Remove the arity of the generic type
-                    builder.Append(symbol.Name.Substring(0, symbol.Name.IndexOf('`')));
-                    builder.Append("Of");
-                    AddNames(builder, symbol.GenericTypeArguments);
-                }
-            }
-        }
+        /// <summary>
+        /// Gets the runtime mock full name from its base type and implemented interfaces.
+        /// </summary>
+        public static string GetFullName(string @namespace, string suffix, Type baseType, params Type[] additionalInterfaces)
+            => StuntNaming.GetFullName(@namespace, suffix, baseType, additionalInterfaces);
     }
 }
