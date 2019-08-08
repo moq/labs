@@ -1,9 +1,6 @@
-﻿using System;
-using System.ComponentModel;
-using Xunit;
+﻿using Xunit;
 using Moq.Sdk;
 using Sample;
-using static Moq.Syntax;
 
 namespace Moq.Tests
 {

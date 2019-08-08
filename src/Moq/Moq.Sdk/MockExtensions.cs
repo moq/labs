@@ -18,14 +18,14 @@ namespace Moq.Sdk
         /// <summary>
         /// Gets the introspection information for a mocked object instance.
         /// </summary>
-        public static IMock<T> AsMock<T>(this T instance)
+        public static IMock<T> AsMock<T>(this T instance) where T : class
             => (instance as IMocked)?.Mock.As(instance) ?? throw new ArgumentException(Strings.TargetNotMock, nameof(instance));
 
         /// <summary>
         /// Clones a mock by creating a new instance of the <see cref="IMock.Object"/> 
         /// from <paramref name="mock"/> and copying its behaviors, invocations and state.
         /// </summary>
-        public static IMock<T> Clone<T>(this IMock<T> mock)
+        public static IMock<T> Clone<T>(this IMock<T> mock) where T : class
         {
             if (!mock.State.TryGetValue<object[]>(".ctor", out var ctor))
                 throw new ArgumentException("No constructor state found for cloning.");
@@ -52,7 +52,7 @@ namespace Moq.Sdk
         /// Gets the invocations performed on the mock so far that match the given 
         /// setup lambda.
         /// </summary>
-        public static IEnumerable<IMethodInvocation> InvocationsFor<T>(this IMock<T> mock, Action<T> action)
+        public static IEnumerable<IMethodInvocation> InvocationsFor<T>(this IMock<T> mock, Action<T> action) where T : class
         {
             using (new SetupScope())
             {
@@ -66,7 +66,7 @@ namespace Moq.Sdk
         /// Gets the invocations performed on the mock so far that match the given 
         /// setup lambda.
         /// </summary>
-        public static IEnumerable<IMethodInvocation> InvocationsFor<T, TResult>(this IMock<T> mock, Func<T, TResult> function)
+        public static IEnumerable<IMethodInvocation> InvocationsFor<T, TResult>(this IMock<T> mock, Func<T, TResult> function) where T : class
         {
             using (new SetupScope())
             {
@@ -76,9 +76,9 @@ namespace Moq.Sdk
             }
         }
 
-        static IMock<T> As<T>(this IMock mock, T target) => mock == null ? null : new Mock<T>(mock, target);
+        static IMock<T> As<T>(this IMock mock, T target) where T : class => mock == null ? null : new Mock<T>(mock, target);
 
-        class Mock<T> : IMock<T>
+        class Mock<T> : IMock<T> where T : class
         {
             IMock mock;
 
