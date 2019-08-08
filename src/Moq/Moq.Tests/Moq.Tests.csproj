@@ -28,9 +28,17 @@
   </ItemGroup>
   
   <ItemGroup>
+    <Compile Remove="LegacyTests.cs" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <IncludeReferenceFilter Include="Moq" />
     <ExcludeReferenceFilter Include="Moq.CodeAnalysis" />
     <ExcludeReferenceFilter Include="Moq.CodeFix" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Include="LegacyTests.cs" />
   </ItemGroup>
   
   <ItemGroup>

@@ -35,7 +35,7 @@ namespace Stunts.Tests.GeneratorTests
             var generator = new StuntGenerator();
             var compilation = await CreateStunt(generator, language, typeof(IFoo), trace);
             var assembly = compilation.Emit();
-            var type = assembly.GetExportedTypes().FirstOrDefault();
+            var type = assembly.GetType(StuntNaming.GetFullName(typeof(IFoo)), true);
 
             Assert.NotNull(type);
 
@@ -63,9 +63,7 @@ namespace Stunts.Tests.GeneratorTests
             var generator = new StuntGenerator();
             var compilation = await CreateStunt(generator, language, typeof(Foo), trace);
             var assembly = compilation.Emit();
-            var type = assembly.GetExportedTypes().FirstOrDefault();
-
-            Assert.NotNull(type);
+            var type = assembly.GetType(StuntNaming.GetFullName(typeof(Foo)), true);
 
             var instance = Activator.CreateInstance(type);
 
@@ -91,8 +89,8 @@ namespace Stunts.Tests.GeneratorTests
         {
             var compilation = await CreateStunt(new StuntGenerator(), language, new[] { typeof(INotifyPropertyChanged), typeof(IDisposable) }, trace);
             var assembly = compilation.Emit();
-            var type = assembly.GetExportedTypes().FirstOrDefault();
-
+            var type = assembly.GetType(StuntNaming.GetFullName(typeof(INotifyPropertyChanged), typeof(IDisposable)), true);
+            
             Assert.NotNull(type);
             Assert.True(typeof(IDisposable).IsAssignableFrom(type));
             Assert.True(type.FullName.Contains(nameof(IDisposable)),
@@ -106,7 +104,7 @@ namespace Stunts.Tests.GeneratorTests
         {
             var compilation = await CreateStunt(new StuntGenerator(), language, typeof(ICalculator), trace);
             var assembly = compilation.Emit();
-            var type = assembly.GetExportedTypes().FirstOrDefault();
+            var type = assembly.GetType(StuntNaming.GetFullName(typeof(ICalculator)), true);
 
             Assert.NotNull(type);
 
@@ -148,7 +146,7 @@ namespace Stunts.Tests.GeneratorTests
         {
             var compilation = await CreateStunt(new StuntGenerator(), language, new[] { typeof(INotifyPropertyChanged), typeof(IDisposable) }, trace);
             var assembly = compilation.Emit();
-            var type = assembly.GetExportedTypes().FirstOrDefault();
+            var type = assembly.GetType(StuntNaming.GetFullName(typeof(INotifyPropertyChanged), typeof(IDisposable)), true);
 
             Assert.NotNull(type);
 

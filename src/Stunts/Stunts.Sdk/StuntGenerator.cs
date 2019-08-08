@@ -140,6 +140,8 @@ namespace Stunts
 #if DEBUG
             // Update the persisted temp file in debug builds.
             File.WriteAllText(filePath, code);
+            if (Debugger.IsAttached)
+                Process.Start(filePath);
 #endif
 
             return document;
