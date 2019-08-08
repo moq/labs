@@ -1,13 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using Stunts;
-
-namespace Moq.Sdk
+﻿namespace Moq.Sdk
 {
     /// <summary>
     /// Decorator implementation over an <see cref="IMock"/>.
     /// </summary>
-    public abstract class MockDecorator<T> : MockDecorator, IMock<T>
+    public abstract class MockDecorator<T> : MockDecorator, IMock<T> where T : class
     {
         readonly IMock<T> mock;
 

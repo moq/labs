@@ -14,7 +14,7 @@ namespace Moq
         /// Verifies all occurrence constraints on the given mock' setups, and 
         /// allows further verification on the returned instance.
         /// </summary>
-        public static T Verify<T>(T mock) => Moq.Verify.Called(mock);
+        public static T Verify<T>(T mock) where T : class => Moq.Verify.Called(mock);
 
         /// <summary>
         /// Matches any value of the given type.

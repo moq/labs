@@ -10,7 +10,7 @@ namespace Moq
     /// the Moq API provides beyond the SDK.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public class Moq<T> : MockDecorator<T>, IMoq<T>
+    public class Moq<T> : MockDecorator<T>, IMoq<T> where T : class
     {
         /// <summary>
         /// Decorates the given <see cref="IMock{T}"/> with Moq specific 

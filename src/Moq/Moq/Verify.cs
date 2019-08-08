@@ -23,7 +23,7 @@ namespace Moq
         /// object too.
         /// </summary>
         /// <returns>An object that can be used to perform additional call verifications.</returns>
-        public static T Called<T>(T target) => Calls(target);
+        public static T Called<T>(T target) where T : class => Calls(target);
 
         /// <summary>
         /// Verifies a method invocation matching the <paramref name="function"/> was executed 
@@ -125,7 +125,7 @@ namespace Moq
         /// object too.
         /// </summary>
         /// <returns>An object that can be used to perform additional call verifications.</returns>
-        public static T NotCalled<T>(T target) => GetVerifier(GetVerified(target), true);
+        public static T NotCalled<T>(T target) where T : class => GetVerifier(GetVerified(target), true);
 
         /// <summary>
         /// Verifies a method invocation matching the <paramref name="function"/> was never called.
@@ -147,7 +147,7 @@ namespace Moq
         /// object too.
         /// </summary>
         /// <returns>An object that can be used to perform additional call verifications.</returns>
-        public static T Calls<T>(T target) => GetVerifier(GetVerified(target));
+        public static T Calls<T>(T target) where T : class => GetVerifier(GetVerified(target));
 
         /// <summary>
         /// Allows performing custom verification against all actual calls that match the 
@@ -187,7 +187,7 @@ namespace Moq
         /// Gets the mock after verifying that all setups that specified occurrence 
         /// constraints have succeeded.
         /// </summary>
-        static IMock<T> GetVerified<T>(T target)
+        static IMock<T> GetVerified<T>(T target) where T : class
         {
             var mock = target.AsMock();
             var failures = (from pipeline in mock.Setups
@@ -211,7 +211,7 @@ namespace Moq
         /// <param name="notCalled">Whether to add a behavior that verifies the invocations performed on 
         /// the clone were never performed on the original mock.
         /// </param>
-        static T GetVerifier<T>(IMock<T> mock, bool notCalled = false)
+        static T GetVerifier<T>(IMock<T> mock, bool notCalled = false) where T : class
         {
             // If the mock is already being verified, we don't need to clone again.
             if (mock.State.TryGetValue<bool>(typeof(Verify), out var verifying) && verifying)

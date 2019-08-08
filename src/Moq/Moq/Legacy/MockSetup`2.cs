@@ -7,7 +7,7 @@ namespace Moq
 {
     /// <summary>Supports the legacy API.</summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public class MockSetup<TTarget, TResult>
+    public class MockSetup<TTarget, TResult> where TTarget : class
     {
         readonly TTarget target;
         readonly IMock<TTarget> mock;

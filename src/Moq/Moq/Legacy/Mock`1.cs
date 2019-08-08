@@ -9,7 +9,7 @@ namespace Moq
 {
     /// <summary>Supports the legacy API.</summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public class Mock<T>
+    public class Mock<T> where T : class
     {
         T target;
         IMock<T> mock;
@@ -18,7 +18,7 @@ namespace Moq
         /// <summary>Supports the legacy API.</summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MockGenerator]
-        public Mock() : this(Assembly.GetCallingAssembly(), MockBehavior.Loose, new object[0])
+        public Mock() : this(Assembly.GetCallingAssembly(), MockBehavior.Loose)
         {
         }
 
@@ -32,13 +32,13 @@ namespace Moq
         /// <summary>Supports the legacy API.</summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MockGenerator]
-        public Mock(MockBehavior behavior, params object[] args) : this(Assembly.GetCallingAssembly(), behavior, args) 
+        public Mock(MockBehavior behavior, params object[] args) : this(Assembly.GetCallingAssembly(), behavior, args)
         {
         }
 
-        Mock(Assembly callingAssembly, MockBehavior behavior, params object[] args)
+        protected Mock(Assembly mocksAssembly, MockBehavior behavior, params object[] args)
         {
-            var mocked = (IMocked)MockFactory.Default.CreateMock(callingAssembly, typeof(T), new Type[0], args);
+            var mocked = (IMocked)MockFactory.Default.CreateMock(mocksAssembly, typeof(T), new Type[0], args);
             mocked.Initialize(behavior);
 
             target = (T)mocked;
@@ -66,20 +66,8 @@ namespace Moq
 
         /// <summary>Supports the legacy API.</summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public Mock<TInterface> As<TInterface>()
-        {
-            var mocked = (IMocked)MockFactory.Default.CreateMock(Assembly.GetCallingAssembly(), typeof(T), new Type[] { typeof(TInterface) }, new object[0]);
-            var originalPipeline = target.GetType().GetField("pipeline", BindingFlags.Instance | BindingFlags.NonPublic);
-            var pipeline = originalPipeline.GetValue(target);
-            var newPipeline = mocked.GetType().GetField("pipeline", BindingFlags.Instance | BindingFlags.NonPublic);
-            newPipeline.SetValue(mocked, pipeline);
-
-            // Replace original target with the new multi-interface one.
-            target = (T)mocked;
-            mock = target.AsMock();
-
-            return new Mock<TInterface>((TInterface)mocked, ((TInterface)mocked).AsMock(), behavior);
-        }
+        public Mock<TInterface> As<TInterface>() where TInterface : class
+            => new Mock<TInterface>(target as TInterface, (target as TInterface)?.AsMock(), behavior);
 
         /// <summary>Supports the legacy API.</summary>
         [EditorBrowsable(EditorBrowsableState.Never)]

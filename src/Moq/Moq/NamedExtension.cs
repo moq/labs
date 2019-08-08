@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-using Moq.Properties;
+﻿using System.ComponentModel;
 using Moq.Sdk;
 
 namespace Moq
@@ -16,7 +12,7 @@ namespace Moq
         /// <summary>
         /// Names the mock.
         /// </summary>
-        public static T Named<T>(this T target, string name)
+        public static T Named<T>(this T target, string name)where T : class
         {
             target.AsMock().State.Set("Name", name);
             return target;

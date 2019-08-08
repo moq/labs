@@ -24,6 +24,6 @@ namespace Moq
                (type.GetTypeInfo().IsInterface ||
                (type.GetTypeInfo().IsClass && !type.GetTypeInfo().IsSealed));
 
-        public static IMoq<T> AsMoq<T>(this T instance) => new Moq<T>(instance.AsMock());
+        public static IMoq<T> AsMoq<T>(this T instance) where T : class => new Moq<T>(instance.AsMock());
     }
 }
