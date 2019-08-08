@@ -1,17 +1,16 @@
 ﻿using Moq.Sdk;
 using System.ComponentModel;
-using System;
 
 namespace Moq
 {
     /// <summary>
-    /// Extensions for calling base member virtual implementation
+    /// Extensions for calling base member virtual implementation.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static class CallBaseExtension
     {
         /// <summary>
-        /// Specifies to call the base member virtual implementation
+        /// Specifies to call the base member virtual implementations by default.
         /// </summary>
         public static T CallBase<T>(this T target)
         {
@@ -32,6 +31,7 @@ namespace Moq
                      }, 
                      nameof(IMoq.CallBase)));
             }
+            // TODO: else throw?
 
             return target;
         }
