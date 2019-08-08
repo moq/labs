@@ -1,15 +1,13 @@
-﻿using System;
-using Stunts;
+﻿using Stunts;
 using Moq.Sdk;
 using System.Linq;
 using System.ComponentModel;
-using System.Diagnostics;
 
 namespace Moq
 {
     /// <summary>
-    /// A custom behavior to enable calls to the base member virtual implementation
-    /// <see cref="CallBaseExtension"/> method calls.
+    /// A custom behavior to enable calls to the base member virtual implementation.
+    /// See <see cref="CallBaseExtension"/> method calls.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public class CallBaseBehavior : IStuntBehavior
