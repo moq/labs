@@ -28,10 +28,9 @@ namespace Moq
                      {
                          // set CallBase
                          i.Context[nameof(IMoq.CallBase)] = true;
-
                          return next().Invoke(i.Target.AsMock(), i, next);
-
-                     }, nameof(IMoq.CallBase)));
+                     }, 
+                     nameof(IMoq.CallBase)));
             }
 
             return target;

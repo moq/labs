@@ -63,17 +63,14 @@ namespace Mocks
         public override void TurnOn() =>
             pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod()), (m, n) => { base.TurnOn(); return m.CreateValueReturn(null); });
 
-
         public override void Store(string name, int value) =>
             pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), name, value), (m, n) => { base.Store(name, value); return m.CreateValueReturn(null, name, value); });
 
         public override int? Recall(string name) =>
             pipeline.Execute<int?>(new MethodInvocation(this, MethodBase.GetCurrentMethod(), name), (m, n) => m.CreateValueReturn(base.Recall(name), name));
 
-
         public override void Clear(string name) =>
             pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod(), name), (m, n) => { base.Clear(name); return m.CreateValueReturn(null, name); });
-
 
         public override ICalculatorMemory Memory
         {

@@ -106,7 +106,6 @@ namespace Stunts
             }
             else
             {
-
                 typeArguments = method.TypeArguments;
             }
 

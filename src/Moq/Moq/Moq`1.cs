@@ -5,8 +5,6 @@ using Moq.Sdk;
 
 namespace Moq
 {
-
-
     /// <summary>
     /// Provides the Moq specific configurations on top of an <see cref="Sdk.IMock{T}"/> that 
     /// the Moq API provides beyond the SDK.
