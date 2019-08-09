@@ -35,12 +35,12 @@ namespace Moq.Linq
                     if (node.Left.NodeType == ExpressionType.Constant)
                     {
                         // Invert left & right nodes in this case.
-                        DoSetup(node.Right, node.Left);
+                        Setup(node.Right, node.Left);
                         return node;
                     }
 
                     // Perform straight conversion where the right-hand side will be the setup return value.
-                    DoSetup(node.Left, node.Right);
+                    Setup(node.Left, node.Right);
                     return node;
                 }
 
@@ -56,7 +56,7 @@ namespace Moq.Linq
         {
             if (node != null && node.Type == typeof(bool))
             {
-                DoSetup(node, Expression.Constant(true));
+                Setup(node, Expression.Constant(true));
                 return node;
             }
 
@@ -67,7 +67,7 @@ namespace Moq.Linq
         {
             if (node != null && node.Type == typeof(bool))
             {
-                DoSetup(node, Expression.Constant(true));
+                Setup(node, Expression.Constant(true));
                 return node;
             }
 
@@ -78,31 +78,18 @@ namespace Moq.Linq
         {
             if (node != null && node.NodeType == ExpressionType.Not)
             {
-                DoSetup(node.Operand, Expression.Constant(false));
+                Setup(node.Operand, Expression.Constant(false));
                 return node;
             }
 
             return base.VisitUnary(node);
         }
 
-        private void DoSetup(Expression left, Expression right)
+        private void Setup(Expression function, Expression returnValue)
         {
-            Expression.Lambda(left, parameter).Compile().DynamicInvoke(this.mock);
-            var value = Expression.Lambda(right).Compile().DynamicInvoke();
-
-            // TODO Invoke extension method for Setup and Return instead
-            var setup = MockContext.CurrentSetup;
-            if (setup == null)
-                throw new Exception();
-
-            var mock = setup.Invocation.Target.AsMock();
-            mock.Invocations.Remove(setup.Invocation);
-            var behavior = mock.GetPipeline(setup);
-            var returnBehavior = behavior.Behaviors.OfType<ReturnsBehavior>().FirstOrDefault();
-            if (returnBehavior != null)
-                returnBehavior.Value = value;
-            else
-                behavior.Behaviors.Add(new ReturnsBehavior(value));
+            var result = Expression.Lambda(function, parameter).Compile().DynamicInvoke(mock);
+            var value = Expression.Lambda(returnValue).Compile().DynamicInvoke();
+            result.Returns(value);
         }
     }
 }
