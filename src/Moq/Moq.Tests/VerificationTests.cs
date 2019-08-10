@@ -11,7 +11,11 @@ namespace Moq.Tests
     {
         readonly ITestOutputHelper output;
 
-        public VerificationTests(ITestOutputHelper output) => this.output = output;
+        public VerificationTests(ITestOutputHelper output)
+        {
+            this.output = output;
+            MockFactory.Default = new MockFactory();
+        }
 
         [Fact]
         public void VerifySyntaxOnceOnSetup()

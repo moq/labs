@@ -12,7 +12,7 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <Compile Include="..\Moq\contentFiles\cs\**" Visible="false" />
+    <Compile Include="..\Moq\contentFiles\cs\**" Visible="false" Link="%(FullPath)" />
   </ItemGroup>
   
   <ItemGroup Condition="'$(DesignTimeBuild)' == 'true'">
@@ -42,6 +42,7 @@
   </ItemGroup>
   
   <ItemGroup>
+    <ProjectReference Include="..\..\Emit\Moq.DynamicProxy\Moq.DynamicProxy.csproj" />
     <ProjectReference Include="..\Moq.CodeAnalysis\Moq.CodeAnalysis.csproj" />
     <ProjectReference Include="..\Moq.CodeFix\Moq.CodeFix.csproj" />
     <ProjectReference Include="..\Moq.Sdk\Moq.Sdk.csproj" />
