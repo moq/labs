@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Moq.Sdk</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Moq\Moq.Sdk\Moq.Sdk.csproj" />
+    <ProjectReference Include="..\Stunts.DynamicProxy\Stunts.DynamicProxy.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -13,7 +13,11 @@ namespace Moq.Tests
     {
         ITestOutputHelper output;
 
-        public MoqTests(ITestOutputHelper output) => this.output = output;
+        public MoqTests(ITestOutputHelper output)
+        {
+            this.output = output;
+            MockFactory.Default = new MockFactory();
+        }
 
         [Fact]
         public void SetupDoesNotRecordCalls()
@@ -29,7 +33,7 @@ namespace Moq.Tests
         public void CanRaiseEvents()
         {
             var calculator = Mock.Of<ICalculator>().Named("calculator");
-            
+
             var raised = false;
 
             EventHandler handler = (sender, args) => raised = true;
@@ -73,7 +77,7 @@ namespace Moq.Tests
             calculator.Mode.Returns(CalculatorMode.Standard);
 
             var mode = calculator.Mode;
-            
+
             Assert.Equal(CalculatorMode.Standard, mode);
         }
 
@@ -124,7 +128,7 @@ namespace Moq.Tests
 
             calculator.Add(10, Any<int>()).Returns(10);
             calculator.Add(Any<int>(i => i > 20), Any<int>()).Returns(20);
-            
+
             Assert.Equal(5, calculator.Add(2, 3));
             Assert.Equal(4, calculator.Add(2, 2));
             Assert.Equal(10, calculator.Add(10, 2));
@@ -316,7 +320,7 @@ namespace Moq.Tests
 
             calculator.Verify(c => c.TurnOn());
             calculator.Verify(c => c.Add(Any<int>(), Any<int>()));
-            
+
             var ex = Record.Exception(() => calculator.Verify(c => c.Store(Any<string>(), Any<int>())));
 
             Assert.IsAssignableFrom<VerifyException>(ex);
@@ -380,6 +384,5 @@ namespace Moq.Tests
             moq.Behavior = MockBehavior.Loose;
             Assert.Equal(10, calculator.Add(5, 5));
         }
-
     }
 }

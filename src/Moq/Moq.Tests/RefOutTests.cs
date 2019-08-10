@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.CodeAnalysis.Text;
+using Moq.Sdk;
 using Sample;
 using Xunit;
 using Xunit.Abstractions;
@@ -19,7 +20,11 @@ namespace Moq.Tests.RefOut
     {
         ITestOutputHelper output;
 
-        public RefOutTests(ITestOutputHelper output) => this.output = output;
+        public RefOutTests(ITestOutputHelper output)
+        {
+            this.output = output;
+            MockFactory.Default = new MockFactory();
+        }
 
         [Fact]
         public void CanUseRefOut()

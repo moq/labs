@@ -36,7 +36,7 @@ namespace Stunts
 {
     public class IDisposableIStuntFactoryStunt : IStuntFactory, IDisposable
     {
-        public object CreateStunt(Assembly stuntsAssembly, Type baseType, Type[] implementedInterfaces, object[] construtorArguments)
+        public object CreateStunt(Assembly stuntsAssembly, Type baseType, Type[] implementedInterfaces, object[] constructorArguments)
             => throw new NotImplementedException();
 
         public void Dispose() => throw new NotImplementedException();

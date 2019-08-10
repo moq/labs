@@ -30,6 +30,9 @@ namespace Moq.Sdk
             if (!mock.State.TryGetValue<object[]>(".ctor", out var ctor))
                 throw new ArgumentException("No constructor state found for cloning.");
 
+            // TODO: THIS DOESN'T WORK WITH DYNAMIC PROXIES, SINCE WE'RE MISSING THE INTERCEPTORS
+            // This is what it looks like in a DP: public BaseWithCtorProxy(IInterceptor[] interceptorArray, string value) : base(value)
+            // So we need to persist the interceptors as part of the ctor array, maybe?
             var clone = ((IMocked)Activator.CreateInstance(mock.Object.GetType(), ctor)).Mock;
             clone.State = mock.State.Clone();
 

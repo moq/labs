@@ -20,12 +20,12 @@ namespace Stunts
         /// <summary>
         /// See <see cref="IStuntFactory.CreateStunt(Assembly, Type, Type[], object[])"/>
         /// </summary>
-        public object CreateStunt(Assembly stuntsAssembly, Type baseType, Type[] implementedInterfaces, object[] construtorArguments)
+        public object CreateStunt(Assembly stuntsAssembly, Type baseType, Type[] implementedInterfaces, object[] constructorArguments)
         {
             var name = StuntNaming.GetFullName(baseType, implementedInterfaces);
             var type = stuntsAssembly.GetType(name, true, false);
 
-            return Activator.CreateInstance(type, construtorArguments);
+            return Activator.CreateInstance(type, constructorArguments);
         }
     }
 }

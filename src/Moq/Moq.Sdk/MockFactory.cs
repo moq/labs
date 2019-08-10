@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using Stunts;
 
 namespace Moq.Sdk
 {
@@ -16,7 +15,10 @@ namespace Moq.Sdk
         /// </summary>
         public static IMockFactory Default { get; set; } = new MockFactory();
 
-        MockFactory() { }
+        /// <summary>
+        /// Initializes a new <see cref="IMockFactory"/>.
+        /// </summary>
+        public MockFactory() { }
 
         /// <summary>
         /// See <see cref="IMockFactory.CreateMock(Assembly, Type, Type[], object[])"/>

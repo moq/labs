@@ -1,10 +1,13 @@
-﻿using Xunit;
+﻿using Moq.Sdk;
+using Xunit;
 using static Moq.Syntax;
 
 namespace Moq.Tests.Recursive
 {
     public class RecursiveMocksTests
     {
+        public RecursiveMocksTests() => MockFactory.Default = new MockFactory();
+
         [Fact]
         public void CanSetupRecursiveMockProperty()
         {
