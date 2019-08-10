@@ -71,10 +71,34 @@ namespace Moq.Sdk
         }
 
         /// <summary>
+        /// Sets the state of the given type <typeparamref name="T"/>,
+        /// regardless of whether there is an existing value assigned.
+        /// </summary>
+        public void Set<T>(Func<T> value)
+        {
+            if (value == null)
+                state.TryRemove(typeof(T), out _);
+            else
+                state.AddOrUpdate(typeof(T), value, (_, __) => value);
+        }
+
+        /// <summary>
         /// Sets the state of the given type <typeparamref name="T"/> and <paramref name="key"/>, 
         /// regardless of whether there is an existing value assigned.
         /// </summary>
         public void Set<T>(object key, T value)
+        {
+            if (value == null)
+                state.TryRemove(Key<T>(key), out _);
+            else
+                state.AddOrUpdate(Key<T>(key), value, (_, __) => value);
+        }
+
+        /// <summary>
+        /// Sets the state of the given type <typeparamref name="T"/> and <paramref name="key"/>, 
+        /// regardless of whether there is an existing value assigned.
+        /// </summary>
+        public void Set<T>(object key, Func<T> value)
         {
             if (value == null)
                 state.TryRemove(Key<T>(key), out _);
@@ -131,7 +155,12 @@ namespace Moq.Sdk
             var result = state.TryGetValue(Key<T>(key), out var _value);
             value = default;
             if (result && _value != null)
-                value = (T)_value;
+            {
+                if (_value is Func<T> func)
+                    value = func();
+                else
+                    value = (T)_value;
+            }
 
             return result;
         }

@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\Stunts\contentFiles\cs\**" Visible="false" />
+    <Compile Include="..\Stunts\contentFiles\cs\**" Visible="false" Link="%(FullPath)" />
   </ItemGroup>
 
   <ItemGroup>
@@ -45,6 +45,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Stunts.CodeFix\Stunts.CodeFix.csproj" />
+    <ProjectReference Include="..\..\Emit\Stunts.DynamicProxy\Stunts.DynamicProxy.csproj" />
     <ProjectReference Include="..\Stunts\Stunts.csproj" />
     <ProjectReference Include="..\Stunts.Sdk\Stunts.Sdk.csproj" />
     <ProjectReference Include="..\..\Samples\Sample\Sample.csproj" />

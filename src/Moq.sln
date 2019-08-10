@@ -66,6 +66,10 @@ Project("{13B669BE-BB05-4DDF-9536-439F39A36129}") = "Stunts.Package", "Stunts\St
 EndProject
 Project("{13B669BE-BB05-4DDF-9536-439F39A36129}") = "Moq.Package", "Moq\Moq.Package\Moq.Package.msbuildproj", "{09C65B0B-9206-4682-9837-6B98936553C1}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stunts.DynamicProxy", "Emit\Stunts.DynamicProxy\Stunts.DynamicProxy.csproj", "{2FC48D20-CB36-4606-A9DC-22981DD13A3D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.DynamicProxy", "Emit\Moq.DynamicProxy\Moq.DynamicProxy.csproj", "{BA43EF2F-6CA8-49A5-A4E7-C2FF71928F05}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Testing\Moq.Testing.projitems*{1bd7dfde-2fc8-4899-9903-6ca5724cc185}*SharedItemsImports = 13
@@ -131,6 +135,14 @@ Global
 		{09C65B0B-9206-4682-9837-6B98936553C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{09C65B0B-9206-4682-9837-6B98936553C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{09C65B0B-9206-4682-9837-6B98936553C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2FC48D20-CB36-4606-A9DC-22981DD13A3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FC48D20-CB36-4606-A9DC-22981DD13A3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FC48D20-CB36-4606-A9DC-22981DD13A3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FC48D20-CB36-4606-A9DC-22981DD13A3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA43EF2F-6CA8-49A5-A4E7-C2FF71928F05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA43EF2F-6CA8-49A5-A4E7-C2FF71928F05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA43EF2F-6CA8-49A5-A4E7-C2FF71928F05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA43EF2F-6CA8-49A5-A4E7-C2FF71928F05}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -143,6 +155,7 @@ Global
 		{EDBDA217-CA42-4C82-826F-7D990185EC0F} = {EEC3EC48-ACB2-4D25-B592-F360F676BE45}
 		{A4D96CA3-75ED-43E4-B172-872EF2BCF128} = {EEC3EC48-ACB2-4D25-B592-F360F676BE45}
 		{336A513F-BEC7-44EE-A720-F61E3A65410F} = {EEC3EC48-ACB2-4D25-B592-F360F676BE45}
+		{2FC48D20-CB36-4606-A9DC-22981DD13A3D} = {EEC3EC48-ACB2-4D25-B592-F360F676BE45}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DA4CFD03-827D-482B-9304-83456D2A8115}

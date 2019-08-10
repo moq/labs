@@ -33,7 +33,7 @@ namespace Moq.Sdk.Tests
 
         class MyMockFactory : IMockFactory
         {
-            public object CreateMock(Assembly mocksAssembly, Type baseType, Type[] implementedInterfaces, object[] construtorArguments)
+            public object CreateMock(Assembly mocksAssembly, Type baseType, Type[] implementedInterfaces, object[] constructorArguments)
                 => throw new NotImplementedException();
         }
     }
