@@ -57,11 +57,9 @@ namespace Moq.Tests.Linq
         [Fact]
         public void ShouldSupportIndexer()
         {
-            var target = Mock.Of<IBaz>(x => x["3", Any<bool>()] == 10);
+            var target = Mock.Of<ICalculator>(x => x[Any<string>()] == 10);
 
-            Assert.NotEqual(10, target["1", true]);
-            Assert.Equal(10, target["3", true]);
-            Assert.Equal(10, target["3", false]);
+            Assert.Equal(10, target["foo"]);
         }
 
         [Fact]
