@@ -24,13 +24,8 @@ namespace Moq.Proxy
 		private DynamicAssembly()
 		{
 			var assemblyName = new AssemblyName(AssemblyName);
-#if SILVERLIGHT
-            assemblyName.SetPublicKey(GetStrongNameKeyPair());
-            this.ModuleBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run)
-#else
             assemblyName.KeyPair = GetStrongNameKeyPair();
-			this.ModuleBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.RunAndCollect)
-#endif
+			ModuleBuilder = AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.RunAndCollect)
 				.DefineDynamicModule(AssemblyName);
 		}
 

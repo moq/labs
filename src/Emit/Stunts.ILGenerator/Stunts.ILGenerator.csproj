@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Stunts.Sdk</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Reflection.Emit" Version="4.6.0-preview7.19362.9" />
+    <PackageReference Include="System.Reflection.Emit.ILGeneration" Version="4.6.0-preview7.19362.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Stunts\Stunts\Stunts.csproj" />
+  </ItemGroup>
+
+</Project>

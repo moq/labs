@@ -87,7 +87,7 @@ namespace Moq.Proxy
                 }
             }
 
-            return typeBuilder.CreateType();
+            return typeBuilder.CreateTypeInfo();
         }
 
         private static void EmitImplementation(Type type, TypeBuilder typeBuilder, FieldBuilder interceptorField)
