@@ -3,12 +3,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <RootNamespace>Moq.Sdk</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Moq\Moq.Sdk\Moq.Sdk.csproj" />
-    <ProjectReference Include="..\Stunts.DynamicProxy\Stunts.DynamicProxy.csproj" />
+    <PackageReference Include="Mono.Cecil" />
+    <PackageReference Include="Microsoft.Build" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.Build.Tasks.Core" ExcludeAssets="runtime" />
   </ItemGroup>
 
 </Project>

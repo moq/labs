@@ -23,6 +23,11 @@
     <PackageReference Update="Microsoft.CodeAnalysis.CSharp.Features" Version="2.10.0" />
     <PackageReference Update="Microsoft.CodeAnalysis.VisualBasic.Features" Version="2.10.0" />
 
+    <PackageReference Update="Castle.Core" Version="4.4.0" />
+    <PackageReference Update="Mono.Cecil" Version="0.10.4" />
+    <PackageReference Update="System.Reflection.Emit" Version="4.6.0-preview7.19362.9" />
+    <PackageReference Update="System.Reflection.Emit.ILGeneration" Version="4.6.0-preview7.19362.9" />
+
     <PackageReference Update="TypeNameFormatter.Sources" Version="1.0.1" />
     <PackageReference Update="AutoCodeFix" Version="2.10.0-alpha*" />
     <PackageReference Update="StreamJsonRpc" Version="1.3.23" />
