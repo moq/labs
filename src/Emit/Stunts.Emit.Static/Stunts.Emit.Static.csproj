@@ -3,12 +3,20 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <IncludeRoslyn>true</IncludeRoslyn>
+    <EnforceCopyLocalAssets>true</EnforceCopyLocalAssets>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Mono.Cecil" />
+    <PackageReference Include="System.Reflection.Metadata" />
+    <PackageReference Include="Superpower" Pack="false" CopyToOutput="runtime" CopyLocal="true" />
     <PackageReference Include="Microsoft.Build" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.Build.Tasks.Core" ExcludeAssets="runtime" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Stunts\Stunts\Stunts.csproj" />
   </ItemGroup>
 
 </Project>

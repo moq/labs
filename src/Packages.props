@@ -25,6 +25,9 @@
 
     <PackageReference Update="Castle.Core" Version="4.4.0" />
     <PackageReference Update="Mono.Cecil" Version="0.10.4" />
+    <PackageReference Update="Superpower" Version="2.3.0" />
+
+    <PackageReference Update="System.Reflection.Metadata" Version="1.6.0" />
     <PackageReference Update="System.Reflection.Emit" Version="4.6.0-preview7.19362.9" />
     <PackageReference Update="System.Reflection.Emit.ILGeneration" Version="4.6.0-preview7.19362.9" />
 

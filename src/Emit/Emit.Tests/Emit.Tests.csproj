@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Sdk Name="Microsoft.Build.CentralPackageVersions" />
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <LangVersion>Latest</LangVersion>
+    <IncludeXunit>true</IncludeXunit>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\Stunts\Stunts\contentFiles\cs\**" Visible="false" Link="%(FullPath)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="CecilTests.cs" />
+    <Compile Remove="ToFullNameExtensions.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="ToFullNameExtensions.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Stunts\Stunts\Stunts.csproj" />
+    <ProjectReference Include="..\Moq.DynamicProxy\Moq.DynamicProxy.csproj" />
+    <ProjectReference Include="..\Moq.Emit.Dynamic\Moq.Emit.Dynamic.csproj" />
+    <ProjectReference Include="..\Moq.Emit.Static\Moq.Emit.Static.csproj" />
+    <ProjectReference Include="..\Stunts.DynamicProxy\Stunts.DynamicProxy.csproj" />
+    <ProjectReference Include="..\Stunts.Emit.Dynamic\Stunts.Emit.Dynamic.csproj" />
+    <ProjectReference Include="..\Stunts.Emit.Static\Stunts.Emit.Static.csproj" />
+  </ItemGroup>
+
+</Project>
