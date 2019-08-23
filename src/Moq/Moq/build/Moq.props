@@ -5,16 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Auto-generate mocks flagged by these two analyers. -->
-    <AutoCodeFix Include="MOQ001;MOQ002" />
-
-    <!-- CodeFix analyzers should only be added to DTBs since they depend on 
-         editor features that are not available from csc/vbc -->
-    <CodeFix Include="$(MSBuildThisFileDirectory)netstandard.dll" NuGetPackageId="Moq" />
-    <CodeFix Include="$(MSBuildThisFileDirectory)Moq.CodeFix.dll" NuGetPackageId="Moq" />
-  </ItemGroup>
-
-  <ItemGroup>
     <!-- Ensure nuget-linked source content files are not shown in the project -->
     <Compile Update="$(NuGetPackageRoot)moq/*/contentFiles/**/*$(DefaultLanguageSourceExtension)">
       <!-- Since these are not under the project directory, without a link, they do dissapear -->

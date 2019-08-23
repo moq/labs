@@ -5,16 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Auto-generate stunts flagged by these two analyers. -->
-    <AutoCodeFix Include="ST001;ST002" />
-
-    <!-- CodeFix analyzers should only be added to DTBs since they depend on 
-         editor features that are not available from csc/vbc -->
-    <CodeFix Include="$(MSBuildThisFileDirectory)Stunts.Sdk.dll" NuGetPackageId="Stunts" />
-    <CodeFix Include="$(MSBuildThisFileDirectory)Stunts.CodeFix.dll" NuGetPackageId="Stunts" />
-  </ItemGroup>
-
-  <ItemGroup>
     <!-- Ensure nuget-linked source content files are not shown in the project -->
     <Compile Update="$(NuGetPackageRoot)stunts/*/contentFiles/**/*$(DefaultLanguageSourceExtension)">
       <!-- Since these are not under the project directory, without a link, they do dissapear -->
