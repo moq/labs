@@ -16,7 +16,6 @@ namespace Moq.Tests
         public MoqTests(ITestOutputHelper output)
         {
             this.output = output;
-            MockFactory.Default = new MockFactory();
         }
 
         [Fact]

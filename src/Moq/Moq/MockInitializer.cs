@@ -1,6 +1,4 @@
 ﻿using System.ComponentModel;
-using System.Linq;
-using System.Runtime.InteropServices;
 using Moq.Sdk;
 using Stunts;
 
@@ -25,26 +23,27 @@ namespace Moq
         /// </remarks>
         public static void Initialize(this IMocked mocked, MockBehavior behavior = MockBehavior.Loose)
         {
-            mocked.Mock.Behaviors.Clear();
+            var mock = mocked.Mock;
+            mock.Behaviors.Clear();
 
             mocked.AsMoq().Behavior = behavior;
 
-            mocked.Mock.Behaviors.Add(new SetupScopeBehavior());
-            mocked.Mock.Behaviors.Add(new MockContextBehavior());
-            mocked.Mock.Behaviors.Add(new ConfigurePipelineBehavior());
-            mocked.Mock.Behaviors.Add(new MockRecordingBehavior());
-            mocked.Mock.Behaviors.Add(new EventBehavior());
-            mocked.Mock.Behaviors.Add(new PropertyBehavior { SetterRequiresSetup = behavior == MockBehavior.Strict });
-            mocked.Mock.Behaviors.Add(new DefaultEqualityBehavior());
-            mocked.Mock.Behaviors.Add(new RecursiveMockBehavior());
-            mocked.Mock.Behaviors.Add(new CallBaseBehavior());
+            mock.Behaviors.Add(new SetupScopeBehavior());
+            mock.Behaviors.Add(new MockContextBehavior());
+            mock.Behaviors.Add(new ConfigurePipelineBehavior());
+            mock.Behaviors.Add(new MockRecordingBehavior());
+            mock.Behaviors.Add(new EventBehavior());
+            mock.Behaviors.Add(new PropertyBehavior { SetterRequiresSetup = behavior == MockBehavior.Strict });
+            mock.Behaviors.Add(new DefaultEqualityBehavior());
+            mock.Behaviors.Add(new RecursiveMockBehavior());
+            mock.Behaviors.Add(new CallBaseBehavior());
 
             // Dynamically configured by the ConfigurePipelineBehavior.
-            mocked.Mock.Behaviors.Add(new StrictMockBehavior());
+            mock.Behaviors.Add(new StrictMockBehavior());
 
-            var defaultValue = mocked.Mock.State.GetOrAdd(() => new DefaultValueProvider());
-            mocked.Mock.Behaviors.Add(new DefaultValueBehavior(defaultValue));
-            mocked.Mock.State.Set(defaultValue);
+            var defaultValue = mock.State.GetOrAdd(() => new DefaultValueProvider());
+            mock.Behaviors.Add(new DefaultValueBehavior(defaultValue));
+            mock.State.Set(defaultValue);
         }
     }
 }

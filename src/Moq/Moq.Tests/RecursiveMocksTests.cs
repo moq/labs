@@ -1,13 +1,10 @@
-﻿using Moq.Sdk;
-using Xunit;
+﻿using Xunit;
 using static Moq.Syntax;
 
 namespace Moq.Tests.Recursive
 {
     public class RecursiveMocksTests
     {
-        public RecursiveMocksTests() => MockFactory.Default = new MockFactory();
-
         [Fact]
         public void CanSetupRecursiveMockProperty()
         {
@@ -26,7 +23,7 @@ namespace Moq.Tests.Recursive
             mock.Setup(m => m.Branch.GetLeaf(1).Name).Returns("foo");
 
             Assert.Equal("foo", mock.Branch.GetLeaf(1).Name);
-            Assert.Equal(null, mock.Branch.GetLeaf(0));
+            Assert.Null(mock.Branch.GetLeaf(0));
         }
 
         [Fact]
@@ -40,7 +37,7 @@ namespace Moq.Tests.Recursive
             }
 
             Assert.Equal("foo", mock.Branch.GetLeaf(1).Name);
-            Assert.Equal(null, mock.Branch.GetLeaf(0));
+            Assert.Null(mock.Branch.GetLeaf(0));
         }
     }
 

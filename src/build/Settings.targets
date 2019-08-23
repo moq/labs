@@ -1,4 +1,4 @@
-<Project InitialTargets="FixupProjectReferences">
+<Project>
   <PropertyGroup>
     <!-- The Sdks\NuGet.Build.Tasks.Pack\build\NuGet.Build.Tasks.Pack.targets unconditionally sets 
         PackageId=AssemblyName if no PackageId is provided, and then defaults IsPackable=true if 
@@ -24,23 +24,6 @@
   <ItemGroup>
     <PackageReference Update="NETStandard.Library" PrivateAssets="all" />
   </ItemGroup>
-
-  <!-- For some reason, SDK-style P2P references are being resolved *after* ResolveAssemblyReferences and failing the build -->
-	<Target Name="FixupProjectReferences">
-		<PropertyGroup>
-			<ResolveAssemblyReferencesDependsOn>
-				$(ResolveAssemblyReferencesDependsOn);
-				ResolveProjectReferences
-			</ResolveAssemblyReferencesDependsOn>
-		</PropertyGroup>
-	</Target>
-
-  <!-- We get the Microsoft.CodeAnalyis.Analyzers automatically, and those slow down and sometimes fail, so turn off. -->
-  <Target Name="RemoveResolvedAnalyzers" BeforeTargets="ResolveLockFileAnalyzers">
-    <ItemGroup>
-      <ResolvedAnalyzers Remove="@(ResolvedAnalyzers)" />
-    </ItemGroup>
-  </Target>
 
   <!-- If a package is produced, delete any restored packages with the matching id
        from the local cache, so that package references will force a new restore 

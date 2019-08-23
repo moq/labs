@@ -11,6 +11,9 @@ Namespace Global.Moq
     <GeneratedCode("Moq", "5.0")>
     <CompilerGenerated>
     Partial Friend Class Mock
+        Private Shared Sub New()
+            MockFactory.[Default] = New Sdk.DynamicMockFactory()
+        End Sub
 
         Private Shared Function Create(Of T As Class)(ByVal behavior As MockBehavior, ByVal constructorArgs As Object(), ParamArray interfaces As Type()) As T
             Dim mocked = DirectCast(MockFactory.[Default].CreateMock(GetType(Mock).GetTypeInfo().Assembly, GetType(T), interfaces, constructorArgs), IMocked)
