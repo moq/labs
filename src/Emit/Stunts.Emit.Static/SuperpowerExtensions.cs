@@ -11,6 +11,10 @@ namespace Stunts.Emit
         
         public static TextParser<T> Log<T>(this TextParser<T> parser, string name)
         {
+#if !SUPERPOWER
+            return parser;
+#endif
+
             if (!Debugger.IsAttached)
                 return parser;
 

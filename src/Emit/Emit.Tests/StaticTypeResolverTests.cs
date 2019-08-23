@@ -2,16 +2,18 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.CodeAnalysis;
-using Stunts.Emit;
+using Stunts.Emit.Static;
 using Xunit;
 
 namespace Emit.Tests
 {
     public class StaticTypeResolverTests
     {
+        [InlineData(typeof(int?))]
         [InlineData(typeof(IEnumerable<int>))]
         [InlineData(typeof(IEnumerable<int[,]>[]))]
         [InlineData(typeof(IEnumerable<KeyValuePair<string[], int[]>>))]
+        [InlineData(typeof(System.ComponentModel.TypeConverter.StandardValuesCollection))]
         [Theory]
         public void WhenResolvingSymbol_ThenCanResolveFromFullName(Type type)
         {
@@ -19,8 +21,13 @@ namespace Emit.Tests
             var resolver = new StaticTypeResolver(assemblyFile);
 
             var symbol = resolver.ResolveSymbol(type.FullName);
-
             Assert.NotNull(symbol);
+
+            var reference = resolver.ResolveReference(symbol);
+            Assert.NotNull(reference);
+
+            var symbolFromRef = resolver.ResolveSymbol(reference);
+            Assert.NotNull(symbolFromRef);
         }
 
         [Fact]

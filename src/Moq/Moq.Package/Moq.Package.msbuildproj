@@ -11,6 +11,8 @@
     <Description>The most popular and friendly mocking framework for .NET</Description>
     <PackageTags>moq mocking mock</PackageTags>
     <PackOnBuild Condition="'$(PackOnBuild)' == '' and '$(Configuration)' == 'Release'">true</PackOnBuild>
+    <!-- We don't need to rebuild all project references when packaging -->
+    <BuildProjectReferences Condition="'$(SolutionPath)' != ''">false</BuildProjectReferences>
   </PropertyGroup>
 
   <ItemGroup>

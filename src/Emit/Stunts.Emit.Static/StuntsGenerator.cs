@@ -1,14 +1,18 @@
 ﻿using System;
 using System.CodeDom.Compiler;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
+using static Mono.Cecil.Cil.OpCodes;
 using Superpower;
 
 namespace Stunts.Emit.Static
@@ -18,43 +22,32 @@ namespace Stunts.Emit.Static
         static readonly string generatedCode = typeof(GeneratedCodeAttribute).FullName;
         static readonly string stuntGenerator = typeof(StuntGeneratorAttribute).FullName;
 
+        StaticTypeResolver typeResolver;
         string assemblyFile;
-        AssemblyDefinition assembly;
-        Compilation compilation;
-        IAssemblyResolver resolver;
 
         public StuntsGenerator(string assemblyFile)
         {
             this.assemblyFile = assemblyFile;
-            assembly = AssemblyDefinition.ReadAssembly(assemblyFile);
-
-            resolver = new DefaultAssemblyResolver();
-
-            compilation = CSharpCompilation.Create("foo", references: assembly.MainModule.AssemblyReferences.Select(x => MetadataReference
-                .CreateFromFile(resolver.Resolve(x).MainModule.FileName)))
-                .AddReferences(MetadataReference.CreateFromFile(assemblyFile));
+            typeResolver = new StaticTypeResolver(assemblyFile);
         }
 
-        public void Dispose()
-        {
-            assembly?.Dispose();
-        }
+        public void Dispose() => typeResolver.Dispose();
 
-        public void Emit()
+        public string Emit()
         {
-            var candidates = new Dictionary<StuntTypeName, IList<TypeReference>>();
+            var candidates = new ConcurrentDictionary<StuntTypeName, IList<TypeReference>>();
 
-            foreach (var module in assembly.Modules)
+            foreach (var module in typeResolver.AssemblyDefinition.Modules)
             {
-                foreach (var type in module.Types.Where(t => t.IsClass && !t.CustomAttributes.Any(a => a.AttributeType.FullName == generatedCode)))
+                foreach (var type in module.Types.Where(t => 
+                    t.IsClass && 
+                    !t.CustomAttributes.Any(a => a.AttributeType.FullName == generatedCode)))
                 {
                     foreach (var method in type.Methods.Where(m => m.HasBody))
                     {
                         foreach (var arguments in method.Body.Instructions.Where(IsStuntGenerator).Select(GetGeneratorArguments))
                         {
-                            var name = StuntNaming.GetTypeName(arguments);
-                            if (!candidates.ContainsKey(name))
-                                candidates.Add(name, arguments);
+                            candidates.TryAdd(StuntNaming.GetTypeName(arguments), arguments);
                         }
                     }
 
@@ -62,20 +55,21 @@ namespace Stunts.Emit.Static
                     {
                         foreach (var arguments in property.GetMethod.Body.Instructions.Where(IsStuntGenerator).Select(GetGeneratorArguments))
                         {
-                            var name = StuntNaming.GetTypeName(arguments);
-                            if (!candidates.ContainsKey(name))
-                                candidates.Add(name, arguments);
+                            candidates.TryAdd(StuntNaming.GetTypeName(arguments), arguments);
                         }
                     }
                 }
             }
 
-            foreach (var candidate in candidates)
+            foreach (var candidate in candidates.ToArray())
             {
-                AddType(assembly.MainModule, candidate.Key, candidate.Value);
+                AddType(typeResolver.AssemblyDefinition.MainModule, candidate.Key, candidate.Value);
             }
 
-            assembly.Write(Path.ChangeExtension(assemblyFile, ".g.dll"));
+            var targetPath = Path.ChangeExtension(assemblyFile, ".g.dll");
+            typeResolver.AssemblyDefinition.Write(targetPath);
+            Debug.WriteLine(targetPath);
+            return targetPath;
         }
 
         void AddType(ModuleDefinition module, StuntTypeName name, IList<TypeReference> types)
@@ -83,131 +77,389 @@ namespace Stunts.Emit.Static
             var type = new TypeDefinition(
                 name.Namespace,
                 name.Name,
-                TypeAttributes.BeforeFieldInit);
+                TypeAttributes.BeforeFieldInit | TypeAttributes.Public);
 
             if (types[0].Resolve().IsClass)
             {
-                type.BaseType = types[0];
+                type.BaseType = module.ImportReference(types[0]);
                 types.RemoveAt(0);
             }
+            else
+            {
+                type.BaseType = module.ImportReference(typeof(object));
+            }
 
-            AddInterfaces(module, type, types);
-            AddStunt(module, type);
+            ImplementInterfaces(module, type, types);
+            OverrideMembers(module, type);
+            ImplementStunt(module, type);
+
+            type.CustomAttributes.Add(new CustomAttribute(
+                typeResolver.AssemblyDefinition.MainModule.ImportReference(typeof(CompilerGeneratedAttribute).GetConstructor(Array.Empty<Type>()))));
 
             module.Types.Add(type);
         }
 
-        void AddStunt(ModuleDefinition module, TypeDefinition type)
+        void OverrideMembers(ModuleDefinition module, TypeDefinition type)
         {
-            type.Interfaces.Add(new InterfaceImplementation(module.ImportReference(typeof(IStunt))));
+            var symbol = typeResolver.ResolveSymbol(type.BaseType);
+            var skipped = new HashSet<ISymbol>(new SymbolComparer());
+            var overridable = GetAllMembers(symbol)
+                .Where(s => 
+                    s.DeclaredAccessibility == Accessibility.Public || 
+                    s.DeclaredAccessibility == Accessibility.Protected || 
+                    s.DeclaredAccessibility == Accessibility.ProtectedOrInternal)
+                .Where(s => s.Kind != SymbolKind.Method || ((IMethodSymbol)s).MethodKind == MethodKind.Ordinary)
+                .Where(s =>
+                {
+                    if (s.IsSealed)
+                    {
+                        // If we encounter the symbol sealed as we move upward 
+                        // the inheritance chain, we need to flag it as skipped, 
+                        // even if a subsequent base class does not define it as 
+                        // sealed.
+                        skipped.Add(s);
+                        return false;
+                    }
+
+                    return s.IsVirtual || s.IsAbstract;
+                })
+                .GroupBy(x => x, new SymbolComparer());
+
+            foreach (var member in overridable.Where(s => !skipped.Contains(s.Key)))
+            {
+                AddMember(module, type, member.Key, false, true);
+            }
         }
 
-        void AddInterfaces(ModuleDefinition module, TypeDefinition type, IList<TypeReference> types)
+        IEnumerable<ISymbol> GetAllMembers(ITypeSymbol symbol)
         {
-            foreach (var iface in types)
+            foreach (var member in symbol.GetMembers())
+            {
+                yield return member;
+            }
+
+            var baseType = symbol.BaseType;
+            while (baseType != null)
+            {
+                foreach (var member in baseType.GetMembers())
+                {
+                    yield return member;
+                }
+
+                baseType = baseType.BaseType;
+            }
+        }
+
+        void ImplementStunt(ModuleDefinition module, TypeDefinition type)
+        {
+            type.Interfaces.Add(new InterfaceImplementation(
+                module.ImportReference(typeResolver.ResolveReference(typeof(IStunt)))));
+
+            //readonly BehaviorPipeline pipeline = new BehaviorPipeline();
+            var pipeline = new FieldDefinition("pipeline", 
+                FieldAttributes.InitOnly | FieldAttributes.Private, 
+                module.ImportReference(typeResolver.ResolveReference(typeof(BehaviorPipeline))));
+
+            type.Fields.Add(pipeline);
+
+            var ctor = new MethodDefinition(".ctor",
+                MethodAttributes.RTSpecialName | MethodAttributes.SpecialName | MethodAttributes.Public | MethodAttributes.HideBySig,
+                module.TypeSystem.Void);
+
+            var il = ctor.Body.GetILProcessor();
+
+            // initialize pipeline field
+            il.Emit(Ldarg_0);
+            il.Emit(Newobj, module.ImportReference(
+                typeResolver.ResolveReference(typeof(BehaviorPipeline)).Resolve().GetConstructors().First(c => c.Parameters.Count == 0)));
+            il.Emit(Stfld, pipeline);
+            il.Emit(Ldarg_0);
+            il.Emit(Call, module.ImportReference(type.BaseType.Resolve().GetConstructors().First(c => !c.IsStatic && c.Parameters.Count == 0)));
+            il.Emit(Nop);
+            il.Emit(Ret);
+
+            type.Methods.Add(ctor);
+
+            var propertyType = module.ImportReference(
+                typeResolver.ResolveReference(typeof(ObservableCollection<IStuntBehavior>)));
+
+            //ObservableCollection<IStuntBehavior> IStunt.Behaviors => pipeline.Behaviors;
+            var behaviors = new PropertyDefinition(
+                nameof(Stunts) + "." + nameof(IStunt) + "." + nameof(IStunt.Behaviors),
+                PropertyAttributes.None,
+                propertyType);
+
+            var getter = new MethodDefinition(nameof(Stunts) + "." + nameof(IStunt) + ".get_" + nameof(IStunt.Behaviors),
+                MethodAttributes.Private | MethodAttributes.HideBySig | MethodAttributes.NewSlot | MethodAttributes.SpecialName | MethodAttributes.Virtual | MethodAttributes.Final,
+                propertyType);
+
+            getter.Overrides.Add(module.ImportReference(
+                typeResolver.ResolveReference(typeof(IStunt)).Resolve().Properties
+                    .First(p => p.Name == nameof(IStunt.Behaviors)).GetMethod));
+
+            il = getter.Body.GetILProcessor();
+            il.Emit(Ldarg_0);
+            il.Emit(Ldfld, pipeline);
+
+            il.Emit(Callvirt, module.ImportReference(
+                typeResolver.ResolveReference(typeof(BehaviorPipeline))
+                    .Resolve().Properties.First(p => p.Name == nameof(BehaviorPipeline.Behaviors))
+                    .GetMethod));
+
+            il.Emit(Ret);
+
+            behaviors.GetMethod = getter;
+
+            type.Methods.Add(getter);
+            type.Properties.Add(behaviors);
+        }
+
+        void ImplementInterfaces(ModuleDefinition module, TypeDefinition type, IList<TypeReference> interfaces)
+        {
+            foreach (var iface in interfaces)
             {
                 type.Interfaces.Add(new InterfaceImplementation(iface));
             }
             
-            var interfaces2 = types.Concat(types.SelectMany(x =>
-            {
-                var ifaces = x.Resolve().Interfaces;
-                if (!x.IsGenericInstance)
-                    return ifaces.Select(i => i.InterfaceType);
+            var mainSymbols = interfaces.Select(x => typeResolver.ResolveSymbol(x)).ToImmutableArray();
+            var allSymbols = mainSymbols.Concat(mainSymbols.OfType<INamedTypeSymbol>().SelectMany(t => t.Interfaces)).ToImmutableArray();
 
-                var generic = (GenericInstanceType)x;
+            //var all = allSymbols.SelectMany(i => i.GetMembers()
+            //    .Where(s => s.Kind != SymbolKind.Method || ((IMethodSymbol)s).MethodKind == MethodKind.Ordinary)).ToArray();
 
-                return ifaces.Select(i => i.InterfaceType.MakeGenericInstanceType(generic.GenericArguments.ToArray()));
-            }));
-
-            var symbols = types.Select(x => compilation.GetTypeByFullName(x.FullName));
-            var interfaces = symbols.Concat(symbols.OfType<INamedTypeSymbol>().SelectMany(t => t.Interfaces)).ToImmutableArray();
-
-            var all = interfaces.SelectMany(i => i.GetMembers().Where(s => s.Kind != SymbolKind.Method || ((IMethodSymbol)s).MethodKind == MethodKind.Ordinary)).ToArray();
-            var members = interfaces.SelectMany(i => i.GetMembers().Where(s => s.Kind != SymbolKind.Method || ((IMethodSymbol)s).MethodKind == MethodKind.Ordinary)).GroupBy(x => x, new SymbolComparer()).ToList();
+            var members = allSymbols.SelectMany(i => i.GetMembers()
+                .Where(s => s.Kind != SymbolKind.Method || ((IMethodSymbol)s).MethodKind == MethodKind.Ordinary))
+                .GroupBy(x => x, new SymbolComparer());
 
             foreach (var member in members)
             {
-                AddMember(type, member.Key);
+                AddMember(module, type, member.Key);
                 foreach (var ambiguous in member.Skip(1))
                 {
-                    AddMember(type, ambiguous, true);
+                    AddMember(module, type, ambiguous, true);
                 }
             }
         }
 
-        TypeDefinition AddMember(TypeDefinition type, ISymbol symbol, bool explicitImplementation = false) => symbol.Kind switch
-        {
-            SymbolKind.Event => AddEvent(type, (IEventSymbol)symbol, explicitImplementation),
-            SymbolKind.Property => AddProperty(type, (IPropertySymbol)symbol, explicitImplementation),
-            SymbolKind.Method => AddMethod(type, (IMethodSymbol)symbol, explicitImplementation),
-            _ => type
-        };
+        TypeDefinition AddMember(ModuleDefinition module, TypeDefinition type, ISymbol symbol, bool explicitImplementation = false, bool overrideMember = false) 
+            => symbol.Kind switch
+            {
+                SymbolKind.Event => AddEvent(module, type, (IEventSymbol)symbol, explicitImplementation, overrideMember),
+                SymbolKind.Property => AddProperty(module, type, (IPropertySymbol)symbol, explicitImplementation, overrideMember),
+                SymbolKind.Method => AddMethod(module, type, (IMethodSymbol)symbol, explicitImplementation, overrideMember),
+                _ => type
+            };
 
-        TypeDefinition AddEvent(TypeDefinition type, IEventSymbol symbol, bool explicitImplementation = false)
+        TypeDefinition AddEvent(ModuleDefinition module, TypeDefinition type, IEventSymbol symbol, bool explicitImplementation = false, bool overrideMember = false)
         {
+            var definition = new EventDefinition(
+                !explicitImplementation ? symbol.Name : GetExplicitMemberName(symbol.ContainingType, symbol.Name),
+                EventAttributes.None,
+                module.ImportReference(typeResolver.ResolveReference(symbol.Type)));
+
+            var addMethod = ToMethodDefinition(module, type, symbol.AddMethod, explicitImplementation, overrideMember);
+            addMethod.Attributes |= MethodAttributes.SpecialName;
+            AddThrowNotImplemented(module, addMethod.Body.GetILProcessor());
+            definition.AddMethod = addMethod;
+            type.Methods.Add(addMethod);
+
+            var removeMethod = ToMethodDefinition(module, type, symbol.RemoveMethod, explicitImplementation, overrideMember);
+            removeMethod.Attributes |= MethodAttributes.SpecialName;
+            AddThrowNotImplemented(module, removeMethod.Body.GetILProcessor());
+            definition.RemoveMethod = removeMethod;
+            type.Methods.Add(removeMethod);
+
+            type.Events.Add(definition);
             return type;
         }
 
-        TypeDefinition AddProperty(TypeDefinition type, IPropertySymbol symbol, bool explicitImplementation = false)
+        TypeDefinition AddProperty(ModuleDefinition module, TypeDefinition type, IPropertySymbol symbol, bool explicitImplementation = false, bool overrideMember = false)
         {
+            var propertyType = typeResolver.ResolveReference(symbol.Type);
+            var property = new PropertyDefinition(
+                symbol.IsIndexer ? "Item" :
+                    !explicitImplementation ? symbol.Name : GetExplicitMemberName(symbol.ContainingType, symbol.Name),
+                PropertyAttributes.None,
+                module.ImportReference(
+                    propertyType is GenericInstanceType ? 
+                    typeResolver.ResolveReference(propertyType.Resolve()) :
+                    typeResolver.ResolveReference(propertyType) ??
+                    throw new ArgumentException($"Failed to resolve {symbol.Type.ToDisplayString(SymbolDisplayFormat.CSharpShortErrorMessageFormat)}")));
+
+            if (type.CustomAttributes.Count == 0)
+            {
+                // [DefaultMemberAttribute("Item")]
+                var defaultMember = new CustomAttribute(module.ImportReference(
+                    typeResolver.ResolveReference(typeof(System.Reflection.DefaultMemberAttribute))
+                        .Resolve()
+                        .GetConstructors()
+                        .First(c => 
+                            c.Parameters.Count == 1 && 
+                            c.Parameters[0].ParameterType.FullName == typeof(string).FullName)));
+
+                defaultMember.ConstructorArguments.Add(new CustomAttributeArgument(module.TypeSystem.String, "Item"));
+                type.CustomAttributes.Add(defaultMember);
+            }
+
+            if (symbol.GetMethod != null)
+            {
+                property.GetMethod = ToMethodDefinition(module, type, symbol.GetMethod, explicitImplementation, overrideMember);
+                type.Methods.Add(property.GetMethod);
+            }
+            if (symbol.SetMethod != null)
+            {
+                property.SetMethod = ToMethodDefinition(module, type, symbol.SetMethod, explicitImplementation, overrideMember);
+                type.Methods.Add(property.SetMethod);
+            }
+
+            type.Properties.Add(property);
             return type;
         }
 
-        TypeDefinition AddMethod(TypeDefinition type, IMethodSymbol symbol, bool explicitImplementation = false)
+        TypeDefinition AddMethod(ModuleDefinition module, TypeDefinition type, IMethodSymbol symbol, bool explicitImplementation = false, bool overrideMember = false)
         {
-            if (!TryGetTypeReference(symbol.ReturnType.ToFullName(), out var returnType))
-                throw new ArgumentException(symbol.ReturnType.ToFullName(), nameof(symbol));
+            type.Methods.Add(ToMethodDefinition(module, type, symbol, explicitImplementation, overrideMember));
+            return type;
+        }
 
-            var method = new MethodDefinition(symbol.Name, MethodAttributes.Public, assembly.MainModule.ImportReference(returnType));
+        MethodDefinition ToMethodDefinition(ModuleDefinition module, TypeReference type, IMethodSymbol symbol, bool explicitImplementation = false, bool overrideMember = false)
+        {
+            //if (symbol.TypeParameters.Length != 0)
+            //    throw new NotSupportedException($"Generic methods are not supported at this time: {symbol.ContainingType.Name}.{symbol.Name}<{string.Join(",", symbol.TypeParameters.Select(x => x.Name))}>");
+
+            var accessibility = explicitImplementation ? MethodAttributes.Private : MethodAttributesFromAccessibility(symbol.DeclaredAccessibility);
+            if (!overrideMember)
+                accessibility |= MethodAttributes.NewSlot;
+
+            var returnType = typeResolver.ResolveReference(symbol.ReturnType) ??
+                throw new ArgumentException($"Failed to resolve {symbol.ReturnType.ToDisplayString(SymbolDisplayFormat.CSharpShortErrorMessageFormat)}");
+
+            if (returnType is GenericInstanceType)
+                returnType = module.ImportReference(returnType.Resolve());
+            else if (!(returnType is GenericParameter))
+                returnType = module.ImportReference(returnType);
+
+            var method = new MethodDefinition(
+                !explicitImplementation ? symbol.Name : GetExplicitMemberName(symbol.ContainingType, symbol.Name),
+                accessibility | MethodAttributes.HideBySig | MethodAttributes.Virtual | MethodAttributes.Final,
+                returnType);
+
+            if (explicitImplementation)
+            {
+                method.Overrides.Add(module.ImportReference(ToMethodReference(module, type, symbol)));
+            }
 
             foreach (var parameter in symbol.Parameters)
             {
-                if (!TryGetTypeReference(parameter.Type.ToFullName(), out var paramType))
-                    throw new ArgumentException(parameter.Type.ToFullName(), nameof(parameter));
-
-                method.Parameters.Add(new ParameterDefinition(parameter.Name, ParameterAttributes.None, assembly.MainModule.ImportReference(paramType)));
+                method.Parameters.Add(ToParameterDefinition(module, type, parameter));
             }
 
-            AddThrowNotImplemented(method.Body.GetILProcessor());
-            
-            type.Methods.Add(method);
-            return type;
-        }
-
-        bool TryGetTypeReference(string fullName, out TypeReference type)
-        {
-            if (TryGetTypeReference(fullName, assembly.Modules, out type))
-                return true;
-
-            return TryGetTypeReference(fullName, assembly.Modules
-                .SelectMany(module => module.AssemblyReferences)
-                .Select(name => resolver.Resolve(name))
-                .SelectMany(asm => asm.Modules),
-                out type);
-        }
-
-        bool TryGetTypeReference(string fullName, IEnumerable<ModuleDefinition> modules, out TypeReference type)
-        {
-            foreach (var module in modules)
+            foreach (var generic in symbol.TypeArguments)
             {
-                if (module.TryGetTypeReference(fullName, out type))
-                    return true;
+                method.GenericParameters.Add(new GenericParameter(generic.Name, method));
             }
 
-            type = default;
-            return false;
+            AddThrowNotImplemented(module, method.Body.GetILProcessor());
+            return method;
         }
 
-        void AddThrowNotImplemented(ILProcessor il)
+        ParameterDefinition ToParameterDefinition(ModuleDefinition module, TypeReference type, IParameterSymbol parameter)
         {
-            var exception = assembly.MainModule.ImportReference(typeof(NotImplementedException));
-            il.Emit(OpCodes.Newobj, exception);
-            il.Emit(OpCodes.Throw);
+            var paramType = typeResolver.ResolveReference(TypeNameInfo.FromSymbol(parameter.Type), type) ??
+                throw new ArgumentException($"Failed to resolve {parameter.Type.ToDisplayString(SymbolDisplayFormat.CSharpShortErrorMessageFormat)}.");
+
+            if (paramType is GenericInstanceType)
+                paramType = module.ImportReference(paramType.Resolve());
+            else if (!(paramType is GenericParameter))
+                paramType = module.ImportReference(paramType);
+
+            if (parameter.RefKind == RefKind.Ref || parameter.RefKind == RefKind.Out)
+                paramType = paramType.MakeByReferenceType();
+
+            return new ParameterDefinition(
+                parameter.Name,
+                ParameterAttributesFromRefKind(parameter.RefKind),
+                paramType)
+            {
+                IsIn = parameter.RefKind == RefKind.In,
+                IsOut = parameter.RefKind == RefKind.Out,
+                IsReturnValue = parameter.RefKind == RefKind.Ref,
+                IsOptional = parameter.IsOptional
+            };
+        }
+
+        MethodReference ToMethodReference(ModuleDefinition module, TypeReference type, IMethodSymbol method)
+        {
+            var reference = new MethodReference(method.Name, typeResolver.ResolveReference(method.ReturnType))
+            {
+                DeclaringType = typeResolver.ResolveReference(method.ContainingType),
+                HasThis = true,
+            };
+
+            foreach (var parameter in method.Parameters)
+            {
+                reference.Parameters.Add(ToParameterDefinition(module, type, parameter));
+            }
+
+            if (method.TypeParameters.Length != 0)
+                throw new NotSupportedException($"Generic methods are not supported at this time: {method.ContainingType.Name}.{method.Name}<{string.Join(",", method.TypeParameters.Select(x => x.Name))}>");
+
+            return reference;
+        }
+
+        static MethodReference MakeGenericMethodReference(TypeReference declaringType, MethodReference method, params TypeReference[] arguments)
+        {
+            var reference = new MethodReference(method.Name, method.ReturnType)
+            {
+                DeclaringType = declaringType,
+                HasThis = method.HasThis,
+                ExplicitThis = method.ExplicitThis,
+                CallingConvention = method.CallingConvention,
+            };
+
+            foreach (var parameter in method.Parameters)
+                reference.Parameters.Add(new ParameterDefinition(parameter.ParameterType));
+
+            foreach (var generic_parameter in method.GenericParameters)
+                reference.GenericParameters.Add(new GenericParameter(generic_parameter.Name, reference));
+
+            return reference;
+        }
+
+        MethodAttributes MethodAttributesFromAccessibility(Accessibility accessibility) 
+            => accessibility switch
+            {
+                Accessibility.Public => MethodAttributes.Public,
+                Accessibility.Internal => MethodAttributes.Assembly,
+                Accessibility.Protected => MethodAttributes.Family,
+                Accessibility.ProtectedAndInternal => MethodAttributes.FamANDAssem,
+                Accessibility.ProtectedOrInternal => MethodAttributes.FamORAssem,
+                Accessibility.Private => MethodAttributes.Private,
+                _ => MethodAttributes.Assembly
+            };
+
+        ParameterAttributes ParameterAttributesFromRefKind(RefKind refKind)
+            => refKind switch
+            {
+                RefKind.In => ParameterAttributes.In,
+                RefKind.Out => ParameterAttributes.Out,
+                RefKind.Ref => ParameterAttributes.Retval,
+                RefKind.None => ParameterAttributes.None,
+                _ => ParameterAttributes.None
+            };
+
+        string GetExplicitMemberName(INamedTypeSymbol type, string member)
+            => TypeNameInfo.FromSymbol(type).ToDisplayName() + "." + member;
+
+        void AddThrowNotImplemented(ModuleDefinition module, ILProcessor il)
+        {
+            var ctor = module.ImportReference(typeof(NotImplementedException).GetConstructor(Array.Empty<Type>()));
+            il.Emit(Newobj, ctor);
+            il.Emit(Throw);
         }
 
         bool IsStuntGenerator(Instruction instruction) =>
-            instruction.OpCode == OpCodes.Call &&
+            instruction.OpCode == Call &&
             instruction.Operand is GenericInstanceMethod generator &&
             generator.ElementMethod is MethodDefinition definition &&
             definition.CustomAttributes.Any(a => a.AttributeType.FullName == stuntGenerator);
@@ -255,29 +507,6 @@ namespace Stunts.Emit.Static
                     {
                         hash.Add(parameter.Type.ToDisplayString(fullNameFormat));
                     }
-                }
-
-                return hash.ToHashCode();
-            }
-        }
-
-        class MethodComparer : IEqualityComparer<MethodDefinition>
-        {
-            public bool Equals(MethodDefinition x, MethodDefinition y)
-                => GetHashCode(x) == GetHashCode(y);
-
-            public int GetHashCode(MethodDefinition method)
-            {
-                var hash = new HashCode().Add(method.Name);
-
-                foreach (var generic in method.GenericParameters)
-                {
-                    hash.Add(generic.FullName);
-                }
-
-                foreach (var parameter in method.Parameters)
-                {
-                    hash.Add(parameter.ParameterType.FullName);
                 }
 
                 return hash.ToHashCode();

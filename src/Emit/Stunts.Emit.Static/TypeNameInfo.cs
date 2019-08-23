@@ -2,19 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Mono.Cecil;
 using Superpower;
-using Superpower.Model;
 using Superpower.Parsers;
 
-namespace Stunts.Emit
+namespace Stunts.Emit.Static
 {
     public class TypeNameInfo
     {
-        static readonly SymbolDisplayFormat fullNameFormat = new SymbolDisplayFormat(typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces);
+        static readonly SymbolDisplayFormat fullNameFormat =
+            new SymbolDisplayFormat(
+                typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
+                // genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
+                miscellaneousOptions: SymbolDisplayMiscellaneousOptions.ExpandNullable);
 
         public TypeNameInfo(string fullName, IEnumerable<TypeNameInfo> genericArguments, int arrayRank)
         {
@@ -30,6 +32,8 @@ namespace Stunts.Emit
         public TypeNameInfo[] GenericArguments { get; set; }
 
         public int ArrayRank { get; set; }
+
+        public bool IsTypeParameter { get; set; }
 
         public string ToDisplayName()
         {
@@ -50,24 +54,43 @@ namespace Stunts.Emit
         public static TypeNameInfo FromSymbol(ITypeSymbol symbol)
         {
             var fullName = symbol.ToDisplayString(fullNameFormat);
-            var arguments = Array.Empty<TypeNameInfo>();
-            if (symbol is INamedTypeSymbol named && named.TypeArguments.Length > 0)
-                arguments = named.TypeArguments.Select(arg => FromSymbol(arg)).ToArray();
-
             var arrayRank = 0;
             if (symbol is IArrayTypeSymbol array)
             {
                 arrayRank = array.Rank;
                 fullName = fullName.Substring(0, fullName.IndexOf('['));
+                symbol = array.ElementType;
             }
 
-            return new TypeNameInfo(fullName, arguments, arrayRank);
+            var arguments = Array.Empty<TypeNameInfo>();
+            if (symbol is INamedTypeSymbol named && named.TypeArguments.Length > 0)
+            {
+                arguments = named.TypeArguments.Select(arg => FromSymbol(arg)).ToArray();
+                //fullName = fullName.Substring(0, fullName.IndexOf('`'));
+            }
+
+            return new TypeNameInfo(fullName, arguments, arrayRank) { IsTypeParameter = symbol.Kind == SymbolKind.TypeParameter };
         }
 
         public static TypeNameInfo FromReference(TypeReference reference)
         {
-            var ns = string.IsNullOrEmpty(reference.Namespace) ? "" : reference.Namespace + ".";
-            var fullName = ns + reference.Name;
+            // We don't consider the trailing '&' in this case, since we just care 
+            // about locating types, not how they are passed around.
+            if (reference.IsByReference && reference is ByReferenceType byRef)
+                reference = byRef.ElementType;
+
+            var nameBuilder = new StringBuilder(reference.Name);
+            var currentType = reference;
+            while (currentType.DeclaringType != null)
+            {
+                nameBuilder.Insert(0, currentType.DeclaringType.Name + ".");
+                currentType = currentType.DeclaringType;
+            }
+
+            if (!string.IsNullOrEmpty(currentType.Namespace))
+                nameBuilder.Insert(0, currentType.Namespace + ".");
+
+            var fullName = nameBuilder.ToString();
             var arguments = Array.Empty<TypeNameInfo>();
             var arrayRank = 0;
 
@@ -83,7 +106,7 @@ namespace Stunts.Emit
                 arguments = generic.GenericArguments.Select(arg => FromReference(arg)).ToArray();
             }
 
-            return new TypeNameInfo(fullName, arguments, arrayRank);
+            return new TypeNameInfo(fullName, arguments, arrayRank) { IsTypeParameter = reference.IsGenericParameter };
         }
 
         public static TypeNameInfo FromMetadataName(string metadataName) => TypeNameInfoParser.Parse(metadataName);

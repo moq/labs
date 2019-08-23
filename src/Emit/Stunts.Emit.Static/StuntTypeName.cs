@@ -20,5 +20,8 @@
         public override string ToString() => FullName;
 
         public override int GetHashCode() => hashCode;
+
+        public override bool Equals(object obj)
+            => obj is StuntTypeName other && other.Namespace == this.Namespace && other.Name == this.Name;
     }
 }

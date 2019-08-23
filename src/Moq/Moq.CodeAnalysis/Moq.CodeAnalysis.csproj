@@ -9,7 +9,7 @@
     <PrimaryOutputFrameworkSpecific>true</PrimaryOutputFrameworkSpecific>
   </PropertyGroup>
 
-  <ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(BuildingPackage)' == 'true'">
     <ProjectReference>
       <!-- This causes the output of the referenced projects to be packaged into the analyzer folder too -->
       <AdditionalProperties>PrimaryOutputKind=$(PrimaryOutputKind)</AdditionalProperties>

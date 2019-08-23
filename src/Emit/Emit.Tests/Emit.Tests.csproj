@@ -5,6 +5,7 @@
     <TargetFramework>net472</TargetFramework>
     <LangVersion>Latest</LangVersion>
     <IncludeXunit>true</IncludeXunit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,11 +14,6 @@
 
   <ItemGroup>
     <Compile Remove="CecilTests.cs" />
-    <Compile Remove="ToFullNameExtensions.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="ToFullNameExtensions.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,6 +24,18 @@
     <ProjectReference Include="..\Stunts.DynamicProxy\Stunts.DynamicProxy.csproj" />
     <ProjectReference Include="..\Stunts.Emit.Dynamic\Stunts.Emit.Dynamic.csproj" />
     <ProjectReference Include="..\Stunts.Emit.Static\Stunts.Emit.Static.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" VersionOverride="2.2.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="StuntUsage.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>StuntUsage.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 </Project>
