@@ -13,6 +13,8 @@ namespace Moq
     [CompilerGenerated]
     partial class Mock
     {
+        static Mock() => MockFactory.Default = new Sdk.DynamicMockFactory();
+
         /// <summary>
         /// Gets the configuration and introspection for the given mocked instance.
         /// </summary>

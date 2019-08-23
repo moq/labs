@@ -10,6 +10,8 @@ namespace Stunts
     [GeneratedCode("Stunts", "5.0")]
     internal partial class Stunt
     {
+        static Stunt() => StuntFactory.Default = new Sdk.DynamicStuntFactory();
+
         private static T Create<T>(object[] constructorArgs, params Type[] interfaces) => 
             (T)StuntFactory.Default.CreateStunt(typeof(Stunt).GetTypeInfo().Assembly, typeof(T), interfaces, constructorArgs);
 

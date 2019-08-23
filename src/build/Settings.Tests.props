@@ -5,9 +5,6 @@
 
     <CopyNuGetImplementations>true</CopyNuGetImplementations>
 
-    <IncludeMSBuild>true</IncludeMSBuild>
-    <IncludeRoslyn>true</IncludeRoslyn>
-
     <AutoUnifyAssemblyReferences>true</AutoUnifyAssemblyReferences>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
