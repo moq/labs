@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Microsoft.CodeAnalysis;
 using Stunts.Emit.Static;
@@ -22,7 +23,7 @@ namespace Emit.Tests
 
             var symbol = resolver.ResolveSymbol(type.FullName);
             Assert.NotNull(symbol);
-
+            
             var reference = resolver.ResolveReference(symbol);
             Assert.NotNull(reference);
 

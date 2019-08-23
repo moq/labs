@@ -18,7 +18,8 @@ foreach (var type in Directory.EnumerateFiles(this.Host.ResolvePath("bin\\Debug"
     .SelectMany(TryGetExportedTypes)
     .Where(t => !t.IsSealed && !t.IsValueType && !t.IsGenericType && 
                 t.GetConstructor(Type.EmptyTypes) != null &&
-                t.GetCustomAttribute<ObsoleteAttribute>() == null))
+                t.GetCustomAttribute<ObsoleteAttribute>() == null && 
+                !t.GetMethods().Any(x => x.IsGenericMethodDefinition)))
 {
 #>
         Stunts.Stunt.Of<<#= type.FullName.Replace('+', '.') #>>();

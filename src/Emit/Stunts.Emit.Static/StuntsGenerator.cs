@@ -257,13 +257,13 @@ namespace Stunts.Emit.Static
                 EventAttributes.None,
                 module.ImportReference(typeResolver.ResolveReference(symbol.Type)));
 
-            var addMethod = ToMethodDefinition(module, type, symbol.AddMethod, explicitImplementation, overrideMember);
+            var addMethod = ToMethodDefinition(module, symbol.AddMethod, explicitImplementation, overrideMember);
             addMethod.Attributes |= MethodAttributes.SpecialName;
             AddThrowNotImplemented(module, addMethod.Body.GetILProcessor());
             definition.AddMethod = addMethod;
             type.Methods.Add(addMethod);
 
-            var removeMethod = ToMethodDefinition(module, type, symbol.RemoveMethod, explicitImplementation, overrideMember);
+            var removeMethod = ToMethodDefinition(module, symbol.RemoveMethod, explicitImplementation, overrideMember);
             removeMethod.Attributes |= MethodAttributes.SpecialName;
             AddThrowNotImplemented(module, removeMethod.Body.GetILProcessor());
             definition.RemoveMethod = removeMethod;
@@ -275,15 +275,12 @@ namespace Stunts.Emit.Static
 
         TypeDefinition AddProperty(ModuleDefinition module, TypeDefinition type, IPropertySymbol symbol, bool explicitImplementation = false, bool overrideMember = false)
         {
-            var propertyType = typeResolver.ResolveReference(symbol.Type);
             var property = new PropertyDefinition(
                 symbol.IsIndexer ? "Item" :
                     !explicitImplementation ? symbol.Name : GetExplicitMemberName(symbol.ContainingType, symbol.Name),
                 PropertyAttributes.None,
                 module.ImportReference(
-                    propertyType is GenericInstanceType ? 
-                    typeResolver.ResolveReference(propertyType.Resolve()) :
-                    typeResolver.ResolveReference(propertyType) ??
+                    typeResolver.ResolveReference(symbol.Type) ??
                     throw new ArgumentException($"Failed to resolve {symbol.Type.ToDisplayString(SymbolDisplayFormat.CSharpShortErrorMessageFormat)}")));
 
             if (type.CustomAttributes.Count == 0)
@@ -303,12 +300,12 @@ namespace Stunts.Emit.Static
 
             if (symbol.GetMethod != null)
             {
-                property.GetMethod = ToMethodDefinition(module, type, symbol.GetMethod, explicitImplementation, overrideMember);
+                property.GetMethod = ToMethodDefinition(module, symbol.GetMethod, explicitImplementation, overrideMember);
                 type.Methods.Add(property.GetMethod);
             }
             if (symbol.SetMethod != null)
             {
-                property.SetMethod = ToMethodDefinition(module, type, symbol.SetMethod, explicitImplementation, overrideMember);
+                property.SetMethod = ToMethodDefinition(module, symbol.SetMethod, explicitImplementation, overrideMember);
                 type.Methods.Add(property.SetMethod);
             }
 
@@ -318,11 +315,11 @@ namespace Stunts.Emit.Static
 
         TypeDefinition AddMethod(ModuleDefinition module, TypeDefinition type, IMethodSymbol symbol, bool explicitImplementation = false, bool overrideMember = false)
         {
-            type.Methods.Add(ToMethodDefinition(module, type, symbol, explicitImplementation, overrideMember));
+            type.Methods.Add(ToMethodDefinition(module, symbol, explicitImplementation, overrideMember));
             return type;
         }
 
-        MethodDefinition ToMethodDefinition(ModuleDefinition module, TypeReference type, IMethodSymbol symbol, bool explicitImplementation = false, bool overrideMember = false)
+        MethodDefinition ToMethodDefinition(ModuleDefinition module, IMethodSymbol symbol, bool explicitImplementation = false, bool overrideMember = false)
         {
             //if (symbol.TypeParameters.Length != 0)
             //    throw new NotSupportedException($"Generic methods are not supported at this time: {symbol.ContainingType.Name}.{symbol.Name}<{string.Join(",", symbol.TypeParameters.Select(x => x.Name))}>");
@@ -331,27 +328,22 @@ namespace Stunts.Emit.Static
             if (!overrideMember)
                 accessibility |= MethodAttributes.NewSlot;
 
-            var returnType = typeResolver.ResolveReference(symbol.ReturnType) ??
+            var resolved = typeResolver.ResolveReference(symbol.ReturnType) ??
                 throw new ArgumentException($"Failed to resolve {symbol.ReturnType.ToDisplayString(SymbolDisplayFormat.CSharpShortErrorMessageFormat)}");
-
-            if (returnType is GenericInstanceType)
-                returnType = module.ImportReference(returnType.Resolve());
-            else if (!(returnType is GenericParameter))
-                returnType = module.ImportReference(returnType);
 
             var method = new MethodDefinition(
                 !explicitImplementation ? symbol.Name : GetExplicitMemberName(symbol.ContainingType, symbol.Name),
                 accessibility | MethodAttributes.HideBySig | MethodAttributes.Virtual | MethodAttributes.Final,
-                returnType);
+                module.ImportReference(resolved));
 
             if (explicitImplementation)
             {
-                method.Overrides.Add(module.ImportReference(ToMethodReference(module, type, symbol)));
+                method.Overrides.Add(module.ImportReference(ToMethodReference(module, symbol)));
             }
 
             foreach (var parameter in symbol.Parameters)
             {
-                method.Parameters.Add(ToParameterDefinition(module, type, parameter));
+                method.Parameters.Add(ToParameterDefinition(module, parameter));
             }
 
             foreach (var generic in symbol.TypeArguments)
@@ -363,15 +355,11 @@ namespace Stunts.Emit.Static
             return method;
         }
 
-        ParameterDefinition ToParameterDefinition(ModuleDefinition module, TypeReference type, IParameterSymbol parameter)
+        ParameterDefinition ToParameterDefinition(ModuleDefinition module, IParameterSymbol parameter)
         {
-            var paramType = typeResolver.ResolveReference(TypeNameInfo.FromSymbol(parameter.Type), type) ??
-                throw new ArgumentException($"Failed to resolve {parameter.Type.ToDisplayString(SymbolDisplayFormat.CSharpShortErrorMessageFormat)}.");
-
-            if (paramType is GenericInstanceType)
-                paramType = module.ImportReference(paramType.Resolve());
-            else if (!(paramType is GenericParameter))
-                paramType = module.ImportReference(paramType);
+            var paramType = module.ImportReference(
+                typeResolver.ResolveReference(parameter.Type) ??
+                throw new ArgumentException($"Failed to resolve {parameter.Type.ToDisplayString(SymbolDisplayFormat.CSharpShortErrorMessageFormat)}."));
 
             if (parameter.RefKind == RefKind.Ref || parameter.RefKind == RefKind.Out)
                 paramType = paramType.MakeByReferenceType();
@@ -388,7 +376,7 @@ namespace Stunts.Emit.Static
             };
         }
 
-        MethodReference ToMethodReference(ModuleDefinition module, TypeReference type, IMethodSymbol method)
+        MethodReference ToMethodReference(ModuleDefinition module, IMethodSymbol method)
         {
             var reference = new MethodReference(method.Name, typeResolver.ResolveReference(method.ReturnType))
             {
@@ -398,7 +386,7 @@ namespace Stunts.Emit.Static
 
             foreach (var parameter in method.Parameters)
             {
-                reference.Parameters.Add(ToParameterDefinition(module, type, parameter));
+                reference.Parameters.Add(ToParameterDefinition(module, parameter));
             }
 
             if (method.TypeParameters.Length != 0)
