@@ -18,6 +18,7 @@
     <Compile Remove="contentFiles\**\*.cs" />
     <None Remove="contentFiles\**\*.*" />
     <Content Include="contentFiles\**\*.*" CopyToOutputDirectory="PreserveNewest" Kind="$(ContentKind)" />
+    <None Update="build\Moq.*" CopyToOutputDirectory="PreserveNewest" Pack="true" Kind="Build" TargetPath="build\%(Filename)%(Extension)" />
   </ItemGroup>
 
   <ItemGroup>

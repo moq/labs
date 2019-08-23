@@ -1,5 +1,4 @@
 ﻿using System;
-using Moq.Sdk;
 using Sample;
 using Xunit;
 using Xunit.Abstractions;
