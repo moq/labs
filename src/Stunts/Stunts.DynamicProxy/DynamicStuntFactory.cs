@@ -24,7 +24,7 @@ namespace Stunts.Sdk
             AttributesToAvoidReplicating.Add<System.Runtime.InteropServices.MarshalAsAttribute>();
             AttributesToAvoidReplicating.Add<System.Runtime.InteropServices.TypeIdentifierAttribute>();
 
-            options = new ProxyGenerationOptions { Hook = new ToStringMethodHook() };
+            options = new ProxyGenerationOptions { Hook = new ObjectMethodsHook() };
 #if DEBUG
             // This allows invoking generator.ProxyBuilder.ModuleScope.SaveAssembly() for troubleshooting.
             generator = new ProxyGenerator(new DefaultProxyBuilder(new ModuleScope(true)));
@@ -56,25 +56,29 @@ namespace Stunts.Sdk
                 implementedInterfaces = fixedInterfaces;
             }
 
-            // TODO: do delegate proxies via interfaces like moq4 does.
-
-            return CreateProxy(baseType, implementedInterfaces, constructorArguments, notImplemented);
+            if (baseType.BaseType == typeof(MulticastDelegate))
+            {
+                var mixinOptions = new ProxyGenerationOptions();
+                mixinOptions.AddDelegateTypeMixin(baseType);
+                var proxy = CreateProxy(typeof(object), implementedInterfaces, mixinOptions, Array.Empty<object>(), notImplemented);
+                return Delegate.CreateDelegate(baseType, proxy, proxy.GetType().GetMethod("Invoke"));
+            }
+            else
+            {
+                return CreateProxy(baseType, implementedInterfaces, options, constructorArguments, notImplemented);
+            }
         }
 
         /// <summary>
         /// Creates the proxy with the <see cref="Generator"/>, adding interceptors to implement its behavior.
         /// </summary>
-        protected virtual object CreateProxy(Type baseType, Type[] implementedInterfaces, object[] constructorArguments, bool notImplemented)
+        protected virtual object CreateProxy(Type baseType, Type[] implementedInterfaces, ProxyGenerationOptions options, object[] constructorArguments, bool notImplemented)
+            // TODO: bring the approach from https://github.com/moq/moq4/commit/806e9919eab9c1f3879b9e9bda895fa76ecf9d92 for performance.
             => generator.CreateClassProxy(baseType, implementedInterfaces, options, constructorArguments, new DynamicStuntInterceptor(notImplemented));
 
         /// <summary>
         /// The <see cref="ProxyGenerator"/> used to create proxy types.
         /// </summary>
         protected ProxyGenerator Generator => generator;
-
-        /// <summary>
-        /// The <see cref="ProxyGenerationOptions"/> used when creating proxy types.
-        /// </summary>
-        protected ProxyGenerationOptions Options => options;
     }
 }

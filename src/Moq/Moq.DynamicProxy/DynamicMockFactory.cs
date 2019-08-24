@@ -21,7 +21,7 @@ namespace Moq.Sdk
         /// <summary>
         /// Creates the mock proxy.
         /// </summary>
-        protected override object CreateProxy(Type baseType, Type[] implementedInterfaces, object[] constructorArguments, bool notImplemented)
+        protected override object CreateProxy(Type baseType, Type[] implementedInterfaces, ProxyGenerationOptions options, object[] constructorArguments, bool notImplemented)
         {
             if (!implementedInterfaces.Contains(typeof(IMocked)))
             {
@@ -31,7 +31,7 @@ namespace Moq.Sdk
                 implementedInterfaces = fixedInterfaces;
             }
 
-            var mocked = (IMocked)Generator.CreateClassProxy(baseType, implementedInterfaces, Options, constructorArguments, new DynamicMockInterceptor(notImplemented));
+            var mocked = (IMocked)Generator.CreateClassProxy(baseType, implementedInterfaces, options, constructorArguments, new DynamicMockInterceptor(notImplemented));
 
             // Save for cloning purposes. We opened a generated proxy from DP to figure out the ctor signature it creates.
             // The lazy-calculated value allows us to provide a new interceptor for every retrieval. 

@@ -36,9 +36,6 @@ namespace Moq.Sdk
         /// where all sub-pipeline behaviors automatically apply to the invocation, since they 
         /// are filtered as a whole according to the <see cref="Setup"/>.
         /// </summary>
-        /// <param name="invocation"></param>
-        /// <param name="next"></param>
-        /// <returns></returns>
         public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next)
         {
             var mock = (invocation.Target as IMocked)?.Mock ?? throw new ArgumentException(Resources.TargetNotMock);
@@ -47,6 +44,11 @@ namespace Moq.Sdk
             // behavior pipeline, where all the behaviors added automatically apply 
             // since they all share the same AppliesTo implementation, which is the setup 
             // itself.
+
+            // Regardless of the configured mock behaviors or subsequent pipeline behaviors, 
+            // we have matched a call, meaning the strict mode behavior, if configured, 
+            // should nevertheless *not* run, since we consider this a successfull match.
+            invocation.SkipBehaviors.Add(typeof(StrictMockBehavior));
 
             if (Behaviors.Count == 0)
                 return next().Invoke(invocation, next);

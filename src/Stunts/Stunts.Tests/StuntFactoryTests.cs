@@ -1,13 +1,20 @@
 ﻿using System;
 using System.Reflection;
+using Stunts.Sdk;
 using Xunit;
 
 namespace Stunts.Tests
 {
     public class StuntFactoryTests
     {
+        static StuntFactoryTests()
+        {
+            if (StuntFactory.Default == null)
+                StuntFactory.Default = new DynamicStuntFactory();
+        }
+
         [Fact]
-        public void CreateStuntFromCallingAssemblyWithNamingConvention()
+        public void CanCreateStuntFromCallingAssemblyWithNamingConvention()
         {
             var stunt = StuntFactory.Default.CreateStunt(
                 Assembly.GetExecutingAssembly(), 

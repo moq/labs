@@ -22,7 +22,7 @@ namespace Moq.Sdk
 
             // We know that the generated proxies live in the same assembly as the tests, so we use that 
             // to scope the stack trace from the current invocation method up to the top call (test method)
-            var testFrame = allFrames.LastOrDefault(x => x.GetMethod().DeclaringType.Assembly == invocation.MethodBase.DeclaringType.Assembly);
+            var testFrame = allFrames.LastOrDefault(x => x.GetMethod().DeclaringType?.Assembly == invocation.MethodBase.DeclaringType.Assembly);
 
             var sb = new StringBuilder();
             // Always append if we didn't find the tip invocation frame

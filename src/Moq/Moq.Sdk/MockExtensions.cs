@@ -19,7 +19,9 @@ namespace Moq.Sdk
         /// Gets the introspection information for a mocked object instance.
         /// </summary>
         public static IMock<T> AsMock<T>(this T instance) where T : class
-            => (instance as IMocked)?.Mock.As(instance) ?? throw new ArgumentException(Strings.TargetNotMock, nameof(instance));
+            => (instance is MulticastDelegate @delegate ?
+                @delegate.Target as IMocked :
+                instance as IMocked)?.Mock.As(instance) ?? throw new ArgumentException(Strings.TargetNotMock, nameof(instance));
 
         /// <summary>
         /// Clones a mock by creating a new instance of the <see cref="IMock.Object"/> 

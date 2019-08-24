@@ -16,6 +16,11 @@ namespace Stunts
             (T)StuntFactory.Default.CreateStunt(typeof(Stunt).GetTypeInfo().Assembly, typeof(T), interfaces, constructorArgs);
 
         /// <summary>
+        /// Gets the configuration and introspection for the given mocked instance.
+        /// </summary>
+        public static IStunt Get<T>(T instance) where T : class => StuntExtensions.Stunt(instance);
+
+        /// <summary>
         /// Creates a stunt that inherits or implements the type <typeparamref name="T"/>.
         /// </summary>
         [StuntGenerator]
