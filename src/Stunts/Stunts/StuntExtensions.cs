@@ -1,12 +1,22 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace Stunts
 {
     /// <summary>
     /// Usability functions for working with stunts.
     /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
 	public static class StuntExtensions
     {
+        /// <summary>
+        /// Gets the behavior configuration for the given instance.
+        /// </summary>
+        public static IStunt Stunt<T>(T instance) where T : class
+            => (instance is MulticastDelegate @delegate ?
+                @delegate.Target as IStunt :
+                instance as IStunt) ?? throw new ArgumentException(nameof(instance));
+
         /// <summary>
         /// Adds a behavior to a stunt.
         /// </summary>
@@ -40,28 +50,18 @@ namespace Stunts
         /// </param>
         /// <param name="appliesTo"><c>invocation => [bool]</c>. Optionally applies a condition to the execution based on the received invocation.</param>
         /// <param name="name">Optionally names the behavior for easier troubleshooting when debugging.</param>
-		public static TStunt AddBehavior<TStunt>(this TStunt stunt, ExecuteDelegate behavior, AppliesToDelegate appliesTo = null, string name = null)
+		public static TStunt AddBehavior<TStunt>(this TStunt stunt, ExecuteDelegate behavior, AppliesToDelegate appliesTo = null, string name = null) where TStunt: class
         {
-            // We can't just add a constraint to the method signature, because 
-            // proxies are typically generated and don't expose the IProxy interface directly.
-            if (stunt is IStunt target)
-                target.Behaviors.Add(new DelegateStuntBehavior(behavior, appliesTo, name));
-            else
-                throw new ArgumentException(nameof(stunt));
-
+            Stunt(stunt).Behaviors.Add(new DelegateStuntBehavior(behavior, appliesTo, name));
             return stunt;
         }
 
         /// <summary>
         /// Adds a behavior to a stunt.
         /// </summary>
-		public static TStunt AddBehavior<TStunt>(this TStunt stunt, IStuntBehavior behavior)
+		public static TStunt AddBehavior<TStunt>(this TStunt stunt, IStuntBehavior behavior) where TStunt: class
         {
-            if (stunt is IStunt target)
-                target.Behaviors.Add(behavior);
-            else
-                throw new ArgumentException(nameof(stunt));
-
+            Stunt(stunt).Behaviors.Add(behavior);
             return stunt;
         }
 
@@ -103,13 +103,9 @@ namespace Stunts
         /// </param>
         /// <param name="appliesTo"><c>invocation => [bool]</c>. Optionally applies a condition to the execution based on the received invocation.</param>
         /// <param name="name">Optionally names the behavior for easier troubleshooting when debugging.</param>
-        public static TStunt InsertBehavior<TStunt>(this TStunt stunt, int index, ExecuteDelegate behavior, AppliesToDelegate appliesTo = null, string name = null)
+        public static TStunt InsertBehavior<TStunt>(this TStunt stunt, int index, ExecuteDelegate behavior, AppliesToDelegate appliesTo = null, string name = null) where TStunt: class
         {
-            if (stunt is IStunt target)
-                target.Behaviors.Insert(index, new DelegateStuntBehavior(behavior, appliesTo, name));
-            else
-                throw new ArgumentException(nameof(stunt));
-
+            Stunt(stunt).Behaviors.Insert(index, new DelegateStuntBehavior(behavior, appliesTo, name));
             return stunt;
         }
 
@@ -117,13 +113,9 @@ namespace Stunts
         /// Inserts a behavior into the stunt behavior pipeline at the specified
         /// index.
         /// </summary>
-        public static TStunt InsertBehavior<TStunt>(this TStunt stunt, int index, IStuntBehavior behavior)
+        public static TStunt InsertBehavior<TStunt>(this TStunt stunt, int index, IStuntBehavior behavior) where TStunt: class
         {
-            if (stunt is IStunt target)
-                target.Behaviors.Insert(index, behavior);
-            else
-                throw new ArgumentException(nameof(stunt));
-
+            Stunt(stunt).Behaviors.Insert(index, behavior);
             return stunt;
         }
     }

@@ -10,7 +10,7 @@ namespace Moq
     {
         /// <summary>
         /// Initializes the exception with the target 
-        /// mock and setup(s) that failed to match invocations.
+        /// mock and setup that failed to match invocations.
         /// </summary>
         public VerifyException(IMock mock, IMockSetup setup, string message = null)
             : this(mock, new[] { setup }, message)

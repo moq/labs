@@ -268,7 +268,7 @@ namespace Moq.Tests
         }
 
         //[Fact]
-        public void CanVerify()
+        internal void CanVerify()
         {
             var calculator = Mock.Of<ICalculator>();
 

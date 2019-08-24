@@ -53,7 +53,7 @@ namespace Moq.Tests
             // Configure CallBase at the Mock level
             var mock = Mock.Of<Calculator>(MockBehavior.Strict).CallBase();
 
-            mock.Setup(x => x.TurnOn());
+            mock.Setup(x => x.TurnOn()).CallBase();
 
             mock.TurnOn();
 

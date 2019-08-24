@@ -1,6 +1,7 @@
 ﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Moq.Sdk;
@@ -11,6 +12,12 @@ namespace Moq
     [EditorBrowsable(EditorBrowsableState.Never)]
     public class Mock<T> where T : class
     {
+        static Mock()
+        {
+            if (MockFactory.Default == null)
+                MockFactory.Default = new DynamicMockFactory();
+        }
+
         T target;
         IMock<T> mock;
         readonly MockBehavior behavior;
@@ -38,10 +45,13 @@ namespace Moq
 
         protected Mock(Assembly mocksAssembly, MockBehavior behavior, params object[] args)
         {
-            var mocked = (IMocked)MockFactory.Default.CreateMock(mocksAssembly, typeof(T), new Type[0], args);
+            var instance = MockFactory.Default.CreateMock(mocksAssembly, typeof(T), new Type[0], args);
+            var mocked = instance is MulticastDelegate @delegate ?
+                (IMocked)@delegate.Target : (IMocked)instance;
+
             mocked.Initialize(behavior);
 
-            target = (T)mocked;
+            target = (T)instance;
             mock = target.AsMock();
         }
 
@@ -90,11 +100,30 @@ namespace Moq
 
         /// <summary>Supports the legacy API.</summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public void VerifyAll() => throw new NotImplementedException();
+        public void VerifyAll()
+        {
+            var setups = mock.Setups
+                .Where(setup => !Sdk.Times.AtLeastOnce.Validate(mock.Invocations.Where(x => setup.AppliesTo(x)).Count()))
+                .Select(setup => setup.Setup)
+                .ToArray();
+
+            if (setups.Length > 0)
+                throw new VerifyException(mock, setups);
+        }
 
         /// <summary>Supports the legacy API.</summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         public void Verify() => Moq.Verify.Called(target);
+
+        /// <summary>Supports the legacy API.</summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public void Verify(Expression<Action<T>> expression)
+            => Moq.Verify.Called(() => expression.Compile().Invoke(target));
+
+        /// <summary>Supports the legacy API.</summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public void Verify(Expression<Action<T>> expression, Times times)
+            => Moq.Verify.CalledImpl(() => expression.Compile().Invoke(target), times.ToSdk());
 
         /// <summary>Supports the legacy API.</summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
