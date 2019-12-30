@@ -1,11 +1,17 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <Sdk Name="Microsoft.Build.CentralPackageVersions" />
   
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework Condition="$(MSBuildRuntimeType) == 'Core'">netcoreapp3.0</TargetFramework>
+    <TargetFramework Condition="$(MSBuildRuntimeType) == 'Full'">net472</TargetFramework>
     <IncludeXunit>true</IncludeXunit>
   </PropertyGroup>
   
+  <ItemGroup Condition="$(MSBuildRuntimeType) == 'Full'">
+    <Reference Include="System.ComponentModel.Composition" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.$(TargetFramework)" VersionOverride="1.0.0" />
+  </ItemGroup>
+
   <ItemGroup>
     <Compile Include="..\Moq\contentFiles\cs\**" Visible="false" Link="%(FullPath)" />
   </ItemGroup>
@@ -30,10 +36,6 @@
     <ProjectReference Include="..\Moq\Moq.csproj" />
     <ProjectReference Include="..\..\Stunts\Stunts\Stunts.csproj" />
     <ProjectReference Include="..\..\Samples\Sample\Sample.csproj" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>
   
 </Project>

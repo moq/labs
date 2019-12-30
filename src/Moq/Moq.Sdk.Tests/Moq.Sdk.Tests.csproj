@@ -1,14 +1,19 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <Sdk Name="Microsoft.Build.CentralPackageVersions" />
 
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework Condition="$(MSBuildRuntimeType) == 'Core'">netcoreapp3.0</TargetFramework>
+    <TargetFramework Condition="$(MSBuildRuntimeType) == 'Full'">net472</TargetFramework>
     <IncludeXunit>true</IncludeXunit>
   </PropertyGroup>
 
   <ItemGroup>
     <IncludeReferenceFilter Include="Moq" />
     <ExcludeReferenceFilter Include="Moq.Analyzer" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.$(TargetFramework)" VersionOverride="1.0.0" Condition="$(MSBuildRuntimeType) == 'Full'" />
   </ItemGroup>
 
   <ItemGroup>

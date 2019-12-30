@@ -8,6 +8,9 @@
     <AutoUnifyAssemblyReferences>true</AutoUnifyAssemblyReferences>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+
+    <!-- We always target both .NETCore and .NETFramework -->
+    <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 
 </Project>

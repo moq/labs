@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -89,6 +89,7 @@ namespace Stunts.Tests
         public void Count()
             => Assert.Equal(1, new ArgumentCollection(new object[] { 5 }, testMethod.GetParameters()).Count);
 
+#pragma warning disable xUnit1013 // Used solely to get test method name and signature
         public static void Do(int value) { }
     }
 }

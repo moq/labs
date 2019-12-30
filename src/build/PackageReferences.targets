@@ -16,10 +16,10 @@
     <PackageReference Include="xunit" />
     <!-- xunit.runner.visualstudio is needed for VSTest built-in task in VSTS -->
     <PackageReference Include="xunit.runner.visualstudio" />
-    <!-- xunit.runner.desktop is needed for Live Unit Testing support -->
-    <PackageReference Include="xunit.runner.console" />
-    <!-- xunit.runner.console is used to implement /t:Test in test projects -->
-    <PackageReference Include="xunit.runner.msbuild" />
+    <!-- xunit.runner.desktop is needed for Live Unit Testing support. In .NETCore we don't use this -->
+    <PackageReference Include="xunit.runner.console" Condition="$(MSBuildRuntimeType) == 'Full'" />
+    <!-- xunit.runner.console is used to implement /t:Test in test projects. .NETCore doesn't need this -->
+    <PackageReference Include="xunit.runner.msbuild" Condition="$(MSBuildRuntimeType) == 'Full'" />
 
     <PackageReference Include="Microsoft.Build.Locator" />
   </ItemGroup>
