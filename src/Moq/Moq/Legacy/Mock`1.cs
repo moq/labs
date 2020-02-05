@@ -122,8 +122,13 @@ namespace Moq
 
         /// <summary>Supports the legacy API.</summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public void Verify(Expression<Action<T>> expression, Times times)
-            => Moq.Verify.CalledImpl(() => expression.Compile().Invoke(target), times.ToSdk());
+        public void Verify(Expression<Action<T>> expression, Times times, string message = null)
+            => Moq.Verify.CalledImpl(() => expression.Compile().Invoke(target), times.ToSdk(), message);
+
+        /// <summary>Supports the legacy API.</summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public void Verify(Expression<Action<T>> expression, Func<Times> times, string message = null)
+            => Moq.Verify.CalledImpl(() => expression.Compile().Invoke(target), times().ToSdk(), message);
 
         /// <summary>Supports the legacy API.</summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -132,8 +137,13 @@ namespace Moq
 
         /// <summary>Supports the legacy API.</summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public void Verify<TResult>(Expression<Func<T, TResult>> expression, Times times)
-            => Moq.Verify.CalledImpl(() => expression.Compile().Invoke(target), times.ToSdk());
+        public void Verify<TResult>(Expression<Func<T, TResult>> expression, Times times, string message = null)
+            => Moq.Verify.CalledImpl(() => expression.Compile().Invoke(target), times.ToSdk(), message);
+
+        /// <summary>Supports the legacy API.</summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public void Verify<TResult>(Expression<Func<T, TResult>> expression, Func<Times> times, string message = null)
+            => Moq.Verify.CalledImpl(() => expression.Compile().Invoke(target), times().ToSdk(), message);
     }
 }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
