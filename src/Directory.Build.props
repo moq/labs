@@ -27,7 +27,7 @@
     <DefaultItemExcludes>$(DefaultItemExcludes);*.binlog;*.zip;*.rsp;*.items</DefaultItemExcludes>
 
     <!-- Use Directory.Packages.props -->
-    <ManagePackageVersionsCentrally Condition="'$(MSBuildProjectExtension)' == '.csproj' or '$(MSBuildProjectExtension)' == '.vbproj'">true</ManagePackageVersionsCentrally>
+    <ManagePackageVersionsCentrally Condition="'$(ManagePackageVersionsCentrally)' == '' and ('$(MSBuildProjectExtension)' == '.csproj' or '$(MSBuildProjectExtension)' == '.vbproj')">true</ManagePackageVersionsCentrally>
 
     <RestoreSources>https://pkg.kzu.io/index.json;https://api.nuget.org/v3/index.json;$(RestoreSources)</RestoreSources>
     <RestoreSources Condition="Exists('$(MSBuildThisFileDirectory)..\..\nugetizer\bin\')">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\nugetizer\bin'));$(RestoreSources)</RestoreSources>
