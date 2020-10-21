@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using Moq.Sdk.Properties;
 using Stunts;
 
 namespace Moq.Sdk
@@ -38,7 +37,7 @@ namespace Moq.Sdk
         /// </summary>
         public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next)
         {
-            var mock = (invocation.Target as IMocked)?.Mock ?? throw new ArgumentException(Resources.TargetNotMock);
+            var mock = (invocation.Target as IMocked)?.Mock ?? throw new ArgumentException(ThisAssembly.Strings.TargetNotMock);
 
             // NOTE: the mock behavior is like a sub-pipeline within the overall stunt 
             // behavior pipeline, where all the behaviors added automatically apply 

@@ -1,0 +1,60 @@
+<Project>
+
+  <PropertyGroup>
+    <MoqAnalyzerDir Condition="'$(MSBuildRuntimeType)' == 'Full'">$(MSBuildThisFileDirectory)..\..\tools\net472</MoqAnalyzerDir>
+    <MoqAnalyzerDir Condition="'$(MSBuildRuntimeType)' == 'Core'">$(MSBuildThisFileDirectory)..\..\tools\net5.0</MoqAnalyzerDir>
+  </PropertyGroup>
+  
+  <!-- Stunts provides this property -->
+  <ItemGroup Condition="'$(SourceGeneratorSupported)' == 'true'">
+    <CompilerVisibleProperty Include="DebugMoqSourceGenerator" />
+    <CompilerVisibleProperty Include="EmitMoqSource" />
+    <CompilerVisibleProperty Include="MoqAnalyzerDir" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(SourceGeneratorSupported)' == 'true' and '$(MSBuildRuntimeType)' == 'Full' and '$(SkipCompilerExecution)' != 'true' and '$(DesignTimeBuild)' != 'true'">
+    <Analyzer Include="$(MSBuildThisFileDirectory)..\..\tools\net472\Moq*.dll" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(SourceGeneratorSupported)' == 'true' and '$(MSBuildRuntimeType)' == 'Core' and '$(SkipCompilerExecution)' != 'true' and '$(DesignTimeBuild)' != 'true'">
+    <Analyzer Include="$(MSBuildThisFileDirectory)..\..\tools\net5.0\Moq*.dll" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(SourceGeneratorSupported)' == 'true' and '$(RegisterStaticMockFactory)' != 'false'">
+    <MockFactory Include="$(StaticMockFactory)" PackageId="Moq" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="@(Compile)">
+      <!-- Hide Mock.cs/vb from the project -->
+      <Visible Condition="'%(NuGetItemType)' == 'Compile' and '%(NuGetPackageId)' == 'Moq'">false</Visible>
+    </Compile>
+  </ItemGroup>
+
+  <Target Name="GetMockFactoryAttributes" BeforeTargets="GetAssemblyAttributes" Returns="@(MockFactory)">
+    <ItemGroup>
+      <!-- This adds all factories unconditionally, since the specific factories 
+           will actually check for duplicates and warn as needed. -->
+      <AssemblyAttribute Include="Moq.MockFactoryAttribute" Condition="'%(MockFactory.Identity)' != ''">
+        <_Parameter1>%(MockFactory.Identity)</_Parameter1>
+        <_Parameter2>%(MockFactory.PackageId)</_Parameter2>
+      </AssemblyAttribute>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="EnsureMockFactory" BeforeTargets="BeforeCompile;CoreCompile">
+    <PropertyGroup>
+      <MockFactories>@(MockFactory -> Count())</MockFactories>
+    </PropertyGroup>
+    <ItemGroup>
+      <MockFactoryPackage Include="@(MockFactory -> '%(PackageId)')" />
+    </ItemGroup>
+    
+    <Warning Code="MOQ001" Condition="$(MockFactories) &gt; '1'"
+       Text="More than one mock factory is registered in the current project. Only the first one will be used unless explicitly set as MockFactory.Default. Packages providing factories: @(MockFactoryPackage, ', ')." />
+
+    <Warning Code="MOQ002" Condition="'@(MockFactory)' == '' and '$(SourceGeneratorSupported)' != 'true' and '$(RegisterStaticMoqFactory)' != 'false'"
+             Text="Built-in mock factory requires C# 9.0. Please install Moq.DynamicFactory package as an alternative." />
+  </Target>
+
+</Project>

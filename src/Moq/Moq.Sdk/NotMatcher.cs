@@ -51,8 +51,7 @@ namespace Moq.Sdk
         public override bool Equals(object obj) => Equals(obj as NotMatcher<T>);
 
         /// <inheritdoc />
-        public override int GetHashCode() 
-            => new HashCode().Add(ArgumentType).Add(value == null ? 0 : value.GetHashCode()).ToHashCode();
+        public override int GetHashCode() => HashCode.Combine(ArgumentType, value == null ? 0 : value.GetHashCode());
 
         #endregion
     }

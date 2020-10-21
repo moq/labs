@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using Moq.Sdk.Properties;
 using Stunts;
 
 namespace Moq.Sdk
@@ -21,7 +19,7 @@ namespace Moq.Sdk
         public static IMock<T> AsMock<T>(this T instance) where T : class
             => (instance is MulticastDelegate @delegate ?
                 @delegate.Target as IMocked :
-                instance as IMocked)?.Mock.As(instance) ?? throw new ArgumentException(Strings.TargetNotMock, nameof(instance));
+                instance as IMocked)?.Mock.As(instance) ?? throw new ArgumentException(ThisAssembly.Strings.TargetNotMock, nameof(instance));
 
         /// <summary>
         /// Clones a mock by creating a new instance of the <see cref="IMock.Object"/> 
@@ -32,22 +30,29 @@ namespace Moq.Sdk
             if (!mock.State.TryGetValue<object[]>(".ctor", out var ctor))
                 throw new ArgumentException("No constructor state found for cloning.");
 
-            // TODO: THIS DOESN'T WORK WITH DYNAMIC PROXIES, SINCE WE'RE MISSING THE INTERCEPTORS
-            // This is what it looks like in a DP: public BaseWithCtorProxy(IInterceptor[] interceptorArray, string value) : base(value)
-            // So we need to persist the interceptors as part of the ctor array, maybe?
             var clone = ((IMocked)Activator.CreateInstance(mock.Object.GetType(), ctor)).Mock;
             clone.State = mock.State.Clone();
 
-            clone.Behaviors.Clear();
-            foreach (var behavior in mock.Behaviors)
+            var behaviors = clone.Behaviors;
+            (behaviors as ISupportInitialize)?.BeginInit();
+            try
             {
-                clone.Behaviors.Add(behavior);
+                behaviors.Clear();
+                foreach (var behavior in mock.Behaviors)
+                {
+                    behaviors.Add(behavior);
+                }
+            }
+            finally
+            {
+                (behaviors as ISupportInitialize)?.EndInit();
             }
 
-            clone.Invocations.Clear();
+            var invocations = clone.Invocations;
+            invocations.Clear();
             foreach (var invocation in mock.Invocations)
             {
-                clone.Invocations.Add(invocation);
+                invocations.Add(invocation);
             }
 
             return ((T)clone.Object).AsMock();
@@ -108,7 +113,7 @@ namespace Moq.Sdk
 
             public IEnumerable<IMockBehaviorPipeline> Setups => mock.Setups;
 
-            public ObservableCollection<IStuntBehavior> Behaviors => mock.Behaviors;
+            public IList<IStuntBehavior> Behaviors => mock.Behaviors;
 
             public IMockBehaviorPipeline GetPipeline(IMockSetup setup) => mock.GetPipeline(setup);
         }

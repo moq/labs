@@ -1,6 +1,0 @@
-{
-    // Install ESLint and Peacock extensions
-    "extensions": [
-      "ms-vscode.csharp"
-    ]
-}

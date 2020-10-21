@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using Stunts;
 
 namespace Moq.Sdk
@@ -44,7 +43,7 @@ namespace Moq.Sdk
         /// <summary>
         /// See <see cref="IStunt.Behaviors"/>.
         /// </summary>
-        public virtual ObservableCollection<IStuntBehavior> Behaviors => mock.Behaviors;
+        public virtual IList<IStuntBehavior> Behaviors => mock.Behaviors;
 
         /// <summary>
         /// See <see cref="IMock.GetPipeline(IMockSetup)"/>.

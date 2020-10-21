@@ -135,7 +135,7 @@ namespace Moq.Sdk
         #region Equality
 
         /// <inheritdoc />
-        public bool Equals(IMockSetup other)
+        public bool Equals(IMockSetup? other)
             => other != null && Invocation.Equals(other.Invocation) && Matchers.SequenceEqual(other.Matchers);
 
         /// <inheritdoc />
@@ -147,8 +147,16 @@ namespace Moq.Sdk
             => Equals(obj as IMockSetup);
 
         /// <inheritdoc />
-        public override int GetHashCode() 
-            => new HashCode().Add(Invocation).AddRange(Matchers).ToHashCode();
+        public override int GetHashCode()
+        {
+            var hash = new HashCode();
+            hash.Add(Invocation);
+            foreach (var matcher in Matchers)
+            {
+                hash.Add(matcher);
+            }
+            return hash.ToHashCode();
+        }
 
         #endregion
     }

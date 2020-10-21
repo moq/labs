@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2010
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30608.117
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stunts.CSharp", "Stunts.CSharp\Stunts.CSharp.csproj", "{2ECBF73E-266C-4124-A1D9-8BD9917DA0D9}"
 EndProject
@@ -14,8 +14,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample", "Sample\Sample.csproj", "{2C21C0D3-E461-4484-B2AC-91A9C5772325}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sdk", "Sdk", "{DC06C5F4-4D4B-456B-8BA7-A20B3599701E}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stunts", "..\Stunts\Stunts\Stunts.csproj", "{4050B6B5-E06E-4F13-8DE7-D97747059841}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Sdk", "..\Moq\Moq.Sdk\Moq.Sdk.csproj", "{39BB8D00-B6E8-417A-85E3-73996B13208F}"
 EndProject
@@ -47,10 +45,6 @@ Global
 		{2C21C0D3-E461-4484-B2AC-91A9C5772325}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C21C0D3-E461-4484-B2AC-91A9C5772325}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C21C0D3-E461-4484-B2AC-91A9C5772325}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4050B6B5-E06E-4F13-8DE7-D97747059841}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4050B6B5-E06E-4F13-8DE7-D97747059841}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4050B6B5-E06E-4F13-8DE7-D97747059841}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4050B6B5-E06E-4F13-8DE7-D97747059841}.Release|Any CPU.Build.0 = Release|Any CPU
 		{39BB8D00-B6E8-417A-85E3-73996B13208F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{39BB8D00-B6E8-417A-85E3-73996B13208F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39BB8D00-B6E8-417A-85E3-73996B13208F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -64,7 +58,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{4050B6B5-E06E-4F13-8DE7-D97747059841} = {DC06C5F4-4D4B-456B-8BA7-A20B3599701E}
 		{39BB8D00-B6E8-417A-85E3-73996B13208F} = {DC06C5F4-4D4B-456B-8BA7-A20B3599701E}
 		{579C5F30-3E7E-4688-809F-5238156475B5} = {DC06C5F4-4D4B-456B-8BA7-A20B3599701E}
 	EndGlobalSection

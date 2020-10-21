@@ -1,29 +1,34 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <Sdk Name="Microsoft.Build.CentralPackageVersions" />
-  
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <TargetFramework Condition="$(MSBuildRuntimeType) == 'Core'">netcoreapp3.0</TargetFramework>
-    <TargetFramework Condition="$(MSBuildRuntimeType) == 'Full'">net472</TargetFramework>
-    <IncludeXunit>true</IncludeXunit>
+    <TargetFrameworks>net472;net5.0</TargetFrameworks>
+    <Nullable>annotations</Nullable>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
-  
-  <ItemGroup Condition="$(MSBuildRuntimeType) == 'Full'">
-    <Reference Include="System.ComponentModel.Composition" />
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.$(TargetFramework)" VersionOverride="1.0.0" />
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Microsoft.TestPlatform.ObjectModel" />
+    <PackageReference Include="Moq" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.console" />
+    <PackageReference Include="xunit.runner.msbuild" Condition="'$(TargetFramework)' == 'net472'" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="coverlet.msbuild" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\Moq\contentFiles\cs\**" Visible="false" Link="%(FullPath)" />
-  </ItemGroup>
-  
-  <ItemGroup>
     <Compile Remove="Mocks\**" />
-    <EmbeddedResource Remove="Mocks\**" />
-    <None Remove="Mocks\**" />
   </ItemGroup>
   
   <ItemGroup>
     <Compile Remove="LegacyTests.cs" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Compile Include="..\Moq.Package\Mock.cs" Link="Moq\Mock.cs" />
+    <Compile Include="..\Moq.Package\Mock.Overloads.cs" Link="Moq\Mock.Overloads.cs" />
   </ItemGroup>
   
   <ItemGroup>
@@ -34,8 +39,11 @@
     <ProjectReference Include="..\Moq.DynamicProxy\Moq.DynamicProxy.csproj" />
     <ProjectReference Include="..\Moq.Sdk\Moq.Sdk.csproj" />
     <ProjectReference Include="..\Moq\Moq.csproj" />
-    <ProjectReference Include="..\..\Stunts\Stunts\Stunts.csproj" />
     <ProjectReference Include="..\..\Samples\Sample\Sample.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Moq\" />
   </ItemGroup>
   
 </Project>

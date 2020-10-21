@@ -24,26 +24,36 @@ namespace Moq
         public static void Initialize(this IMocked mocked, MockBehavior behavior = MockBehavior.Loose)
         {
             var mock = mocked.Mock;
-            mock.Behaviors.Clear();
+            var behaviors = mock.Behaviors;
+            (behaviors as ISupportInitialize)?.BeginInit();
 
-            mocked.AsMoq().Behavior = behavior;
+            try
+            {
+                behaviors.Clear();
 
-            mock.Behaviors.Add(new SetupScopeBehavior());
-            mock.Behaviors.Add(new MockContextBehavior());
-            mock.Behaviors.Add(new ConfigurePipelineBehavior());
-            mock.Behaviors.Add(new MockRecordingBehavior());
-            mock.Behaviors.Add(new EventBehavior());
-            mock.Behaviors.Add(new PropertyBehavior { SetterRequiresSetup = behavior == MockBehavior.Strict });
-            mock.Behaviors.Add(new DefaultEqualityBehavior());
-            mock.Behaviors.Add(new RecursiveMockBehavior());
-            mock.Behaviors.Add(new CallBaseBehavior());
+                mocked.AsMoq().Behavior = behavior;
 
-            // Dynamically configured by the ConfigurePipelineBehavior.
-            mock.Behaviors.Add(new StrictMockBehavior());
+                behaviors.Add(new SetupScopeBehavior());
+                behaviors.Add(new MockContextBehavior());
+                behaviors.Add(new ConfigurePipelineBehavior());
+                behaviors.Add(new MockRecordingBehavior());
+                behaviors.Add(new EventBehavior());
+                behaviors.Add(new PropertyBehavior { SetterRequiresSetup = behavior == MockBehavior.Strict });
+                behaviors.Add(new DefaultEqualityBehavior());
+                behaviors.Add(new RecursiveMockBehavior());
+                behaviors.Add(new CallBaseBehavior());
 
-            var defaultValue = mock.State.GetOrAdd(() => new DefaultValueProvider());
-            mock.Behaviors.Add(new DefaultValueBehavior(defaultValue));
-            mock.State.Set(defaultValue);
+                // Dynamically configured by the ConfigurePipelineBehavior.
+                behaviors.Add(new StrictMockBehavior());
+
+                var defaultValue = mock.State.GetOrAdd(() => new DefaultValueProvider());
+                behaviors.Add(new DefaultValueBehavior(defaultValue));
+                mock.State.Set(defaultValue);
+            }
+            finally
+            {
+                (behaviors as ISupportInitialize)?.EndInit();
+            }
         }
     }
 }

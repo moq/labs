@@ -1,5 +1,4 @@
 ﻿using System;
-using Moq.Sdk.Properties;
 using Stunts;
 
 namespace Moq.Sdk
@@ -34,7 +33,7 @@ namespace Moq.Sdk
         {
             if (invocation == null) throw new ArgumentNullException(nameof(invocation));
 
-            var state = (invocation.Target as IMocked ?? throw new ArgumentException(Strings.TargetNotMock, nameof(invocation)))
+            var state = (invocation.Target as IMocked ?? throw new ArgumentException(ThisAssembly.Strings.TargetNotMock, nameof(invocation)))
                 .Mock.State;
 
             if (invocation.MethodBase.Name.StartsWith("get_", StringComparison.Ordinal) &&

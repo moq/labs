@@ -1,33 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Sdk Name="Microsoft.Build.CentralPackageVersions" />
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <PrimaryOutputFrameworkSpecific>true</PrimaryOutputFrameworkSpecific>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Stunts\Stunts\Stunts.csproj" Pack="false" />
-  </ItemGroup>
-
+    <InternalsVisibleTo Include="Moq.Sdk.Tests" />
+  </ItemGroup>  
+  
   <ItemGroup>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="TypeNameFormatter.Sources" PrivateAssets="all" />
+    <PackageReference Include="Stunts" />
+    <PackageReference Include="Microsoft.Bcl.HashCode" />
     <PackageReference Include="Ben.Demystifier" />
+    <PackageReference Include="TypeNameFormatter.Sources" PrivateAssets="all" />
+    <PackageReference Include="IFluentInterface" PrivateAssets="all" />
+    <PackageReference Include="ThisAssembly" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources.resx" Generator="" />
   </ItemGroup>
 
 </Project>
