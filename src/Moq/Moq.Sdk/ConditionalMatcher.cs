@@ -78,7 +78,7 @@ namespace Moq.Sdk
         public override bool Equals(object other) => Equals(other as ConditionalMatcher<T>);
 
         /// <inheritdoc />
-        public override int GetHashCode() => new HashCode().Add(condition).Add(name).ToHashCode();
+        public override int GetHashCode() => HashCode.Combine(condition, name);
 
         #endregion
     }

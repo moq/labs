@@ -1,8 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
+
+  <PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
 	</PropertyGroup>
-	<ItemGroup>
-	  <ProjectReference Include="..\..\Stunts\Stunts\Stunts.csproj" />
-	</ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Stunts" />
+  </ItemGroup>
+
 </Project>

@@ -1,28 +1,26 @@
-﻿<Project Sdk="Microsoft.Build.NoTargets" DefaultTargets="Pack">
-  <Sdk Name="Microsoft.Build.CentralPackageVersions" />
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
-    <PackageId>Moq</PackageId>
-    <Title>Moq</Title>
-    <Summary>The most popular and friendly mocking framework for .NET</Summary>
-    <Description>The most popular and friendly mocking framework for .NET</Description>
-    <PackageTags>moq mocking mock</PackageTags>
-    <PackOnBuild Condition="'$(PackOnBuild)' == '' and '$(Configuration)' == 'Release'">true</PackOnBuild>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Moq.DynamicProxy\Moq.DynamicProxy.csproj" />
-    <ProjectReference Include="..\Moq.Sdk\Moq.Sdk.csproj" />
-    <ProjectReference Include="..\Moq\Moq.csproj" />
-    <ProjectReference Include="..\..\Stunts\Stunts.Package\Stunts.Package.msbuildproj" IncludeAssets="all" />
-  </ItemGroup>
-  <Target Name="FixPackageFileFramework" BeforeTargets="Pack" AfterTargets="$(GetPackageContents)" Returns="@(_PackageContent)">
-    <ItemGroup>
-      <_PackageContent Condition="'%(Kind)' == 'Dependency'">
+﻿<Project Sdk="Microsoft.Build.NoTargets/2.0.1" DefaultTargets="Pack">
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
         <TargetFrameworkMoniker>.NETStandard,Version=v2.0</TargetFrameworkMoniker>
-        <!-- NOTE: in order for this attribute to work in NuGetizer, we need a bump to dev.3+ -->
-        <Include>all</Include>
-      </_PackageContent>
+        <PackageId>Moq</PackageId>
+        <Title>Moq</Title>
+        <Description>The most popular and friendly mocking framework for .NET</Description>
+        <PackageTags>moq mocking mock</PackageTags>
+    </PropertyGroup>
+    <ItemGroup>
+        <Content Include="*.cs" CodeLanguage="cs" TargetFramework="netstandard2.0" BuildAction="Compile" />
+        <Content Include="*.vb" CodeLanguage="vb" TargetFramework="netstandard2.0" BuildAction="Compile" />
     </ItemGroup>
-  </Target>
+    <ItemGroup>
+        <None Include="Moq.props" PackFolder="build\netstandard2.0" />
+        <None Include="Moq.targets" PackFolder="build\netstandard2.0" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" Visible="false" Pack="false" />
+        <PackageReference Include="NuGetizer" Version="$(NuGetizerVersion)" Visible="false" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Moq.Sdk\Moq.Sdk.csproj" />
+        <ProjectReference Include="..\Moq\Moq.csproj" />
+    </ItemGroup>
 </Project>

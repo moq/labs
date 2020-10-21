@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Reflection;
 using Stunts;
 
@@ -15,7 +14,7 @@ namespace Moq.Sdk.Tests
 
         public FakeMock() => mock = new DefaultMock(this);
 
-        public ObservableCollection<IStuntBehavior> Behaviors => Pipeline.Behaviors;
+        public IList<IStuntBehavior> Behaviors => Pipeline.Behaviors;
 
         public IMock Mock => mock;
     }

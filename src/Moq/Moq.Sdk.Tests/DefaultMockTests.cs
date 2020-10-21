@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
 using Stunts;
@@ -60,7 +60,7 @@ namespace Moq.Sdk.Tests
             var behavior = new MockBehaviorPipeline(setup);
 
             stunt.AddBehavior(behavior);
-            stunt.AddBehavior(new DelegateStuntBehavior((m, n) => n().Invoke(m, n)));
+            stunt.AddBehavior((m, n) => n().Invoke(m, n));
             Assert.Equal(initialBehaviors + 2, stunt.Behaviors.Count);
 
             Assert.Single(stunt.Mock.Setups);
@@ -107,7 +107,7 @@ namespace Moq.Sdk.Tests
             BehaviorPipeline pipeline = new BehaviorPipeline();
             DefaultMock mock;
 
-            public ObservableCollection<IStuntBehavior> Behaviors => pipeline.Behaviors;
+            public IList<IStuntBehavior> Behaviors => pipeline.Behaviors;
 
             public IMock Mock => LazyInitializer.EnsureInitialized(ref mock, () => new DefaultMock(this));
 

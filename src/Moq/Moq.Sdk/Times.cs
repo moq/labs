@@ -20,7 +20,7 @@ namespace Moq.Sdk
         {
             From = from;
             To = to;
-            hashCode = new Lazy<int>(() => new HashCode().AddRange(from, to).ToHashCode());
+            hashCode = new Lazy<int>(() => HashCode.Combine(from, to));
         }
 
         /// <summary>

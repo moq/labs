@@ -14,7 +14,7 @@ namespace Moq
     {
         static Mock()
         {
-            if (MockFactory.Default == null)
+            if (MockFactory.Default == MockFactory.NotImplemented)
                 MockFactory.Default = new DynamicMockFactory();
         }
 

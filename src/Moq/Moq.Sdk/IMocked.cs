@@ -1,5 +1,4 @@
-﻿using System.CodeDom.Compiler;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace Moq.Sdk
@@ -9,9 +8,6 @@ namespace Moq.Sdk
     /// the <see cref="IMock"/> interface for introspecting 
     /// a mock instance.
     /// </summary>
-    // These attributes prevent registering the "Implement through behavior pipeline" codefix.
-    // See CustomMockCodeFixProvider and its base class CustomStuntCodeFixProvider.
-    [GeneratedCode("Moq", ThisAssembly.Metadata.Version)] 
     [CompilerGenerated]
     public interface IMocked
     {

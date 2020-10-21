@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Reflection;
 using Stunts;
 
@@ -9,7 +9,7 @@ namespace Sample
     {
         BehaviorPipeline pipeline = new BehaviorPipeline();
 
-        public ObservableCollection<IStuntBehavior> Behaviors => pipeline.Behaviors;
+        public IList<IStuntBehavior> Behaviors => pipeline.Behaviors;
 
         public override event EventHandler TurnedOn
         {

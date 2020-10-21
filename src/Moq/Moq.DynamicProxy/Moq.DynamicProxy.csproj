@@ -1,14 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Sdk Name="Microsoft.Build.CentralPackageVersions" />
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <RootNamespace>Moq.Sdk</RootNamespace>
+    <IsPackable>true</IsPackable>
+    <Description>
+      Provides run-time mock generation using Castle DynamicProxy, for projects that
+      cannot use the compile-time mock generation provided built-in by Moq, which
+      requires C# 9.0.
+    </Description>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Stunts\Stunts.DynamicProxy\Stunts.DynamicProxy.csproj" />
     <ProjectReference Include="..\Moq.Sdk\Moq.Sdk.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Stunts.DynamicProxy" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="@(None)" PackFolder="build" FrameworkSpecific="true" />
   </ItemGroup>
 
 </Project>

@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 using Moq.Sdk;
+using Stunts;
 
 namespace Moq
 {

@@ -1,3 +1,64 @@
-<Project>  
-  <Import Project="build\Settings.targets"/>
+<Project>
+
+  <!-- Microsoft.NET.Sdk\targets\Microsoft.NET.DefaultAssemblyInfo.targets does this, not avail. for .msbuildproj -->
+  <PropertyGroup Condition=" '$(Version)' == '' ">
+    <VersionPrefix Condition=" '$(VersionPrefix)' == '' ">1.0.0</VersionPrefix>
+    <Version Condition=" '$(VersionSuffix)' != '' ">$(VersionPrefix)-$(VersionSuffix)</Version>
+    <Version Condition=" '$(Version)' == '' ">$(VersionPrefix)</Version>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DefineConstants Condition="'$(TargetFramework)' != '' and '$(TargetFrameworks)' != ''">$(DefineConstants);$(TargetFramework.ToUpperInvariant().TrimEnd('0').TrimEnd('.'))</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <UpToDateCheck Include="@(PackageFile);@(None);@(Content);@(EmbeddedResource)" />
+    <EmbeddedResource Update="@(EmbeddedResource)" Generator="ResXFileCodeGenerator" />
+    <!--<None Include="$(MSBuildThisFileDirectory)../docs/img/icon.png" Pack="true" Visible="false" />-->
+  </ItemGroup>
+
+  <Target Name="IsPackable" Returns="@(IsPackable)">
+    <ItemGroup>
+      <IsPackable Include="$(MSBuildProjectFullPath)" IsPackable="$(IsPackable)" PackageId="$(PackageId)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="EnsureProjectInformation" BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun" DependsOnTargets="InitializeSourceControlInformation" />
+
+  <Target Name="SetRepositorySha" AfterTargets="InitializeSourceControlInformation" Condition="'$(SourceRevisionId)' != ''">
+    <PropertyGroup>
+      <RepositorySha>$(SourceRevisionId.Substring(0, 9))</RepositorySha>
+    </PropertyGroup>
+  </Target>
+
+  <ItemGroup>
+    <ProjectProperty Include="RepositorySha" />
+    <ProjectProperty Include="RepositoryCommit" />
+  </ItemGroup>
+
+  <Target Name="Test" Condition="@(PackageReference -> WithMetadataValue('Identity', 'xunit')) != ''" DependsOnTargets="GetTargetPath">
+    <Exec Command="&quot;$(XunitConsolePath)&quot; &quot;$(TargetPath)&quot;" Condition="'$(UseConsole)' == 'true'" WorkingDirectory="$(MSBuildProjectDirectory)$(OutptuPath)" />
+    <xunit Assemblies="$(TargetPath)" Condition="'$(UseConsole)' != 'true'" />
+  </Target>
+
+  <Target Name="UpdatePackageMetadata"
+          BeforeTargets="PrepareForBuild;GetAssemblyVersion;GetPackageMetadata;GenerateNuspec;Pack"
+          DependsOnTargets="InitializeSourceControlInformation"
+          Condition="'$(SourceControlInformationFeatureSupported)' And
+                     '$(IsPackable)' == 'true' And 
+                     '$(RepositoryUrl)' != '' And 
+                     '$(SourceRevisionId)' != ''">
+    <PropertyGroup>
+      <Description>
+        $(Description)
+
+        Built from $(RepositoryUrl)/tree/$(SourceRevisionId.Substring(0, 9))
+      </Description>
+      <!-- Update nuspec properties too -->
+      <!-- When we enable GH pages, we'll want to turn on this transform so we point automatically to it. -->
+      <!--<PackageProjectUrl>$([System.Text.RegularExpressions.Regex]::Replace('$(RepositoryUrl)', '^(http.*)github\.com/(.+?)/(.*)', '$1$2.github.io/$3'))</PackageProjectUrl>-->
+      <PackageDescription>$(Description)</PackageDescription>
+    </PropertyGroup>
+  </Target>
+
 </Project>

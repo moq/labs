@@ -1,0 +1,9 @@
+<Project>
+
+  <PropertyGroup>
+    <DynamicMockFactory>Moq.Sdk.DynamicMockFactory, Moq.DynamicProxy, PublicKeyToken=00352124762f2aa5</DynamicMockFactory>
+    <!-- Installing the dynamic one turns off the static built-in one -->
+    <RegisterStaticMockFactory>false</RegisterStaticMockFactory>
+  </PropertyGroup>
+
+</Project>
