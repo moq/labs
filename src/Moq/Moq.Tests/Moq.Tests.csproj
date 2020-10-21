@@ -16,6 +16,7 @@
     <PackageReference Include="xunit.runner.visualstudio" />
     <PackageReference Include="coverlet.collector" />
     <PackageReference Include="coverlet.msbuild" />
+    <PackageReference Include="ManualStunts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,7 +40,6 @@
     <ProjectReference Include="..\Moq.DynamicProxy\Moq.DynamicProxy.csproj" />
     <ProjectReference Include="..\Moq.Sdk\Moq.Sdk.csproj" />
     <ProjectReference Include="..\Moq\Moq.csproj" />
-    <ProjectReference Include="..\..\Samples\Sample\Sample.csproj" />
   </ItemGroup>
   
   <ItemGroup>
