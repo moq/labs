@@ -1,0 +1,25 @@
+﻿name: release
+on:
+  release:
+    types: [created]
+
+env:
+  DOTNET_NOLOGO: true
+  Configuration: Release
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🤘 checkout
+        uses: actions/checkout@v2
+      - name: ⚙ dotnet 5.0 rc2
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.100-rc.2.20479.15
+      - name: 🙏 build
+        run: dotnet msbuild -r -m:1 -p:version=${GITHUB_REF#refs/*/v}
+      - name: 🧪 test net5.0
+        run: dotnet test --no-build -f net5.0
+      - name: 🚀 nuget
+        run: dotnet nuget push ./bin/**/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
