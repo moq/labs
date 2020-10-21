@@ -7,7 +7,7 @@ on:
 
 env:
   DOTNET_NOLOGO: true
-  CODECOV_TOKEN: aca318d1-ad99-410f-a12a-954a1f2dcfcb
+  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
 defaults:
   run:
