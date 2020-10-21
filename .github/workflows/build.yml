@@ -1,0 +1,49 @@
+﻿name: build
+on: 
+  push:
+    branches: [ '*' ]
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+env:
+  DOTNET_NOLOGO: true
+  CODECOV_TOKEN: aca318d1-ad99-410f-a12a-954a1f2dcfcb
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+    steps:
+      - name: 🤘 checkout
+        uses: actions/checkout@v2
+      - name: ⚙ dotnet 5.0 rc2
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.100-rc.2.20479.15
+      - name: ⚙ dotnet 2.1.x
+        uses: actions/setup-dotnet@v1
+        if: matrix.os == 'ubuntu-latest'
+        with:
+          dotnet-version: 2.1.x
+      - name: 🙏 build
+        run: dotnet msbuild -r -m:1 -p:versionsuffix="$GITHUB_REF.$GITHUB_RUN_NUMBER"
+      - name: 🧪 test win
+        run: dotnet test --no-build --collect:"XPlat Code Coverage"
+        if: matrix.os == 'windows-latest'
+      - name: 🧪 test !win
+        run: dotnet test --no-build -f net5.0 --collect:"XPlat Code Coverage"
+        if: matrix.os != 'windows-latest'
+      - name: 🔍 coverage
+        run: bash <(curl -s https://codecov.io/bash)
+      - name: 🚀 sleet
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          dotnet tool install -g --version 3.2.0 sleet 
+          sleet push bin --config none -f --verbose -p "SLEET_FEED_CONTAINER=nuget" -p "SLEET_FEED_CONNECTIONSTRING=${{ secrets.SLEET_CONNECTION }}" -p "SLEET_FEED_TYPE=azure"
