@@ -1,11 +1,9 @@
 <Project>
   
-  <PropertyGroup>
-    <DynamicMockFactory>Moq.Sdk.DynamicMockFactory, Moq.DynamicProxy, PublicKeyToken=$(MoqPublicKeyToken)</DynamicMockFactory>
-  </PropertyGroup>
-
   <ItemGroup Condition="'$(RegisterDynamicMockFactory)' != 'false'">
-    <MockFactory Include="$(DynamicMockFactory)" PackageId="Moq" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mock.DynamicFactory$(DefaultLanguageSourceExtension)"
+             Condition="Exists('$(MSBuildThisFileDirectory)Mock.DynamicFactory$(DefaultLanguageSourceExtension)')"
+             Visible="false" />
   </ItemGroup>
 
 </Project>

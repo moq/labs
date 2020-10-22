@@ -1,6 +1,4 @@
-﻿using System;
-using Stunts;
-using System.Diagnostics;
+﻿using Stunts;
 
 namespace Moq.Sdk
 {

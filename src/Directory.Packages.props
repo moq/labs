@@ -13,7 +13,6 @@
     <PackageVersion Include="ThisAssembly" Version="1.0.0-beta" />
     <PackageVersion Include="NuGetizer" Version="$(NuGetizerVersion)" />
     <PackageVersion Include="Stunts" Version="$(StuntsVersion)" />
-    <PackageVersion Include="Stunts.DynamicProxy" Version="$(StuntsVersion)" />
   </ItemGroup>
 
   <ItemGroup Label="Roslyn">

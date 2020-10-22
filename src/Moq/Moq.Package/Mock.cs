@@ -1,5 +1,5 @@
 using System;
-using System.CodeDom.Compiler;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Moq.Sdk;
@@ -9,12 +9,10 @@ namespace Moq
     /// <summary>
     /// Instantiates mocks for the specified types.
     /// </summary>
-    [GeneratedCode("Moq", "5.0")]
+    [ExcludeFromCodeCoverage]
     [CompilerGenerated]
     partial class Mock
     {
-        static Mock() => MockFactory.Default = new Sdk.DynamicMockFactory();
-
         /// <summary>
         /// Gets the configuration and introspection for the given mocked instance.
         /// </summary>
