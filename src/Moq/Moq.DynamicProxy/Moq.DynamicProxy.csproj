@@ -2,7 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <IsPackable>true</IsPackable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- When source generators are generally available in VB too, 
+         we'll probably turn this into its own package and remove 
+         it from the bundling into Moq package, since it won't be 
+         needed most of the time. Up-front though, it will provide 
+         a much needed fallback for anyone not on C# 9 , which will 
+         be a sizable user base for a while. -->
     <Description>
       Provides run-time mock generation using Castle DynamicProxy, for projects that
       cannot use the compile-time mock generation provided built-in by Moq, which
