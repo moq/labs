@@ -21,6 +21,6 @@
     <ItemGroup>
         <ProjectReference Include="..\Moq.Sdk\Moq.Sdk.csproj" />
         <ProjectReference Include="..\Moq\Moq.csproj" />
-        <ProjectReference Include="..\Moq.DynamicProxyy\Moq.DynamicProxy.csproj" />
+        <ProjectReference Include="..\Moq.DynamicProxy\Moq.DynamicProxy.csproj" />
     </ItemGroup>
 </Project>
