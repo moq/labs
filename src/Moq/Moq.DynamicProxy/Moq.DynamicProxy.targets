@@ -1,30 +1,11 @@
 <Project>
+  
+  <PropertyGroup>
+    <DynamicMockFactory>Moq.Sdk.DynamicMockFactory, Moq.DynamicProxy, PublicKeyToken=$(MoqPublicKeyToken)</DynamicMockFactory>
+  </PropertyGroup>
 
-  <ItemGroup>
-    <MockFactory Include="$(DynamicMockFactory)" 
-                 PackageId="Moq.DynamicProxy"
-                 Condition="'$(RegisterDynamicMockFactory)' != 'false'" />
+  <ItemGroup Condition="'$(RegisterDynamicMockFactory)' != 'false'">
+    <MockFactory Include="$(DynamicMockFactory)" PackageId="Moq" />
   </ItemGroup>
-
-  <Target Name="EnsureDynamicMockFactory" 
-          BeforeTargets="BeforeCompile;CoreCompile"
-          Condition="'$(RegisterDynamicMockFactory)' != 'false'">
-
-    <!-- NOTE: we do this in a targets rather than just making MockFactoryAttribute AllowMultiple=false 
-         because this will be significantly user-friendlier, since the attribute is a generated one and 
-         users won't know where the duplicate is coming from otherwise. -->
-
-    <PropertyGroup>
-      <MockFactories>@(MockFactory -> Count())</MockFactories>
-    </PropertyGroup>
-    
-    <ItemGroup>
-      <_OtherMockFactories Include="@(MockFactory -> '%(PackageId)')" Exclude="Moq.DynamicProxy" />
-    </ItemGroup>
-
-    <Error Code="MOQ003" Condition="$(MockFactories) &gt; '1'"
-           Text="More than one mock factory is registered in the current project. Set RegisterDynamicMockFactory=false or remove the other package(s) providing factories: @(_OtherMockFactories, ', ')." />
-
-  </Target>
 
 </Project>

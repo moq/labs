@@ -41,7 +41,6 @@
   <ItemGroup Label="Tests">
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
     <PackageVersion Include="Microsoft.TestPlatform.ObjectModel" Version="16.7.1" />
-    <PackageVersion Include="Moq" Version="4.14.7" />
     <PackageVersion Include="xunit" Version="2.4.1" />
     <PackageVersion Include="xunit.runner.console" Version="2.4.1" />
     <PackageVersion Include="xunit.runner.msbuild" Version="2.4.1" />
