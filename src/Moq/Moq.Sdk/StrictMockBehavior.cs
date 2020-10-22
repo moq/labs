@@ -1,5 +1,4 @@
-﻿using System;
-using Stunts;
+﻿using Stunts;
 
 namespace Moq.Sdk
 {

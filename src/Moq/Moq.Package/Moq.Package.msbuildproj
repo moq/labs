@@ -10,8 +10,7 @@
     <ItemGroup>
         <Content Include="*.cs" CodeLanguage="cs" TargetFramework="netstandard2.0" BuildAction="Compile" />
         <Content Include="*.vb" CodeLanguage="vb" TargetFramework="netstandard2.0" BuildAction="Compile" />
-    </ItemGroup>
-    <ItemGroup>
+        <None Include="Mock.StaticFactory.*" PackFolder="build\netstandard2.0" />
         <None Include="Moq.props" PackFolder="build\netstandard2.0" />
         <None Include="Moq.targets" PackFolder="build\netstandard2.0" />
     </ItemGroup>

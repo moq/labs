@@ -3,6 +3,9 @@
   <PropertyGroup>
     <MoqAnalyzerDir Condition="'$(MSBuildRuntimeType)' == 'Full'">$(MSBuildThisFileDirectory)..\..\tools\net472</MoqAnalyzerDir>
     <MoqAnalyzerDir Condition="'$(MSBuildRuntimeType)' == 'Core'">$(MSBuildThisFileDirectory)..\..\tools\net5.0</MoqAnalyzerDir>
+    <!-- SourceGeneratorSupported provided by Stunts.targets -->
+    <RegisterStaticMockFactory Condition="'$(RegisterStaticMockFactory)' == '' and 
+                                          '$(SourceGeneratorSupported)' == 'true'">true</RegisterStaticMockFactory>
   </PropertyGroup>
   
   <!-- Stunts provides this property -->
@@ -12,16 +15,18 @@
     <CompilerVisibleProperty Include="MoqAnalyzerDir" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(SourceGeneratorSupported)' == 'true' and '$(MSBuildRuntimeType)' == 'Full' and '$(SkipCompilerExecution)' != 'true' and '$(DesignTimeBuild)' != 'true'">
+  <ItemGroup Condition="'$(RegisterStaticMockFactory)' == 'true' and '$(MSBuildRuntimeType)' == 'Full' and '$(SkipCompilerExecution)' != 'true' and '$(DesignTimeBuild)' != 'true'">
     <Analyzer Include="$(MSBuildThisFileDirectory)..\..\tools\net472\Moq*.dll" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(SourceGeneratorSupported)' == 'true' and '$(MSBuildRuntimeType)' == 'Core' and '$(SkipCompilerExecution)' != 'true' and '$(DesignTimeBuild)' != 'true'">
+  <ItemGroup Condition="'$(RegisterStaticMockFactory)' == 'true' and '$(MSBuildRuntimeType)' == 'Core' and '$(SkipCompilerExecution)' != 'true' and '$(DesignTimeBuild)' != 'true'">
     <Analyzer Include="$(MSBuildThisFileDirectory)..\..\tools\net5.0\Moq*.dll" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(SourceGeneratorSupported)' == 'true' and '$(RegisterStaticMockFactory)' != 'false'">
-    <MockFactory Include="$(StaticMockFactory)" PackageId="Moq" />
+  <ItemGroup Condition="'$(RegisterStaticMockFactory)' == 'true'">
+    <Compile Include="$(MSBuildThisFileDirectory)Mock.StaticFactory$(DefaultLanguageSourceExtension)"
+             Condition="Exists('$(MSBuildThisFileDirectory)Mock.StaticFactory$(DefaultLanguageSourceExtension)')"
+             Visible="false" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,18 +36,7 @@
     </Compile>
   </ItemGroup>
 
-  <Target Name="GetMockFactoryAttributes" BeforeTargets="GetAssemblyAttributes" Returns="@(MockFactory)">
-    <ItemGroup>
-      <!-- This adds all factories unconditionally, since the specific factories 
-           will actually check for duplicates and warn if needed. -->
-      <AssemblyAttribute Include="Moq.MockFactoryAttribute" Condition="'%(MockFactory.Identity)' != ''">
-        <_Parameter1>%(MockFactory.Identity)</_Parameter1>
-        <_Parameter2>%(MockFactory.PackageId)</_Parameter2>
-      </AssemblyAttribute>
-    </ItemGroup>
-  </Target>
-
   <Import Project="Moq.DynamicProxy.targets" 
-          Condition="('$(SourceGeneratorSupported)' != 'true' or '$(RegisterStaticMockFactory)' == 'false') and  Exists('Moq.DynamicProxy.targets')" />
+          Condition="'$(RegisterStaticMockFactory)' == 'false' and  Exists('Moq.DynamicProxy.targets')" />
 
 </Project>

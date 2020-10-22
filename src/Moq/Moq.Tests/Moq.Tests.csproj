@@ -29,6 +29,7 @@
   <ItemGroup>
     <Compile Include="..\Moq.Package\Mock.cs" Link="Moq\Mock.cs" />
     <Compile Include="..\Moq.Package\Mock.Overloads.cs" Link="Moq\Mock.Overloads.cs" />
+    <Compile Include="..\Moq.DynamicProxy\Mock.DynamicFactory.cs" Link="Moq\Mock.DynamicFactory.cs" />
   </ItemGroup>
   
   <ItemGroup>

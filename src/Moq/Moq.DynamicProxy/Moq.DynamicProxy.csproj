@@ -17,15 +17,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Mock.*.*" />
+    <None Include="Mock.*.*" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Moq.Sdk\Moq.Sdk.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Stunts.DynamicProxy" />
+    <PackageReference Include="Stunts" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="@(None)" PackFolder="build" FrameworkSpecific="true" />
+    <None Update="@(None)" PackFolder="build\netstandard2.0" />
   </ItemGroup>
 
 </Project>

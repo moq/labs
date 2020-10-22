@@ -4,7 +4,6 @@ using System.Reflection;
 using System.Threading;
 using Castle.DynamicProxy;
 using Stunts;
-using Stunts.Sdk;
 
 namespace Moq.Sdk
 {
