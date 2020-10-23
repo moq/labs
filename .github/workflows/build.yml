@@ -33,7 +33,7 @@ jobs:
         with:
           dotnet-version: 2.1.x
       - name: 🙏 build
-        run: dotnet msbuild -r -m:1 -p:versionsuffix="$GITHUB_REF.$GITHUB_RUN_NUMBER"
+        run: dotnet msbuild -r -m:1 -bl:build.binlog -p:versionsuffix="$GITHUB_REF.$GITHUB_RUN_NUMBER"
       - name: 🧪 test win
         run: dotnet test --no-build --collect:"XPlat Code Coverage"
         if: matrix.os == 'windows-latest'
@@ -42,6 +42,14 @@ jobs:
         if: matrix.os != 'windows-latest'
       - name: 🔍 coverage
         run: bash <(curl -s https://codecov.io/bash)
+      - name: 🔼 logs
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.os }}
+          path: |
+            *.binlog
+            **/coverage.cobertura.xml
       - name: 🚀 sleet
         if: matrix.os == 'ubuntu-latest'
         run: |

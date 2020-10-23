@@ -18,8 +18,14 @@ jobs:
         with:
           dotnet-version: 5.0.100-rc.2.20479.15
       - name: 🙏 build
-        run: dotnet msbuild -r -m:1 -p:version=${GITHUB_REF#refs/*/v}
+        run: dotnet msbuild -r -m:1 -bl:build.binlog -p:version=${GITHUB_REF#refs/*/v}
       - name: 🧪 test net5.0
         run: dotnet test --no-build -f net5.0
+      - name: 🔼 logs
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.os }}
+          path: '*.binlog'
       - name: 🚀 nuget
         run: dotnet nuget push ./bin/**/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
