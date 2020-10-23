@@ -225,20 +225,10 @@ namespace Moq
             if (recording != null)
                 clone.Behaviors.Remove(recording);
 
-            // The target replacer is needed so that whenever we try to get the target object 
-            // and the IMock from it for occurrence verification, we actually get to the actual 
-            // target being verified, not the cloned mock. Otherwise, invocations won't match 
-            // with the setups, since the target would be different.
-            clone.Behaviors.Insert(
-                clone.Behaviors.IndexOf(clone.Behaviors.OfType<MockContextBehavior>().First()) + 1,
-                new TargetReplacerBehavior(mock.Object));
-
             if (notCalled)
-            {
                 clone.Behaviors.Insert(
-                    clone.Behaviors.IndexOf(clone.Behaviors.OfType<TargetReplacerBehavior>().First()) + 1,
+                    clone.Behaviors.IndexOf(clone.Behaviors.OfType<MockContextBehavior>().First()) + 1,
                     new NotCalledBehavior());
-            }
 
             // Sets up the right behaviors for a loose mock
             new Moq<T>(clone).Behavior = MockBehavior.Loose;
@@ -261,17 +251,6 @@ namespace Moq
 
                 return next().Invoke(invocation, next);
             }
-        }
-
-        private class TargetReplacerBehavior : IStuntBehavior
-        {
-            private readonly object target;
-
-            public TargetReplacerBehavior(object target) => this.target = target;
-
-            public bool AppliesTo(IMethodInvocation invocation) => true;
-
-            public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next) => next().Invoke(invocation, next);
         }
     }
 }
