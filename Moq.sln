@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28417.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq", "src\Moq\Moq\Moq.csproj", "{65F3AB28-9A74-405E-83B2-420D5AD5A459}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq", "src\Moq\Moq.csproj", "{65F3AB28-9A74-405E-83B2-420D5AD5A459}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2093478C-CEA6-4034-BCDE-EDC7A5DD4532}"
 	ProjectSection(SolutionItems) = preProject
@@ -15,21 +15,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Sdk", "src\Moq\Moq.Sdk\Moq.Sdk.csproj", "{80DE507E-3AF9-4360-9E56-66523B01FB51}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Sdk", "src\Moq.Sdk\Moq.Sdk.csproj", "{80DE507E-3AF9-4360-9E56-66523B01FB51}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Sdk.Tests", "src\Moq\Moq.Sdk.Tests\Moq.Sdk.Tests.csproj", "{EB66BC5E-4072-4F26-9772-979D8561883F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Sdk.Tests", "src\Moq.Sdk.Tests\Moq.Sdk.Tests.csproj", "{EB66BC5E-4072-4F26-9772-979D8561883F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Tests", "src\Moq\Moq.Tests\Moq.Tests.csproj", "{9A09225F-E0BC-4890-BED4-D9F6F5DAC146}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.Tests", "src\Moq.Tests\Moq.Tests.csproj", "{9A09225F-E0BC-4890-BED4-D9F6F5DAC146}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.DynamicProxy", "src\Moq\Moq.DynamicProxy\Moq.DynamicProxy.csproj", "{BA43EF2F-6CA8-49A5-A4E7-C2FF71928F05}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.DynamicProxy", "src\Moq.DynamicProxy\Moq.DynamicProxy.csproj", "{BA43EF2F-6CA8-49A5-A4E7-C2FF71928F05}"
 EndProject
-Project("{13B669BE-BB05-4DDF-9536-439F39A36129}") = "Moq.Package", "src\Moq\Moq.Package\Moq.Package.msbuildproj", "{D486033C-1CCF-47BB-BDA6-28EA08018CDE}"
+Project("{13B669BE-BB05-4DDF-9536-439F39A36129}") = "Moq.Package", "src\Moq.Package\Moq.Package.msbuildproj", "{D486033C-1CCF-47BB-BDA6-28EA08018CDE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.StaticProxy", "src\Moq\Moq.StaticProxy\Moq.StaticProxy.csproj", "{0580AEDE-7661-4311-9A40-EAD4CD485742}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.StaticProxy", "src\Moq.StaticProxy\Moq.StaticProxy.csproj", "{0580AEDE-7661-4311-9A40-EAD4CD485742}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.CodeAnalysis", "src\Moq\Moq.CodeAnalysis\Moq.CodeAnalysis.csproj", "{1D05F2B9-B67D-4EFE-B4FF-D7F6907C2701}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.CodeAnalysis", "src\Moq.CodeAnalysis\Moq.CodeAnalysis.csproj", "{1D05F2B9-B67D-4EFE-B4FF-D7F6907C2701}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.StaticProxy.UnitTests", "src\Moq\Moq.StaticProxy.UnitTests\Moq.StaticProxy.UnitTests.csproj", "{36A3DD24-4B67-4A9E-83F8-C4794336460F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Moq.StaticProxy.UnitTests", "src\Moq.StaticProxy.UnitTests\Moq.StaticProxy.UnitTests.csproj", "{36A3DD24-4B67-4A9E-83F8-C4794336460F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{73262D37-1503-4F10-B7B2-E945523828E4}"
 	ProjectSection(SolutionItems) = preProject
