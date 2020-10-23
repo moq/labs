@@ -25,6 +25,9 @@ namespace Moq.Processors
             var syntax = await document.GetSyntaxRootAsync(cancellationToken);
             syntax = new CSharpRewriteVisitor(SyntaxGenerator.GetGenerator(document)).Visit(syntax);
 
+            if (syntax == null)
+                return document;
+
             return document.WithSyntaxRoot(syntax);
         }
 
@@ -36,7 +39,7 @@ namespace Moq.Processors
 
             public override SyntaxNode VisitClassDeclaration(ClassDeclarationSyntax node)
             {
-                node = (ClassDeclarationSyntax)base.VisitClassDeclaration(node);
+                node = (ClassDeclarationSyntax)base.VisitClassDeclaration(node)!;
 
                 if (!generator.GetBaseAndInterfaceTypes(node).Any(x =>
                     x.ToString() == nameof(IMocked) ||

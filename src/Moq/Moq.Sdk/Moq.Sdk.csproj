@@ -18,8 +18,4 @@
     <PackageReference Include="ThisAssembly" PrivateAssets="all" />
   </ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Update="Resources.resx" Generator="" />
-  </ItemGroup>
-
 </Project>

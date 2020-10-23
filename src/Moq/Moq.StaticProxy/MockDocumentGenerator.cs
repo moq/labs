@@ -3,6 +3,7 @@ using System.Threading;
 using Moq.Processors;
 using Moq.Sdk;
 using Stunts;
+using Stunts.CodeAnalysis;
 using Stunts.Processors;
 
 namespace Moq
@@ -11,16 +12,16 @@ namespace Moq
     /// Customizes the Stunts.Sdk <see cref="StuntGenerator"/> 
     /// with Moq-specific document processors.
     /// </summary>
-    class MockGenerator : StuntGenerator
+    class MockDocumentGenerator : StuntDocumentGenerator
     {
-        public MockGenerator() : this(new MockNamingConvention()) { }
+        public MockDocumentGenerator() : this(new MockNamingConvention()) { }
 
-        public MockGenerator(NamingConvention naming)
+        public MockDocumentGenerator(NamingConvention naming)
             : base(naming, new IDocumentProcessor[]
                 {
                     new DefaultImports(typeof(LazyInitializer).Namespace, typeof(IMocked).Namespace),
                 }
-                .Concat(GetDefaultProcessors().Where(p => !(p is FixupImports)))
+                .Concat(DefaultProcessors.Where(p => !(p is FixupImports)))
                 .Concat(new IDocumentProcessor[]
                 {
                     new CSharpMocked(),
@@ -28,6 +29,7 @@ namespace Moq
                     new FixupImports(),
                 }).ToArray())
         {
+            GeneratorAttribute = typeof(MockGeneratorAttribute);
         }
     }
 }
