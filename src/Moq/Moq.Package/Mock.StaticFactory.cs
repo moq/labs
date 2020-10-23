@@ -1,6 +1,6 @@
 ﻿namespace Moq
 {
-    partial class Mock
+    internal partial class Mock
     {
         static Mock()
         {

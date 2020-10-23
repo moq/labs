@@ -12,7 +12,7 @@ namespace Moq
     internal class ReturnsDelegateBehavior : IMockBehavior
     {
         [DebuggerDisplay("<function>")]
-        Delegate @delegate;
+        private readonly Delegate @delegate;
 
         public ReturnsDelegateBehavior(Delegate @delegate) => this.@delegate = @delegate;
 

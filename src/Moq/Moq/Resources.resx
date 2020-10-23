@@ -117,10 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Legacy_AsInterfaceNotImplemented" xml:space="preserve">
+    <value>Cannot convert target mock to the requested interface.</value>
+  </data>
+  <data name="Returns_DelegateExpected" xml:space="preserve">
+    <value>Expected a delegate argument.</value>
+  </data>
+  <data name="Setup_DelegateExpected" xml:space="preserve">
+    <value>Expected a delegate argument.</value>
+  </data>
   <data name="TargetNotLooseOrStrict" xml:space="preserve">
     <value>The target does not have either {0} or {1} behaviors.</value>
   </data>
   <data name="TargetNotMock" xml:space="preserve">
     <value>The target is not a mock.</value>
+  </data>
+  <data name="VerifyExceptionMessage" xml:space="preserve">
+    <value>Verification failed.</value>
   </data>
 </root>

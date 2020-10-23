@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
+using Castle.Components.DictionaryAdapter;
 using Moq.Sdk;
 using Stunts;
 
@@ -30,7 +31,7 @@ namespace Moq
                     behavior.Behaviors.Add(new ReturnsBehavior(value));
             }
 
-            return default;
+            return target;
         }
 
         /// <summary>
@@ -53,7 +54,7 @@ namespace Moq
                     behavior.Behaviors.Add(new ReturnsBehavior(_ => value()));
             }
 
-            return default;
+            return target;
         }
 
         /// <summary>
@@ -77,7 +78,7 @@ namespace Moq
                     behavior.Behaviors.Add(new ReturnsBehavior(x => value(x)));
             }
 
-            return default;
+            return target;
         }
 
         /// <summary>
@@ -90,12 +91,14 @@ namespace Moq
         /// <param name="handler">The lambda to invoke when the setup is matched.</param>
         public static void Returns<TDelegate>(this ISetup<TDelegate> target, TDelegate handler)
         {
+            if (handler is not Delegate @delegate)
+                throw new ArgumentException(ThisAssembly.Strings.Returns.DelegateExpected, nameof(handler));
+
             using (new SetupScope())
             {
-                var @delegate = handler as Delegate;
                 // Simulate Any<T> matchers for each member parameter
                 var parameters = @delegate.Method.GetParameters();
-                var arguments = new object[parameters.Length];
+                object?[] arguments = new object[parameters.Length];
                 var defaultValue = new DefaultValueProvider(false);
                 for (var i = 0; i < arguments.Length; i++)
                 {
@@ -120,7 +123,7 @@ namespace Moq
             }
         }
 
-        static TResult Returns<TResult>(Delegate value, ExecuteMockDelegate behavior)
+        private static TResult? Returns<TResult>(Delegate value, ExecuteMockDelegate behavior)
         {
             var setup = MockContext.CurrentSetup;
             if (setup != null)

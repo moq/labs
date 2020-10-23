@@ -9,7 +9,7 @@ namespace Moq.Sdk
     /// </summary>
     public class MockFactory : IMockFactory
     {
-        static readonly IMockFactory nullFactory = new MockFactory();
+        private static readonly IMockFactory nullFactory = new MockFactory();
 
         /// <summary>
         /// Gets or sets the default <see cref="IMockFactory"/> to use 

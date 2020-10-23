@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using Stunts;
@@ -67,7 +68,7 @@ namespace Moq.Sdk
             using (new SetupScope())
             {
                 action(mock.Object);
-                var setup = MockContext.CurrentSetup;
+                var setup = MockContext.CurrentSetup ?? CallContext.ThrowUnexpectedNull<IMockSetup>();
                 return mock.Invocations.Where(x => setup.AppliesTo(x));
             }
         }
@@ -81,16 +82,16 @@ namespace Moq.Sdk
             using (new SetupScope())
             {
                 function(mock.Object);
-                var setup = MockContext.CurrentSetup;
+                var setup = MockContext.CurrentSetup ?? CallContext.ThrowUnexpectedNull<IMockSetup>();
                 return mock.Invocations.Where(x => setup.AppliesTo(x));
             }
         }
 
-        static IMock<T> As<T>(this IMock mock, T target) where T : class => mock == null ? null : new Mock<T>(mock, target);
+        private static IMock<T>? As<T>(this IMock? mock, T target) where T : class => mock == null ? null : new Mock<T>(mock, target);
 
-        class Mock<T> : IMock<T> where T : class
+        private class Mock<T> : IMock<T> where T : class
         {
-            IMock mock;
+            private readonly IMock mock;
 
             public Mock(IMock mock, T target)
             {

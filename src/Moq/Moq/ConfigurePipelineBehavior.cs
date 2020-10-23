@@ -32,7 +32,8 @@ namespace Moq
             // We need this to skip the StrictBehavior in the CallBaseBehavior
             if (SetupScope.IsActive)
             {
-                invocation.Target.AsMock().GetPipeline(MockContext.CurrentSetup);
+                invocation.Target.AsMock()
+                    .GetPipeline(MockContext.CurrentSetup ?? CallContext.ThrowUnexpectedNull<IMockSetup>());
             }
 
             return next().Invoke(invocation, next);

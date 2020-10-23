@@ -41,9 +41,9 @@ namespace Moq.Sdk
             return mocked;
         }
 
-        class MockInterceptor : IInterceptor
+        private class MockInterceptor : IInterceptor
         {
-            IMock? mock;
+            private IMock? mock;
 
             public void Intercept(IInvocation invocation)
             {

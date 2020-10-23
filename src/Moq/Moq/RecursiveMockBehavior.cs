@@ -60,7 +60,7 @@ namespace Moq
                     }
 
                     // Set up the current invocation to return the created value
-                    var setup = currentMock.GetPipeline(MockContext.CurrentSetup);
+                    var setup = currentMock.GetPipeline(MockContext.CurrentSetup ?? CallContext.ThrowUnexpectedNull<IMockSetup>());
                     var returnBehavior = setup.Behaviors.OfType<ReturnsBehavior>().FirstOrDefault();
                     if (returnBehavior != null)
                         returnBehavior.Value = recursiveMock.Object;

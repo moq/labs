@@ -76,7 +76,7 @@ namespace Moq.Sdk
                 return behavior;
             });
 
-        void OnBehaviorsChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void OnBehaviorsChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {

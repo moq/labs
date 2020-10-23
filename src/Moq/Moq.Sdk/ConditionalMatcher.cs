@@ -12,19 +12,19 @@ namespace Moq.Sdk
     /// <typeparam name="T">Type of argument being conditioned.</typeparam>
     public class ConditionalMatcher<T> : IArgumentMatcher, IEquatable<ConditionalMatcher<T>>
     {
-        static readonly bool IsValueType = typeof(T).GetTypeInfo().IsValueType;
-        static readonly bool IsNullable = typeof(T).GetTypeInfo().IsGenericType &&
+        private static readonly bool IsValueType = typeof(T).GetTypeInfo().IsValueType;
+        private static readonly bool IsNullable = typeof(T).GetTypeInfo().IsGenericType &&
             typeof(T).GetGenericTypeDefinition() == typeof(Nullable<>);
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        readonly string name;
+        private readonly string name;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        readonly Func<T, bool> condition;
+        private readonly Func<T?, bool> condition;
 
         /// <summary>
         /// Initializes the matcher with the condition and optional friendly name.
         /// </summary>
-        public ConditionalMatcher(Func<T, bool> condition, string name = "condition")
+        public ConditionalMatcher(Func<T?, bool> condition, string name = "condition")
         {
             this.condition = condition ?? throw new ArgumentNullException(nameof(condition));
             this.name = name ?? throw new ArgumentNullException(nameof(name));
@@ -38,7 +38,7 @@ namespace Moq.Sdk
         /// <summary>
         /// Evaluates whether the given value matches this instance.
         /// </summary>
-        public bool Matches(object value)
+        public bool Matches(object? value)
         {
             // Non-nullable value types never match against a null value.
             if (IsValueType && !IsNullable && value == null)
@@ -67,12 +67,12 @@ namespace Moq.Sdk
         /// Checks whether <paramref name="other"/> has the same condition and friendly name.
         /// </summary>
         public bool Equals(ConditionalMatcher<T> other)
-            => other != null && ReferenceEquals(condition, other.condition) && name.Equals(other.name);
+            => ReferenceEquals(condition, other.condition) && name.Equals(other.name);
 
         /// <summary>
         /// Checks whether <paramref name="other"/> has the same condition and friendly name.
         /// </summary>
-        public override bool Equals(object other) => Equals(other as ConditionalMatcher<T>);
+        public override bool Equals(object other) => other is ConditionalMatcher<T> matcher && Equals(matcher);
 
         /// <inheritdoc />
         public override int GetHashCode() => HashCode.Combine(condition, name);

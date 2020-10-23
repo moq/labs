@@ -12,9 +12,9 @@ namespace Moq.Sdk
     /// </summary>
     public class AnyMatcher : IArgumentMatcher, IEquatable<AnyMatcher>
     {
-        TypeInfo info;
-        bool isValueType;
-        bool isNullable;
+        private readonly TypeInfo info;
+        private readonly bool isValueType;
+        private readonly bool isNullable;
 
         /// <summary>
         /// Initializes the matcher with the given <paramref name="argumentType"/>.
@@ -38,7 +38,7 @@ namespace Moq.Sdk
         /// <summary>
         /// Evaluates whether the given value matches this instance.
         /// </summary>
-        public bool Matches(object value)
+        public bool Matches(object? value)
         {
             // Non-nullable value types never match against a null value.
             if (isValueType && !isNullable && value == null)
@@ -61,10 +61,10 @@ namespace Moq.Sdk
         #region Equality
 
         /// <inheritdoc />
-        public bool Equals(AnyMatcher other) => other != null && info.Equals(other.info);
+        public bool Equals(AnyMatcher other) => info.Equals(other.info);
 
         /// <inheritdoc />
-        public override bool Equals(object other) => Equals(other as AnyMatcher);
+        public override bool Equals(object other) => other is AnyMatcher matcher && Equals(matcher);
 
         /// <inheritdoc />
         public override int GetHashCode() => info.GetHashCode();

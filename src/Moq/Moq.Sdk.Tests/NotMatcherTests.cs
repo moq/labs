@@ -48,7 +48,7 @@ namespace Moq.Sdk.Tests
             Assert.Equal(expected.GetHashCode(), actual.GetHashCode());
         }
 
-        class Value
+        private class Value
         {
             public Value(Guid id) => Id = id;
 

@@ -7,7 +7,7 @@ namespace Moq.Tests.RefOut
 {
     public class RefOutTests
     {
-        ITestOutputHelper output;
+        private readonly ITestOutputHelper output;
 
         public RefOutTests(ITestOutputHelper output)
         {
@@ -81,9 +81,9 @@ namespace Moq.Tests.RefOut
             Assert.Equal(expected, actual);
         }
 
-        delegate bool TryParse(string input, out DateTimeOffset date);
+        private delegate bool TryParse(string input, out DateTimeOffset date);
 
-        delegate bool TryAdd(ref int x, ref int y, out int z);
+        private delegate bool TryAdd(ref int x, ref int y, out int z);
     }
 
     public interface IRefOutParent

@@ -8,7 +8,7 @@ namespace Moq.Sdk
     /// </summary>
     public abstract class MockDecorator : IMock
     {
-        readonly IMock mock;
+        private readonly IMock mock;
 
         /// <summary>
         /// Initializes the decorator with the given underlying <see cref="IMock"/> 

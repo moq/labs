@@ -15,6 +15,6 @@ namespace Moq.Sdk
         /// <summary>
         /// Evaluates whether the given value matches this instance.
         /// </summary>
-        bool Matches(object value);
+        bool Matches(object? value);
     }
 }

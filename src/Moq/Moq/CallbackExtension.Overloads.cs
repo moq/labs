@@ -1,8 +1,12 @@
-﻿using System;
+﻿#nullable disable
+// Disable nullable since this works from the Arguments collection which we know can have nulls
+// A NRE here would be a mis-configuration from the user, which the compiler would have caught 
+// already in the test setups anyway.
+using System;
 
 namespace Moq
 {
-    partial class CallbackExtension
+    public partial class CallbackExtension
     {
         /// <summary>
         /// Specifies a callback to invoke when the method is called.

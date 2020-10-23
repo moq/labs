@@ -1,5 +1,4 @@
-﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
 
@@ -9,9 +8,9 @@ namespace Moq
     [EditorBrowsable(EditorBrowsableState.Never)]
     public readonly struct Times : IEquatable<Times>
     {
-        readonly int from;
-        readonly int to;
-        readonly Kind kind;
+        private readonly int from;
+        private readonly int to;
+        private readonly Kind kind;
 
         /// <summary>Supports the legacy API.</summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -38,7 +37,7 @@ namespace Moq
             }
         }
 
-        Times(Kind kind, int from, int to)
+        private Times(Kind kind, int from, int to)
         {
             this.from = from;
             this.to = to;
@@ -145,7 +144,7 @@ namespace Moq
             return from == otherFrom && to == otherTo;
         }
 
-        enum Kind
+        private enum Kind
         {
             AtLeastOnce,
             AtLeast,
@@ -159,4 +158,3 @@ namespace Moq
         }
     }
 }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member

@@ -22,14 +22,16 @@ namespace Moq
             else if (MockContext.CurrentInvocation != null)
             {
                 // Configure CallBase at the invocation level
-                MockContext.CurrentInvocation.Target.AsMock().GetPipeline(MockContext.CurrentSetup).Behaviors.Add(new DelegateMockBehavior(
-                     (m, i, next) =>
-                     {
-                         // set CallBase
-                         i.Context[nameof(IMoq.CallBase)] = true;
-                         return next().Invoke(i.Target.AsMock(), i, next);
-                     }, 
-                     nameof(IMoq.CallBase)));
+                MockContext.CurrentInvocation.Target.AsMock()
+                    .GetPipeline(MockContext.CurrentSetup ?? CallContext.ThrowUnexpectedNull<IMockSetup>())
+                    .Behaviors.Add(new DelegateMockBehavior(
+                         (m, i, next) =>
+                         {
+                             // set CallBase
+                             i.Context[nameof(IMoq.CallBase)] = true;
+                             return next().Invoke(i.Target.AsMock(), i, next);
+                         }, 
+                         nameof(IMoq.CallBase)));
             }
             // TODO: else throw?
 

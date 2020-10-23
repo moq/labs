@@ -106,9 +106,8 @@ namespace Moq.Sdk.Tests
             Assert.True(x.Matches(new Derived()));
         }
 
+        private class Base { }
 
-
-        class Base { }
-        class Derived : Base { }
+        private class Derived : Base { }
     }
 }

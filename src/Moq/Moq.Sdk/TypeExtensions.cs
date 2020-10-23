@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace Moq.Sdk
 {
-    static class TypeExtensions
+    internal static class TypeExtensions
     {
         /// <summary>
         /// Gets the <see cref="TypeInfo"/> for the underlying value that 

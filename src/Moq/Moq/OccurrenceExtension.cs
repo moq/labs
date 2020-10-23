@@ -40,7 +40,7 @@ namespace Moq
                 // TODO: throw if no setup?
             }
 
-            return default;
+            return target;
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace Moq
                 // TODO: throw if no setup?
             }
 
-            return default;
+            return target;
         }
 
         /// <summary>

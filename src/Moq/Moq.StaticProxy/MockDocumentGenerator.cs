@@ -12,14 +12,14 @@ namespace Moq
     /// Customizes the Stunts.Sdk <see cref="StuntGenerator"/> 
     /// with Moq-specific document processors.
     /// </summary>
-    class MockDocumentGenerator : StuntDocumentGenerator
+    internal class MockDocumentGenerator : StuntDocumentGenerator
     {
         public MockDocumentGenerator() : this(new MockNamingConvention()) { }
 
         public MockDocumentGenerator(NamingConvention naming)
             : base(naming, new IDocumentProcessor[]
                 {
-                    new DefaultImports(typeof(LazyInitializer).Namespace, typeof(IMocked).Namespace),
+                    new DefaultImports(typeof(LazyInitializer).Namespace!, typeof(IMocked).Namespace!),
                 }
                 .Concat(DefaultProcessors.Where(p => !(p is FixupImports)))
                 .Concat(new IDocumentProcessor[]

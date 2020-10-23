@@ -11,7 +11,7 @@ namespace Moq
     /// </summary>
     [ExcludeFromCodeCoverage]
     [CompilerGenerated]
-    partial class Mock
+    internal partial class Mock
     {
         /// <summary>
         /// Gets the configuration and introspection for the given mocked instance.

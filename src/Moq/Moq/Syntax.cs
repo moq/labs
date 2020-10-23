@@ -27,7 +27,7 @@ namespace Moq
         /// </summary>
         /// <typeparam name="T">The type of the argument.</typeparam>
         /// <param name="condition">The condition to check against actual invocation values.</param>
-        public static T Any<T>(Func<T, bool> condition) => Arg.Any(condition);
+        public static T Any<T>(Func<T?, bool> condition) => Arg.Any(condition);
 
         /// <summary>
         /// Matches all values that do not equal the specified value.
@@ -38,34 +38,34 @@ namespace Moq
         /// Raises the event being attached to, passing the target mock 
         /// as the sender, and <see cref="EventArgs.Empty"/> args.
         /// </summary>
-        public static EventHandler Raise() => Moq.Raise.Event();
+        public static EventHandler? Raise() => Moq.Raise.Event();
 
         /// <summary>
         /// Raises the event being attached to, passing the target mock 
         /// as the sender, and the given <paramref name="args"/> as the 
         /// event arguments.
         /// </summary>
-        public static EventHandler<TEventArgs> Raise<TEventArgs>(TEventArgs args) => Moq.Raise.Event<TEventArgs>(args);
+        public static EventHandler<TEventArgs>? Raise<TEventArgs>(TEventArgs args) => Moq.Raise.Event<TEventArgs>(args);
 
         /// <summary>
         /// Raises the event being attached to, passing the target mock 
         /// as the sender, and the given <paramref name="args"/> as the 
         /// event arguments.
         /// </summary>
-        public static EventHandler Raise(EventArgs args) => Moq.Raise.Event(args);
+        public static EventHandler? Raise(EventArgs args) => Moq.Raise.Event(args);
 
         /// <summary>
         /// Raises the event being attached to, passing the target mock 
         /// as the sender, and the given <paramref name="args"/> as the 
         /// event arguments.
         /// </summary>
-        public static TEventHandler Raise<TEventHandler>(EventArgs args) => Moq.Raise.Event<TEventHandler>(args);
+        public static TEventHandler? Raise<TEventHandler>(EventArgs args) => Moq.Raise.Event<TEventHandler>(args);
 
         /// <summary>
         /// Raises the event being attached to, passing the given 
         /// <paramref name="args"/> as the event arguments.
         /// </summary>
-        public static TEventHandler Raise<TEventHandler>(params object[] args) => Moq.Raise.Event<TEventHandler>(args);
+        public static TEventHandler? Raise<TEventHandler>(params object[] args) => Moq.Raise.Event<TEventHandler>(args);
 
         /// <summary>
         /// Marks a code block as being setup for mocks. Usage: <c>using (Setup()) { ... }</c>.

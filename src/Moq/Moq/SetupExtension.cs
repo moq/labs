@@ -43,7 +43,7 @@ namespace Moq
         /// </summary>
         [SetupScope]
         public static ISetup<TDelegate> Setup<TDelegate>(this object mock, TDelegate member)
-            => new DefaultSetup<TDelegate>(member as Delegate);
+            => new DefaultSetup<TDelegate>(member as Delegate ?? throw new ArgumentException(ThisAssembly.Strings.Setup.DelegateExpected));
 
         /// <summary>
         /// Sets up the mock with the given method reference, typically used to 
@@ -58,22 +58,22 @@ namespace Moq
         {
             using (new SetupScope())
             {
-                return new DefaultSetup<TDelegate>(memberFunction() as Delegate);
+                return new DefaultSetup<TDelegate>(memberFunction() as Delegate ?? throw new ArgumentException(ThisAssembly.Strings.Setup.DelegateExpected));
             }
         }
 
-        class DefaultSetup<TDelegate> : ISetup<TDelegate>
+        private class DefaultSetup<TDelegate> : ISetup<TDelegate>
         {
             public DefaultSetup(Delegate @delegate) => Delegate = @delegate;
 
             public Delegate Delegate { get; }
         }
 
-        class DefaultSetup : ISetup
+        private class DefaultSetup : ISetup
         {
             public static ISetup Default { get; } = new DefaultSetup();
 
-            DefaultSetup() { }
+            private DefaultSetup() { }
         }
     }
 }

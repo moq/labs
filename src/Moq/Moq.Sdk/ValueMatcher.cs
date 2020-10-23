@@ -8,14 +8,14 @@ namespace Moq.Sdk
     /// </summary>
     public class ValueMatcher : IArgumentMatcher, IEquatable<ValueMatcher>
     {
-        readonly Tuple<Type, object> value;
+        private readonly Tuple<Type, object?> value;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ValueMatcher"/> class.
         /// </summary>
         /// <param name="argumentType">Type of the argument to match.</param>
         /// <param name="matchValue">The value to match against.</param>
-        public ValueMatcher(Type argumentType, object matchValue) => value = Tuple.Create(argumentType, matchValue);
+        public ValueMatcher(Type argumentType, object? matchValue) => value = Tuple.Create(argumentType, matchValue);
 
         /// <summary>
         /// Gets the type of the argument this matcher supports.
@@ -25,13 +25,13 @@ namespace Moq.Sdk
         /// <summary>
         /// The value to match against invocation arguments.
         /// </summary>
-        public object MatchValue => value.Item2;
+        public object? MatchValue => value.Item2;
 
         /// <summary>
         /// Evaluates whether the given value equals the <see cref="MatchValue"/> 
         /// received in the constructor, using default object equality behavior.
         /// </summary>
-        public bool Matches(object value) => object.Equals(value, MatchValue);
+        public bool Matches(object? value) => Equals(value, MatchValue);
 
         /// <summary>
         /// Gets a friendly representation of the object.
@@ -47,16 +47,16 @@ namespace Moq.Sdk
                 ? "\"" + MatchValue + "\""
                 : (MatchValue?.ToString() ?? "null");
 
-        static bool IsString(Type type) => type == typeof(string) ||
+        private static bool IsString(Type type) => type == typeof(string) ||
             (type.IsByRef && type.HasElementType && type.GetElementType() == typeof(string));
 
         #region Equality
 
         /// <inheritdoc />
-        public bool Equals(ValueMatcher other) => object.Equals(value, other?.value);
+        public bool Equals(ValueMatcher other) => Equals(value, other?.value);
 
         /// <inheritdoc />
-        public override bool Equals(object obj) => Equals(obj as ValueMatcher);
+        public override bool Equals(object obj) => obj is ValueMatcher matcher && Equals(matcher);
 
         /// <inheritdoc />
         public override int GetHashCode() => value.GetHashCode();
