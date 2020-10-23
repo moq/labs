@@ -41,6 +41,7 @@ jobs:
         run: dotnet test --no-build -f net5.0 --collect:"XPlat Code Coverage"
         if: matrix.os != 'windows-latest'
       - name: 🔍 coverage
+        if: 'false'
         run: bash <(curl -s https://codecov.io/bash)
       - name: 🔼 logs
         if: ${{ always() }}
