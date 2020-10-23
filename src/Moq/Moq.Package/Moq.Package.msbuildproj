@@ -8,8 +8,8 @@
         <PackageTags>moq mocking mock</PackageTags>
     </PropertyGroup>
     <ItemGroup>
-        <Content Include="*.cs" CodeLanguage="cs" TargetFramework="netstandard2.0" BuildAction="Compile" />
-        <Content Include="*.vb" CodeLanguage="vb" TargetFramework="netstandard2.0" BuildAction="Compile" />
+        <Content Include="*.cs" Exclude="Mock.StaticFactory.*" CodeLanguage="cs" TargetFramework="netstandard2.0" BuildAction="Compile" />
+        <Content Include="*.vb" Exclude="Mock.StaticFactory.*" CodeLanguage="vb" TargetFramework="netstandard2.0" BuildAction="Compile" />
         <None Include="Mock.StaticFactory.*" PackFolder="build\netstandard2.0" />
         <None Include="Moq.props" PackFolder="build\netstandard2.0" />
         <None Include="Moq.targets" PackFolder="build\netstandard2.0" />

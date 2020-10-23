@@ -3,27 +3,37 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <RootNamespace>Moq</RootNamespace>
-    <IncludeRoslyn>true</IncludeRoslyn>
-    <PrimaryOutputKind Condition="'$(PrimaryOutputKind)' == ''">Analyzers</PrimaryOutputKind>
-    <PrimaryOutputFrameworkSpecific>true</PrimaryOutputFrameworkSpecific>
+    <PackFolder>analyzers\dotnet</PackFolder>
   </PropertyGroup>
 
-  <ItemDefinitionGroup>
-    <ProjectReference>
-      <!-- This causes the output of the referenced projects to be packaged into the analyzer folder too -->
-      <AdditionalProperties>PrimaryOutputKind=$(PrimaryOutputKind)</AdditionalProperties>
-    </ProjectReference>
-  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Compile Remove="MockValidateTypesAnalyzer.cs" />
+    <Compile Remove="RecursiveMockAnalyzer.cs" />
+  </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Stunts\Stunts\Stunts.csproj" Pack="false" />
-    <ProjectReference Include="..\..\Stunts\Stunts.CodeAnalysis\Stunts.CodeAnalysis.csproj" Pack="false" />
+    <None Include="MockValidateTypesAnalyzer.cs" />
+    <None Include="RecursiveMockAnalyzer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Stunts" />
+    <PackageReference Include="Stunts.CodeAnalysis" />
+    <PackageReference Include="Superpower" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Pack="false" />
+    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" Pack="false" />
+
+    <!-- Workaround for revision mismatch with public versions -->
+    <PackageReference Include="System.Collections.Immutable" Pack="false" />
+    <PackageReference Include="System.Reflection.Metadata" Pack="false" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Moq.Sdk\Moq.Sdk.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Properties\Resources.Designer.cs">
+    <Compile Update="Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
@@ -31,17 +41,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+    <EmbeddedResource Update="@(EmbeddedResource)" Generator="ResXFileCodeGenerator" />
+    <EmbeddedResource Update="Resources.resx">
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-
-  <Target Name="IncludeRoslynVisualBasic" AfterTargets="ResolveAssemblyReferences" BeforeTargets="GetPackageContents" DependsOnTargets="ResolveAssemblyReferences">
-    <ItemGroup>
-      <_RoslynVisualBasic Include="@(ReferencePath -> WithMetadataValue('NuGetPackageId', 'Microsoft.CodeAnalysis.VisualBasic'))" />
-      <PackageFile Include="@(_RoslynVisualBasic -> '%(FullPath)')" Kind="Analyzer" FrameworkSpecific="true" TargetFramework="$(TargetFramework)" />
-    </ItemGroup>
-  </Target>
-
+  
 </Project>

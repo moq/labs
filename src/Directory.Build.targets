@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <UpToDateCheck Include="@(PackageFile);@(None);@(Content);@(EmbeddedResource)" />
-    <EmbeddedResource Update="@(EmbeddedResource)" Generator="ResXFileCodeGenerator" />
+    <EmbeddedResource Update="@(EmbeddedResource)" />
     <!--<None Include="$(MSBuildThisFileDirectory)../docs/img/icon.png" Pack="true" Visible="false" />-->
   </ItemGroup>
 

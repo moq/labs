@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net472;net5.0</TargetFrameworks>
+    <RootNamespace>Moq</RootNamespace>
+    <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
+    <DisableTransitiveFrameworkReferences>true</DisableTransitiveFrameworkReferences>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <PackFolder>tools\$(TargetFramework)</PackFolder>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Stunts.StaticProxy" />
+
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" />
+
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" />
+    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Features" />
+
+    <!-- Workaround for revision mismatch with public versions -->
+    <PackageReference Include="System.Collections.Immutable" />
+    <PackageReference Include="System.Reflection.Metadata" />
+
+    <PackageReference Include="System.ComponentModel.Composition" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" />
+    <PackageReference Include="Microsoft.Bcl.HashCode" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Moq.CodeAnalysis\Moq.CodeAnalysis.csproj" Pack="false" />
+    <ProjectReference Include="..\Moq.Sdk\Moq.Sdk.csproj" Pack="false" />
+  </ItemGroup>
+
+  <!-- Replaced by common targets, required for the multitargeting DependsOnTargets below -->
+  <Target Name="ResolveReferences" />
+  <Target Name="AddDependencies"  Condition="'$(IsPackable)' != 'true'"
+          AfterTargets="Build" BeforeTargets="GetPackageContents" DependsOnTargets="ResolveReferences">
+    <ItemGroup Condition="'$(TargetFramework)' != ''">
+      <AnalyzerFile Include="@(ReferenceCopyLocalPaths)"
+                    Exclude="'%(Filename)%(Extension)' == 'Microsoft.CodeAnalysis.dll' or 
+                             '%(Filename)%(Extension)' == 'Microsoft.CodeAnalysis.CSharp.dll' or 
+                             '%(Filename)%(Extension)' == 'Microsoft.CodeAnalysisVisualBasic.dll'"
+                    Condition="'%(ReferenceCopyLocalPaths.AssetType)' != 'resources'"/>
+      <PackageFile Include="@(AnalyzerFile -> '%(FullPath)')" PackagePath="tools\$(TargetFramework)\%(Filename)%(Extension)" />
+    </ItemGroup>
+  </Target>
+
+</Project>

@@ -4,7 +4,7 @@
     {
         static Mock()
         {
-            MockFactory.Default = new Sdk.StaticMockFactory();
+            Sdk.MockFactory.Default = new Sdk.StaticMockFactory();
             OnInitialized();
         }
 

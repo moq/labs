@@ -18,8 +18,4 @@
     <ProjectReference Include="..\Moq.DynamicProxy\Moq.DynamicProxy.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Update="Resources.resx" Generator="" />
-  </ItemGroup>
-
 </Project>

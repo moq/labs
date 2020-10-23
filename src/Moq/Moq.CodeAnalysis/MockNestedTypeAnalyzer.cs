@@ -11,12 +11,12 @@ namespace Stunts
     /// </summary>
     // TODO: F#
     [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
-    public class MockUnsupportedNestedTypeAnalyzer : UnsupportedNestedTypeAnalyzer
+    public class MockUnsupportedNestedTypeAnalyzer : NestedTypeAnalyzer
     {
         /// <summary>
         /// Instantiates the analyzer with the default <see cref="NamingConvention"/> and 
         /// for method invocations annotated with <see cref="StuntGeneratorAttribute"/>.
         /// </summary>
-        public MockUnsupportedNestedTypeAnalyzer() : base(new MockNamingConvention(), typeof(MockGeneratorAttribute)) { }
+        public MockUnsupportedNestedTypeAnalyzer() : base(typeof(MockGeneratorAttribute)) { }
     }
 }

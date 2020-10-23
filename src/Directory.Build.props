@@ -46,6 +46,9 @@
 
     <!-- Generate satellite assemblies using csc.exe to avoid some al.exe issues. See https://github.com/dotnet/msbuild/pull/2726 -->
     <GenerateSatelliteAssembliesForCore>true</GenerateSatelliteAssembliesForCore>
+
+    <!-- Since we use Moq4 in many projects, not necessarily v5... -->
+    <EnablePackCleanup>false</EnablePackCleanup>
   </PropertyGroup>
 
   <PropertyGroup Label="Preview - To be removed by .NET 5.0 RTW">
