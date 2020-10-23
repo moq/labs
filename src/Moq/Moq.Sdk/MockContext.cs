@@ -12,7 +12,7 @@ namespace Moq.Sdk
         /// The most recent invocation performed on the mock, tracked 
         /// by the <see cref="MockContextBehavior"/>.
         /// </summary>
-        public static IMethodInvocation CurrentInvocation
+        public static IMethodInvocation? CurrentInvocation
         {
             get => CallContext<IMethodInvocation>.GetData();
             set => CallContext<IMethodInvocation>.SetData(value);
@@ -28,7 +28,7 @@ namespace Moq.Sdk
         /// This property is also tracked and populated by the 
         /// <see cref="MockContextBehavior"/>.
         /// </remarks>
-        public static IMockSetup CurrentSetup
+        public static IMockSetup? CurrentSetup
         {
             get => CallContext<IMockSetup>.GetData();
             set => CallContext<IMockSetup>.SetData(value);

@@ -13,7 +13,7 @@ namespace Moq
     [EditorBrowsable(EditorBrowsableState.Never)]
     internal class SetupScopeBehavior : IStuntBehavior
     {
-        static readonly HashSet<Type> setupScopeBehaviors = new HashSet<Type>
+        private static readonly HashSet<Type> setupScopeBehaviors = new HashSet<Type>
         {
             typeof(DefaultValueBehavior), 
             typeof(MockContextBehavior),

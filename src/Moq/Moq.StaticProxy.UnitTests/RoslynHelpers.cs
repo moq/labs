@@ -6,18 +6,16 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Emit;
 using Xunit;
 
-static class RoslynHelpers
+internal static class RoslynHelpers
 {
     public static Assembly Emit(this Compilation compilation)
     {
-        using (var stream = new MemoryStream())
-        {
-            var result = compilation.Emit(stream);
-            result.AssertSuccess();
+        using var stream = new MemoryStream();
+        var result = compilation.Emit(stream);
+        result.AssertSuccess();
 
-            stream.Seek(0, SeekOrigin.Begin);
-            return Assembly.Load(stream.ToArray());
-        }
+        stream.Seek(0, SeekOrigin.Begin);
+        return Assembly.Load(stream.ToArray());
     }
 
     public static void AssertSuccess(this EmitResult result)

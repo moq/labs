@@ -12,7 +12,7 @@ namespace Moq
         /// Initializes the exception with the target 
         /// mock and setup that failed to match invocations.
         /// </summary>
-        public VerifyException(IMock mock, IMockSetup setup, string message = null)
+        public VerifyException(IMock mock, IMockSetup setup, string? message = null)
             : this(mock, new[] { setup }, message)
         {
         }
@@ -21,8 +21,8 @@ namespace Moq
         /// Initializes the exception with the target 
         /// mock and setup(s) that failed to match invocations.
         /// </summary>
-        public VerifyException(IMock mock, IMockSetup[] setups, string message = null)
-            : base(message)
+        public VerifyException(IMock mock, IMockSetup[] setups, string? message = null)
+            : base(message ?? ThisAssembly.Strings.VerifyExceptionMessage)
         {
             Mock = mock;
             Setups = setups;

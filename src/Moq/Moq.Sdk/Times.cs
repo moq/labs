@@ -8,7 +8,7 @@ namespace Moq.Sdk
     /// </summary>
     public readonly struct Times : IEquatable<Times>
     {
-        readonly Lazy<int> hashCode;
+        private readonly Lazy<int> hashCode;
 
         /// <summary>
         /// Initializes the constraint with the given <paramref name="from"/> and 

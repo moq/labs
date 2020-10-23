@@ -49,7 +49,7 @@ namespace Moq
         /// <param name="times">Optional number of times the method should have been called. Defaults to <see cref="Times.AtLeastOnce"/>.
         /// An integer value can also be specificed since there is built-in conversion support from integer to <see cref="Times"/>.</param>
         /// <param name="message">Optional user message to show.</param>
-        public static void Called<T>(Func<T> function, int times = -1, string message = null) => CalledImpl(function, times, message);
+        public static void Called<T>(Func<T> function, int times = -1, string? message = null) => CalledImpl(function, times, message);
 
         /// <summary>
         /// Verifies a method invocation matching the <paramref name="function"/> was executed at 
@@ -59,13 +59,13 @@ namespace Moq
         /// <param name="times">Optional number of times the method should have been called. Defaults to <see cref="Times.AtLeastOnce"/>.
         /// An integer value can also be specificed since there is built-in conversion support from integer to <see cref="Times"/>.</param>
         /// <param name="message">Optional user message to show.</param>
-        internal static void CalledImpl<T>(Func<T> function, Sdk.Times times = default, string message = null)
+        internal static void CalledImpl<T>(Func<T> function, Sdk.Times times = default, string? message = null)
         {
             using (new SetupScope())
             {
                 function();
-                var setup = MockContext.CurrentSetup;
-                var mock = MockContext.CurrentInvocation.Target.AsMock();
+                var setup = MockContext.CurrentSetup ?? CallContext.ThrowUnexpectedNull<IMockSetup>();
+                var mock = (MockContext.CurrentInvocation ?? CallContext.ThrowUnexpectedNull<IMethodInvocation>()).Target.AsMock();
                 var calls = mock.Invocations.Where(x => setup.AppliesTo(x));
                 if (!times.Validate(calls.Count()))
                     throw new VerifyException(mock, setup, message);
@@ -96,7 +96,7 @@ namespace Moq
         /// <param name="times">Optional number of times the method should have been called. Defaults to <see cref="Times.AtLeastOnce"/>. 
         /// An integer value can also be specificed since there is built-in conversion support from integer to <see cref="Times"/>.</param>
         /// <param name="message">Optional user message to show.</param>
-        public static void Called(Action action, int times = -1, string message = null) => CalledImpl(action, times, message);
+        public static void Called(Action action, int times = -1, string? message = null) => CalledImpl(action, times, message);
 
         /// <summary>
         /// Verifies a method invocation matching the <paramref name="action"/> was executed at 
@@ -106,13 +106,13 @@ namespace Moq
         /// <param name="times">Optional number of times the method should have been called. Defaults to <see cref="Times.AtLeastOnce"/>. 
         /// An integer value can also be specificed since there is built-in conversion support from integer to <see cref="Times"/>.</param>
         /// <param name="message">Optional user message to show.</param>
-        internal static void CalledImpl(Action action, Sdk.Times times = default, string message = null)
+        internal static void CalledImpl(Action action, Sdk.Times times = default, string? message = null)
         {
             using (new SetupScope())
             {
                 action();
-                var setup = MockContext.CurrentSetup;
-                var mock = MockContext.CurrentInvocation.Target.AsMock();
+                var setup = MockContext.CurrentSetup ?? CallContext.ThrowUnexpectedNull<IMockSetup>();
+                var mock = (MockContext.CurrentInvocation ?? CallContext.ThrowUnexpectedNull<IMethodInvocation>()).Target.AsMock();
                 var calls = mock.Invocations.Where(x => setup.AppliesTo(x));
                 if (!times.Validate(calls.Count()))
                     throw new VerifyException(mock, setup, message);
@@ -132,14 +132,14 @@ namespace Moq
         /// </summary>
         /// <param name="function">The method invocation to match against actual calls.</param>
         /// <param name="message">Optional user message to show.</param>
-        public static void NotCalled<T>(Func<T> function, string message = null) => CalledImpl(function, Sdk.Times.Never, message);
+        public static void NotCalled<T>(Func<T> function, string? message = null) => CalledImpl(function, Sdk.Times.Never, message);
 
         /// <summary>
         /// Verifies a method invocation matching the <paramref name="action"/> was never called.
         /// </summary>
         /// <param name="action">The method invocation to match against actual calls.</param>
         /// <param name="message">Optional user message to show.</param>
-        public static void NotCalled(Action action, string message = null) => CalledImpl(action, Sdk.Times.Never, message);
+        public static void NotCalled(Action action, string? message = null) => CalledImpl(action, Sdk.Times.Never, message);
 
         /// <summary>
         /// Verifies all setups that had an occurrence constraint applied, 
@@ -160,8 +160,8 @@ namespace Moq
             using (new SetupScope())
             {
                 function();
-                var setup = MockContext.CurrentSetup;
-                var mock = MockContext.CurrentInvocation.Target.AsMock();
+                var setup = MockContext.CurrentSetup ?? CallContext.ThrowUnexpectedNull<IMockSetup>();
+                var mock = (MockContext.CurrentInvocation ?? CallContext.ThrowUnexpectedNull<IMethodInvocation>()).Target.AsMock();
                 calls.Invoke(mock.Invocations.Where(x => setup.AppliesTo(x)));
             }
         }
@@ -177,8 +177,8 @@ namespace Moq
             using (new SetupScope())
             {
                 action();
-                var setup = MockContext.CurrentSetup;
-                var mock = MockContext.CurrentInvocation.Target.AsMock();
+                var setup = MockContext.CurrentSetup ?? CallContext.ThrowUnexpectedNull<IMockSetup>();
+                var mock = (MockContext.CurrentInvocation ?? CallContext.ThrowUnexpectedNull<IMethodInvocation>()).Target.AsMock();
                 calls.Invoke(mock.Invocations.Where(x => setup.AppliesTo(x)));
             }
         }
@@ -187,12 +187,12 @@ namespace Moq
         /// Gets the mock after verifying that all setups that specified occurrence 
         /// constraints have succeeded.
         /// </summary>
-        static IMock<T> GetVerified<T>(T target) where T : class
+        private static IMock<T> GetVerified<T>(T target) where T : class
         {
             var mock = target.AsMock();
             var failures = (from pipeline in mock.Setups
                             where pipeline.Setup.Occurrence != null
-                            let times = pipeline.Setup.Occurrence.Value
+                            let times = pipeline.Setup.Occurrence!.Value
                             let calls = mock.Invocations.Where(x => pipeline.AppliesTo(x)).ToArray()
                             where !times.Validate(calls.Length)
                             select pipeline.Setup
@@ -211,7 +211,7 @@ namespace Moq
         /// <param name="notCalled">Whether to add a behavior that verifies the invocations performed on 
         /// the clone were never performed on the original mock.
         /// </param>
-        static T GetVerifier<T>(IMock<T> mock, bool notCalled = false) where T : class
+        private static T GetVerifier<T>(IMock<T> mock, bool notCalled = false) where T : class
         {
             // If the mock is already being verified, we don't need to clone again.
             if (mock.State.TryGetValue<bool>(typeof(Verify), out var verifying) && verifying)
@@ -248,14 +248,14 @@ namespace Moq
             return clone.Object;
         }
 
-        class NotCalledBehavior : IStuntBehavior
+        private class NotCalledBehavior : IStuntBehavior
         {
             public bool AppliesTo(IMethodInvocation invocation) => true;
 
             public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next)
             {
                 var mock = invocation.Target.AsMock();
-                var setup = MockContext.CurrentSetup;
+                var setup = MockContext.CurrentSetup ?? CallContext.ThrowUnexpectedNull<IMockSetup>();
                 if (mock.Invocations.Where(x => setup.AppliesTo(x)).Any())
                     throw new VerifyException(mock, setup);
 
@@ -263,9 +263,9 @@ namespace Moq
             }
         }
 
-        class TargetReplacerBehavior : IStuntBehavior
+        private class TargetReplacerBehavior : IStuntBehavior
         {
-            readonly object target;
+            private readonly object target;
 
             public TargetReplacerBehavior(object target) => this.target = target;
 

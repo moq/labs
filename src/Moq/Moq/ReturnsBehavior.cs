@@ -17,16 +17,20 @@ namespace Moq
     internal class ReturnsBehavior : IMockBehavior
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        Func<IArgumentCollection, object> getter;
+        private Func<IArgumentCollection, object?> getter;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        object value;
+        private object? value;
 
-        public ReturnsBehavior(Func<IArgumentCollection, object> valueGetter) => ValueGetter = valueGetter;
+        public ReturnsBehavior(Func<IArgumentCollection, object?> valueGetter) => getter = valueGetter;
 
-        public ReturnsBehavior(object value) => Value = value;
+        public ReturnsBehavior(object? value)
+        {
+            Value = value;
+            getter = _ => value;
+        }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public object Value
+        public object? Value
         {
             set
             {
@@ -36,7 +40,7 @@ namespace Moq
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Func<IArgumentCollection, object> ValueGetter
+        public Func<IArgumentCollection, object?> ValueGetter
         {
             get => getter;
             set
@@ -48,7 +52,7 @@ namespace Moq
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        object DebuggerValue => value ?? "<function>";
+        private object DebuggerValue => value ?? "<function>";
 
         public IMethodReturn Execute(IMock mock, IMethodInvocation invocation, GetNextMockBehavior next)
             => invocation.CreateValueReturn(getter(invocation.Arguments), invocation.Arguments.ToArray());

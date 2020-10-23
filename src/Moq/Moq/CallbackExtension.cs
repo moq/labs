@@ -11,7 +11,7 @@ namespace Moq
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static partial class CallbackExtension
     {
-        static TResult Callback<TResult>(this TResult target, Action<IArgumentCollection> callback)
+        private static TResult Callback<TResult>(this TResult target, Action<IArgumentCollection> callback)
         {
             var setup = MockContext.CurrentSetup;
             if (setup != null)

@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="EventNotFound" xml:space="preserve">
-    <value>Could not locate event for attach or detach method {0}.</value>
+    <value>Could not locate event for attach or detach method '{0}'.</value>
   </data>
   <data name="NoCurrentSetup" xml:space="preserve">
     <value>No setup is currently being performed on the mock.</value>
@@ -134,5 +134,8 @@
   </data>
   <data name="MockFactoryNotImplemented" xml:space="preserve">
     <value>Default factory does not implement mock creation.</value>
+  </data>
+  <data name="UnexpectedNullContextState" xml:space="preserve">
+    <value>Did not expect the call context to have a null value for key '{0}'.</value>
   </data>
 </root>

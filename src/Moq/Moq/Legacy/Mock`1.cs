@@ -18,9 +18,9 @@ namespace Moq
                 MockFactory.Default = new DynamicMockFactory();
         }
 
-        T target;
-        IMock<T> mock;
-        readonly MockBehavior behavior;
+        private readonly T target;
+        private readonly IMock<T> mock;
+        private readonly MockBehavior behavior;
 
         /// <summary>Supports the legacy API.</summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -55,7 +55,7 @@ namespace Moq
             mock = target.AsMock();
         }
 
-        Mock(T target, IMock<T> mock, MockBehavior behavior)
+        private Mock(T target, IMock<T> mock, MockBehavior behavior)
         {
             this.target = target;
             this.mock = mock;
@@ -77,7 +77,12 @@ namespace Moq
         /// <summary>Supports the legacy API.</summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         public Mock<TInterface> As<TInterface>() where TInterface : class
-            => new Mock<TInterface>(target as TInterface, (target as TInterface)?.AsMock(), behavior);
+        {
+            if (target is not TInterface iface)
+                throw new InvalidOperationException(ThisAssembly.Strings.Legacy.AsInterfaceNotImplemented);
+
+            return new Mock<TInterface>(iface, iface.AsMock(), behavior);
+        }
 
         /// <summary>Supports the legacy API.</summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -122,12 +127,12 @@ namespace Moq
 
         /// <summary>Supports the legacy API.</summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public void Verify(Expression<Action<T>> expression, Times times, string message = null)
+        public void Verify(Expression<Action<T>> expression, Times times, string? message = null)
             => Moq.Verify.CalledImpl(() => expression.Compile().Invoke(target), times.ToSdk(), message);
 
         /// <summary>Supports the legacy API.</summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public void Verify(Expression<Action<T>> expression, Func<Times> times, string message = null)
+        public void Verify(Expression<Action<T>> expression, Func<Times> times, string? message = null)
             => Moq.Verify.CalledImpl(() => expression.Compile().Invoke(target), times().ToSdk(), message);
 
         /// <summary>Supports the legacy API.</summary>
@@ -137,12 +142,12 @@ namespace Moq
 
         /// <summary>Supports the legacy API.</summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public void Verify<TResult>(Expression<Func<T, TResult>> expression, Times times, string message = null)
+        public void Verify<TResult>(Expression<Func<T, TResult>> expression, Times times, string? message = null)
             => Moq.Verify.CalledImpl(() => expression.Compile().Invoke(target), times.ToSdk(), message);
 
         /// <summary>Supports the legacy API.</summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public void Verify<TResult>(Expression<Func<T, TResult>> expression, Func<Times> times, string message = null)
+        public void Verify<TResult>(Expression<Func<T, TResult>> expression, Func<Times> times, string? message = null)
             => Moq.Verify.CalledImpl(() => expression.Compile().Invoke(target), times().ToSdk(), message);
     }
 }

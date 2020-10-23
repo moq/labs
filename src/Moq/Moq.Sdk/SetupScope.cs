@@ -18,7 +18,7 @@ namespace Moq
     /// </devdoc>
     public class SetupScope : IDisposable
     {
-        static AsyncLocal<bool?> setup = new AsyncLocal<bool?>();
+        private static readonly AsyncLocal<bool?> setup = new AsyncLocal<bool?>();
 
         /// <summary>
         /// Initializes the setup scope.

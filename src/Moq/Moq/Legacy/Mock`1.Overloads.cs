@@ -1,5 +1,4 @@
-﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Reflection;
 
 namespace Moq
@@ -164,4 +163,3 @@ namespace Moq
         public Mock(MockBehavior behavior, params object[] args) : base(Assembly.GetCallingAssembly(), behavior, args) { }
     }
 }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member

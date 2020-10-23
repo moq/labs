@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Stunts;
 
@@ -19,9 +20,9 @@ namespace Moq.Sdk
         public static T Push<T>(IArgumentMatcher matcher)
         {
             CallContext<Queue<IArgumentMatcher>>.GetData(() => new Queue<IArgumentMatcher>())
-               .Enqueue(matcher);
+               ?.Enqueue(matcher);
 
-            return default;
+            return default!;
         }
 
         /// <summary>
@@ -32,7 +33,9 @@ namespace Moq.Sdk
         /// <returns>An <see cref="IMockSetup"/> that can be used to filter invocations in a behavior pipeline.</returns>
         internal static IMockSetup Freeze(IMethodInvocation invocation)
         {
-            var currentMatchers = CallContext<Queue<IArgumentMatcher>>.GetData(() => new Queue<IArgumentMatcher>());
+            var currentMatchers = CallContext<Queue<IArgumentMatcher>>.GetData(() => new Queue<IArgumentMatcher>())
+                ?? throw new InvalidOperationException(ThisAssembly.Strings.UnexpectedNullContextState(typeof(Queue<IArgumentMatcher>).FullName));
+
             var finalMatchers = new List<IArgumentMatcher>();
             var parameters = invocation.MethodBase.GetParameters();
             var defaultValue = (invocation.Target as IMocked)?.
@@ -47,7 +50,7 @@ namespace Moq.Sdk
                 // This is a bit fuzzy since we compare the actual argument value against the 
                 // default value for the parameter type, or the type of the matcher in the 
                 // queue of argument matchers to see if applies instead.
-                if (object.Equals(argument, defaultValue.GetDefault(parameter.ParameterType)) &&
+                if (Equals(argument, defaultValue.GetDefault(parameter.ParameterType)) &&
                     currentMatchers.Count != 0 &&
                     parameter.ParameterType.GetValueTypeInfo().IsAssignableFrom(currentMatchers.Peek().ArgumentType.GetValueTypeInfo()))
                 {

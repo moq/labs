@@ -14,7 +14,7 @@ namespace Moq.Sdk
         /// <summary>
         /// The introspection information for the current mock.
         /// </summary>
-        [DebuggerDisplay("Invocations = {Mock.Invocations.Count}", Name = nameof(IMocked) + "." + nameof(IMocked.Mock))]
+        [DebuggerDisplay("Invocations = {Mock.Invocations.Count}", Name = nameof(IMocked) + "." + nameof(Mock))]
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
         IMock Mock { get; }
     }

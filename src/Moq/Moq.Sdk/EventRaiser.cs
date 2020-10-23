@@ -14,7 +14,7 @@
         public static EventRaiser Empty { get; } = new EmptyEventRaiser();
     }
 
-    class EmptyEventRaiser : EventRaiser { }
+    internal class EmptyEventRaiser : EventRaiser { }
 
     /// <summary>
     /// Context state that signals an event must be 
@@ -28,12 +28,12 @@
         /// Creates an instance of the <see cref="EventArgsEventRaiser"/> 
         /// with the given event arguments.
         /// </summary>
-        public EventArgsEventRaiser(object args) => EventArgs = args;
+        public EventArgsEventRaiser(object? args) => EventArgs = args;
 
         /// <summary>
         /// The event arguments for the raised event.
         /// </summary>
-        public object EventArgs { get; }
+        public object? EventArgs { get; }
     }
 
     /// <summary>

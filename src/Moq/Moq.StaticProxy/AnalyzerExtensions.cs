@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Moq
 {
-    static class AnalyzerExtensions
+    internal static class AnalyzerExtensions
     {
         public static void CheckDebugger(this AnalyzerConfigOptionsProvider analyzerOptions, string debugableName)
         {

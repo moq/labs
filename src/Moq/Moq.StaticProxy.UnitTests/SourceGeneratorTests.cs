@@ -97,7 +97,7 @@ namespace UnitTests
             }
         }
 
-        static (ImmutableArray<Diagnostic>, Compilation) GetGeneratedOutput(string source, [CallerMemberName] string? test = null)
+        private static (ImmutableArray<Diagnostic>, Compilation) GetGeneratedOutput(string source, [CallerMemberName] string? test = null)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(source, path: test + ".cs");
 

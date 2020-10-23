@@ -30,8 +30,7 @@ namespace Moq.Sdk
 
             if (info != null)
             {
-                EventRaiser raiser = null;
-                if ((raiser = CallContext<EventRaiser>.GetData()) != null)
+                if (CallContext<EventRaiser>.GetData() is EventRaiser raiser)
                 {
                     try
                     {
@@ -77,7 +76,7 @@ namespace Moq.Sdk
             return next()(invocation, next);
         }
 
-        static void CombineDelegate(EventInfo info, Delegate handler, IMock mock)
+        private static void CombineDelegate(EventInfo info, Delegate handler, IMock mock)
         {
             var state = mock.State.GetOrAdd(info.Name, () => handler);
             if (state != handler)
@@ -101,7 +100,7 @@ namespace Moq.Sdk
             }
         }
 
-        static void RemoveDelegate(EventInfo info, Delegate handler, IMock mock)
+        private static void RemoveDelegate(EventInfo info, Delegate handler, IMock mock)
         {
             if (mock.State.TryGetValue<Delegate>(info.Name, out var state))
             {

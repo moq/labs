@@ -1,5 +1,4 @@
-﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-using System;
+﻿using System;
 using System.ComponentModel;
 using Moq.Sdk;
 
@@ -9,9 +8,9 @@ namespace Moq
     [EditorBrowsable(EditorBrowsableState.Never)]
     public class MockSetup<TTarget> where TTarget : class
     {
-        readonly TTarget target;
-        readonly IMock<TTarget> mock;
-        readonly Action<TTarget> action;
+        private readonly TTarget target;
+        private readonly IMock<TTarget> mock;
+        private readonly Action<TTarget> action;
 
         /// <summary>Supports the legacy API.</summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -176,4 +175,3 @@ namespace Moq
         }
     }
 }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member

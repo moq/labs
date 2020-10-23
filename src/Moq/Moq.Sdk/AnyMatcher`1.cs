@@ -14,8 +14,8 @@ namespace Moq.Sdk
     public class AnyMatcher<T> : IArgumentMatcher, IEquatable<AnyMatcher<T>>
     {
         // Disable warning since we only use this member from this class
-        static bool IsValueType = typeof(T).GetTypeInfo().IsValueType;
-        static bool IsNullable = typeof(T).GetTypeInfo().IsGenericType &&
+        private static readonly bool IsValueType = typeof(T).GetTypeInfo().IsValueType;
+        private static readonly bool IsNullable = typeof(T).GetTypeInfo().IsGenericType &&
             typeof(T).GetGenericTypeDefinition() == typeof(Nullable<>);
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace Moq.Sdk
         /// </summary>
         public static IArgumentMatcher Default { get; } = new AnyMatcher<T>();
 
-        AnyMatcher() { }
+        private AnyMatcher() { }
 
         /// <summary>
         /// Gets the type of the argument this matcher supports.
@@ -33,7 +33,7 @@ namespace Moq.Sdk
         /// <summary>
         /// Evaluates whether the given value matches this instance.
         /// </summary>
-        public bool Matches(object value)
+        public bool Matches(object? value)
         {
             // Non-nullable value types never match against a null value.
             if (IsValueType && !IsNullable && value == null)
@@ -71,7 +71,7 @@ namespace Moq.Sdk
         /// </summary>
         /// <returns><see langword="true"/> if <paramref name="other"/> is not null and 
         /// it's an <see cref="AnyMatcher{T}"/> with the same <typeparamref name="T"/> .</returns>
-        public override bool Equals(object other) => Equals(other as AnyMatcher<T>);
+        public override bool Equals(object other) => other is AnyMatcher<T> matcher && Equals(matcher);
 
         /// <inheritdoc />
         public override int GetHashCode() => typeof(T).GetHashCode();

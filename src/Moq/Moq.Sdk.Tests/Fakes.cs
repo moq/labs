@@ -8,7 +8,7 @@ namespace Moq.Sdk.Tests
 {
     public class FakeMock : IStunt, IMocked
     {
-        DefaultMock mock;
+        private readonly DefaultMock mock;
 
         protected BehaviorPipeline Pipeline = new BehaviorPipeline();
 
