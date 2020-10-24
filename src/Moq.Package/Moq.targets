@@ -1,8 +1,7 @@
 <Project>
 
   <PropertyGroup>
-    <MoqAnalyzerDir Condition="'$(MSBuildRuntimeType)' == 'Full'">$(MSBuildThisFileDirectory)..\..\tools\net472</MoqAnalyzerDir>
-    <MoqAnalyzerDir Condition="'$(MSBuildRuntimeType)' == 'Core'">$(MSBuildThisFileDirectory)..\..\tools\net5.0</MoqAnalyzerDir>
+    <MoqAnalyzerDir>$(MSBuildThisFileDirectory)..\..\tools\netstandard2.0</MoqAnalyzerDir>
     <!-- SourceGeneratorSupported provided by Stunts.targets -->
     <RegisterStaticMockFactory Condition="'$(RegisterStaticMockFactory)' == '' and 
                                           '$(SourceGeneratorSupported)' == 'true'">true</RegisterStaticMockFactory>
@@ -15,12 +14,8 @@
     <CompilerVisibleProperty Include="MoqAnalyzerDir" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(RegisterStaticMockFactory)' == 'true' and '$(MSBuildRuntimeType)' == 'Full' and '$(SkipCompilerExecution)' != 'true' and '$(DesignTimeBuild)' != 'true'">
-    <Analyzer Include="$(MSBuildThisFileDirectory)..\..\tools\net472\Moq*.dll" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(RegisterStaticMockFactory)' == 'true' and '$(MSBuildRuntimeType)' == 'Core' and '$(SkipCompilerExecution)' != 'true' and '$(DesignTimeBuild)' != 'true'">
-    <Analyzer Include="$(MSBuildThisFileDirectory)..\..\tools\net5.0\Moq*.dll" />
+  <ItemGroup Condition="'$(RegisterStaticMockFactory)' == 'true' and '$(SkipCompilerExecution)' != 'true' and '$(DesignTimeBuild)' != 'true'">
+    <Analyzer Include="$(MoqAnalyzerDir)\Moq*.dll" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(RegisterStaticMockFactory)' == 'true'">
