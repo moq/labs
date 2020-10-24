@@ -3,7 +3,7 @@
   <PropertyGroup>
     <NuGetizerVersion>0.4.7</NuGetizerVersion>
     <NuGetizerVersion Condition="Exists('$(MSBuildThisFileDirectory)..\..\nugetizer\bin\')">42.42.42</NuGetizerVersion>
-    <StuntsVersion>42.42.42-main.144</StuntsVersion>
+    <StuntsVersion>42.42.42-main.147</StuntsVersion>
     <StuntsVersion Condition="Exists('$(MSBuildThisFileDirectory)..\..\stunts\bin\')">42.42.42</StuntsVersion>
   </PropertyGroup>
 
