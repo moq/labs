@@ -4,7 +4,6 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -17,6 +16,141 @@ namespace Stunts.UnitTests
 {
     public class SourceGeneratorTests
     {
+        [Fact]
+        public void GeneratesRecursiveMockForProperties()
+        {
+            var code = @"
+using Moq;
+
+namespace UnitTests
+{
+    public class Test
+    {
+        public void Do()
+        {
+            var mock = Mock.Of<IFoo>();
+            
+            mock.Bar.Baz.Name.Returns(""hi"");
+        }
+    }
+
+    public interface IFoo 
+    {        
+        IBar Bar { get; }
+    }
+    
+    public interface IBar 
+    {
+        IBaz Baz { get; }
+    }
+
+    public interface IBaz 
+    {
+        string Name { get; }
+    }
+}";
+
+            var (diagnostics, compilation) = GetGeneratedOutput(code);
+
+            Assert.Empty(diagnostics);
+
+            var assembly = compilation.Emit();
+
+            Assert.NotNull(assembly.GetType(MockNaming.DefaultNamespace + ".IFoo" + MockNaming.DefaultSuffix));
+            Assert.NotNull(assembly.GetType(MockNaming.DefaultNamespace + ".IBar" + MockNaming.DefaultSuffix));
+            Assert.NotNull(assembly.GetType(MockNaming.DefaultNamespace + ".IBaz" + MockNaming.DefaultSuffix));
+        }
+
+        [Fact]
+        public void GeneratesRecursiveMockForMethods()
+        {
+            var code = @"
+using Moq;
+
+namespace UnitTests
+{
+    public class Test
+    {
+        public void Do()
+        {
+            var mock = Mock.Of<IFoo>();
+            
+            mock.GetBar().GetBaz().Name.Returns(""hi"");
+        }
+    }
+
+    public interface IFoo 
+    {        
+        IBar GetBar();
+    }
+    
+    public interface IBar 
+    {
+        IBaz GetBaz();
+    }
+
+    public interface IBaz 
+    {
+        string Name { get; }
+    }
+}";
+
+            var (diagnostics, compilation) = GetGeneratedOutput(code);
+
+            Assert.Empty(diagnostics);
+
+            var assembly = compilation.Emit();
+
+            Assert.NotNull(assembly.GetType(MockNaming.DefaultNamespace + ".IFoo" + MockNaming.DefaultSuffix));
+            Assert.NotNull(assembly.GetType(MockNaming.DefaultNamespace + ".IBar" + MockNaming.DefaultSuffix));
+            Assert.NotNull(assembly.GetType(MockNaming.DefaultNamespace + ".IBaz" + MockNaming.DefaultSuffix));
+        }
+
+        [Fact]
+        public void GeneratesRecursiveMockSetup()
+        {
+            var code = @"
+using Moq;
+
+namespace UnitTests
+{
+    public class Test
+    {
+        public void Do()
+        {
+            var mock = Mock.Of<IFoo>();
+
+            mock.Setup(x => x.GetBar().Baz.Name).Returns(""hi"");            
+        }
+    }
+
+    public interface IFoo 
+    {        
+        IBar GetBar();
+    }
+    
+    public interface IBar 
+    {
+        IBaz Baz { get; }
+    }
+
+    public interface IBaz 
+    {
+        string Name { get; }
+    }
+}";
+
+            var (diagnostics, compilation) = GetGeneratedOutput(code);
+
+            Assert.Empty(diagnostics);
+
+            var assembly = compilation.Emit();
+
+            Assert.NotNull(assembly.GetType(MockNaming.DefaultNamespace + ".IFoo" + MockNaming.DefaultSuffix));
+            Assert.NotNull(assembly.GetType(MockNaming.DefaultNamespace + ".IBar" + MockNaming.DefaultSuffix));
+            Assert.NotNull(assembly.GetType(MockNaming.DefaultNamespace + ".IBaz" + MockNaming.DefaultSuffix));
+        }
+
         [Fact]
         public void GeneratesOneMockPerType()
         {
