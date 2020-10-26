@@ -1,7 +1,0 @@
-<Project TreatAsLocalProperty="VersionSuffix">
-  <!-- Prevent importing the shared props -->
-  <PropertyGroup>
-    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
-  </PropertyGroup>
-  <Import Project="..\Directory.Build.props" />
-</Project>

@@ -51,8 +51,36 @@ jobs:
           path: |
             *.binlog
             **/coverage.cobertura.xml
+      - name: 🔼 packages
+        uses: actions/upload-artifact@v2
+        with:
+          name: bin
+          path: bin/*.nupkg
       - name: 🚀 sleet
         if: matrix.os == 'ubuntu-latest'
         run: |
           dotnet tool install -g --version 3.2.0 sleet 
           sleet push bin --config none -f --verbose -p "SLEET_FEED_CONTAINER=nuget" -p "SLEET_FEED_CONNECTIONSTRING=${{ secrets.SLEET_CONNECTION }}" -p "SLEET_FEED_TYPE=azure"
+
+  acceptance:
+    name: acceptance-${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    needs: build
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+    steps:
+      - name: 🤘 checkout
+        uses: actions/checkout@v2
+      - name: 🔽 packages
+        uses: actions/download-artifact@v2
+        with:
+          name: bin
+          path: bin
+      - name: ⚙ dotnet 5.0 rc2
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.100-rc.2.20479.15
+      - name: 🧪 test
+        run: dotnet test -m:1 -p:versionsuffix="$GITHUB_REF.$GITHUB_RUN_NUMBER"
+        working-directory: src/Acceptance

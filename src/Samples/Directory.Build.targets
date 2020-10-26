@@ -1,7 +1,0 @@
-<Project>
-  <!-- Prevent importing the shared targets -->
-  <ItemGroup>
-    <PackageReference Update="NuGetizer" Version="$(NuGetizerVersion)" />
-    <PackageReference Update="Stunts" Version="$(StuntsVersion)" />
-  </ItemGroup>
-</Project>

@@ -40,11 +40,6 @@
     <PackageReference Include="SQLitePCLRaw.bundle_green" />
 
     <PackageReference Include="TypeNameFormatter.Sources" />
-
-    <!--
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" />
-    <PackageReference Include="Microsoft.Bcl.HashCode" />
-    -->
   </ItemGroup>
   
   <ItemGroup>
@@ -53,8 +48,4 @@
     <ProjectReference Include="..\Moq.StaticProxy\Moq.StaticProxy.csproj" />
   </ItemGroup>
   
-  <ItemGroup>
-    <Folder Include="Moq\" />
-  </ItemGroup>
-
 </Project>

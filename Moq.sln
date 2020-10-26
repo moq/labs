@@ -39,6 +39,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github\workflows\release.yml = .github\workflows\release.yml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moq.CodeAnalysis.UnitTests", "src\Moq.CodeAnalysis.UnitTests\Moq.CodeAnalysis.UnitTests.csproj", "{7EFC63B5-6978-40C9-8FEF-4FEEB4019B4C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,10 @@ Global
 		{36A3DD24-4B67-4A9E-83F8-C4794336460F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36A3DD24-4B67-4A9E-83F8-C4794336460F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{36A3DD24-4B67-4A9E-83F8-C4794336460F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EFC63B5-6978-40C9-8FEF-4FEEB4019B4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EFC63B5-6978-40C9-8FEF-4FEEB4019B4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EFC63B5-6978-40C9-8FEF-4FEEB4019B4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EFC63B5-6978-40C9-8FEF-4FEEB4019B4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
