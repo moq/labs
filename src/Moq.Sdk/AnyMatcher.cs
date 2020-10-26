@@ -12,7 +12,6 @@ namespace Moq.Sdk
     /// </summary>
     public class AnyMatcher : IArgumentMatcher, IEquatable<AnyMatcher>
     {
-        private readonly TypeInfo info;
         private readonly bool isValueType;
         private readonly bool isNullable;
 
@@ -24,9 +23,8 @@ namespace Moq.Sdk
         {
             ArgumentType = argumentType ?? throw new ArgumentNullException();
 
-            info = argumentType.GetValueTypeInfo();
-            isValueType = info.IsValueType;
-            isNullable = isValueType && info.IsGenericType &&
+            isValueType = argumentType.IsValueType;
+            isNullable = isValueType && argumentType.IsGenericType &&
                 argumentType.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
 
@@ -44,7 +42,7 @@ namespace Moq.Sdk
             if (isValueType && !isNullable && value == null)
                 return false;
 
-            return value == null || info.IsAssignableFrom(value.GetType().GetTypeInfo());
+            return value == null || ArgumentType.IsAssignableFrom(value.GetType());
         }
 
         /// <summary>
@@ -61,13 +59,13 @@ namespace Moq.Sdk
         #region Equality
 
         /// <inheritdoc />
-        public bool Equals(AnyMatcher other) => info.Equals(other.info);
+        public bool Equals(AnyMatcher other) => ArgumentType.Equals(other.ArgumentType);
 
         /// <inheritdoc />
         public override bool Equals(object other) => other is AnyMatcher matcher && Equals(matcher);
 
         /// <inheritdoc />
-        public override int GetHashCode() => info.GetHashCode();
+        public override int GetHashCode() => ArgumentType.GetHashCode();
 
         #endregion
     }

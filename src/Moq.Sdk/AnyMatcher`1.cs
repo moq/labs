@@ -14,8 +14,8 @@ namespace Moq.Sdk
     public class AnyMatcher<T> : IArgumentMatcher, IEquatable<AnyMatcher<T>>
     {
         // Disable warning since we only use this member from this class
-        private static readonly bool IsValueType = typeof(T).GetTypeInfo().IsValueType;
-        private static readonly bool IsNullable = typeof(T).GetTypeInfo().IsGenericType &&
+        private static readonly bool IsValueType = typeof(T).IsValueType;
+        private static readonly bool IsNullable = typeof(T).IsGenericType &&
             typeof(T).GetGenericTypeDefinition() == typeof(Nullable<>);
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace Moq.Sdk
                 return false;
 
             return value == null ||
-                typeof(T).GetTypeInfo().IsAssignableFrom(value.GetType().GetTypeInfo());
+                typeof(T).IsAssignableFrom(value.GetType());
         }
 
         /// <summary>

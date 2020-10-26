@@ -52,7 +52,7 @@ namespace Moq.Sdk
                 // queue of argument matchers to see if applies instead.
                 if (Equals(argument, defaultValue.GetDefault(parameter.ParameterType)) &&
                     currentMatchers.Count != 0 &&
-                    parameter.ParameterType.GetValueTypeInfo().IsAssignableFrom(currentMatchers.Peek().ArgumentType.GetValueTypeInfo()))
+                    parameter.ParameterType.IsAssignableFrom(currentMatchers.Peek().ArgumentType))
                 {
                     finalMatchers.Add(currentMatchers.Dequeue());
                 }

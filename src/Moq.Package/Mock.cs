@@ -24,7 +24,7 @@ namespace Moq
         /// </summary>
         private static T Create<T>(MockBehavior behavior, object[] constructorArgs, params Type[] interfaces) where T : class
         {
-            var mocked = (IMocked)MockFactory.Default.CreateMock(typeof(Mock).GetTypeInfo().Assembly, typeof(T), interfaces, constructorArgs);
+            var mocked = (IMocked)MockFactory.Default.CreateMock(typeof(Mock).Assembly, typeof(T), interfaces, constructorArgs);
 
             mocked.Initialize(behavior);
 

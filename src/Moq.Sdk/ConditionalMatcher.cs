@@ -12,8 +12,8 @@ namespace Moq.Sdk
     /// <typeparam name="T">Type of argument being conditioned.</typeparam>
     public class ConditionalMatcher<T> : IArgumentMatcher, IEquatable<ConditionalMatcher<T>>
     {
-        private static readonly bool IsValueType = typeof(T).GetTypeInfo().IsValueType;
-        private static readonly bool IsNullable = typeof(T).GetTypeInfo().IsGenericType &&
+        private static readonly bool IsValueType = typeof(T).IsValueType;
+        private static readonly bool IsNullable = typeof(T).IsGenericType &&
             typeof(T).GetGenericTypeDefinition() == typeof(Nullable<>);
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -46,7 +46,7 @@ namespace Moq.Sdk
 
             return (value == null ||
                 typeof(T) == value.GetType() ||
-                typeof(T).GetTypeInfo().IsAssignableFrom(value.GetType().GetTypeInfo())) &&
+                typeof(T).IsAssignableFrom(value.GetType())) &&
                 condition((T)value);
         }
 

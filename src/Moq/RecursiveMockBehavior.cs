@@ -44,7 +44,7 @@ namespace Moq
                     // yet.
                     var recursiveMock = ((IMocked)MockFactory.Default.CreateMock(
                         // Use the same assembly as the current target
-                        invocation.Target.GetType().GetTypeInfo().Assembly, 
+                        invocation.Target.GetType().Assembly, 
                         info.ReturnType, 
                         new Type[0], 
                         new object[0])).Mock;

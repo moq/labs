@@ -19,10 +19,10 @@ namespace Moq
         }
 
         public static bool CanBeIntercepted(this Type type)
-            => !type.GetTypeInfo().IsValueType && 
+            => !type.IsValueType && 
                !type.FullName.StartsWith(TaskFullName, StringComparison.Ordinal) &&
-               (type.GetTypeInfo().IsInterface ||
-               (type.GetTypeInfo().IsClass && !type.GetTypeInfo().IsSealed));
+               (type.IsInterface ||
+               (type.IsClass && !type.IsSealed));
 
         public static IMoq<T> AsMoq<T>(this T instance) where T : class => new Moq<T>(instance.AsMock());
     }
