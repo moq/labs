@@ -9,8 +9,7 @@ namespace Moq
     public interface IMoq : IMock
     {
         /// <summary>
-        /// Gets the <see cref="MockBehavior"/> of the mock, such as 
-        /// <see cref="MockBehavior.Loose"/> or <see cref="MockBehavior.Strict"/>.
+        /// Gets the <see cref="MockBehavior"/> of the mock.
         /// </summary>
         MockBehavior Behavior { get; set; }
 
@@ -21,8 +20,8 @@ namespace Moq
         DefaultValueProvider DefaultValue { get; set; }
 
         /// <summary>
-		/// Whether the base member virtual implementation will be called for mocked 
-        /// classes if no setup is matched. Defaults to <see langword="false"/>.
+		/// Whether the base member virtual implementation will be called for mocked classes if no setup is matched.
+		/// Defaults to <see langword="false"/>.
         /// </summary>
         bool CallBase { get; set; }
     }

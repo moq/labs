@@ -70,6 +70,7 @@ namespace Moq
         /// <summary>
         /// Marks a code block as being setup for mocks. Usage: <c>using (Setup()) { ... }</c>.
         /// </summary>
+        /// <seealso cref="SetupScope"/>
         public static IDisposable Setup() => new SetupScope();
     }
 }
