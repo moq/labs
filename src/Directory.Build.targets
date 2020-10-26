@@ -61,4 +61,15 @@
     </PropertyGroup>
   </Target>
 
+  <!-- Redefine nugetizer clean so it only cleans our local version of Moq -->
+  <Target Name="CleanCachedPackageId" AfterTargets="Build;Pack">
+    <PropertyGroup>
+      <PackageFolder>$(NuGetCache)\$(PackageId.ToLowerInvariant())\$(VersionPrefix)</PackageFolder>
+    </PropertyGroup>
+
+    <Message Text="Cleaning $(PackageFolder)" Condition="Exists($(PackageFolder))" Importance="high" />
+    <Exec Command='rd "$(PackageFolder)" /q /s' Condition="Exists($(PackageFolder)) and '$(OS)' == 'Windows_NT'" />
+    <Exec Command='rm -rf "$(PackageFolder)"' Condition="Exists($(PackageFolder)) and '$(OS)' != 'Windows_NT'" />
+  </Target>
+
 </Project>
