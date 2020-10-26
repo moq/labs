@@ -152,6 +152,53 @@ namespace UnitTests
         }
 
         [Fact]
+        public void GeneratesRecursiveMockSetupScope()
+        {
+            var code = @"
+using Moq;
+
+namespace UnitTests
+{
+    public class Test
+    {
+        public void Do()
+        {
+            var mock = Mock.Of<IFoo>();
+            using (new SetupScope())
+            {
+                mock.GetBar().Baz.Name.Returns(""hi"");
+            }
+        }
+    }
+
+    public interface IFoo 
+    {        
+        IBar GetBar();
+    }
+    
+    public interface IBar 
+    {
+        IBaz Baz { get; }
+    }
+
+    public interface IBaz 
+    {
+        string Name { get; }
+    }
+}";
+
+            var (diagnostics, compilation) = GetGeneratedOutput(code);
+
+            Assert.Empty(diagnostics);
+
+            var assembly = compilation.Emit();
+
+            Assert.NotNull(assembly.GetType(MockNaming.DefaultNamespace + ".IFoo" + MockNaming.DefaultSuffix));
+            Assert.NotNull(assembly.GetType(MockNaming.DefaultNamespace + ".IBar" + MockNaming.DefaultSuffix));
+            Assert.NotNull(assembly.GetType(MockNaming.DefaultNamespace + ".IBaz" + MockNaming.DefaultSuffix));
+        }
+
+        [Fact]
         public void GeneratesOneMockPerType()
         {
             var code = @"
@@ -256,7 +303,7 @@ namespace UnitTests
                     CSharpSyntaxTree.ParseText(File.ReadAllText("Moq/Mock.Overloads.cs"), path: "Mock.Overloads.cs"),
                 }, references, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
-            var diagnostics = compilation.GetDiagnostics();
+            var diagnostics = compilation.GetDiagnostics().RemoveAll(d => d.Severity == DiagnosticSeverity.Hidden || d.Severity == DiagnosticSeverity.Info);
             if (diagnostics.Any())
                 return (diagnostics, compilation);
 
