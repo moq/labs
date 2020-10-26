@@ -40,12 +40,11 @@ namespace Moq
                 receivers.OfType<RecursiveMockSyntaxReceiver>().FirstOrDefault() is var recursive)
             {
                 var generatorAttr = context.Compilation.GetTypeByMetadataName(generator.GeneratorAttribute.FullName!);
-                var scopeAttr = context.Compilation.GetTypeByMetadataName(typeof(SetupScopeAttribute).FullName!);
                 var moqmodule = context.Compilation.GetTypeByMetadataName("Moq.IMoq")!.ContainingModule;
                 var sdkmodule = context.Compilation.GetTypeByMetadataName(typeof(IMock).FullName!)!.ContainingModule;
 
                 // If we can't know what's the attribute that annotates mock generators, we can't do anything.
-                if (generatorAttr != null || scopeAttr != null)
+                if (generatorAttr != null)
                 {
                     foreach (var node in recursive.CandidateNodes)
                     {
