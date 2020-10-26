@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ComponentModel;
 
 namespace Moq
@@ -11,6 +11,17 @@ namespace Moq
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static class SetupExtension
     {
+        /// <summary>
+        /// Marks a code block as being setup for mocks (any, not just the 
+        /// <paramref name="mock"/> argument). Usage: <c>using (mock.Setup()) { ... }</c>.
+        /// </summary>
+        /// <remarks>
+        /// Even though this is an extension method on a particular instance of a mock, the scope 
+        /// is active and affects all invocations to any mocks called within the block.
+        /// </remarks>
+        /// <seealso cref="SetupScope"/>
+        public static IDisposable Setup<T>(this T mock) => new SetupScope();
+
         /// <summary>
         /// Sets up the mock with the given void method call.
         /// </summary>
