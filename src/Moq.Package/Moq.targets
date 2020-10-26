@@ -10,7 +10,6 @@
   <!-- Stunts provides this property -->
   <ItemGroup Condition="'$(SourceGeneratorSupported)' == 'true'">
     <CompilerVisibleProperty Include="DebugMoqSourceGenerator" />
-    <CompilerVisibleProperty Include="EmitMoqSource" />
     <CompilerVisibleProperty Include="MoqAnalyzerDir" />
   </ItemGroup>
 
@@ -32,6 +31,6 @@
   </ItemGroup>
 
   <Import Project="Moq.DynamicProxy.targets" 
-          Condition="'$(RegisterStaticMockFactory)' == 'false' and  Exists('Moq.DynamicProxy.targets')" />
+          Condition="'$(RegisterStaticMockFactory)' != 'true' and  Exists('Moq.DynamicProxy.targets')" />
 
 </Project>
