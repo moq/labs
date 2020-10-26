@@ -13,10 +13,12 @@
         <None Include="Mock.StaticFactory.*" PackFolder="build\netstandard2.0" />
         <None Include="Moq.props" PackFolder="build\netstandard2.0" />
         <None Include="Moq.targets" PackFolder="build\netstandard2.0" />
+        <PackageFile Include="@(None)" PackFolder="buildTransitive\netstandard2.0" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" Visible="false" Pack="false" />
-        <PackageReference Include="NuGetizer" Version="$(NuGetizerVersion)" Visible="false" />
+        <PackageReference Include="NuGetizer" Version="0.4.9" Visible="false" />
+        <PackageReference Update="NuGetizer" Version="42.42.42" Visible="false" Condition="Exists('$(MSBuildThisFileDirectory)..\..\..\nugetizer\bin\')" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Moq.Sdk\Moq.Sdk.csproj" />
