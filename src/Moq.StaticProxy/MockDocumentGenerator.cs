@@ -27,6 +27,9 @@ namespace Moq
                     new CSharpMocked(),
                     new VisualBasicMocked(),
                     new FixupImports(),
+                    new CSharpFileHeader(),
+                    new CSharpPragmas(),
+                    new VisualBasicFileHeader(),
                 }).ToArray())
         {
             GeneratorAttribute = typeof(MockGeneratorAttribute);
