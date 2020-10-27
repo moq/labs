@@ -1,14 +1,14 @@
 <Project>
 
   <PropertyGroup>
-    <StuntsVersion>42.42.42-main.170</StuntsVersion>
+    <StuntsVersion>42.42.42-main.175</StuntsVersion>
     <StuntsVersion Condition="Exists('$(MSBuildThisFileDirectory)..\..\stunts\bin\')">42.42.42</StuntsVersion>
   </PropertyGroup>
 
   <ItemGroup Label="Core">
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.0.0" />
     <PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" />
-    <PackageVersion Include="ThisAssembly" Version="1.0.0-beta" />
+    <PackageVersion Include="ThisAssembly" Version="1.0.0-rc" />
     <PackageVersion Include="NuGetizer" Version="0.4.9" />
     <PackageVersion Update="NuGetizer" Version="42.42.42" Condition="Exists('$(MSBuildThisFileDirectory)..\..\nugetizer\bin\')" />
     <PackageVersion Include="Stunts" Version="$(StuntsVersion)" />

@@ -56,9 +56,9 @@ namespace UnitTests
 
             var assembly = compilation.Emit();
 
-            Assert.NotNull(assembly.GetType(MockNaming.DefaultNamespace + ".IFoo" + MockNaming.DefaultSuffix));
-            Assert.NotNull(assembly.GetType(MockNaming.DefaultNamespace + ".IBar" + MockNaming.DefaultSuffix));
-            Assert.NotNull(assembly.GetType(MockNaming.DefaultNamespace + ".IBaz" + MockNaming.DefaultSuffix));
+            Assert.NotNull(assembly.GetType(MockNaming.DefaultRootNamespace + ".UnitTests.IFoo" + MockNaming.DefaultSuffix));
+            Assert.NotNull(assembly.GetType(MockNaming.DefaultRootNamespace + ".UnitTests.IBar" + MockNaming.DefaultSuffix));
+            Assert.NotNull(assembly.GetType(MockNaming.DefaultRootNamespace + ".UnitTests.IBaz" + MockNaming.DefaultSuffix));
         }
 
         [Fact]
@@ -101,9 +101,9 @@ namespace UnitTests
 
             var assembly = compilation.Emit();
 
-            Assert.NotNull(assembly.GetType(MockNaming.DefaultNamespace + ".IFoo" + MockNaming.DefaultSuffix));
-            Assert.NotNull(assembly.GetType(MockNaming.DefaultNamespace + ".IBar" + MockNaming.DefaultSuffix));
-            Assert.NotNull(assembly.GetType(MockNaming.DefaultNamespace + ".IBaz" + MockNaming.DefaultSuffix));
+            Assert.NotNull(assembly.GetType(MockNaming.DefaultRootNamespace + ".UnitTests.IFoo" + MockNaming.DefaultSuffix));
+            Assert.NotNull(assembly.GetType(MockNaming.DefaultRootNamespace + ".UnitTests.IBar" + MockNaming.DefaultSuffix));
+            Assert.NotNull(assembly.GetType(MockNaming.DefaultRootNamespace + ".UnitTests.IBaz" + MockNaming.DefaultSuffix));
         }
 
         [Fact]
@@ -146,9 +146,9 @@ namespace UnitTests
 
             var assembly = compilation.Emit();
 
-            Assert.NotNull(assembly.GetType(MockNaming.DefaultNamespace + ".IFoo" + MockNaming.DefaultSuffix));
-            Assert.NotNull(assembly.GetType(MockNaming.DefaultNamespace + ".IBar" + MockNaming.DefaultSuffix));
-            Assert.NotNull(assembly.GetType(MockNaming.DefaultNamespace + ".IBaz" + MockNaming.DefaultSuffix));
+            Assert.NotNull(assembly.GetType(MockNaming.DefaultRootNamespace + ".UnitTests.IFoo" + MockNaming.DefaultSuffix));
+            Assert.NotNull(assembly.GetType(MockNaming.DefaultRootNamespace + ".UnitTests.IBar" + MockNaming.DefaultSuffix));
+            Assert.NotNull(assembly.GetType(MockNaming.DefaultRootNamespace + ".UnitTests.IBaz" + MockNaming.DefaultSuffix));
         }
 
         [Fact]
@@ -193,9 +193,9 @@ namespace UnitTests
 
             var assembly = compilation.Emit();
 
-            Assert.NotNull(assembly.GetType(MockNaming.DefaultNamespace + ".IFoo" + MockNaming.DefaultSuffix));
-            Assert.NotNull(assembly.GetType(MockNaming.DefaultNamespace + ".IBar" + MockNaming.DefaultSuffix));
-            Assert.NotNull(assembly.GetType(MockNaming.DefaultNamespace + ".IBaz" + MockNaming.DefaultSuffix));
+            Assert.NotNull(assembly.GetType(MockNaming.DefaultRootNamespace + ".UnitTests.IFoo" + MockNaming.DefaultSuffix));
+            Assert.NotNull(assembly.GetType(MockNaming.DefaultRootNamespace + ".UnitTests.IBar" + MockNaming.DefaultSuffix));
+            Assert.NotNull(assembly.GetType(MockNaming.DefaultRootNamespace + ".UnitTests.IBaz" + MockNaming.DefaultSuffix));
         }
 
         [Fact]
@@ -278,7 +278,7 @@ namespace UnitTests
             }
         }
 
-        private static (ImmutableArray<Diagnostic>, Compilation) GetGeneratedOutput(string source, [CallerMemberName] string? test = null)
+        static (ImmutableArray<Diagnostic>, Compilation) GetGeneratedOutput(string source, [CallerMemberName] string? test = null)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(source, path: test + ".cs");
 

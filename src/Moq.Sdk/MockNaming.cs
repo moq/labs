@@ -9,9 +9,9 @@ namespace Moq.Sdk
     public static class MockNaming
     {
         /// <summary>
-        /// The default namespace where generated mocks are declared.
+        /// The default root or base namespace where generated mocks are declared.
         /// </summary>
-        public const string DefaultNamespace = "Mocks";
+        public const string DefaultRootNamespace = "Mocks";
 
         /// <summary>
         /// The default suffix added to mock type names.
@@ -34,21 +34,21 @@ namespace Moq.Sdk
 
         /// <summary>
         /// Gets the runtime mock full name from its base type and optional additional interfaces,
-        /// using the <see cref="DefaultNamespace"/> and <see cref="DefaultSuffix"/>.
+        /// using the <see cref="DefaultRootNamespace"/> and <see cref="DefaultSuffix"/>.
         /// </summary>
         public static string GetFullName(Type baseType, params Type[] additionalInterfaces)
-            => GetFullName(DefaultNamespace, DefaultSuffix, baseType, additionalInterfaces);
+            => GetFullName(DefaultRootNamespace, DefaultSuffix, baseType, additionalInterfaces);
 
         /// <summary>
         /// Gets the runtime mock full name from its base type and implemented interfaces.
         /// </summary>
-        public static string GetFullName(string @namespace, Type baseType, params Type[] additionalInterfaces)
-            => GetFullName(@namespace, DefaultSuffix, baseType, additionalInterfaces);
+        public static string GetFullName(string rootNamespace, Type baseType, params Type[] additionalInterfaces)
+            => GetFullName(rootNamespace, DefaultSuffix, baseType, additionalInterfaces);
 
         /// <summary>
         /// Gets the runtime mock full name from its base type and implemented interfaces.
         /// </summary>
-        public static string GetFullName(string @namespace, string suffix, Type baseType, params Type[] additionalInterfaces)
-            => StuntNaming.GetFullName(@namespace, suffix, baseType, additionalInterfaces);
+        public static string GetFullName(string rootNamespace, string suffix, Type baseType, params Type[] additionalInterfaces)
+            => StuntNaming.GetFullName(rootNamespace, suffix, baseType, additionalInterfaces);
     }
 }
