@@ -9,6 +9,8 @@ using Xunit.Abstractions;
 
 namespace Moq.Tests
 {
+    using static Moq.Syntax;
+
     public class MoqTests
     {
         private readonly ITestOutputHelper output;
@@ -39,7 +41,7 @@ namespace Moq.Tests
             calculator.TurnedOn += handler;
 
             Assert.Equal(1, calculator.AsMock().Invocations.Count);
-            calculator.TurnedOn += Raise.Event();
+            calculator.TurnedOn += Raise();
             // Raising events should not increase invocation count.
             Assert.Equal(1, calculator.AsMock().Invocations.Count);
 

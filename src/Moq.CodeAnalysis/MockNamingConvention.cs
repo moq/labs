@@ -10,9 +10,9 @@ namespace Moq
     public class MockNamingConvention : NamingConvention
     {
         /// <summary>
-        /// Gets the generated code namespace, which is <see cref="MockNaming.DefaultNamespace"/>.
+        /// Gets the generated code namespace, which is <see cref="MockNaming.DefaultRootNamespace"/>.
         /// </summary>
-        public override string Namespace => MockNaming.DefaultNamespace;
+        public override string RootNamespace => MockNaming.DefaultRootNamespace;
 
         /// <summary>
         /// Gets the generated type names suffix, which is <see cref="MockNaming.DefaultSuffix"/>.

@@ -70,51 +70,6 @@ namespace Moq.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Implement mock.
-        /// </summary>
-        internal static string CustomMockCodeFix_Implement {
-            get {
-                return ResourceManager.GetString("CustomMockCodeFix_Implement", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Generate {0}.
-        /// </summary>
-        internal static string GenerateMockCodeFix_TitleFormat {
-            get {
-                return ResourceManager.GetString("GenerateMockCodeFix_TitleFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invoked method requires a mock to be generated at design-time or compile-time..
-        /// </summary>
-        internal static string MissingMockAnalyzer_Description {
-            get {
-                return ResourceManager.GetString("MissingMockAnalyzer_Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Expected mock &apos;{0}&apos; was not found in the current compilation..
-        /// </summary>
-        internal static string MissingMockAnalyzer_Message {
-            get {
-                return ResourceManager.GetString("MissingMockAnalyzer_Message", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Mock not found.
-        /// </summary>
-        internal static string MissingMockAnalyzer_Title {
-            get {
-                return ResourceManager.GetString("MissingMockAnalyzer_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Project &apos;{0}&apos; does not reference the required Moq assembly..
         /// </summary>
         internal static string MoqRequired {
@@ -124,38 +79,29 @@ namespace Moq.CodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Existing generated mock &apos;{0}&apos; is outdated..
+        ///   Looks up a localized string similar to Setup can be simplified by using the static Syntax class..
         /// </summary>
-        internal static string OutdatedMockAnalyzer_Description {
+        internal static string SimplifySetup_Description {
             get {
-                return ResourceManager.GetString("OutdatedMockAnalyzer_Description", resourceCulture);
+                return ResourceManager.GetString("SimplifySetup_Description", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mock  must be updated..
+        ///   Looks up a localized string similar to Setup can be simplified by using the static Syntax class..
         /// </summary>
-        internal static string OutdatedMockAnalyzer_Message {
+        internal static string SimplifySetup_Message {
             get {
-                return ResourceManager.GetString("OutdatedMockAnalyzer_Message", resourceCulture);
+                return ResourceManager.GetString("SimplifySetup_Message", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mock must be updated.
+        ///   Looks up a localized string similar to Simplify setup.
         /// </summary>
-        internal static string OutdatedMockAnalyzer_Title {
+        internal static string SimplifySetup_Title {
             get {
-                return ResourceManager.GetString("OutdatedMockAnalyzer_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Update {0}.
-        /// </summary>
-        internal static string UpdateMockCodeFix_TitleFormat {
-            get {
-                return ResourceManager.GetString("UpdateMockCodeFix_TitleFormat", resourceCulture);
+                return ResourceManager.GetString("SimplifySetup_Title", resourceCulture);
             }
         }
     }

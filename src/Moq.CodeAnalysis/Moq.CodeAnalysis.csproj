@@ -7,21 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="MockValidateTypesAnalyzer.cs" />
-    <Compile Remove="RecursiveMockAnalyzer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="MockValidateTypesAnalyzer.cs" />
-    <None Include="RecursiveMockAnalyzer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Stunts" />
     <PackageReference Include="Stunts.CodeAnalysis" />
     <PackageReference Include="Superpower" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Pack="false" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Pack="false" />
     <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" Pack="false" />
+    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" Pack="false" />
 
     <!-- Workaround for revision mismatch with public versions -->
     <PackageReference Include="System.Collections.Immutable" Pack="false" />

@@ -25,5 +25,6 @@
         <ProjectReference Include="..\Moq\Moq.csproj" />
         <ProjectReference Include="..\Moq.DynamicProxy\Moq.DynamicProxy.csproj" />
         <ProjectReference Include="..\Moq.StaticProxy\Moq.StaticProxy.csproj" />
+        <ProjectReference Include="..\Moq.CodeAnalysis\Moq.CodeAnalysis.csproj" />
     </ItemGroup>
 </Project>
