@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+﻿using System;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -6,20 +7,19 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Editing;
-using CS = Microsoft.CodeAnalysis.CSharp.Syntax;
-using VB = Microsoft.CodeAnalysis.VisualBasic.Syntax;
-using CSFactory = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-using VBFactory = Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory;
 using Microsoft.CodeAnalysis.Simplification;
-using System;
-using Moq.Properties;
+using Superpower.Parsers;
+using CS = Microsoft.CodeAnalysis.CSharp.Syntax;
+using CSFactory = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using VB = Microsoft.CodeAnalysis.VisualBasic.Syntax;
+using VBFactory = Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory;
 
 namespace Moq
 {
     /// <summary>
     /// Generates code for custom delegates used for ref/out mocking.
     /// </summary>
-    [ExportCodeFixProvider(LanguageNames.CSharp, LanguageNames.VisualBasic, Name = "CustomDelegate")]
+    [ExportCodeFixProvider(LanguageNames.CSharp, LanguageNames.VisualBasic, Name = nameof(CustomDelegateCodeFix))]
     public class CustomDelegateCodeFix : CodeFixProvider
     {
         /// <inheritdoc />
@@ -36,6 +36,8 @@ namespace Moq
             var document = context.Document;
             var span = context.Span;
             var root = await document.GetSyntaxRootAsync(context.CancellationToken);
+            if (root == null)
+                return;
 
             var token = root.FindToken(span.Start);
             if (!token.Span.IntersectsWith(span))
@@ -48,7 +50,7 @@ namespace Moq
             var semantic = await document.GetSemanticModelAsync(context.CancellationToken);
 
             var node = root.FindNode(span);
-            if (node == null)
+            if (node == null || semantic == null)
                 return;
 
             if (node.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.Argument))
@@ -66,16 +68,16 @@ namespace Moq
                 return;
 
             var compilation = await document.Project.GetCompilationAsync();
-            var scope = compilation.GetTypeByMetadataName(typeof(SetupScopeAttribute).FullName);
-            if (scope == null)
+            var scope = compilation?.GetTypeByMetadataName(typeof(SetupScopeAttribute).FullName);
+            if (compilation == null || scope == null)
                 return;
 
             // We only generate for [SetupScope] annotated methods. 
             // TODO: should integrate seamlessly with recursive mocks
-            if (!setupSymbol.CandidateSymbols.Any(c => c.GetAttributes().Any(a => a.AttributeClass == scope)))
+            if (!setupSymbol.CandidateSymbols.Any(c => c.GetAttributes().Any(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, scope))))
                 return;
 
-            IMethodSymbol targetMethod = null;
+            IMethodSymbol? targetMethod = null;
 
             // CS1593 case
             if (node is CS.LambdaExpressionSyntax)
@@ -119,7 +121,7 @@ namespace Moq
         }
 
         /// <inheritdoc />
-        public sealed override FixAllProvider GetFixAllProvider() => null;
+        public sealed override FixAllProvider? GetFixAllProvider() => null;
 
         class SetupDelegateCodeAction : CodeAction
         {
@@ -134,7 +136,10 @@ namespace Moq
                 this.symbol = symbol;
             }
 
-            public override string Title => Strings.CustomDelegateCodeFix.TitleFormat(symbol.Name);
+            public override string? EquivalenceKey => symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) + 
+                "(" + string.Join(",", symbol.Parameters.Select(x => x.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat))) + ")";
+
+            public override string Title => ThisAssembly.Strings.CustomDelegateCodeFix.TitleFormat(symbol.Name);
 
             protected override async Task<Document> GetChangedDocumentAsync(CancellationToken cancellationToken)
             {
@@ -160,10 +165,13 @@ namespace Moq
                     node = FindSetup(root);
                 }
                 else
-                {                    
+                {
                     var tempDoc = document.WithSyntaxRoot(generator.ReplaceNode(root, @delegate, signature));
                     tempDoc = await Simplifier.ReduceAsync(tempDoc);
                     var tempRoot = await tempDoc.GetSyntaxRootAsync(cancellationToken);
+                    if (tempRoot == null)
+                        return document;
+
                     var className = generator.GetName(@class);
                     var tempClass = tempRoot.DescendantNodes().First(x =>
                         generator.GetDeclarationKind(x) == DeclarationKind.Class &&
@@ -175,14 +183,21 @@ namespace Moq
                     {
                         // Generate the delegate name using full Type+Member name.
                         var semantic = await document.GetSemanticModelAsync(cancellationToken);
-                        var mock = semantic.GetSymbolInfo(
-                            setup.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.InvocationExpression) ?
-                            (SyntaxNode)((setup as CS.InvocationExpressionSyntax)?.Expression as CS.MemberAccessExpressionSyntax)?.Expression :
-                            ((setup as VB.InvocationExpressionSyntax)?.Expression as VB.MemberAccessExpressionSyntax)?.Expression);
+                        if (semantic == null)
+                            return document;
 
-                        if (mock.Symbol != null && 
-                            mock.Symbol.Kind == SymbolKind.Local || 
-                            mock.Symbol.Kind == SymbolKind.Field)
+                        SyntaxNode? memberNode = setup.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.InvocationExpression) ?
+                            ((setup as CS.InvocationExpressionSyntax)?.Expression as CS.MemberAccessExpressionSyntax)?.Expression :
+                            ((setup as VB.InvocationExpressionSyntax)?.Expression as VB.MemberAccessExpressionSyntax)?.Expression;
+
+                        if (memberNode == null)
+                            return document;
+
+                        var mock = semantic.GetSymbolInfo(memberNode);
+
+                        if (mock.Symbol != null &&
+                            (mock.Symbol.Kind == SymbolKind.Local ||
+                             mock.Symbol.Kind == SymbolKind.Field))
                         {
                             var type = mock.Symbol.Kind == SymbolKind.Local ?
                                 ((ILocalSymbol)mock.Symbol).Type :
@@ -200,10 +215,11 @@ namespace Moq
                 root = generator.ReplaceNode(root, node, generator.WithTypeArguments(node, generator.IdentifierName(delegateName)));
                 // Find the updated setup
                 node = FindSetup(root);
+                if (node == null || node.Parent == null)
+                    return document;
 
                 // Detect recursive mock access and wrap in a Func<TDelegate>
-                if (
-                    node.Parent.ChildNodes()
+                if (node.Parent.ChildNodes()
                         .OfType<CS.ArgumentListSyntax>()
                         .Where(list => !list.Arguments.Select(arg => arg.Expression).OfType<CS.LambdaExpressionSyntax>().Any())
                         .SelectMany(list => list.DescendantNodes().OfType<CS.MemberAccessExpressionSyntax>())
@@ -226,12 +242,15 @@ namespace Moq
                         generator.ValueReturningLambdaExpression(expression));
                     // Find the updated setup
                     node = FindSetup(root);
+                    if (node == null || node.Parent == null)
+                        return document;
                 }
 
                 // If there is no Returns, generate one
-                if (node.Parent.Parent.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.ExpressionStatement))
+                if (node.Parent?.Parent != null &&
+                    node.Parent.Parent.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.ExpressionStatement))
                 {
-                    var returns = generator.InvocationExpression(
+                    var returns = (CS.InvocationExpressionSyntax)generator.InvocationExpression(
                         generator.MemberAccessExpression(
                             node.Parent.WithTrailingTrivia(
                                 node.Parent.Parent.GetLeadingTrivia().Add(CSFactory.Whitespace("\t"))),
@@ -242,15 +261,29 @@ namespace Moq
 
                     // Replace the parent InvocationExpression with the returning one.
                     root = generator.ReplaceNode(root, node.Parent, returns);
+
+                    // Find the updated setup
+                    node = FindSetup(root);
+
+                    var statement = node.Ancestors().OfType<CS.ExpressionStatementSyntax>().FirstOrDefault();
+                    if (statement != null && 
+                        (statement.GetTrailingTrivia().Count == 0 || 
+                        !statement.GetTrailingTrivia().Any(t => t.Token == statement.SemicolonToken)))
+                    {
+                        root = generator.ReplaceNode(root, statement, statement
+                            .WithSemicolonToken(CSFactory.Token(Microsoft.CodeAnalysis.CSharp.SyntaxKind.SemicolonToken)
+                            .WithTrailingTrivia(statement.GetTrailingTrivia().Insert(0, CSFactory.ElasticCarriageReturnLineFeed))));
+                    }
                 }
-                else if (node.Parent.Parent.IsKind(Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.ExpressionStatement))
+                else if (node.Parent?.Parent != null && 
+                    node.Parent.Parent.IsKind(Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.ExpressionStatement))
                 {
                     var lambda = VBFactory.MultiLineFunctionLambdaExpression(
                         VBFactory.FunctionLambdaHeader().WithParameterList(
                             VBFactory.ParameterList(
                                 VBFactory.SeparatedList(
                                     symbol.Parameters.Select(prm => (VB.ParameterSyntax)generator.ParameterDeclaration(prm))))),
-                        VBFactory.List(new VB.StatementSyntax[] 
+                        VBFactory.List(new VB.StatementSyntax[]
                         {
                             VBFactory.ThrowStatement(
                                 VBFactory.ObjectCreationExpression(

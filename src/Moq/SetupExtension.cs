@@ -20,11 +20,13 @@ namespace Moq
         /// is active and affects all invocations to any mocks called within the block. 
         /// </remarks>
         /// <seealso cref="SetupScope"/>
+        [SetupScope]
         public static IDisposable Setup<T>(this T mock) => new SetupScope();
 
         /// <summary>
         /// Sets up the mock with the given void method call.
         /// </summary>
+        [SetupScope]
         public static ISetup Setup<T>(this T mock, Action<T> action)
         {
             using (new SetupScope())
@@ -37,6 +39,7 @@ namespace Moq
         /// <summary>
         /// Sets up the mock with the given function.
         /// </summary>
+        [SetupScope]
         public static TResult Setup<T, TResult>(this T mock, Func<T, TResult> function)
         {
             using (new SetupScope())
@@ -50,6 +53,7 @@ namespace Moq
         /// access and set ref/out arguments. A code fix will automatically 
         /// generate a delegate with the right signature when using this overload.
         /// </summary>
+        [SetupScope]
         public static ISetup<TDelegate> Setup<TDelegate>(this object mock, TDelegate member)
             => new DefaultSetup<TDelegate>(member as Delegate ?? throw new ArgumentException(ThisAssembly.Strings.Setup.DelegateExpected));
 
@@ -61,6 +65,7 @@ namespace Moq
         /// and pass in the method group directly instead. A code fix will automatically 
         /// generate a delegate with the right signature when using this overload.
         /// </summary>
+        [SetupScope]
         public static ISetup<TDelegate> Setup<TDelegate>(this object mock, Func<TDelegate> memberFunction)
         {
             using (new SetupScope())
