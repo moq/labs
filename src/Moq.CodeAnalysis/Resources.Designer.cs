@@ -70,6 +70,16 @@ namespace Moq.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A subsequent code fix for this completion will allow you to generate a 
+        ///delegate to set up this method directly with the right Returns signature..
+        /// </summary>
+        internal static string CustomDelegateCompletion_Description {
+            get {
+                return ResourceManager.GetString("CustomDelegateCompletion_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Project &apos;{0}&apos; does not reference the required Moq assembly..
         /// </summary>
         internal static string MoqRequired {

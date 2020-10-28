@@ -8,7 +8,8 @@
   <ItemGroup Label="Core">
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.0.0" />
     <PackageVersion Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" />
-    <PackageVersion Include="ThisAssembly" Version="1.0.0-rc" />
+    <PackageVersion Include="ThisAssembly" Version="1.0.0-rc.1" />
+    <PackageVersion Update="ThisAssembly" Version="42.42.42" Condition="Exists('$(MSBuildThisFileDirectory)..\..\ThisAssembly\bin\')" />
     <PackageVersion Include="NuGetizer" Version="0.4.9" />
     <PackageVersion Update="NuGetizer" Version="42.42.42" Condition="Exists('$(MSBuildThisFileDirectory)..\..\nugetizer\bin\')" />
     <PackageVersion Include="Stunts" Version="$(StuntsVersion)" />
@@ -65,6 +66,8 @@
     <PackageVersion Include="Castle.Core" Version="4.4.1" />
     <PackageVersion Include="Superpower" Version="2.3.0" />
     <PackageVersion Include="Ben.Demystifier" Version="0.1.4" />
+
+    <PackageVersion Include="Microsoft.VSSDK.BuildTools" Version="16.7.3069" />
   </ItemGroup>
 
 </Project>

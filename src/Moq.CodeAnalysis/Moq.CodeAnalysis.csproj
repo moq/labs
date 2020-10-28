@@ -12,6 +12,7 @@
     <PackageReference Include="Superpower" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Pack="false" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Pack="false" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Pack="false" />
     <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" Pack="false" />
     <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" Pack="false" />
 
@@ -21,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Moq.Sdk\Moq.Sdk.csproj" />
+    <ProjectReference Include="..\Moq.Sdk\Moq.Sdk.csproj" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>

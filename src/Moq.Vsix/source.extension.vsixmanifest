@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
+  <Metadata>
+    <Identity Id="Moq.Vsix" Version="1.0" Language="en-US" Publisher="danie"/>
+    <DisplayName>Moq Completion Tester</DisplayName>
+    <Description xml:space="preserve">This is only needed to make troubleshooting and debuging custom completions more convenient.</Description>
+  </Metadata>
+  <Installation>
+    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[16.0,)" />
+  </Installation>
+  <Assets>
+    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="Moq.CodeAnalysis" Path="|Moq.CodeAnalysis|"/>
+    <Asset Type="Microsoft.VisualStudio.Analyzer" d:Source="Project" d:ProjectName="Moq.CodeAnalysis" Path="|Moq.CodeAnalysis|"/>
+    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="Moq.Sdk" Path="|Moq.Sdk|"/>
+    <Asset Type="Microsoft.VisualStudio.Analyzer" d:Source="Project" d:ProjectName="Moq.Sdk" Path="|Moq.Sdk|"/>
+    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="File" Path="Stunts"/>
+    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="File" Path="Stunts.CodeAnalysis"/>
+    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="File" Path="Superpower"/>
+  </Assets>
+  <Prerequisites>
+    <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[16.0,)" DisplayName="Visual Studio core editor" />
+    <Prerequisite Id="Microsoft.VisualStudio.Component.Roslyn.LanguageServices" Version="[16.0,)" DisplayName="Roslyn Language Services" />
+  </Prerequisites>
+</PackageManifest>

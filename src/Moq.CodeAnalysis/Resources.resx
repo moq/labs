@@ -120,6 +120,11 @@
   <data name="CustomDelegateCodeFix_TitleFormat" xml:space="preserve">
     <value>Setup mock with typed delegate for {0}</value>
   </data>
+  <data name="CustomDelegateCompletion_Description" xml:space="preserve">
+    <value>A subsequent code fix for this completion will allow you to generate a 
+delegate to set up this method directly with the right Returns signature.</value>
+    <comment>Description for completion</comment>
+  </data>
   <data name="MoqRequired" xml:space="preserve">
     <value>Project '{0}' does not reference the required Moq assembly.</value>
   </data>
