@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using Castle.Components.DictionaryAdapter;
 using Moq.Sdk;
-using Stunts;
+using Avatars;
 
 namespace Moq
 {

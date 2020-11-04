@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Moq.Sdk;
-using Stunts;
+using Avatars;
 
 namespace Moq
 {
@@ -238,7 +238,7 @@ namespace Moq
             return clone.Object;
         }
 
-        private class NotCalledBehavior : IStuntBehavior
+        private class NotCalledBehavior : IAvatarBehavior
         {
             public bool AppliesTo(IMethodInvocation invocation) => true;
 

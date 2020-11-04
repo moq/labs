@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Editing;
 using Moq.Sdk;
-using Stunts;
+using Avatars;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Moq.Processors
@@ -103,7 +103,7 @@ namespace Moq.Processors
                       .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
 
                     // Try to locate the Mock property following the Behaviors property
-                    var behaviors = generator.GetMembers(node).FirstOrDefault(x => generator.GetName(x) == nameof(IStunt.Behaviors));
+                    var behaviors = generator.GetMembers(node).FirstOrDefault(x => generator.GetName(x) == nameof(IAvatar.Behaviors));
                     if (behaviors != null)
                     {
                         node = (ClassDeclarationSyntax)generator.InsertNodesAfter(node, behaviors, new[] { property });

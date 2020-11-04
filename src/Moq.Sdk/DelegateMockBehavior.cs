@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using Stunts;
+using Avatars;
 
 namespace Moq.Sdk
 {

@@ -1,4 +1,4 @@
-﻿using Stunts;
+﻿using Avatars;
 using Moq.Sdk;
 using System.Linq;
 using System.ComponentModel;
@@ -10,7 +10,7 @@ namespace Moq
     /// See <see cref="CallBaseExtension"/> method calls.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public class CallBaseBehavior : IStuntBehavior
+    public class CallBaseBehavior : IAvatarBehavior
     {
         /// <inheritdoc />
         public bool AppliesTo(IMethodInvocation invocation) => true;

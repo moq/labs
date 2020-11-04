@@ -2,11 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using Stunts;
+using Avatars;
 
 namespace Moq.Sdk.Tests
 {
-    public class FakeMock : IStunt, IMocked
+    public class FakeMock : IAvatar, IMocked
     {
         private readonly DefaultMock mock;
 
@@ -14,7 +14,7 @@ namespace Moq.Sdk.Tests
 
         public FakeMock() => mock = new DefaultMock(this);
 
-        public IList<IStuntBehavior> Behaviors => Pipeline.Behaviors;
+        public IList<IAvatarBehavior> Behaviors => Pipeline.Behaviors;
 
         public IMock Mock => mock;
     }

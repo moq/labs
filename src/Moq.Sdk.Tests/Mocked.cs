@@ -1,17 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading;
-using Stunts;
+using Avatars;
 
 namespace Moq.Sdk.Tests
 {
-    public class Mocked : IMocked, IStunt
+    public class Mocked : IMocked, IAvatar
     {
         private IMock mock;
-        private readonly IList<IStuntBehavior> behaviors = new ObservableCollection<IStuntBehavior>();
+        private readonly IList<IAvatarBehavior> behaviors = new ObservableCollection<IAvatarBehavior>();
 
         public IMock Mock => LazyInitializer.EnsureInitialized(ref mock, () => new DefaultMock(this));
 
-        public IList<IStuntBehavior> Behaviors => behaviors;
+        public IList<IAvatarBehavior> Behaviors => behaviors;
     }
 }

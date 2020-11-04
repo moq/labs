@@ -31,7 +31,7 @@
 
     <RestoreSources>https://pkg.kzu.io/index.json;https://api.nuget.org/v3/index.json;$(RestoreSources)</RestoreSources>
     <RestoreSources Condition="Exists('$(MSBuildThisFileDirectory)..\..\nugetizer\bin\')">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\nugetizer\bin'));$(RestoreSources)</RestoreSources>
-    <RestoreSources Condition="Exists('$(MSBuildThisFileDirectory)..\..\stunts\bin\')">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\stunts\bin'));$(RestoreSources)</RestoreSources>
+    <RestoreSources Condition="Exists('$(MSBuildThisFileDirectory)..\..\avatar\bin\')">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\avatar\bin'));$(RestoreSources)</RestoreSources>
     <RestoreSources Condition="Exists('$(MSBuildThisFileDirectory)..\..\ThisAssembly\bin\')">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\ThisAssembly\bin'));$(RestoreSources)</RestoreSources>
 
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Moq.snk</AssemblyOriginatorKeyFile>

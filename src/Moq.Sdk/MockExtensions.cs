@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
-using Stunts;
+using Avatars;
 
 namespace Moq.Sdk
 {
@@ -114,7 +114,7 @@ namespace Moq.Sdk
 
             public IEnumerable<IMockBehaviorPipeline> Setups => mock.Setups;
 
-            public IList<IStuntBehavior> Behaviors => mock.Behaviors;
+            public IList<IAvatarBehavior> Behaviors => mock.Behaviors;
 
             public IMockBehaviorPipeline GetPipeline(IMockSetup setup) => mock.GetPipeline(setup);
         }

@@ -6,8 +6,8 @@ using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Moq.Sdk;
-using Stunts;
-using Stunts.CodeAnalysis;
+using Avatars;
+using Avatars.CodeAnalysis;
 
 namespace Moq
 {
@@ -16,9 +16,9 @@ namespace Moq
     /// invocations to methods annotated with [MockGenerator].
     /// </summary>
     [Generator]
-    public class MockSourceGenerator : StuntSourceGenerator
+    public class MockSourceGenerator : AvatarSourceGenerator
     {
-        protected override StuntDocumentGenerator DocumentGenerator => new MockDocumentGenerator();
+        protected override AvatarDocumentGenerator DocumentGenerator => new MockDocumentGenerator();
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         public override void Execute(GeneratorExecutionContext context)
@@ -31,7 +31,7 @@ namespace Moq
             base.Execute(context);
         }
 
-        protected override void OnExecute(GeneratorExecutionContext context, StuntDocumentGenerator generator, IEnumerable<INamedTypeSymbol[]> candidates)
+        protected override void OnExecute(GeneratorExecutionContext context, AvatarDocumentGenerator generator, IEnumerable<INamedTypeSymbol[]> candidates)
         {
             var additional = new List<INamedTypeSymbol[]>();
 

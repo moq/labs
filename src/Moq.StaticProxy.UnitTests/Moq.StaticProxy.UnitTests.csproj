@@ -47,5 +47,11 @@
     <ProjectReference Include="..\Moq\Moq.csproj" />
     <ProjectReference Include="..\Moq.StaticProxy\Moq.StaticProxy.csproj" />
   </ItemGroup>
-  
+
+  <Target Name="AddConstants" BeforeTargets="PrepareForBuild;CompileDesignTime;GenerateMSBuildEditorConfigFileShouldRun">
+    <ItemGroup>
+      <FileConstant Include="@(Compile)" Condition="$([MSBuild]::ValueOrDefault('%(RelativeDir)', '').StartsWith('Scenarios'))" />
+    </ItemGroup>
+  </Target>
+
 </Project>

@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
-using Stunts;
+using Avatars;
 
 namespace Moq.Sdk
 {
     /// <summary>
     /// Provides introspection information about a mock.
     /// </summary>
-    public interface IMock : IStunt
+    public interface IMock : IAvatar
     {
         /// <summary>
         /// Returns a <see cref="IMockBehaviorPipeline"/> for the given <see cref="IMockSetup"/>.
