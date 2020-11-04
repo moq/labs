@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
-using Stunts;
+using Avatars;
 using Xunit;
 
 namespace Moq.Sdk.Tests
@@ -102,12 +102,12 @@ namespace Moq.Sdk.Tests
         public void InitializesState()
             => Assert.NotNull(new FakeStunt().Mock.State);
 
-        private class FakeStunt : IStunt, IMocked
+        private class FakeStunt : IAvatar, IMocked
         {
             private readonly BehaviorPipeline pipeline = new BehaviorPipeline();
             private DefaultMock mock;
 
-            public IList<IStuntBehavior> Behaviors => pipeline.Behaviors;
+            public IList<IAvatarBehavior> Behaviors => pipeline.Behaviors;
 
             public IMock Mock => LazyInitializer.EnsureInitialized(ref mock, () => new DefaultMock(this));
 

@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Text;
-using Stunts;
+using Avatars;
 
 namespace Moq.Sdk
 {

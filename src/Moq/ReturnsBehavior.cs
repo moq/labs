@@ -1,5 +1,5 @@
 ﻿using System;
-using Stunts;
+using Avatars;
 using Moq.Sdk;
 using System.Diagnostics;
 using System.Linq;

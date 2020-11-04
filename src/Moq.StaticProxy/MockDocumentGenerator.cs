@@ -2,17 +2,17 @@
 using System.Threading;
 using Moq.Processors;
 using Moq.Sdk;
-using Stunts;
-using Stunts.CodeAnalysis;
-using Stunts.Processors;
+using Avatars;
+using Avatars.CodeAnalysis;
+using Avatars.Processors;
 
 namespace Moq
 {
     /// <summary>
-    /// Customizes the Stunts.Sdk <see cref="StuntGenerator"/> 
+    /// Customizes the Avatar.Sdk <see cref="AvatarDocumentGenerator"/> 
     /// with Moq-specific document processors.
     /// </summary>
-    internal class MockDocumentGenerator : StuntDocumentGenerator
+    internal class MockDocumentGenerator : AvatarDocumentGenerator
     {
         public MockDocumentGenerator() : this(new MockNamingConvention()) { }
 
@@ -29,7 +29,6 @@ namespace Moq
                     new FixupImports(),
                     new CSharpFileHeader(),
                     new CSharpPragmas(),
-                    new VisualBasicFileHeader(),
                 }).ToArray())
         {
             GeneratorAttribute = typeof(MockGeneratorAttribute);

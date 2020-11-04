@@ -3,7 +3,7 @@ using System.ComponentModel;
 using Xunit;
 using Moq.Sdk;
 using static Moq.Syntax;
-using Stunts;
+using Avatars;
 using Sample;
 using Xunit.Abstractions;
 

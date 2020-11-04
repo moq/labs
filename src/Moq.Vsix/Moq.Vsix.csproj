@@ -18,8 +18,8 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.VSSDK.BuildTools" Condition="'$(MSBuildRuntimeType)' == 'Full'" />
-    <PackageReference Include="Stunts" />
-    <PackageReference Include="Stunts.CodeAnalysis" />
+    <PackageReference Include="Avatar" />
+    <PackageReference Include="Avatar.CodeAnalysis" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -47,8 +47,8 @@
   <Target Name="AddPrivateAssets" BeforeTargets="GetVsixSourceItems">
     <ItemGroup>
       <VSIXSourceItem Include="@(RuntimeCopyLocalItems)"
-                      Condition="'%(NuGetPackageId)' == 'Stunts' or 
-                                 '%(NuGetPackageId)' == 'Stunts.CodeAnalysis'"/>
+                      Condition="'%(NuGetPackageId)' == 'Avatar' or 
+                                 '%(NuGetPackageId)' == 'Avatar.CodeAnalysis'"/>
     </ItemGroup>
   </Target>
 

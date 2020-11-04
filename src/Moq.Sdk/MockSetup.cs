@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using Stunts;
+using Avatars;
 using TypeNameFormatter;
 
 namespace Moq.Sdk

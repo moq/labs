@@ -1,4 +1,4 @@
-﻿using Stunts;
+﻿using Avatars;
 using Moq.Sdk;
 using System.ComponentModel;
 using System;

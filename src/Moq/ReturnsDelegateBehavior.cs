@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using Moq.Sdk;
-using Stunts;
+using Avatars;
 
 namespace Moq
 {

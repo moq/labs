@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Stunts;
+using Avatars;
 using Xunit;
 
 namespace Moq.Sdk.Tests

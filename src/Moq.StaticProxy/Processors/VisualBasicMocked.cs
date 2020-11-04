@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.Editing;
 using Microsoft.CodeAnalysis.VisualBasic;
 using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 using Moq.Sdk;
-using Stunts;
+using Avatars;
 using static Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory;
 
 namespace Moq.Processors
@@ -103,7 +103,7 @@ namespace Moq.Processors
                             ImplementsClause(QualifiedName(IdentifierName(nameof(IMocked)), IdentifierName(nameof(IMocked.Mock))))));
 
                     // Try to locate the Mock property following the Behaviors property
-                    var behaviors = generator.GetMembers(result).FirstOrDefault(x => generator.GetName(x) == nameof(IStunt.Behaviors));
+                    var behaviors = generator.GetMembers(result).FirstOrDefault(x => generator.GetName(x) == nameof(IAvatar.Behaviors));
                     if (behaviors != null)
                     {
                         result = generator.InsertNodesAfter(result, behaviors, new[] { property });

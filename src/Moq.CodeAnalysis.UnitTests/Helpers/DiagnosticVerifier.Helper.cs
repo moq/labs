@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.CodeAnalysis.VisualBasic;
-using Stunts;
+using Avatars;
 
 /// <summary>
 /// Class for turning strings into documents and getting the diagnostics on them

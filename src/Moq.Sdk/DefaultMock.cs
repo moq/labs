@@ -4,27 +4,27 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
-using Stunts;
+using Avatars;
 
 namespace Moq.Sdk
 {
     /// <summary>
     /// Default implementation of the mock introspection API <see cref="IMock"/>, 
-    /// which also ensures that the <see cref="IStunt.Behaviors"/> contains 
+    /// which also ensures that the <see cref="IAvatar.Behaviors"/> contains 
     /// the <see cref="MockContextBehavior"/> when initially created.
     /// </summary>
     [DebuggerDisplay("Invocations = {Invocations.Count}", Name = nameof(IMocked) + "." + nameof(IMocked.Mock))]
     public class DefaultMock : IMock
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly IStunt stunt;
+        private readonly IAvatar stunt;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly ConcurrentDictionary<IMockSetup, IMockBehaviorPipeline> setupBehaviorMap = new ConcurrentDictionary<IMockSetup, IMockBehaviorPipeline>();
 
         /// <summary>
         /// Initializes the default <see cref="IMock"/> implementation for the given <paramref name="stunt"/>.
         /// </summary>
-        public DefaultMock(IStunt stunt)
+        public DefaultMock(IAvatar stunt)
         {
             this.stunt = stunt ?? throw new ArgumentNullException(nameof(stunt));
             var behaviors = stunt.Behaviors;
@@ -40,7 +40,7 @@ namespace Moq.Sdk
         }
 
         /// <inheritdoc />
-        public IList<IStuntBehavior> Behaviors => stunt.Behaviors;
+        public IList<IAvatarBehavior> Behaviors => stunt.Behaviors;
 
         /// <inheritdoc />
         public ICollection<IMethodInvocation> Invocations { get; } = new List<IMethodInvocation>();

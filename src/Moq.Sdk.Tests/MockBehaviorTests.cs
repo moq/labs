@@ -1,6 +1,6 @@
 ﻿using System;
 using Sample;
-using Stunts;
+using Avatars;
 using Xunit;
 
 namespace Moq.Sdk.Tests
@@ -57,7 +57,7 @@ namespace Moq.Sdk.Tests
         [Fact]
         public void WhenAddingMockBehavior_ThenCanInterceptSelectively()
         {
-            var calculator = new CalculatorInterfaceStunt();
+            var calculator = new CalculatorInterfaceAvatar();
 
             // TODO: this is not adding a mock behavior but a regular stunt behavior
             calculator.AddBehavior((m, n) => m.CreateValueReturn(CalculatorMode.Scientific), m => m.MethodBase.Name == "get_Mode");
