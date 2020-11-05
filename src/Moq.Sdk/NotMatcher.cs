@@ -11,7 +11,7 @@ namespace Moq.Sdk
     public class NotMatcher<T> : IArgumentMatcher, IEquatable<NotMatcher<T>>
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly T? value;
+        readonly T? value;
 
         /// <summary>
         /// Initalizes the matcher with the value to check for.

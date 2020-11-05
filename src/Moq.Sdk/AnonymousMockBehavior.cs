@@ -12,8 +12,8 @@ namespace Moq.Sdk
     [DebuggerDisplay("{DisplayName}")]
     public class AnonymousMockBehavior : IMockBehavior
     {
-        private readonly Lazy<string> displayName;
-        private readonly ExecuteMockDelegate behavior;
+        readonly Lazy<string> displayName;
+        readonly ExecuteMockDelegate behavior;
 
         /// <summary>
         /// Creates an instance of the invokable behavior with the given 

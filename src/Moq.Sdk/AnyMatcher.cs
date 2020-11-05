@@ -12,9 +12,9 @@ namespace Moq.Sdk
     /// </summary>
     public class AnyMatcher : IArgumentMatcher, IEquatable<AnyMatcher>
     {
-        private readonly TypeInfo info;
-        private readonly bool isValueType;
-        private readonly bool isNullable;
+        readonly TypeInfo info;
+        readonly bool isValueType;
+        readonly bool isNullable;
 
         /// <summary>
         /// Initializes the matcher with the given <paramref name="argumentType"/>.

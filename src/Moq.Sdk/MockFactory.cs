@@ -9,7 +9,7 @@ namespace Moq.Sdk
     /// </summary>
     public class MockFactory : IMockFactory
     {
-        private static readonly IMockFactory nullFactory = new MockFactory();
+        static readonly IMockFactory nullFactory = new MockFactory();
 
         /// <summary>
         /// Gets or sets the default <see cref="IMockFactory"/> to use 
@@ -22,7 +22,7 @@ namespace Moq.Sdk
         /// </summary>
         public static IMockFactory NotImplemented { get; } = nullFactory;
 
-        private MockFactory() { }
+        MockFactory() { }
 
         /// <summary>
         /// Throws <see cref="NotImplementedException"/> since this is the default 

@@ -74,18 +74,18 @@ namespace Moq
             }
         }
 
-        private class DefaultSetup<TDelegate> : ISetup<TDelegate>
+        class DefaultSetup<TDelegate> : ISetup<TDelegate>
         {
             public DefaultSetup(Delegate @delegate) => Delegate = @delegate;
 
             public Delegate Delegate { get; }
         }
 
-        private class DefaultSetup : ISetup
+        class DefaultSetup : ISetup
         {
             public static ISetup Default { get; } = new DefaultSetup();
 
-            private DefaultSetup() { }
+            DefaultSetup() { }
         }
     }
 }

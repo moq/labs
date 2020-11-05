@@ -14,9 +14,9 @@ namespace Moq.Sdk
     public partial class MockSetup : IMockSetup, IEquatable<MockSetup>
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly IMethodInvocation invocation;
+        readonly IMethodInvocation invocation;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly IArgumentMatcher[] matchers;
+        readonly IArgumentMatcher[] matchers;
 
         /// <summary>
         /// Initializes the class with the <paramref name="invocation"/> and 

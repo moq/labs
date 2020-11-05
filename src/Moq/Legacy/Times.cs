@@ -8,9 +8,9 @@ namespace Moq
     [EditorBrowsable(EditorBrowsableState.Never)]
     public readonly struct Times : IEquatable<Times>
     {
-        private readonly int from;
-        private readonly int to;
-        private readonly Kind kind;
+        readonly int from;
+        readonly int to;
+        readonly Kind kind;
 
         /// <summary>Supports the legacy API.</summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -37,7 +37,7 @@ namespace Moq
             }
         }
 
-        private Times(Kind kind, int from, int to)
+        Times(Kind kind, int from, int to)
         {
             this.from = from;
             this.to = to;
@@ -144,7 +144,7 @@ namespace Moq
             return from == otherFrom && to == otherTo;
         }
 
-        private enum Kind
+        enum Kind
         {
             AtLeastOnce,
             AtLeast,

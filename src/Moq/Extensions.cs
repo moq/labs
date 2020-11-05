@@ -5,9 +5,9 @@ using Moq.Sdk;
 
 namespace Moq
 {
-    internal static class Extensions
+    static class Extensions
     {
-        private const string TaskFullName = "System.Threading.Tasks.Task";
+        const string TaskFullName = "System.Threading.Tasks.Task";
 
         public static void EnsureCompatible(this IMethodInvocation invocation, Delegate @delegate)
         {

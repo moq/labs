@@ -18,9 +18,9 @@ namespace Moq
                 MockFactory.Default = new DynamicMockFactory();
         }
 
-        private readonly T target;
-        private readonly IMock<T> mock;
-        private readonly MockBehavior behavior;
+        readonly T target;
+        readonly IMock<T> mock;
+        readonly MockBehavior behavior;
 
         /// <summary>Supports the legacy API.</summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -55,7 +55,7 @@ namespace Moq
             mock = target.AsMock();
         }
 
-        private Mock(T target, IMock<T> mock, MockBehavior behavior)
+        Mock(T target, IMock<T> mock, MockBehavior behavior)
         {
             this.target = target;
             this.mock = mock;

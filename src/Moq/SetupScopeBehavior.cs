@@ -11,9 +11,9 @@ namespace Moq
     /// A behavior that skips all behaviors that do not apply during a setup scope.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    internal class SetupScopeBehavior : IAvatarBehavior
+    class SetupScopeBehavior : IAvatarBehavior
     {
-        private static readonly HashSet<Type> setupScopeBehaviors = new HashSet<Type>
+        static readonly HashSet<Type> setupScopeBehaviors = new HashSet<Type>
         {
             typeof(DefaultValueBehavior), 
             typeof(MockContextBehavior),

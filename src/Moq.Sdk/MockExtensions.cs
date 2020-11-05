@@ -87,11 +87,11 @@ namespace Moq.Sdk
             }
         }
 
-        private static IMock<T>? As<T>(this IMock? mock, T target) where T : class => mock == null ? null : new Mock<T>(mock, target);
+        static IMock<T>? As<T>(this IMock? mock, T target) where T : class => mock == null ? null : new Mock<T>(mock, target);
 
-        private class Mock<T> : IMock<T> where T : class
+        class Mock<T> : IMock<T> where T : class
         {
-            private readonly IMock mock;
+            readonly IMock mock;
 
             public Mock(IMock mock, T target)
             {

@@ -43,7 +43,7 @@ namespace Moq.Sdk.Tests
             Assert.Single(target.AsMock().InvocationsFor(c => c.Add(2, 3)));
         }
 
-        private class FakeCalls : FakeMock
+        class FakeCalls : FakeMock
         {
             public void TurnOn() => Pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
 

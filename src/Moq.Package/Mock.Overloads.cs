@@ -5,7 +5,7 @@ namespace Moq
     /// <summary>
     /// Instantiates stunts for the specified types.
     /// </summary>
-    internal partial class Mock
+    partial class Mock
     {
         /// <summary>
         /// Creates a mock that inherits or implements the type <typeparamref name="T"/>.

@@ -8,7 +8,7 @@ namespace Moq.Sdk.Tests
 {
     public class FakeMock : IAvatar, IMocked
     {
-        private readonly DefaultMock mock;
+        readonly DefaultMock mock;
 
         protected BehaviorPipeline Pipeline = new BehaviorPipeline();
 

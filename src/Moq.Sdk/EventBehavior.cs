@@ -76,7 +76,7 @@ namespace Moq.Sdk
             return next()(invocation, next);
         }
 
-        private static void CombineDelegate(EventInfo info, Delegate handler, IMock mock)
+        static void CombineDelegate(EventInfo info, Delegate handler, IMock mock)
         {
             var state = mock.State.GetOrAdd(info.Name, () => handler);
             if (state != handler)
@@ -100,7 +100,7 @@ namespace Moq.Sdk
             }
         }
 
-        private static void RemoveDelegate(EventInfo info, Delegate handler, IMock mock)
+        static void RemoveDelegate(EventInfo info, Delegate handler, IMock mock)
         {
             if (mock.State.TryGetValue<Delegate>(info.Name, out var state))
             {

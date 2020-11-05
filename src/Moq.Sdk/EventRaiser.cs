@@ -14,7 +14,7 @@
         public static EventRaiser Empty { get; } = new EmptyEventRaiser();
     }
 
-    internal class EmptyEventRaiser : EventRaiser { }
+    class EmptyEventRaiser : EventRaiser { }
 
     /// <summary>
     /// Context state that signals an event must be 

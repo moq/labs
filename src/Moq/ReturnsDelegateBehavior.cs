@@ -9,10 +9,10 @@ namespace Moq
 {
     [DebuggerDisplay("{@delegate}", Name = "Returns", Type = nameof(ReturnsDelegateBehavior))]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    internal class ReturnsDelegateBehavior : IMockBehavior
+    class ReturnsDelegateBehavior : IMockBehavior
     {
         [DebuggerDisplay("<function>")]
-        private readonly Delegate @delegate;
+        readonly Delegate @delegate;
 
         public ReturnsDelegateBehavior(Delegate @delegate) => this.@delegate = @delegate;
 

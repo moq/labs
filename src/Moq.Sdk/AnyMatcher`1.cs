@@ -14,8 +14,8 @@ namespace Moq.Sdk
     public class AnyMatcher<T> : IArgumentMatcher, IEquatable<AnyMatcher<T>>
     {
         // Disable warning since we only use this member from this class
-        private static readonly bool IsValueType = typeof(T).IsValueType;
-        private static readonly bool IsNullable = typeof(T).IsGenericType &&
+        static readonly bool IsValueType = typeof(T).IsValueType;
+        static readonly bool IsNullable = typeof(T).IsGenericType &&
             typeof(T).GetGenericTypeDefinition() == typeof(Nullable<>);
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace Moq.Sdk
         /// </summary>
         public static IArgumentMatcher Default { get; } = new AnyMatcher<T>();
 
-        private AnyMatcher() { }
+        AnyMatcher() { }
 
         /// <summary>
         /// Gets the type of the argument this matcher supports.

@@ -12,7 +12,7 @@ namespace Moq
     /// Customizes the Avatar.Sdk <see cref="AvatarDocumentGenerator"/> 
     /// with Moq-specific document processors.
     /// </summary>
-    internal class MockDocumentGenerator : AvatarDocumentGenerator
+    class MockDocumentGenerator : AvatarDocumentGenerator
     {
         public MockDocumentGenerator() : this(new MockNamingConvention()) { }
 

@@ -17,9 +17,9 @@ namespace Moq.Sdk
     public class DefaultMock : IMock
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly IAvatar stunt;
+        readonly IAvatar stunt;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly ConcurrentDictionary<IMockSetup, IMockBehaviorPipeline> setupBehaviorMap = new ConcurrentDictionary<IMockSetup, IMockBehaviorPipeline>();
+        readonly ConcurrentDictionary<IMockSetup, IMockBehaviorPipeline> setupBehaviorMap = new ConcurrentDictionary<IMockSetup, IMockBehaviorPipeline>();
 
         /// <summary>
         /// Initializes the default <see cref="IMock"/> implementation for the given <paramref name="stunt"/>.
@@ -76,7 +76,7 @@ namespace Moq.Sdk
                 return behavior;
             });
 
-        private void OnBehaviorsChanged(object sender, NotifyCollectionChangedEventArgs e)
+        void OnBehaviorsChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {

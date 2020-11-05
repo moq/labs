@@ -146,21 +146,21 @@ namespace Moq.Tests
             Assert.Equal(methResult, dlgtResult);
         }
 
-        private static void Use(Action<int> action, int valueToPass)
+        static void Use(Action<int> action, int valueToPass)
         {
             action(valueToPass);
         }
 
-        private static string UseAndGetReturn(Func<int, string> func, int valueToPass)
+        static string UseAndGetReturn(Func<int, string> func, int valueToPass)
         {
             return func(valueToPass);
         }
 
-        private class NotifyingObject : INotifyPropertyChanged
+        class NotifyingObject : INotifyPropertyChanged
         {
             public event PropertyChangedEventHandler PropertyChanged;
 
-            private int value;
+            int value;
             public int Value
             {
                 get { return value; }

@@ -96,7 +96,7 @@ public abstract partial class CodeFixVerifier : DiagnosticVerifier
     /// <param name="fixedSource">A source string containing how the first source file should be like when the fix is applied</param>
     /// <param name="codeFixIndex">Index determining which codefix to apply if there are multiple</param>
     /// <param name="allowNewCompilerDiagnostics">A bool controlling whether or not the test will fail if the CodeFix introduces other warnings after being applied</param>
-    private void VerifyFix(string language, DiagnosticAnalyzer analyzer, CodeFixProvider codeFixProvider, string[] sources, string fixedSource, int? codeFixIndex, bool allowNewCompilerDiagnostics)
+    void VerifyFix(string language, DiagnosticAnalyzer analyzer, CodeFixProvider codeFixProvider, string[] sources, string fixedSource, int? codeFixIndex, bool allowNewCompilerDiagnostics)
     {
         var document = GetDocuments(sources, language).First();
         var analyzerDiagnostics = GetSortedDiagnosticsFromDocuments(analyzer, new[] { document });

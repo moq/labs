@@ -12,14 +12,14 @@ namespace Moq.Sdk
     /// <typeparam name="T">Type of argument being conditioned.</typeparam>
     public class ConditionalMatcher<T> : IArgumentMatcher, IEquatable<ConditionalMatcher<T>>
     {
-        private static readonly bool IsValueType = typeof(T).IsValueType;
-        private static readonly bool IsNullable = typeof(T).IsGenericType &&
+        static readonly bool IsValueType = typeof(T).IsValueType;
+        static readonly bool IsNullable = typeof(T).IsGenericType &&
             typeof(T).GetGenericTypeDefinition() == typeof(Nullable<>);
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly string name;
+        readonly string name;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly Func<T?, bool> condition;
+        readonly Func<T?, bool> condition;
 
         /// <summary>
         /// Initializes the matcher with the condition and optional friendly name.

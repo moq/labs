@@ -8,9 +8,9 @@ namespace Moq
     [EditorBrowsable(EditorBrowsableState.Never)]
     public class MockSetup<TTarget> where TTarget : class
     {
-        private readonly TTarget target;
-        private readonly IMock<TTarget> mock;
-        private readonly Action<TTarget> action;
+        readonly TTarget target;
+        readonly IMock<TTarget> mock;
+        readonly Action<TTarget> action;
 
         /// <summary>Supports the legacy API.</summary>
         [EditorBrowsable(EditorBrowsableState.Never)]

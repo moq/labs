@@ -14,7 +14,7 @@ namespace Moq.Processors
     /// <summary>
     /// Generates the C# implementation of the mock interfaces.
     /// </summary>
-    internal class CSharpMocked : IDocumentProcessor
+    class CSharpMocked : IDocumentProcessor
     {
         public string[] Languages { get; } = new[] { LanguageNames.CSharp };
 
@@ -31,9 +31,9 @@ namespace Moq.Processors
             return document.WithSyntaxRoot(syntax);
         }
 
-        private class CSharpRewriteVisitor : CSharpSyntaxRewriter
+        class CSharpRewriteVisitor : CSharpSyntaxRewriter
         {
-            private readonly SyntaxGenerator generator;
+            readonly SyntaxGenerator generator;
 
             public CSharpRewriteVisitor(SyntaxGenerator generator) => this.generator = generator;
 

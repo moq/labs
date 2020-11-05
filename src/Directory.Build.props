@@ -47,6 +47,8 @@
 
     <!-- Generate satellite assemblies using csc.exe to avoid some al.exe issues. See https://github.com/dotnet/msbuild/pull/2726 -->
     <GenerateSatelliteAssembliesForCore>true</GenerateSatelliteAssembliesForCore>
+
+    <TypeNameFormatterInternal>false</TypeNameFormatterInternal>
   </PropertyGroup>
 
   <PropertyGroup Label="Preview - To be removed by .NET 5.0 RTW">

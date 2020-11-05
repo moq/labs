@@ -12,6 +12,7 @@
   <ItemGroup>
     <PackageReference Include="Avatar.StaticProxy" />
 
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Pack="false" />
     <PackageReference Include="Microsoft.CodeAnalysis.Common" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
     <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" />

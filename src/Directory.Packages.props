@@ -26,6 +26,7 @@
     <PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic" Version="3.8.0-4.final" />
     <PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic.Features" Version="3.8.0-4.final" />
     <PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" Version="3.8.0-4.final" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="3.8.0-4.final" />
 
     <!-- Workaround for revision mismatch with public versions -->
     <PackageVersion Include="System.Collections.Immutable" Version="5.0.0-rc.2.20475.5" />

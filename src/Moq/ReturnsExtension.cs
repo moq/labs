@@ -123,7 +123,7 @@ namespace Moq
             }
         }
 
-        private static TResult? Returns<TResult>(Delegate value, ExecuteMockDelegate behavior)
+        static TResult? Returns<TResult>(Delegate value, ExecuteMockDelegate behavior)
         {
             var setup = MockContext.CurrentSetup;
             if (setup != null)

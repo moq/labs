@@ -16,6 +16,7 @@
     <PackageReference Include="TypeNameFormatter.Sources" PrivateAssets="all" />
     <PackageReference Include="IFluentInterface" PrivateAssets="all" />
     <PackageReference Include="ThisAssembly" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Pack="false" />
   </ItemGroup>
 
 </Project>

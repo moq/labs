@@ -102,10 +102,10 @@ namespace Moq.Sdk.Tests
         public void InitializesState()
             => Assert.NotNull(new FakeStunt().Mock.State);
 
-        private class FakeStunt : IAvatar, IMocked
+        class FakeStunt : IAvatar, IMocked
         {
-            private readonly BehaviorPipeline pipeline = new BehaviorPipeline();
-            private DefaultMock mock;
+            readonly BehaviorPipeline pipeline = new BehaviorPipeline();
+            DefaultMock mock;
 
             public IList<IAvatarBehavior> Behaviors => pipeline.Behaviors;
 

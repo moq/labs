@@ -28,7 +28,7 @@ public struct DiagnosticResultLocation
 /// </summary>
 public struct DiagnosticResult
 {
-    private DiagnosticResultLocation[] locations;
+    DiagnosticResultLocation[] locations;
 
     public DiagnosticResultLocation[] Locations
     {

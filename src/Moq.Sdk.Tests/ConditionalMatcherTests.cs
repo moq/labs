@@ -56,8 +56,8 @@ namespace Moq.Sdk.Tests
             Assert.False(matcher.Equals(new ConditionalMatcher<int>(_ => true, "foo")));
         }
 
-        private class Base { }
+        class Base { }
 
-        private class Derived : Base { }
+        class Derived : Base { }
     }
 }

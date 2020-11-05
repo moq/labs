@@ -126,6 +126,6 @@ namespace Moq.Sdk.Tests
             Assert.False(hash.Add(value2));
         }
 
-        private void AMethod(bool b, string s, PlatformID p) { }
+        void AMethod(bool b, string s, PlatformID p) { }
     }
 }

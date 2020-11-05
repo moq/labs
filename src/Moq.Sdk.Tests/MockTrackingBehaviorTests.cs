@@ -47,7 +47,7 @@ namespace Moq.Sdk.Tests
             Assert.Empty(target.Mock.Invocations);
         }
 
-        private class TrackingMock : FakeMock
+        class TrackingMock : FakeMock
         {
             public void Do() => Pipeline.Execute(new MethodInvocation(this, MethodBase.GetCurrentMethod()));
         }

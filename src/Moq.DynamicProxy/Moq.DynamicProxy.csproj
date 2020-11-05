@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <PackageReference Include="Avatar" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Pack="false" />
   </ItemGroup>
 
   <ItemGroup>

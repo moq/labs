@@ -15,7 +15,7 @@ namespace Moq.Processors
     /// <summary>
     /// Generates the VB implementation of the mock interfaces.
     /// </summary>
-    internal class VisualBasicMocked : IDocumentProcessor
+    class VisualBasicMocked : IDocumentProcessor
     {
         public string[] Languages { get; } = new[] { LanguageNames.VisualBasic };
 
@@ -29,9 +29,9 @@ namespace Moq.Processors
             return document.WithSyntaxRoot(syntax);
         }
 
-        private class VisualBasicRewriteVisitor : VisualBasicSyntaxRewriter
+        class VisualBasicRewriteVisitor : VisualBasicSyntaxRewriter
         {
-            private readonly SyntaxGenerator generator;
+            readonly SyntaxGenerator generator;
 
             public VisualBasicRewriteVisitor(SyntaxGenerator generator) => this.generator = generator;
 

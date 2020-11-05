@@ -8,7 +8,7 @@ namespace Moq.Sdk
     /// </summary>
     public class ValueMatcher : IArgumentMatcher, IEquatable<ValueMatcher>
     {
-        private readonly Tuple<Type, object?> value;
+        readonly Tuple<Type, object?> value;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ValueMatcher"/> class.
@@ -47,7 +47,7 @@ namespace Moq.Sdk
                 ? "\"" + MatchValue + "\""
                 : (MatchValue?.ToString() ?? "null");
 
-        private static bool IsString(Type type) => type == typeof(string) ||
+        static bool IsString(Type type) => type == typeof(string) ||
             (type.IsByRef && type.HasElementType && type.GetElementType() == typeof(string));
 
         #region Equality

@@ -11,14 +11,14 @@ namespace Moq.Sdk
     public class StateBag
     {
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-        private readonly ConcurrentDictionary<object, object> state;
+        readonly ConcurrentDictionary<object, object> state;
 
         /// <summary>
         /// Creates a new instance of the state bag.
         /// </summary>
         public StateBag() : this(new()) { }
 
-        private StateBag(ConcurrentDictionary<object, object> initialState) => state = new(initialState);
+        StateBag(ConcurrentDictionary<object, object> initialState) => state = new(initialState);
 
         /// <summary>
         /// Creates a copy of the state bag.
@@ -231,6 +231,6 @@ namespace Moq.Sdk
         /// <summary>
         /// Gets the key to use depending on the received <typeparamref name="T"/>.
         /// </summary>
-        private object Key<T>(object key) => typeof(T) == typeof(object) ? key : (Key: key, Type: typeof(T));
+        object Key<T>(object key) => typeof(T) == typeof(object) ? key : (Key: key, Type: typeof(T));
     }
 }

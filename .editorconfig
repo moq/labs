@@ -50,6 +50,13 @@ dotnet_style_null_propagation = true:suggestion
 dotnet_style_explicit_tuple_names = true:suggestion
 
 # CSharp code style settings:
+
+# IDE0040: Add accessibility modifiers
+dotnet_style_require_accessibility_modifiers = omit_if_default:error
+
+# IDE0040: Add accessibility modifiers
+dotnet_diagnostic.IDE0040.severity = error
+
 [*.cs]
 # Prefer "var" everywhere
 csharp_style_var_for_built_in_types = true:suggestion

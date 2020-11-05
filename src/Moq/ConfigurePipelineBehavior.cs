@@ -9,7 +9,7 @@ namespace Moq
     /// specified for the mock.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    internal class ConfigurePipelineBehavior : IAvatarBehavior
+    class ConfigurePipelineBehavior : IAvatarBehavior
     {
         /// <summary>
         /// Always applies to all invocations.

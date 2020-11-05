@@ -8,7 +8,7 @@ namespace Moq.Tests
 {
     public class VerificationTests
     {
-        private readonly ITestOutputHelper output;
+        readonly ITestOutputHelper output;
 
         public VerificationTests(ITestOutputHelper output)
         {

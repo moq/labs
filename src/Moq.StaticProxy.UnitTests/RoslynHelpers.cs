@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.Emit;
 using Xunit;
 using Xunit.Abstractions;
 
-internal static class RoslynHelpers
+static class RoslynHelpers
 {
     public static Assembly Emit(this Compilation compilation, ITestOutputHelper output = null)
     {

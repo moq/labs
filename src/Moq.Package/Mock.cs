@@ -11,7 +11,7 @@ namespace Moq
     /// </summary>
     [ExcludeFromCodeCoverage]
     [CompilerGenerated]
-    internal partial class Mock
+partial class Mock
     {
         /// <summary>
         /// Gets the configuration and introspection for the given mocked instance.
@@ -22,7 +22,7 @@ namespace Moq
         /// Creates the mock instance by using the specified types to 
         /// lookup the mock type in the assembly defining this class.
         /// </summary>
-        private static T Create<T>(MockBehavior behavior, object[] constructorArgs, params Type[] interfaces) where T : class
+        static T Create<T>(MockBehavior behavior, object[] constructorArgs, params Type[] interfaces) where T : class
         {
             var mocked = (IMocked)MockFactory.Default.CreateMock(typeof(Mock).Assembly, typeof(T), interfaces, constructorArgs);
 

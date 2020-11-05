@@ -10,8 +10,8 @@ namespace Moq.Sdk
     /// </summary>
     public static class CallContext<T>
     {
-        private static readonly string defaultName = typeof(T).FullName;
-        private static readonly ConcurrentDictionary<string, AsyncLocal<T?>> state = new();
+        static readonly string defaultName = typeof(T).FullName;
+        static readonly ConcurrentDictionary<string, AsyncLocal<T?>> state = new();
 
         /// <summary>
         /// Stores a given object.
@@ -72,7 +72,7 @@ namespace Moq.Sdk
     /// </summary>
     public static class CallContext
     {
-        private static readonly ConcurrentDictionary<string, AsyncLocal<object?>> state = new();
+        static readonly ConcurrentDictionary<string, AsyncLocal<object?>> state = new();
 
         /// <summary>
         /// Stores a given object and associates it with the specified name.

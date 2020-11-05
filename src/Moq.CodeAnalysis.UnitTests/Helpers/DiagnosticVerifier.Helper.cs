@@ -29,7 +29,7 @@ public abstract partial class DiagnosticVerifier
     /// <param name="language">The language the source classes are in</param>
     /// <param name="analyzer">The analyzer to be run on the sources</param>
     /// <returns>An IEnumerable of Diagnostics that surfaced in the source code, sorted by Location</returns>
-    private static Diagnostic[] GetSortedDiagnostics(string[] sources, string language, DiagnosticAnalyzer analyzer)
+    static Diagnostic[] GetSortedDiagnostics(string[] sources, string language, DiagnosticAnalyzer analyzer)
     {
         return GetSortedDiagnosticsFromDocuments(analyzer, new[] { GetDocuments(sources, language).First() });
     }
@@ -83,7 +83,7 @@ public abstract partial class DiagnosticVerifier
     /// </summary>
     /// <param name="diagnostics">The list of Diagnostics to be sorted</param>
     /// <returns>An IEnumerable containing the Diagnostics in order of Location</returns>
-    private static Diagnostic[] SortDiagnostics(IEnumerable<Diagnostic> diagnostics)
+    static Diagnostic[] SortDiagnostics(IEnumerable<Diagnostic> diagnostics)
     {
         return diagnostics.OrderBy(d => d.Location.SourceSpan.Start).ToArray();
     }
@@ -132,7 +132,7 @@ public abstract partial class DiagnosticVerifier
     /// <param name="sources">Classes in the form of strings</param>
     /// <param name="language">The language the source code is in</param>
     /// <returns>A Project created out of the Documents created from the source strings</returns>
-    private static Project CreateProject(string[] sources, string language = LanguageNames.CSharp)
+    static Project CreateProject(string[] sources, string language = LanguageNames.CSharp)
     {
         string fileNamePrefix = DefaultFilePathPrefix;
         string fileExt = language == LanguageNames.CSharp ? CSharpDefaultFileExt : VisualBasicDefaultExt;

@@ -13,7 +13,7 @@ namespace Moq.Tests
 
     public class MoqTests
     {
-        private readonly ITestOutputHelper output;
+        readonly ITestOutputHelper output;
 
         public MoqTests(ITestOutputHelper output)
         {

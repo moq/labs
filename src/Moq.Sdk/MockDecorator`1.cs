@@ -5,7 +5,7 @@
     /// </summary>
     public abstract class MockDecorator<T> : MockDecorator, IMock<T> where T : class
     {
-        private readonly IMock<T> mock;
+        readonly IMock<T> mock;
 
         /// <summary>
         /// Initializes the decorator with the given underlying <see cref="IMock{T}"/> 

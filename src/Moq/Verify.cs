@@ -187,7 +187,7 @@ namespace Moq
         /// Gets the mock after verifying that all setups that specified occurrence 
         /// constraints have succeeded.
         /// </summary>
-        private static IMock<T> GetVerified<T>(T target) where T : class
+        static IMock<T> GetVerified<T>(T target) where T : class
         {
             var mock = target.AsMock();
             var failures = (from pipeline in mock.Setups
@@ -211,7 +211,7 @@ namespace Moq
         /// <param name="notCalled">Whether to add a behavior that verifies the invocations performed on 
         /// the clone were never performed on the original mock.
         /// </param>
-        private static T GetVerifier<T>(IMock<T> mock, bool notCalled = false) where T : class
+        static T GetVerifier<T>(IMock<T> mock, bool notCalled = false) where T : class
         {
             // If the mock is already being verified, we don't need to clone again.
             if (mock.State.TryGetValue<bool>(typeof(Verify), out var verifying) && verifying)
@@ -238,7 +238,7 @@ namespace Moq
             return clone.Object;
         }
 
-        private class NotCalledBehavior : IAvatarBehavior
+        class NotCalledBehavior : IAvatarBehavior
         {
             public bool AppliesTo(IMethodInvocation invocation) => true;
 
