@@ -10,23 +10,23 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avatar.StaticProxy" />
+    <PackageReference Include="Avatar.StaticProxy" Pack="false" />
 
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Pack="false" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Common" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
-    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Pack="false" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Pack="false" />
+    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" Pack="false" />
 
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" />
-    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Features" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Pack="false" />
+    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Features" Pack="false" />
 
     <!-- Workaround for revision mismatch with public versions -->
-    <PackageReference Include="System.Collections.Immutable" />
-    <PackageReference Include="System.Reflection.Metadata" />
+    <PackageReference Include="System.Collections.Immutable" Pack="false" />
+    <PackageReference Include="System.Reflection.Metadata" Pack="false" />
 
-    <PackageReference Include="System.ComponentModel.Composition" />
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" />
-    <PackageReference Include="Microsoft.Bcl.HashCode" />
+    <PackageReference Include="System.ComponentModel.Composition" Pack="false" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Pack="false" />
+    <PackageReference Include="Microsoft.Bcl.HashCode" Pack="false" />
   </ItemGroup>
 
   <ItemGroup>
