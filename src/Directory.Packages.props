@@ -1,7 +1,7 @@
 <Project>
 
   <PropertyGroup>
-    <AvatarVersion>42.42.42-main.249</AvatarVersion>
+    <AvatarVersion>42.42.42-main.258</AvatarVersion>
     <AvatarVersion Condition="Exists('$(MSBuildThisFileDirectory)..\..\avatar\bin\')">42.42.42</AvatarVersion>
   </PropertyGroup>
 
