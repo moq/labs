@@ -7,7 +7,6 @@ on:
 
 env:
   DOTNET_NOLOGO: true
-  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
 defaults:
   run:
@@ -30,14 +29,11 @@ jobs:
       - name: 🙏 build
         run: dotnet msbuild -r -m:1 -bl:build.binlog -p:versionsuffix="$GITHUB_REF.$GITHUB_RUN_NUMBER"
       - name: 🧪 test win
-        run: dotnet test --no-build --collect:"XPlat Code Coverage"
+        run: dotnet test --no-build
         if: matrix.os == 'windows-latest'
       - name: 🧪 test !win
-        run: dotnet test --no-build -f net5.0 --collect:"XPlat Code Coverage"
+        run: dotnet test --no-build -f net5.0
         if: matrix.os != 'windows-latest'
-      - name: 🔍 coverage
-        if: 'false'
-        run: bash <(curl -s https://codecov.io/bash)
       - name: 🔼 logs
         if: ${{ always() }}
         uses: actions/upload-artifact@v2
