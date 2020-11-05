@@ -10,7 +10,7 @@ namespace Moq.Sdk
     /// constructor.
     /// </summary>
     [DebuggerDisplay("{DisplayName}")]
-    public class DelegateMockBehavior : IMockBehavior
+    public class AnonymousMockBehavior : IMockBehavior
     {
         private readonly Lazy<string> displayName;
         private readonly ExecuteMockDelegate behavior;
@@ -19,7 +19,7 @@ namespace Moq.Sdk
         /// Creates an instance of the invokable behavior with the given 
         /// delegate and friendly display name.
         /// </summary>
-        public DelegateMockBehavior(ExecuteMockDelegate invoke, string displayName = null)
+        public AnonymousMockBehavior(ExecuteMockDelegate invoke, string displayName = null)
             : this(invoke, new Lazy<string>(() => displayName))
         {
         }
@@ -32,7 +32,7 @@ namespace Moq.Sdk
         /// Use this constructor overload whenever constructing the display
         /// name is somewhat expensive.
         /// </remarks>
-        public DelegateMockBehavior(ExecuteMockDelegate invoke, Lazy<string> displayName)
+        public AnonymousMockBehavior(ExecuteMockDelegate invoke, Lazy<string> displayName)
         {
             behavior = invoke;
             this.displayName = displayName;
@@ -41,7 +41,8 @@ namespace Moq.Sdk
         /// <summary>
         /// Executes the delegate received in the constructor.
         /// </summary>
-        public IMethodReturn Execute(IMock mock, IMethodInvocation invocation, GetNextMockBehavior next) => behavior(mock, invocation, next);
+        public IMethodReturn Execute(IMock mock, IMethodInvocation invocation, GetNextMockBehavior next)
+            => behavior(mock, invocation, next);
 
         /// <summary>
         /// A friendly display name that describes what invoking the 

@@ -23,7 +23,7 @@ namespace Moq
                 mock.Invocations.Remove(setup.Invocation);
                 var behavior = mock.GetPipeline(setup);
 
-                behavior.Behaviors.Add(new DelegateMockBehavior(
+                behavior.Behaviors.Add(new AnonymousMockBehavior(
                     (m, i, next) => i.CreateExceptionReturn(exception),
                     new Lazy<string>(() => $"Throws<{exception.GetType().Name}>(\"{exception.Message}\")")
                ));
@@ -44,7 +44,7 @@ namespace Moq
                 mock.Invocations.Remove(setup.Invocation);
                 var behavior = mock.GetPipeline(setup);
 
-                behavior.Behaviors.Add(new DelegateMockBehavior(
+                behavior.Behaviors.Add(new AnonymousMockBehavior(
                     (m, i, next) => i.CreateExceptionReturn(new TException()),
                     new Lazy<string>(() => $"Throws<{typeof(TException).Name}>()")
                ));

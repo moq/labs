@@ -24,7 +24,7 @@ namespace Moq
                 // Configure CallBase at the invocation level
                 MockContext.CurrentInvocation.Target.AsMock()
                     .GetPipeline(MockContext.CurrentSetup ?? CallContext.ThrowUnexpectedNull<IMockSetup>())
-                    .Behaviors.Add(new DelegateMockBehavior(
+                    .Behaviors.Add(new AnonymousMockBehavior(
                          (m, i, next) =>
                          {
                              // set CallBase

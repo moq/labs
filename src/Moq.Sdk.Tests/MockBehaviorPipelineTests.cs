@@ -31,7 +31,7 @@ namespace Moq.Sdk.Tests
             var invocation = new MethodInvocation(new FakeMock(), typeof(object).GetMethod(nameof(object.ToString)));
             var pipeline = new MockBehaviorPipeline(new MockSetup(invocation, Array.Empty<IArgumentMatcher>()));
 
-            pipeline.Behaviors.Add(new DelegateMockBehavior((m, i, n) => i.CreateValueReturn(null), "test"));
+            pipeline.Behaviors.Add(new AnonymousMockBehavior((m, i, n) => i.CreateValueReturn(null), "test"));
 
             Assert.NotNull(pipeline.Execute(invocation, () => (m, n) => throw new NotImplementedException()));
         }
@@ -42,7 +42,7 @@ namespace Moq.Sdk.Tests
             var invocation = new MethodInvocation(new FakeMock(), typeof(object).GetMethod(nameof(object.ToString)));
             var pipeline = new MockBehaviorPipeline(new MockSetup(invocation, Array.Empty<IArgumentMatcher>()));
 
-            pipeline.Behaviors.Add(new DelegateMockBehavior((m, i, n) => n().Invoke(m, i, n), "test"));
+            pipeline.Behaviors.Add(new AnonymousMockBehavior((m, i, n) => n().Invoke(m, i, n), "test"));
 
             Assert.NotNull(pipeline.Execute(invocation, () => (m, n) => m.CreateValueReturn(null)));
         }
@@ -53,7 +53,7 @@ namespace Moq.Sdk.Tests
             var invocation = new MethodInvocation(new object(), typeof(object).GetMethod(nameof(object.ToString)));
             var pipeline = new MockBehaviorPipeline(new MockSetup(invocation, Array.Empty<IArgumentMatcher>()));
 
-            pipeline.Behaviors.Add(new DelegateMockBehavior((m, i, n) => i.CreateValueReturn(null), "test"));
+            pipeline.Behaviors.Add(new AnonymousMockBehavior((m, i, n) => i.CreateValueReturn(null), "test"));
 
             Assert.Throws<ArgumentException>(() => pipeline.Execute(invocation, () => (m, n) => throw new NotImplementedException()));        }
     }
