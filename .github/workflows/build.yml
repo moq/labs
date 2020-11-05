@@ -28,12 +28,11 @@ jobs:
           dotnet-version: 5.0.100-rc.2.20479.15
       - name: 🙏 build
         run: dotnet msbuild -r -m:1 -bl:build.binlog -p:versionsuffix="$GITHUB_REF.$GITHUB_RUN_NUMBER"
-      - name: 🧪 test win
+      - name: 🧪 test net5.0
+        run: dotnet test --no-build -f net5.0
+      - name: 🧪 test net472
         run: dotnet test --no-build
         if: matrix.os == 'windows-latest'
-      - name: 🧪 test !win
-        run: dotnet test --no-build -f net5.0
-        if: matrix.os != 'windows-latest'
       - name: 🔼 logs
         if: ${{ always() }}
         uses: actions/upload-artifact@v2
