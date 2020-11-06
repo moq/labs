@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
-using Castle.Components.DictionaryAdapter;
 using Moq.Sdk;
 using Avatars;
+using System.Threading.Tasks;
 
 namespace Moq
 {
@@ -82,7 +82,67 @@ namespace Moq
         }
 
         /// <summary>
-        /// Invokes the given delegate when the methog being set up is invoked, typically used 
+        /// Sets the return value for a property or non-void async method.
+        /// </summary>
+        public static Task<TResult> ReturnsAsync<TResult>(this Task<TResult> target, TResult value)
+        {
+            target.Returns(Task.FromResult(value));
+            return target;
+        }
+
+        /// <summary>
+        /// Sets the return value for a property or non-void async method.
+        /// </summary>
+        public static Task<TResult> ReturnsAsync<TResult>(this Task<TResult> target, Func<TResult> value)
+        {
+            target.Returns(() => Task.FromResult(value()));
+            return target;
+        }
+
+        /// <summary>
+        /// Sets the return value for a property or non-void async method to 
+        /// be evaluated dynamically using the given function on every 
+        /// call, while allowing access to all arguments of the invocation, 
+        /// including ref/out arguments.
+        /// </summary>
+        public static Task<TResult> ReturnsAsync<TResult>(this Task<TResult> target, Func<IArgumentCollection, TResult> value)
+        {
+            target.Returns(args => Task.FromResult(value(args)));
+            return target;
+        }
+
+        /// <summary>
+        /// Sets the return value for a property or non-void async method.
+        /// </summary>
+        public static ValueTask<TResult> ReturnsAsync<TResult>(this ValueTask<TResult> target, TResult value)
+        {
+            target.Returns(() => new ValueTask<TResult>(Task.FromResult(value)));
+            return target;
+        }
+
+        /// <summary>
+        /// Sets the return value for a property or non-void async method.
+        /// </summary>
+        public static ValueTask<TResult> ReturnsAsync<TResult>(this ValueTask<TResult> target, Func<TResult> value)
+        {
+            target.Returns(() => new ValueTask<TResult>(Task.FromResult(value())));
+            return target;
+        }
+
+        /// <summary>
+        /// Sets the return value for a property or non-void async method to 
+        /// be evaluated dynamically using the given function on every 
+        /// call, while allowing access to all arguments of the invocation, 
+        /// including ref/out arguments.
+        /// </summary>
+        public static ValueTask<TResult> ReturnsAsync<TResult>(this ValueTask<TResult> target, Func<IArgumentCollection, TResult> value)
+        {
+            target.Returns(args => new ValueTask<TResult>(Task.FromResult(value(args))));
+            return target;
+        }
+
+        /// <summary>
+        /// Invokes the given delegate when the method being set up is invoked, typically used 
         /// to access and set ref/out arguments in a typed fashion. Used in combination 
         /// with <see cref="SetupExtension.Setup{TDelegate}(object, TDelegate)"/>.
         /// </summary>

@@ -24,7 +24,7 @@
     <DebugSymbols>true</DebugSymbols>
     <Nullable>enable</Nullable>
 
-    <DefaultItemExcludes>$(DefaultItemExcludes);*.binlog;*.zip;*.rsp;*.items</DefaultItemExcludes>
+    <DefaultItemExcludes>$(DefaultItemExcludes);*.binlog;*.zip;*.rsp;*.items;TestResults/**/*.*</DefaultItemExcludes>
 
     <!-- Use Directory.Packages.props -->
     <ManagePackageVersionsCentrally Condition="'$(ManagePackageVersionsCentrally)' == '' and ('$(MSBuildProjectExtension)' == '.csproj' or '$(MSBuildProjectExtension)' == '.vbproj')">true</ManagePackageVersionsCentrally>

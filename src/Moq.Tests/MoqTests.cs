@@ -6,6 +6,7 @@ using static Moq.Syntax;
 using Avatars;
 using Sample;
 using Xunit.Abstractions;
+using System.Threading.Tasks;
 
 namespace Moq.Tests
 {
@@ -144,6 +145,114 @@ namespace Moq.Tests
             calculator.Add(2, 2).Returns(() => 4);
 
             Assert.Equal(4, calculator.Add(2, 2));
+        }
+
+        public interface IAsync
+        {
+            Task<bool> RunAsync(int arg);
+            Task RunVoidAsync();
+            ValueTask<bool> RunValueAsync(int arg);
+            ValueTask RunVoidValueAsync();
+        }
+
+        [Fact]
+        public async Task CanReturnAsyncFunction()
+        {
+            var mock = Mock.Of<IAsync>();
+
+            mock.RunAsync(5).ReturnsAsync(true);
+
+            Assert.True(await mock.RunAsync(5));
+        }
+
+        [Fact]
+        public async Task CanReturnAsyncValueFunction()
+        {
+            var mock = Mock.Of<IAsync>();
+
+            mock.RunValueAsync(5).ReturnsAsync(true);
+
+            Assert.True(await mock.RunValueAsync(5));
+        }
+
+        [Fact]
+        public async Task ThrowsAsync()
+        {
+            var mock = Mock.Of<IAsync>();
+
+            mock.RunAsync(5).Throws<InvalidOperationException>();
+
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await mock.RunAsync(5));
+        }
+
+        [Fact]
+        public async Task ThrowsAsyncWithException()
+        {
+            var mock = Mock.Of<IAsync>();
+
+            mock.RunAsync(5).Throws(new InvalidOperationException());
+
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await mock.RunAsync(5));
+        }
+
+        [Fact]
+        public async Task ThrowsValueAsync()
+        {
+            var mock = Mock.Of<IAsync>();
+
+            mock.RunValueAsync(5).Throws<InvalidOperationException>();
+
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await mock.RunValueAsync(5));
+        }
+
+        [Fact]
+        public async Task ThrowsValueAsyncWithException()
+        {
+            var mock = Mock.Of<IAsync>();
+
+            mock.RunValueAsync(5).Throws(new InvalidOperationException());
+
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await mock.RunValueAsync(5));
+        }
+
+        [Fact]
+        public async Task ThrowsVoidAsync()
+        {
+            var mock = Mock.Of<IAsync>();
+
+            mock.RunVoidAsync().Throws<InvalidOperationException>();
+
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await mock.RunVoidAsync());
+        }
+
+        [Fact]
+        public async Task ThrowsVoidAsyncWithException()
+        {
+            var mock = Mock.Of<IAsync>();
+
+            mock.RunVoidAsync().Throws(new InvalidOperationException());
+
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await mock.RunVoidAsync());
+        }
+
+        [Fact]
+        public async Task ThrowsValueVoidAsync()
+        {
+            var mock = Mock.Of<IAsync>();
+
+            mock.RunVoidValueAsync().Throws<InvalidOperationException>();
+
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await mock.RunVoidValueAsync());
+        }
+
+        [Fact]
+        public async Task ThrowsValueVoidAsyncWithException()
+        {
+            var mock = Mock.Of<IAsync>();
+
+            mock.RunVoidValueAsync().Throws(new InvalidOperationException());
+
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await mock.RunVoidValueAsync());
         }
 
         [Fact]

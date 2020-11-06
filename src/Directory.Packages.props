@@ -16,6 +16,7 @@
     <PackageVersion Include="Avatar.CodeAnalysis" Version="$(AvatarVersion)" />
     <PackageVersion Include="Avatar.DynamicProxy" Version="$(AvatarVersion)" />
     <PackageVersion Include="Avatar.StaticProxy" Version="$(AvatarVersion)" />
+    <PackageVersion Include="Microsoft.CSharp" Version="4.7.0" />
   </ItemGroup>
 
   <ItemGroup Label="Roslyn">

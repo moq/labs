@@ -10,10 +10,7 @@ namespace Moq.Tests
     {
         readonly ITestOutputHelper output;
 
-        public VerificationTests(ITestOutputHelper output)
-        {
-            this.output = output;
-        }
+        public VerificationTests(ITestOutputHelper output) => this.output = output;
 
         [Fact]
         public void VerifySyntaxOnceOnSetup()
