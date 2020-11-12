@@ -2,8 +2,8 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using Moq.Sdk;
 using Avatars;
+using Moq.Sdk;
 
 namespace Moq
 {
@@ -28,7 +28,7 @@ namespace Moq
         public IMethodReturn Execute(IMethodInvocation invocation, GetNextBehavior next)
         {
             if (invocation.MethodBase is MethodInfo info &&
-                info.ReturnType != typeof(void) && 
+                info.ReturnType != typeof(void) &&
                 info.ReturnType.CanBeIntercepted())
             {
                 var result = next().Invoke(invocation, next);
@@ -44,15 +44,15 @@ namespace Moq
                     // yet.
                     var recursiveMock = ((IMocked)MockFactory.Default.CreateMock(
                         // Use the same assembly as the current target
-                        invocation.Target.GetType().Assembly, 
-                        info.ReturnType, 
-                        new Type[0], 
+                        invocation.Target.GetType().Assembly,
+                        info.ReturnType,
+                        new Type[0],
                         new object[0])).Mock;
 
                     // Clone the current mock's behaviors, except for the setups and the 
                     // context and recording behaviors which are added already by default.
-                    foreach (var behavior in currentMock.Behaviors.Where(x => 
-                        !(x is IMockBehaviorPipeline) && 
+                    foreach (var behavior in currentMock.Behaviors.Where(x =>
+                        !(x is IMockBehaviorPipeline) &&
                         !(x is MockContextBehavior) &&
                         !(x is MockRecordingBehavior)))
                     {

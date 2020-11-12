@@ -22,7 +22,7 @@ namespace Moq.Sdk
         /// </summary>
         public bool AppliesTo(IMethodInvocation invocation)
             => invocation.MethodBase.IsSpecialName &&
-               // Specifically excludes indexers which are better handled via Returns since they can contain matchers for the index.
+              // Specifically excludes indexers which are better handled via Returns since they can contain matchers for the index.
               ((invocation.MethodBase.Name.StartsWith("get_", StringComparison.Ordinal) && invocation.MethodBase.GetParameters().Length == 0) ||
                (invocation.MethodBase.Name.StartsWith("set_", StringComparison.Ordinal) && invocation.MethodBase.GetParameters().Length == 1));
 
@@ -40,7 +40,7 @@ namespace Moq.Sdk
                 state.TryGetValue<object>("_" + invocation.MethodBase.Name.Substring(4), out var value))
                 return invocation.CreateValueReturn(value);
 
-            if (invocation.MethodBase.Name.StartsWith("set_", StringComparison.Ordinal) && 
+            if (invocation.MethodBase.Name.StartsWith("set_", StringComparison.Ordinal) &&
                 (!SetterRequiresSetup || SetupScope.IsActive))
             {
                 state.Set("_" + invocation.MethodBase.Name.Substring(4), invocation.Arguments[0]);

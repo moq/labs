@@ -54,7 +54,7 @@ namespace Moq.Sdk.Tests
 
             public Guid Id { get; }
 
-            public override bool Equals(object obj)  => Id.Equals((obj as Value)?.Id);
+            public override bool Equals(object obj) => Id.Equals((obj as Value)?.Id);
 
             public override int GetHashCode() => Id.GetHashCode();
         }

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Threading.Tasks;
 using Moq.Sdk;
 
 namespace Moq
@@ -92,6 +93,26 @@ namespace Moq
         [EditorBrowsable(EditorBrowsableState.Never)]
         public MockSetup<T, TResult> Setup<TResult>(Expression<Func<T, TResult>> expression)
             => new MockSetup<T, TResult>(target, mock, expression.Compile());
+
+        /// <summary>Supports the legacy API.</summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public MockSetupAsync<T> Setup(Expression<Func<T, Task>> expression)
+            => new MockSetupAsync<T>(target, mock, expression.Compile());
+
+        /// <summary>Supports the legacy API.</summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public MockSetupValueAsync<T> Setup(Expression<Func<T, ValueTask>> expression)
+            => new MockSetupValueAsync<T>(target, mock, expression.Compile());
+
+        /// <summary>Supports the legacy API.</summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public MockSetupAsync<T, TResult> Setup<TResult>(Expression<Func<T, Task<TResult>>> expression)
+            => new MockSetupAsync<T, TResult>(target, mock, expression.Compile());
+
+        /// <summary>Supports the legacy API.</summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public MockSetupValueAsync<T, TResult> Setup<TResult>(Expression<Func<T, ValueTask<TResult>>> expression)
+            => new MockSetupValueAsync<T, TResult>(target, mock, expression.Compile());
 
         /// <summary>Supports the legacy API.</summary>
         [EditorBrowsable(EditorBrowsableState.Never)]

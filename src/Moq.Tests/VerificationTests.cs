@@ -20,7 +20,7 @@ namespace Moq.Tests
             calculator.Add(2, 3).Returns(5).Once();
 
             Assert.ThrowsAny<VerifyException>(() => Verify(calculator));
-            
+
             calculator.Add(2, 3);
 
             // TODO: We should have a this.Verify() extension method for backs compat.
@@ -281,7 +281,7 @@ namespace Moq.Tests
             // Syntax-based, follows straightforward setup approach, no lambdas.
             Verify(calculator).Mode = CalculatorMode.Scientific;
             Verify(calculator).Add(2, 3);
-            
+
             // Verify all "verifiable" calls, i.e. those with 
             // a Once/Never/etc. setup.
             Verify(calculator);

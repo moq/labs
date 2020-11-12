@@ -41,8 +41,8 @@ namespace Moq.Sdk.Tests
     public class FakeInvocation : IMethodInvocation
     {
         public FakeInvocation() => Target = new Mocked();
-        
-        public IArgumentCollection Arguments { get; set; } 
+
+        public IArgumentCollection Arguments { get; set; }
 
         public IDictionary<string, object> Context { get; set; }
 

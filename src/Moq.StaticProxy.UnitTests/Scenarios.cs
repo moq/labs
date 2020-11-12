@@ -44,8 +44,8 @@ namespace Moq.StaticProxy.UnitTests
 
         static (ImmutableArray<Diagnostic>, Compilation) GetGeneratedOutput(string path)
         {
-            var syntaxTree = CSharpSyntaxTree.ParseText(File.ReadAllText(path), 
-                path: new FileInfo(path).FullName, 
+            var syntaxTree = CSharpSyntaxTree.ParseText(File.ReadAllText(path),
+                path: new FileInfo(path).FullName,
                 encoding: Encoding.UTF8);
 
             foreach (var name in Assembly.GetExecutingAssembly().GetReferencedAssemblies())
@@ -62,21 +62,21 @@ namespace Moq.StaticProxy.UnitTests
                 new SyntaxTree[]
                 {
                     syntaxTree,
-                    CSharpSyntaxTree.ParseText(File.ReadAllText("Moq/Mock.cs"), 
-                        path: new FileInfo("Moq/Mock.cs").FullName, 
+                    CSharpSyntaxTree.ParseText(File.ReadAllText("Moq/Mock.cs"),
+                        path: new FileInfo("Moq/Mock.cs").FullName,
                         encoding: Encoding.UTF8),
-                    CSharpSyntaxTree.ParseText(File.ReadAllText("Moq/Mock.Overloads.cs"), 
+                    CSharpSyntaxTree.ParseText(File.ReadAllText("Moq/Mock.Overloads.cs"),
                         path: new FileInfo("Moq/Mock.Overloads.cs").FullName,
                         encoding: Encoding.UTF8),
                     CSharpSyntaxTree.ParseText(File.ReadAllText("Moq/Mock.StaticFactory.cs"),
                         path: new FileInfo("Moq/Mock.StaticFactory.cs").FullName,
                         encoding: Encoding.UTF8),
-                }, references, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, 
+                }, references, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary,
                     nullableContextOptions: NullableContextOptions.Enable));
 
-            var diagnostics = compilation.GetDiagnostics().RemoveAll(d => 
-                d.Severity == DiagnosticSeverity.Hidden || 
-                d.Severity == DiagnosticSeverity.Info || 
+            var diagnostics = compilation.GetDiagnostics().RemoveAll(d =>
+                d.Severity == DiagnosticSeverity.Hidden ||
+                d.Severity == DiagnosticSeverity.Info ||
                 // Type conflicts with referenced assembly, will happen because scenarios 
                 // are also compiled in the unit test project itself, but also in the scenario 
                 // file compilation, but the locally defined in surce wins.

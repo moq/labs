@@ -190,7 +190,7 @@ namespace Moq.Sdk
         {
             -1 => AtLeastOnce,
             0 => Never,
-            1 => Once, 
+            1 => Once,
             _ => Exactly(count)
         };
 

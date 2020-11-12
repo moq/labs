@@ -1,5 +1,5 @@
-﻿using Moq.Sdk;
-using Avatars;
+﻿using Avatars;
+using Moq.Sdk;
 
 namespace Moq
 {

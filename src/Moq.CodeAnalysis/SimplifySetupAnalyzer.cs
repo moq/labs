@@ -23,7 +23,7 @@ namespace Moq.CodeAnalysis
         {
             var invocation = (IInvocationOperation)context.Operation;
             // We're looking for the Setup<T>(T mock) generic extension method call
-            if (!invocation.TargetMethod.IsGenericMethod || 
+            if (!invocation.TargetMethod.IsGenericMethod ||
                 !invocation.TargetMethod.IsExtensionMethod)
                 return;
 
@@ -33,7 +33,7 @@ namespace Moq.CodeAnalysis
                 return;
 
             var setupMethod = setupType.GetMembers().OfType<IMethodSymbol>().First(x => x.Name == "Setup" && x.Parameters.Length == 1);
-            
+
             if (SymbolEqualityComparer.Default.Equals(invocation.TargetMethod.OriginalDefinition, setupMethod))
                 context.ReportDiagnostic(Diagnostic.Create(
                     MockDiagnostics.SimplifySetup,

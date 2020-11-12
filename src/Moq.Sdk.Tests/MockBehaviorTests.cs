@@ -1,6 +1,6 @@
 ﻿using System;
-using Sample;
 using Avatars;
+using Sample;
 using Xunit;
 
 namespace Moq.Sdk.Tests

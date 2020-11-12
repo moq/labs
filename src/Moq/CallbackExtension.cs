@@ -1,7 +1,7 @@
-﻿using Avatars;
-using Moq.Sdk;
+﻿using System;
 using System.ComponentModel;
-using System;
+using Avatars;
+using Moq.Sdk;
 
 namespace Moq
 {

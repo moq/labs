@@ -1,10 +1,10 @@
-﻿using Moq.Sdk;
+﻿using System;
 using System.ComponentModel;
-using System;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Avatars;
-using System.Reflection;
-using System.Linq;
+using Moq.Sdk;
 
 namespace Moq
 {
@@ -50,8 +50,8 @@ namespace Moq
                 // Scenario for void-returning ValueTask/Task is already covered by the 
                 // overloads and switch on <TException> overload above, so we only need 
                 // to check for the ValueTask<T>/Task<T> cases here.
-                if (setup.Invocation.MethodBase is MethodInfo method && 
-                    method.ReturnType != null && method.ReturnType != typeof(void) && 
+                if (setup.Invocation.MethodBase is MethodInfo method &&
+                    method.ReturnType != null && method.ReturnType != typeof(void) &&
                     method.ReturnType.IsGenericType)
                 {
                     object? returns = null;
@@ -120,7 +120,7 @@ namespace Moq
         /// <summary>
         /// Specifies the exception to throw when the async method is invoked.
         /// </summary>
-        public static void Throws(this ValueTask target, Exception exception) 
+        public static void Throws(this ValueTask target, Exception exception)
         {
             target.Returns(() =>
             {

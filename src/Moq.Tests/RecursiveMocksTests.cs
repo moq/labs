@@ -19,7 +19,7 @@ namespace Moq.Tests.Recursive
         public void CanSetupRecursiveMockMethod()
         {
             var mock = Mock.Of<IRecursiveRoot>(MockBehavior.Loose);
-            
+
             mock.Setup(m => m.Branch.GetLeaf(1).Name).Returns("foo");
 
             Assert.Equal("foo", mock.Branch.GetLeaf(1).Name);

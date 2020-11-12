@@ -1,9 +1,9 @@
 ﻿Option Strict On
 Option Infer On
-Imports Moq
-Imports Xunit
 Imports System.Runtime.InteropServices
 Imports Dynamic.Basic.Model
+Imports Moq
+Imports Xunit
 
 Public Class Tests
     <Fact>

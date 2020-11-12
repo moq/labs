@@ -2,12 +2,12 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Avatars;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Editing;
 using Microsoft.CodeAnalysis.VisualBasic;
 using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 using Moq.Sdk;
-using Avatars;
 using static Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory;
 
 namespace Moq.Processors

@@ -55,6 +55,7 @@ namespace Moq.Sdk.Tests
 
             pipeline.Behaviors.Add(new AnonymousMockBehavior((m, i, n) => i.CreateValueReturn(null), "test"));
 
-            Assert.Throws<ArgumentException>(() => pipeline.Execute(invocation, () => (m, n) => throw new NotImplementedException()));        }
+            Assert.Throws<ArgumentException>(() => pipeline.Execute(invocation, () => (m, n) => throw new NotImplementedException()));
+        }
     }
 }

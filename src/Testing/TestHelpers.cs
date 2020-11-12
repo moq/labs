@@ -100,13 +100,13 @@ static partial class TestHelpers
         var projectDir = Path.Combine(Path.GetTempPath(), "Mock", projectId.Id.ToString());
 
         return ProjectInfo.Create(
-            projectId, 
-            VersionStamp.Create(),  
+            projectId,
+            VersionStamp.Create(),
             assemblyName + "." + suffix,
             assemblyName + "." + suffix,
             language,
-            filePath: language == LanguageNames.CSharp 
-                ? Path.Combine(projectDir, "code.csproj") 
+            filePath: language == LanguageNames.CSharp
+                ? Path.Combine(projectDir, "code.csproj")
                 : Path.Combine(projectDir, "code.vbproj"),
             compilationOptions: options,
             parseOptions: parse,

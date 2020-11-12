@@ -1,6 +1,6 @@
-﻿using Xunit;
-using Moq.Sdk;
+﻿using Moq.Sdk;
 using Sample;
+using Xunit;
 
 namespace Moq.Tests
 {

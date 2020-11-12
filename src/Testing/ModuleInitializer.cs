@@ -19,7 +19,7 @@ internal static partial class ModuleInitializer
         }
 
         OnRun();
-	}
+    }
 
     /// <summary>
     /// Declare in another partial class to extend what is run when the assembly is 

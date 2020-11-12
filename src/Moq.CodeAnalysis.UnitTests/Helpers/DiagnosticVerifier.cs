@@ -56,7 +56,7 @@ public abstract partial class DiagnosticVerifier
     /// <param name="expected">DiagnosticResults that should appear after the analyzer is run on the sources</param>
     protected void VerifyCSharpDiagnostic(string[] sources, params DiagnosticResult[] expected)
     {
-        VerifyDiagnostics(sources, LanguageNames.CSharp, GetCSharpDiagnosticAnalyzer() ?? 
+        VerifyDiagnostics(sources, LanguageNames.CSharp, GetCSharpDiagnosticAnalyzer() ??
             throw new NotSupportedException($"No C# diagnostic analyzer was provided. Please override {nameof(GetCSharpDiagnosticAnalyzer)}."), expected);
     }
 
@@ -68,7 +68,7 @@ public abstract partial class DiagnosticVerifier
     /// <param name="expected">DiagnosticResults that should appear after the analyzer is run on the sources</param>
     protected void VerifyBasicDiagnostic(string[] sources, params DiagnosticResult[] expected)
     {
-        VerifyDiagnostics(sources, LanguageNames.VisualBasic, GetBasicDiagnosticAnalyzer() ?? 
+        VerifyDiagnostics(sources, LanguageNames.VisualBasic, GetBasicDiagnosticAnalyzer() ??
             throw new NotSupportedException($"No VB diagnostic analyzer was provided. Please override {nameof(GetBasicDiagnosticAnalyzer)}."), expected);
     }
 

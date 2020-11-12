@@ -1,10 +1,10 @@
 ﻿using System.Linq;
 using System.Threading;
-using Moq.Processors;
-using Moq.Sdk;
 using Avatars;
 using Avatars.CodeAnalysis;
 using Avatars.Processors;
+using Moq.Processors;
+using Moq.Sdk;
 
 namespace Moq
 {

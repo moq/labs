@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-using Castle.DynamicProxy;
 using Avatars;
+using Castle.DynamicProxy;
 
 namespace Moq.Sdk
 {
@@ -15,7 +15,7 @@ namespace Moq.Sdk
         /// <inheritdoc />
         public object CreateMock(Assembly mocksAssembly, Type baseType, Type[] implementedInterfaces, object[] constructorArguments)
             => CreateAvatar(mocksAssembly, baseType, implementedInterfaces, constructorArguments);
-            
+
         /// <summary>
         /// Creates the mock proxy.
         /// </summary>
@@ -29,7 +29,7 @@ namespace Moq.Sdk
                 implementedInterfaces = fixedInterfaces;
             }
 
-            var mocked = (IMocked)Generator.CreateClassProxy(baseType, implementedInterfaces, options, constructorArguments, 
+            var mocked = (IMocked)Generator.CreateClassProxy(baseType, implementedInterfaces, options, constructorArguments,
                 new IInterceptor[] { new MockInterceptor(), getDefaultInterceptor() });
 
             // Save for cloning purposes. We opened a generated proxy from DP to figure out the ctor signature it creates.

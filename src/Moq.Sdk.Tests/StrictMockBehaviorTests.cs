@@ -6,7 +6,7 @@ namespace Moq.Sdk.Tests
     public class StrictMockBehaviorTests
     {
         [Fact]
-        public void AppliesToAllInvocations() 
+        public void AppliesToAllInvocations()
             => Assert.True(new StrictMockBehavior().AppliesTo(new FakeInvocation()));
 
         [Fact]

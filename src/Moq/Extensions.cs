@@ -1,6 +1,6 @@
-﻿using Avatars;
+﻿using System;
 using System.Reflection;
-using System;
+using Avatars;
 using Moq.Sdk;
 
 namespace Moq
@@ -19,7 +19,7 @@ namespace Moq
         }
 
         public static bool CanBeIntercepted(this Type type)
-            => !type.IsValueType && 
+            => !type.IsValueType &&
                !type.FullName.StartsWith(TaskFullName, StringComparison.Ordinal) &&
                (type.IsInterface ||
                (type.IsClass && !type.IsSealed));

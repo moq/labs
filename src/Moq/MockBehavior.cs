@@ -2,11 +2,11 @@
 
 namespace Moq
 {
-	/// <summary>
-	/// Options to customize the behavior of the mock. 
-	/// </summary>
-	public enum MockBehavior
-	{
+    /// <summary>
+    /// Options to customize the behavior of the mock. 
+    /// </summary>
+    public enum MockBehavior
+    {
         /// <summary>Obsolete</summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         Default = 0,
@@ -22,5 +22,5 @@ namespace Moq
         /// corresponding setup.
         /// </summary>
         Strict = 1,
-	}
+    }
 }

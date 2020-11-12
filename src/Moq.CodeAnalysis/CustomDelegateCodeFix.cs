@@ -136,7 +136,7 @@ namespace Moq
                 this.symbol = symbol;
             }
 
-            public override string? EquivalenceKey => symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) + 
+            public override string? EquivalenceKey => symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) +
                 "(" + string.Join(",", symbol.Parameters.Select(x => x.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat))) + ")";
 
             public override string Title => ThisAssembly.Strings.CustomDelegateCodeFix.TitleFormat(symbol.Name);
@@ -266,8 +266,8 @@ namespace Moq
                     node = FindSetup(root);
 
                     var statement = node.Ancestors().OfType<CS.ExpressionStatementSyntax>().FirstOrDefault();
-                    if (statement != null && 
-                        (statement.GetTrailingTrivia().Count == 0 || 
+                    if (statement != null &&
+                        (statement.GetTrailingTrivia().Count == 0 ||
                         !statement.GetTrailingTrivia().Any(t => t.Token == statement.SemicolonToken)))
                     {
                         root = generator.ReplaceNode(root, statement, statement
@@ -275,7 +275,7 @@ namespace Moq
                             .WithTrailingTrivia(statement.GetTrailingTrivia().Insert(0, CSFactory.ElasticCarriageReturnLineFeed))));
                     }
                 }
-                else if (node.Parent?.Parent != null && 
+                else if (node.Parent?.Parent != null &&
                     node.Parent.Parent.IsKind(Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.ExpressionStatement))
                 {
                     var lambda = VBFactory.MultiLineFunctionLambdaExpression(

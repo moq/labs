@@ -8,9 +8,9 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Xunit;
+using Xunit.Sdk;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static WorkspaceHelper;
-using Xunit.Sdk;
 
 public static class AssertCode
 {

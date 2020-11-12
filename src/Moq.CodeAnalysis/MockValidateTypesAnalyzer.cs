@@ -1,6 +1,6 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using Avatars.CodeAnalysis;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Avatars.CodeAnalysis;
 
 namespace Moq
 {

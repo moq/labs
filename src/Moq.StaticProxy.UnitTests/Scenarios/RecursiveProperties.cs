@@ -1,6 +1,6 @@
 ﻿#pragma warning disable CS0436
-using Xunit;
 using Moq.StaticProxy.UnitTests;
+using Xunit;
 
 namespace Moq.Scenarios.RecursiveProperties
 {

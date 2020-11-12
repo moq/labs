@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using Moq.Sdk;
 using Avatars;
+using Moq.Sdk;
 
 namespace Moq
 {
@@ -15,7 +15,7 @@ namespace Moq
     {
         static readonly HashSet<Type> setupScopeBehaviors = new HashSet<Type>
         {
-            typeof(DefaultValueBehavior), 
+            typeof(DefaultValueBehavior),
             typeof(MockContextBehavior),
             typeof(RecursiveMockBehavior),
             typeof(ConfigurePipelineBehavior)

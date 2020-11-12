@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
-using Moq.Sdk;
 using Avatars;
+using Moq.Sdk;
 
 namespace Moq
 {

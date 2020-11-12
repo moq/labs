@@ -12,7 +12,7 @@ namespace Moq
         /// <summary>
         /// Names the mock.
         /// </summary>
-        public static T Named<T>(this T target, string name)where T : class
+        public static T Named<T>(this T target, string name) where T : class
         {
             target.AsMock().State.Set("Name", name);
             return target;

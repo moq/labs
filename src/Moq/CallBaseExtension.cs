@@ -1,5 +1,5 @@
-﻿using Moq.Sdk;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using Moq.Sdk;
 
 namespace Moq
 {
@@ -30,7 +30,7 @@ namespace Moq
                              // set CallBase
                              i.Context[nameof(IMoq.CallBase)] = true;
                              return next().Invoke(i.Target.AsMock(), i, next);
-                         }, 
+                         },
                          nameof(IMoq.CallBase)));
             }
             // TODO: else throw?

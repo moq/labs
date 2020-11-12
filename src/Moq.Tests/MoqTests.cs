@@ -1,12 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
-using Xunit;
-using Moq.Sdk;
-using static Moq.Syntax;
-using Avatars;
-using Sample;
-using Xunit.Abstractions;
 using System.Threading.Tasks;
+using Avatars;
+using Moq.Sdk;
+using Sample;
+using Xunit;
+using Xunit.Abstractions;
+using static Moq.Syntax;
 
 namespace Moq.Tests
 {

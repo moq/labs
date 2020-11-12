@@ -1,5 +1,5 @@
-﻿using Moq.Sdk;
-using Avatars.CodeAnalysis;
+﻿using Avatars.CodeAnalysis;
+using Moq.Sdk;
 
 namespace Moq
 {

@@ -13,8 +13,8 @@ namespace Moq.Sdk.Tests
         {
             var behavior = new EventBehavior();
             Assert.True(behavior.AppliesTo(new MethodInvocation(
-                new EventfulMock(), 
-                typeof(EventfulMock).GetEvent(nameof(EventfulMock.Empty)).GetAddMethod(), 
+                new EventfulMock(),
+                typeof(EventfulMock).GetEvent(nameof(EventfulMock.Empty)).GetAddMethod(),
                 new EventHandler((s, a) => { }))));
         }
 

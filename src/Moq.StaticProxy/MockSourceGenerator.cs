@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Avatars;
+using Avatars.CodeAnalysis;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Moq.Sdk;
-using Avatars;
-using Avatars.CodeAnalysis;
 
 namespace Moq
 {
@@ -35,7 +35,7 @@ namespace Moq
         {
             var additional = new List<INamedTypeSymbol[]>();
 
-            if (context.SyntaxReceiver is IEnumerable receivers && 
+            if (context.SyntaxReceiver is IEnumerable receivers &&
                 receivers.OfType<RecursiveMockSyntaxReceiver>().FirstOrDefault() is var recursive)
             {
                 var generatorAttr = context.Compilation.GetTypeByMetadataName(generator.GeneratorAttribute.FullName!);

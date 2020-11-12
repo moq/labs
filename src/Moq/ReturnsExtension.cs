@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
-using Moq.Sdk;
-using Avatars;
 using System.Threading.Tasks;
+using Avatars;
+using Moq.Sdk;
 
 namespace Moq
 {

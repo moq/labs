@@ -68,7 +68,7 @@ namespace Moq.CodeAnalysis
             bool IsSetupScope(ISymbol? symbol) => symbol is IMethodSymbol &&
                 symbol.GetAttributes().Any(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, scope));
 
-            if (!IsSetupScope(semantic.GetSymbolInfo(invocation, cancellation).Symbol) && 
+            if (!IsSetupScope(semantic.GetSymbolInfo(invocation, cancellation).Symbol) &&
                 !semantic.GetSymbolInfo(invocation, cancellation).CandidateSymbols.Any(IsSetupScope))
                 return;
 
@@ -116,7 +116,7 @@ namespace Moq.CodeAnalysis
                 trigger.Kind == CompletionTriggerKind.InvokeAndCommitIfUnique)
                 return true;
 
-            if (trigger.Kind == CompletionTriggerKind.Insertion && 
+            if (trigger.Kind == CompletionTriggerKind.Insertion &&
                 (trigger.Character == '.' || trigger.Character == '('))
                 return true;
 

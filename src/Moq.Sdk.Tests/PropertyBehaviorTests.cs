@@ -39,7 +39,7 @@ namespace Moq.Sdk.Tests
 
         [Fact]
         public void ThrowsIfNullInvocation()
-            => Assert.Throws<ArgumentNullException>(() 
+            => Assert.Throws<ArgumentNullException>(()
                 => new PropertyBehavior().Execute(null, () => throw new NotImplementedException()));
 
         [Fact]
@@ -48,7 +48,7 @@ namespace Moq.Sdk.Tests
             var behavior = new PropertyBehavior();
             Assert.Throws<ArgumentException>(() => behavior.Execute(new MethodInvocation(
                 new object(),
-                typeof(PropertiesMock).GetProperty(nameof(PropertiesMock.Id)).GetSetMethod()), 
+                typeof(PropertiesMock).GetProperty(nameof(PropertiesMock.Id)).GetSetMethod()),
                 () => throw new NotImplementedException()));
         }
 

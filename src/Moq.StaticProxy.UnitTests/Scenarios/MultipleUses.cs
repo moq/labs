@@ -1,7 +1,7 @@
 ﻿#pragma warning disable CS0436
-using Xunit;
-using Moq.StaticProxy.UnitTests;
 using System;
+using Moq.StaticProxy.UnitTests;
+using Xunit;
 
 namespace Moq.Scenarios.MultipleUses
 {
@@ -25,7 +25,7 @@ namespace Moq.Scenarios.MultipleUses
 
             Do();
         }
-        
+
         public void Do()
         {
             var disposable2 = Mock.Of<IDisposable>();

@@ -137,11 +137,11 @@ namespace Moq.Sdk
             => other != null && Invocation.Equals(other.Invocation) && Matchers.SequenceEqual(other.Matchers);
 
         /// <inheritdoc />
-        public bool Equals(MockSetup other) 
+        public bool Equals(MockSetup other)
             => Equals((IMockSetup)other);
 
         /// <inheritdoc />
-        public override bool Equals(object obj) 
+        public override bool Equals(object obj)
             => Equals(obj as IMockSetup);
 
         /// <inheritdoc />
