@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.Build.NoTargets/2.0.1" DefaultTargets="Pack">
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
-        <TargetFrameworkMoniker>.NETStandard,Version=v2.0</TargetFrameworkMoniker>
         <PackageId>Moq</PackageId>
         <Title>Moq</Title>
         <Description>The most popular and friendly mocking framework for .NET</Description>

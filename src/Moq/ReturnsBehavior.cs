@@ -55,6 +55,6 @@ namespace Moq
         object DebuggerValue => value ?? "<function>";
 
         public IMethodReturn Execute(IMock mock, IMethodInvocation invocation, GetNextMockBehavior next)
-            => invocation.CreateValueReturn(getter(invocation.Arguments), invocation.Arguments.ToArray());
+            => invocation.CreateValueReturn(getter(invocation.Arguments), invocation.Arguments.Select(p => invocation.Arguments.GetValue(p.Name)).ToArray());
     }
 }

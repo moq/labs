@@ -54,7 +54,7 @@ namespace Moq.Sdk
 
             for (var i = 0; i < actualInvocation.Arguments.Count; i++)
             {
-                if (!matchers[i].Matches(actualInvocation.Arguments[i]))
+                if (!matchers[i].Matches(actualInvocation.Arguments.GetValue(i)))
                     return false;
             }
 

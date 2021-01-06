@@ -1,4 +1,4 @@
-﻿namespace Moq.StaticProxy.UnitTests
+﻿namespace Moq
 {
     public interface IRunnable
     {

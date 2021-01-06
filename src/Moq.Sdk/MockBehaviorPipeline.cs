@@ -45,9 +45,9 @@ namespace Moq.Sdk
             // itself.
 
             // Regardless of the configured mock behaviors or subsequent pipeline behaviors, 
-            // we have matched a call, meaning the strict mode behavior, if configured, 
-            // should nevertheless *not* run, since we consider this a successfull match.
-            invocation.SkipBehaviors.Add(typeof(StrictMockBehavior));
+            // we have matched a call, meaning the strict mode behavior, if configured at all, 
+            // should always be skipped, since we consider this a successfull match.
+            invocation.SkipBehavior<StrictMockBehavior>();
 
             if (Behaviors.Count == 0)
                 return next().Invoke(invocation, next);

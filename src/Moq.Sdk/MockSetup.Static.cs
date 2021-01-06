@@ -37,15 +37,14 @@ namespace Moq.Sdk
                 ?? throw new InvalidOperationException(ThisAssembly.Strings.UnexpectedNullContextState(typeof(Queue<IArgumentMatcher>).FullName));
 
             var finalMatchers = new List<IArgumentMatcher>();
-            var parameters = invocation.MethodBase.GetParameters();
             var defaultValue = (invocation.Target as IMocked)?.
                 Mock.Behaviors.OfType<DefaultValueBehavior>().FirstOrDefault()?.Provider ??
                 new DefaultValueProvider();
 
             for (var i = 0; i < invocation.Arguments.Count; i++)
             {
-                var argument = invocation.Arguments[i];
-                var parameter = parameters[i];
+                var argument = invocation.Arguments.GetValue(i);
+                var parameter = invocation.Arguments[i];
 
                 // This is a bit fuzzy since we compare the actual argument value against the 
                 // default value for the parameter type, or the type of the matcher in the 

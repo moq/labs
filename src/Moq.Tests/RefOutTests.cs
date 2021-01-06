@@ -1,4 +1,5 @@
 ﻿using System;
+using Avatars;
 using Sample;
 using Xunit;
 using Xunit.Abstractions;
@@ -9,10 +10,7 @@ namespace Moq.Tests.RefOut
     {
         readonly ITestOutputHelper output;
 
-        public RefOutTests(ITestOutputHelper output)
-        {
-            this.output = output;
-        }
+        public RefOutTests(ITestOutputHelper output) => this.output = output;
 
         [Fact]
         public void CanUseRefOut()
@@ -39,9 +37,9 @@ namespace Moq.Tests.RefOut
             mock.TryAdd(ref x, ref y, out z)
                 .Returns(c =>
                 {
-                    c[2] = (int)c[0] + (int)c[1];
-                    c[0] = 15;
-                    c[1] = 25;
+                    c.Set(2, c.Get<int>(0) + c.Get<int>(1));
+                    c.Set(0, 15);
+                    c.Set(1, 25);
                     return true;
                 });
 

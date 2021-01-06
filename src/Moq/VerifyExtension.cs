@@ -35,8 +35,8 @@ namespace Moq
         /// </summary>
         /// <param name="target">The mock instance to verify.</param>
         /// <param name="action">The method invocation to match against actual calls.</param>
-        /// <param name="times">Optional number of times the method should have been called. Defaults to <see cref="Times.AtLeastOnce"/>. 
-        /// An integer value can also be specificed since there is built-in conversion support from integer to <see cref="Times"/>.</param>
+        /// <param name="times">Optional number of times the method should have been called. Defaults to <see cref="Sdk.Times.AtLeastOnce"/>. 
+        /// An integer value can also be specificed since there is built-in conversion support from integer to <see cref="Sdk.Times"/>.</param>
         /// <param name="message">Optional user message to show.</param>
         public static void Verify<T>(this T target, Action<T> action, int times = -1, string? message = null)
             => Moq.Verify.CalledImpl(() => action(target), (Sdk.Times)times, message);
@@ -67,8 +67,8 @@ namespace Moq
         /// </summary>
         /// <param name="target">The mock instance to verify.</param>
         /// <param name="function">The method invocation to match against actual calls.</param>
-        /// <param name="times">Optional number of times the method should have been called. Defaults to <see cref="Times.AtLeastOnce"/>. 
-        /// An integer value can also be specificed since there is built-in conversion support from integer to <see cref="Times"/>.</param>
+        /// <param name="times">Optional number of times the method should have been called. Defaults to <see cref="Sdk.Times.AtLeastOnce"/>. 
+        /// An integer value can also be specificed since there is built-in conversion support from integer to <see cref="Sdk.Times"/>.</param>
         /// <param name="message">Optional user message to show.</param>
         public static void Verify<T, TResult>(this T target, Func<T, TResult> function, int times = -1, string? message = null)
             => Moq.Verify.CalledImpl(() => function(target), (Sdk.Times)times, message);

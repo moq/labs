@@ -1,15 +1,11 @@
 ﻿#pragma warning disable CS0436
-using Moq.StaticProxy.UnitTests;
 using Xunit;
 
 namespace Moq.Scenarios.RecursiveSetupProperties
 {
     public class Test : IRunnable
     {
-        //[Fact]
-        public void RunScenario() => new StaticProxy.UnitTests.Scenarios().Run(ThisAssembly.Constants.Scenarios.RecursiveSetupProperties);
-
-        void IRunnable.Run()
+        public void Run()
         {
             var mock = Mock.Of<IFoo>();
 

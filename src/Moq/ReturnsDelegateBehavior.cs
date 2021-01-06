@@ -18,9 +18,7 @@ namespace Moq
 
         public IMethodReturn Execute(IMock mock, IMethodInvocation invocation, GetNextMockBehavior next)
         {
-            var arguments = invocation.Arguments.ToArray();
-            var parameters = invocation.MethodBase.GetParameters();
-
+            var arguments = invocation.Arguments.Select(prm => invocation.Arguments.GetValue(prm.Name)).ToArray();
             var returnValue = @delegate.DynamicInvoke(arguments);
 
             return invocation.CreateValueReturn(returnValue, arguments);

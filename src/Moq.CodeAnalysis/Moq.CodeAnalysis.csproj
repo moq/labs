@@ -16,10 +16,6 @@
     <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" Pack="false" />
     <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" Pack="false" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Pack="false" />
-
-    <!-- Workaround for revision mismatch with public versions -->
-    <PackageReference Include="System.Collections.Immutable" Pack="false" />
-    <PackageReference Include="System.Reflection.Metadata" Pack="false" />
   </ItemGroup>
 
   <ItemGroup>

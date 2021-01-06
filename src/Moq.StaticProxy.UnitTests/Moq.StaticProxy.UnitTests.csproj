@@ -5,6 +5,9 @@
     <Nullable>annotations</Nullable>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <!-- Used in WriteCscCommandLineArgs target -->
+    <ProvideCommandLineArgs>true</ProvideCommandLineArgs>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,6 +19,9 @@
   <ItemGroup>
     <ProjectProperty Include="MSBuildProjectDirectory" />
     <ProjectProperty Include="MSBuildBinPath" />
+    <ProjectProperty Include="IntermediateOutputPath" />
+    <ProjectProperty Include="EmitCompilerGeneratedFiles" />
+    <ProjectProperty Include="TargetPath" />
   </ItemGroup>
 
   <ItemGroup>
@@ -51,6 +57,16 @@
     <ItemGroup>
       <FileConstant Include="@(Compile)" Condition="$([MSBuild]::ValueOrDefault('%(RelativeDir)', '').StartsWith('Scenarios'))" />
     </ItemGroup>
+  </Target>
+
+  <Target Name="WriteCscCommandLineArgs" AfterTargets="CoreCompile"
+          Inputs="@(IntermediateAssembly)" Outputs="$(OutputPath)csc.txt"
+          Condition="'@(CscCommandLineArgs)' != ''">
+    <WriteLinesToFile Lines="@(CscCommandLineArgs)" File="$(OutputPath)csc.txt" Overwrite="true" WriteOnlyWhenDifferent="true" />
+  </Target>
+
+  <Target Name="WriteLibs" AfterTargets="ResolvePackageAssets">
+    <WriteLinesToFile Lines="@(RuntimeCopyLocalItems -> '%(FullPath)')" File="$(OutputPath)lib.txt"  Overwrite="true" WriteOnlyWhenDifferent="true" />
   </Target>
 
 </Project>

@@ -52,9 +52,15 @@ namespace Moq.Sdk.Tests
 
         public HashSet<Type> SkipBehaviors { get; } = new HashSet<Type>();
 
+        public bool SupportsCallBase => throw new NotImplementedException();
+
+        public IMethodReturn CreateCallBaseReturn(IArgumentCollection? arguments = null) => throw new NotImplementedException();
+
         public IMethodReturn CreateExceptionReturn(Exception exception) => new FakeReturn { Exception = exception };
 
         public IMethodReturn CreateValueReturn(object returnValue, params object[] allArguments) => new FakeReturn { ReturnValue = returnValue };
+
+        public IMethodReturn CreateValueReturn(object? returnValue, IArgumentCollection? arguments = null) => throw new NotImplementedException();
 
         public bool Equals(IMethodInvocation other) => base.Equals(other);
 
@@ -67,10 +73,10 @@ namespace Moq.Sdk.Tests
     {
         public IDictionary<string, object> Context { get; set; }
 
-        public Exception Exception { get; set; }
+        public Exception? Exception { get; set; }
 
         public IArgumentCollection Outputs { get; set; }
 
-        public object ReturnValue { get; set; }
+        public object? ReturnValue { get; set; }
     }
 }

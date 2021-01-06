@@ -43,7 +43,7 @@ namespace Moq.Sdk
             if (invocation.MethodBase.Name.StartsWith("set_", StringComparison.Ordinal) &&
                 (!SetterRequiresSetup || SetupScope.IsActive))
             {
-                state.Set("_" + invocation.MethodBase.Name.Substring(4), invocation.Arguments[0]);
+                state.Set("_" + invocation.MethodBase.Name.Substring(4), invocation.Arguments.GetValue(0));
                 return invocation.CreateValueReturn(null);
             }
 

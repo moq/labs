@@ -68,13 +68,12 @@ namespace Moq
                         setup.Behaviors.Add(new ReturnsBehavior(recursiveMock.Object));
 
                     // Copy over values from the result, so that outputs contain the default values.
-                    var arguments = invocation.Arguments.ToArray();
-                    var parameters = invocation.MethodBase.GetParameters();
-                    for (var i = 0; i < parameters.Length; i++)
+                    var arguments = invocation.Arguments.Select((p, i) => invocation.Arguments.GetValue(i)).ToArray();
+                    for (var i = 0; i < invocation.Arguments.Count; i++)
                     {
-                        var parameter = parameters[i];
+                        var parameter = invocation.Arguments[i];
                         if (parameter.IsOut)
-                            arguments[i] = result.Outputs[parameter.Name];
+                            arguments[i] = result.Outputs.GetValue(parameter.Name);
                     }
 
                     return invocation.CreateValueReturn(recursiveMock.Object, arguments);

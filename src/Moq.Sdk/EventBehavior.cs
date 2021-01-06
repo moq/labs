@@ -62,7 +62,8 @@ namespace Moq.Sdk
                 }
                 else
                 {
-                    if (invocation.Arguments.FirstOrDefault() is Delegate handler)
+                    if (invocation.Arguments.Count == 1 &&
+                        invocation.Arguments.GetValue(0) is Delegate handler)
                     {
                         var mock = ((IMocked)invocation.Target).Mock;
                         if (invocation.MethodBase.Name.StartsWith("add_", StringComparison.Ordinal))

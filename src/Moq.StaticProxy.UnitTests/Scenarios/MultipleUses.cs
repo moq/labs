@@ -1,6 +1,5 @@
 ﻿#pragma warning disable CS0436
 using System;
-using Moq.StaticProxy.UnitTests;
 using Xunit;
 
 namespace Moq.Scenarios.MultipleUses
@@ -12,10 +11,7 @@ namespace Moq.Scenarios.MultipleUses
     /// </summary>
     public class Test : IRunnable
     {
-        //[Fact]
-        public void RunScenario() => new StaticProxy.UnitTests.Scenarios().Run(ThisAssembly.Constants.Scenarios.MultipleUses);
-
-        void IRunnable.Run()
+        public void Run()
         {
             var disposable = Mock.Of<IDisposable>();
             var services = Mock.Of<IServiceProvider>();
