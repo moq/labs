@@ -15,7 +15,7 @@ namespace Moq.Scenarios.MultipleUses
         {
             var disposable = Mock.Of<IDisposable>();
             var services = Mock.Of<IServiceProvider>();
-
+            
             Assert.NotNull(disposable);
             Assert.NotNull(services);
 

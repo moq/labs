@@ -29,7 +29,7 @@
     <!-- Use Directory.Packages.props -->
     <ManagePackageVersionsCentrally Condition="'$(ManagePackageVersionsCentrally)' == '' and ('$(MSBuildProjectExtension)' == '.csproj' or '$(MSBuildProjectExtension)' == '.vbproj')">true</ManagePackageVersionsCentrally>
 
-    <RestoreSources>https://pkg.kzu.io/index.json;https://api.nuget.org/v3/index.json;$(RestoreSources)</RestoreSources>
+    <RestoreSources>https://pkg.kzu.io/index.json;https://api.nuget.org/v3/index.json;https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-tools/nuget/v3/index.json;$(RestoreSources)</RestoreSources>
     <RestoreSources Condition="Exists('$(MSBuildThisFileDirectory)..\..\nugetizer\bin\')">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\nugetizer\bin'));$(RestoreSources)</RestoreSources>
     <RestoreSources Condition="Exists('$(MSBuildThisFileDirectory)..\..\avatar\bin\')">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\avatar\bin'));$(RestoreSources)</RestoreSources>
     <RestoreSources Condition="Exists('$(MSBuildThisFileDirectory)..\..\ThisAssembly\bin\')">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\ThisAssembly\bin'));$(RestoreSources)</RestoreSources>
