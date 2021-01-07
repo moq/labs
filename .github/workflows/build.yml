@@ -22,6 +22,8 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 5.0.x
+      - name: 🙏 restore
+        run: dotnet restore
       - name: ✓ ensure format
         run: |
           dotnet tool update -g dotnet-format --version 5.0.* --add-source https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-tools/nuget/v3/index.json

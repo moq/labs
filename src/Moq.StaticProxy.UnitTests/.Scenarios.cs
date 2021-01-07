@@ -100,7 +100,7 @@ namespace Moq.StaticProxy.UnitTests
             var libs = new HashSet<string>(File.ReadAllLines("lib.txt"), StringComparer.OrdinalIgnoreCase)
                 .Distinct(new FileNameComparer())
                 .ToDictionary(x => Path.GetFileName(x), StringComparer.OrdinalIgnoreCase);
-            
+
             var args = CSharpCommandLineParser.Default.Parse(
                 File.ReadAllLines("csc.txt"), ThisAssembly.Project.MSBuildProjectDirectory, sdkDirectory: null);
 
@@ -148,7 +148,7 @@ namespace Moq.StaticProxy.UnitTests
                 Path.GetFileNameWithoutExtension(path),
                 sources,
                 references.AddRange(args.MetadataReferences
-                    .Where(x => 
+                    .Where(x =>
                         !x.Reference.EndsWith("netstandard.dll", StringComparison.Ordinal) &&
                         !x.Reference.EndsWith("mscorlib.dll", StringComparison.Ordinal) &&
                         !Path.GetFileName(x.Reference).StartsWith("System", StringComparison.Ordinal))
