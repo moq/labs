@@ -54,7 +54,7 @@
   </ItemGroup>
 
   <ItemGroup Label="MSBuild">
-    <PackageVersion Include="Microsoft.Build" Version="16.6.0" />
+    <PackageVersion Include="Microsoft.Build" Version="16.10.0" />
     <PackageVersion Include="Microsoft.Build.Tasks.Core" Version="16.6.0" />
     <PackageVersion Include="Microsoft.Build.Locator" Version="1.2.6" />
     <PackageVersion Include="MSBuild.StructuredLogger" Version="2.1.176" />
