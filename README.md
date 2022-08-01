@@ -56,11 +56,14 @@ Every time the packages are produced, the local nuget cache is cleared, so that 
 automatically cause the updated version to be unpacked again. The locally built version will always have the version [42.42.42](https://en.wikipedia.org/wiki/42_(number)#The_Hitchhiker's_Guide_to_the_Galaxy).
 
 
+![Sponsors](https://raw.githubusercontent.com/devlooped/oss/main/assets/images/sponsors.svg) Sponsors
+============
 
-## Sponsors
+Special thanks to the following organizations that support this project:
 
-<h3 style="vertical-align: text-top" id="by-clarius">
-<img src="https://raw.githubusercontent.com/devlooped/oss/main/assets/images/sponsors.svg" alt="sponsors" height="36" width="36" style="vertical-align: text-top; border: 0px; padding: 0px; margin: 0px">&nbsp;&nbsp;by&nbsp;<a href="https://github.com/clarius">@clarius</a>&nbsp;<img src="https://raw.githubusercontent.com/clarius/branding/main/logo/logo.svg" alt="sponsors" height="36" width="36" style="vertical-align: text-top; border: 0px; padding: 0px; margin: 0px">
-</h3>
+<a href="https://github.com/aws"><img src="https://avatars.githubusercontent.com/u/2232217?s=70&v=4" alt="Supported by AWS" title="Supported by AWS"></a>
+
+<a href="https://github.com/clarius"><img src="https://avatars.githubusercontent.com/u/71888636?s=50&v=4" alt="Supported by Clarius" title="Supported by Clarius"></a>
+
 
 *[get mentioned here too](https://github.com/sponsors/devlooped)!*
