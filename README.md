@@ -1,4 +1,4 @@
-# moq v5
+# moq vNext
 
 The most popular and friendly mocking framework for .NET
 
